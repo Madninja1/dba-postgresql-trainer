@@ -5,6 +5,9 @@ version = 4
 [[package]]
 name = "dba-trainer-application"
 version = "0.1.0"
+dependencies = [
+ "dba-trainer-domain",
+]
 
 [[package]]
 name = "dba-trainer-domain"
@@ -13,7 +16,15 @@ version = "0.1.0"
 [[package]]
 name = "dba-trainer-storage-sqlite"
 version = "0.1.0"
+dependencies = [
+ "dba-trainer-application",
+ "dba-trainer-domain",
+]
 
 [[package]]
 name = "dba-trainer-tui"
 version = "0.1.0"
+dependencies = [
+ "dba-trainer-application",
+ "dba-trainer-storage-sqlite",
+]
