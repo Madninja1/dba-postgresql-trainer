@@ -9,3 +9,6 @@ pub struct AnswerOptionId(pub i64);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct SourceId(pub i64);
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct SessionId(pub i64);
