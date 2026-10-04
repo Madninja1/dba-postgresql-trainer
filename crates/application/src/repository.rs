@@ -10,12 +10,12 @@ pub trait TopicRepository {
 }
 
 pub trait SessionRepository {
-    fn start_session(&self, config: &SessionConfig) -> Result<QuizSession, RepositoryError>;
+    fn start_session(&mut self, config: &SessionConfig) -> Result<QuizSession, RepositoryError>;
 
     fn current_question(&self, session_id: SessionId) -> Result<Option<Question>, RepositoryError>;
 
     fn submit_answer(
-        &self,
+        &mut self,
         session_id: SessionId,
         question_id: QuestionId,
         answer_option_id: AnswerOptionId,

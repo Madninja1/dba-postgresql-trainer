@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 dba-trainer-domain = { path = "../domain" }
 dba-trainer-application = { path = "../application" }
+rusqlite = { version = "0.40.2", features = ["bundled"] }

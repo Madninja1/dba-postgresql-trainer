@@ -21,7 +21,10 @@ where
         self.repository.topics()
     }
 
-    pub fn start_session(&self, config: &SessionConfig) -> Result<QuizSession, RepositoryError> {
+    pub fn start_session(
+        &mut self,
+        config: &SessionConfig,
+    ) -> Result<QuizSession, RepositoryError> {
         self.repository.start_session(config)
     }
 
@@ -33,7 +36,7 @@ where
     }
 
     pub fn submit_answer(
-        &self,
+        &mut self,
         session_id: SessionId,
         question_id: QuestionId,
         answer_option_id: AnswerOptionId,
@@ -63,7 +66,10 @@ mod tests {
     }
 
     impl SessionRepository for FakeRepository {
-        fn start_session(&self, _config: &SessionConfig) -> Result<QuizSession, RepositoryError> {
+        fn start_session(
+            &mut self,
+            _config: &SessionConfig,
+        ) -> Result<QuizSession, RepositoryError> {
             Ok(QuizSession {
                 id: SessionId(1),
                 question_ids: vec![QuestionId(10), QuestionId(20)],
@@ -79,7 +85,7 @@ mod tests {
         }
 
         fn submit_answer(
-            &self,
+            &mut self,
             _session_id: SessionId,
             question_id: QuestionId,
             answer_option_id: AnswerOptionId,
@@ -106,7 +112,7 @@ mod tests {
 
     #[test]
     fn service_starts_session() {
-        let service = TrainerService::new(FakeRepository);
+        let mut service = TrainerService::new(FakeRepository);
 
         let config = SessionConfig {
             scope: QuizScope::Topic(TopicId(1)),
