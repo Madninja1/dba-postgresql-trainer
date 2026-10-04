@@ -1,4 +1,4 @@
-use dba_trainer_domain::QuestionLimit;
+use dba_trainer_domain::{QuestionLimit, QuizScope};
 
 use crate::app::{App, QUESTION_LIMITS};
 use ratatui::widgets::List;
@@ -19,9 +19,18 @@ pub fn render(frame: &mut Frame, app: &App) {
         ])
         .split(frame.area());
 
-    let header = Paragraph::new("Количество вопросов")
-        .alignment(Alignment::Center)
-        .block(Block::default().borders(Borders::ALL));
+    let title = match app.quiz_scope {
+        QuizScope::AllTopics => String::from("Общий тест"),
+
+        QuizScope::Topic(topic_id) => app
+            .topics
+            .iter()
+            .find(|topic| topic.id == topic_id)
+            .map(|topic| format!("Тема: {}", topic.title))
+            .unwrap_or_else(|| String::from("Тест по теме")),
+    };
+
+    let header = Paragraph::new(title);
 
     let items = QUESTION_LIMITS
         .iter()

@@ -16,7 +16,7 @@ pub fn render(frame: &mut Frame, app: &App) {
         }
 
         Screen::Topics => {
-            topics::render(frame);
+            topics::render(frame, app);
         }
 
         Screen::QuizSetup => {
