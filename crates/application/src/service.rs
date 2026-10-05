@@ -39,10 +39,10 @@ where
         &mut self,
         session_id: SessionId,
         question_id: QuestionId,
-        answer_option_id: AnswerOptionId,
+        answer_option_ids: &[AnswerOptionId],
     ) -> Result<AnswerResult, RepositoryError> {
         self.repository
-            .submit_answer(session_id, question_id, answer_option_id)
+            .submit_answer(session_id, question_id, answer_option_ids)
     }
 }
 
@@ -58,6 +58,7 @@ mod tests {
         fn topics(&self) -> Result<Vec<Topic>, RepositoryError> {
             Ok(vec![Topic {
                 id: TopicId(1),
+                course_code: String::from("dba-1"),
                 slug: String::from("architecture"),
                 title: String::from("Architecture"),
                 description: None,
@@ -88,11 +89,11 @@ mod tests {
             &mut self,
             _session_id: SessionId,
             question_id: QuestionId,
-            answer_option_id: AnswerOptionId,
+            answer_option_ids: &[AnswerOptionId],
         ) -> Result<AnswerResult, RepositoryError> {
             Ok(AnswerResult {
                 question_id,
-                selected_option_id: answer_option_id,
+                selected_option_ids: answer_option_ids.to_vec(),
                 is_correct: true,
             })
         }

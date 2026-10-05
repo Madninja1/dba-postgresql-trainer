@@ -252,6 +252,7 @@ mod tests {
     fn selecting_topic_opens_quiz_setup() {
         let topics = vec![Topic {
             id: dba_trainer_domain::TopicId(42),
+            course_code: String::from("dba-1"),
             slug: String::from("architecture"),
             title: String::from("Архитектура PostgreSQL"),
             description: None,

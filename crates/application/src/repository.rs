@@ -18,6 +18,6 @@ pub trait SessionRepository {
         &mut self,
         session_id: SessionId,
         question_id: QuestionId,
-        answer_option_id: AnswerOptionId,
+        answer_option_id: &[AnswerOptionId],
     ) -> Result<AnswerResult, RepositoryError>;
 }

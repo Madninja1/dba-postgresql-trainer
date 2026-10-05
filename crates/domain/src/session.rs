@@ -42,9 +42,9 @@ impl QuizSession {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AnswerResult {
     pub question_id: QuestionId,
-    pub selected_option_id: AnswerOptionId,
+    pub selected_option_ids: Vec<AnswerOptionId>,
     pub is_correct: bool,
 }

@@ -6,6 +6,7 @@ pub enum RepositoryError {
     NoQuestions,
     InvalidState(String),
     Storage(String),
+    InvalidAnswerSelection(String),
 }
 
 impl fmt::Display for RepositoryError {
@@ -25,6 +26,10 @@ impl fmt::Display for RepositoryError {
 
             Self::Storage(message) => {
                 write!(formatter, "storage error: {message}")
+            }
+
+            Self::InvalidAnswerSelection(message) => {
+                write!(formatter, "invalid answer selection: {message}")
             }
         }
     }

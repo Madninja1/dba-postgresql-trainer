@@ -3,8 +3,8 @@ use std::path::Path;
 use dba_trainer_application::{RepositoryError, SessionRepository, TopicRepository};
 
 use dba_trainer_domain::{
-    AnswerOption, AnswerOptionId, AnswerResult, Question, QuestionId, QuizScope, QuizSession,
-    SessionConfig, SessionId, Source, SourceId, Topic, TopicId,
+    AnswerOption, AnswerOptionId, AnswerResult, Question, QuestionId, QuestionType, QuizScope,
+    QuizSession, SessionConfig, SessionId, Source, SourceId, SourceKind, Topic, TopicId,
 };
 
 use rusqlite::{Connection, OptionalExtension, params};
@@ -33,21 +33,27 @@ impl SqliteRepository {
             .connection
             .query_row(
                 "
-                SELECT
-                    q.id,
-                    q.topic_id,
-                    q.text,
-                    q.explanation,
+            SELECT
+                q.id,
+                q.topic_id,
+                q.question_type,
+                q.text,
+                q.explanation,
 
-                    s.id,
-                    s.module,
-                    s.section,
-                    s.locator
-                FROM questions q
-                JOIN sources s
-                  ON s.id = q.source_id
-                WHERE q.id = ?1
-                ",
+                s.id,
+                s.kind,
+                s.module,
+                s.section,
+                s.locator,
+                s.url
+
+            FROM questions q
+
+            JOIN sources s
+              ON s.id = q.source_id
+
+            WHERE q.id = ?1
+            ",
                 params![question_id.0],
                 |row| {
                     Ok((
@@ -55,34 +61,55 @@ impl SqliteRepository {
                         row.get::<_, i64>(1)?,
                         row.get::<_, String>(2)?,
                         row.get::<_, String>(3)?,
-                        row.get::<_, i64>(4)?,
-                        row.get::<_, String>(5)?,
+                        row.get::<_, String>(4)?,
+                        row.get::<_, i64>(5)?,
                         row.get::<_, String>(6)?,
                         row.get::<_, String>(7)?,
+                        row.get::<_, String>(8)?,
+                        row.get::<_, String>(9)?,
+                        row.get::<_, Option<String>>(10)?,
                     ))
                 },
             )
             .optional()
             .map_err(repository_error)?;
 
-        let Some((question_id, topic_id, text, explanation, source_id, module, section, locator)) =
-            row
+        let Some((
+            question_id,
+            topic_id,
+            question_type,
+            text,
+            explanation,
+            source_id,
+            source_kind,
+            module,
+            section,
+            locator,
+            url,
+        )) = row
         else {
             return Err(RepositoryError::NotFound);
         };
+
+        let question_type = parse_question_type(&question_type)?;
+
+        let source_kind = parse_source_kind(&source_kind)?;
 
         let mut statement = self
             .connection
             .prepare(
                 "
-                SELECT
-                    id,
-                    text,
-                    is_correct
-                FROM answer_options
-                WHERE question_id = ?1
-                ORDER BY sort_order, id
-                ",
+            SELECT
+                id,
+                text,
+                is_correct
+
+            FROM answer_options
+
+            WHERE question_id = ?1
+
+            ORDER BY sort_order, id
+            ",
             )
             .map_err(repository_error)?;
 
@@ -105,14 +132,19 @@ impl SqliteRepository {
         Ok(Question {
             id: QuestionId(question_id),
             topic_id: TopicId(topic_id),
+
+            question_type,
+
             text,
             explanation,
 
             source: Source {
                 id: SourceId(source_id),
+                kind: source_kind,
                 module,
                 section,
                 locator,
+                url,
             },
 
             options,
@@ -124,6 +156,30 @@ fn repository_error(error: rusqlite::Error) -> RepositoryError {
     RepositoryError::Storage(error.to_string())
 }
 
+fn parse_question_type(value: &str) -> Result<QuestionType, RepositoryError> {
+    match value {
+        "single_choice" => Ok(QuestionType::SingleChoice),
+
+        "multiple_choice" => Ok(QuestionType::MultipleChoice),
+
+        other => Err(RepositoryError::Storage(format!(
+            "unknown question type: {other}"
+        ))),
+    }
+}
+
+fn parse_source_kind(value: &str) -> Result<SourceKind, RepositoryError> {
+    match value {
+        "course_material" => Ok(SourceKind::CourseMaterial),
+
+        "postgresql_docs" => Ok(SourceKind::PostgreSqlDocs),
+
+        other => Err(RepositoryError::Storage(format!(
+            "unknown source kind: {other}"
+        ))),
+    }
+}
+
 impl TopicRepository for SqliteRepository {
     fn topics(&self) -> Result<Vec<Topic>, RepositoryError> {
         let mut statement = self
@@ -132,6 +188,7 @@ impl TopicRepository for SqliteRepository {
                 "
                     SELECT
                         id,
+                        course_code,
                         slug,
                         title,
                         description
@@ -146,9 +203,10 @@ impl TopicRepository for SqliteRepository {
             .query_map([], |row| {
                 Ok(Topic {
                     id: TopicId(row.get(0)?),
-                    slug: row.get(1)?,
-                    title: row.get(2)?,
-                    description: row.get(3)?,
+                    course_code: row.get(1)?,
+                    slug: row.get(2)?,
+                    title: row.get(3)?,
+                    description: row.get(4)?,
                 })
             })
             .map_err(repository_error)?;
@@ -290,17 +348,17 @@ impl SessionRepository for SqliteRepository {
         &mut self,
         session_id: SessionId,
         question_id: QuestionId,
-        answer_option_id: AnswerOptionId,
+        answer_option_ids: &[AnswerOptionId],
     ) -> Result<AnswerResult, RepositoryError> {
         let transaction = self.connection.transaction().map_err(repository_error)?;
 
         let current_index = transaction
             .query_row(
                 "
-                SELECT current_index
-                FROM quiz_sessions
-                WHERE id = ?1
-                ",
+            SELECT current_index
+            FROM quiz_sessions
+            WHERE id = ?1
+            ",
                 params![session_id.0],
                 |row| row.get::<_, i64>(0),
             )
@@ -314,11 +372,11 @@ impl SessionRepository for SqliteRepository {
         let expected_question_id = transaction
             .query_row(
                 "
-                SELECT question_id
-                FROM session_questions
-                WHERE session_id = ?1
-                  AND position = ?2
-                ",
+            SELECT question_id
+            FROM session_questions
+            WHERE session_id = ?1
+              AND position = ?2
+            ",
                 params![session_id.0, current_index],
                 |row| row.get::<_, i64>(0),
             )
@@ -337,53 +395,135 @@ impl SessionRepository for SqliteRepository {
             )));
         }
 
-        let is_correct = transaction
+        let question_type = transaction
             .query_row(
                 "
-                SELECT is_correct
-                FROM answer_options
-                WHERE id = ?1
-                  AND question_id = ?2
-                ",
-                params![answer_option_id.0, question_id.0],
-                |row| row.get::<_, i64>(0),
+            SELECT question_type
+            FROM questions
+            WHERE id = ?1
+            ",
+                params![question_id.0],
+                |row| row.get::<_, String>(0),
             )
             .optional()
             .map_err(repository_error)?;
 
-        let Some(is_correct) = is_correct else {
+        let Some(question_type) = question_type else {
             return Err(RepositoryError::NotFound);
         };
 
-        let is_correct = is_correct != 0;
+        let question_type = parse_question_type(&question_type)?;
+
+        let mut selected_ids = answer_option_ids.to_vec();
+
+        selected_ids.sort_by_key(|id| id.0);
+
+        let original_len = selected_ids.len();
+
+        selected_ids.dedup();
+
+        if selected_ids.len() != original_len {
+            return Err(RepositoryError::InvalidAnswerSelection(String::from(
+                "duplicate answer options",
+            )));
+        }
+
+        if selected_ids.is_empty() {
+            return Err(RepositoryError::InvalidAnswerSelection(String::from(
+                "at least one answer must be selected",
+            )));
+        }
+
+        if question_type == QuestionType::SingleChoice && selected_ids.len() != 1 {
+            return Err(RepositoryError::InvalidAnswerSelection(String::from(
+                "single-choice question requires exactly one answer",
+            )));
+        }
+
+        let options = {
+            let mut statement = transaction
+                .prepare(
+                    "
+                SELECT
+                    id,
+                    is_correct
+                FROM answer_options
+                WHERE question_id = ?1
+                ",
+                )
+                .map_err(repository_error)?;
+
+            let rows = statement
+                .query_map(params![question_id.0], |row| {
+                    Ok((
+                        AnswerOptionId(row.get::<_, i64>(0)?),
+                        row.get::<_, i64>(1)? != 0,
+                    ))
+                })
+                .map_err(repository_error)?;
+
+            rows.collect::<rusqlite::Result<Vec<_>>>()
+                .map_err(repository_error)?
+        };
+
+        for selected_id in &selected_ids {
+            if !options.iter().any(|(id, _)| id == selected_id) {
+                return Err(RepositoryError::InvalidAnswerSelection(String::from(
+                    "answer option does not belong to question",
+                )));
+            }
+        }
+
+        let mut correct_ids = options
+            .iter()
+            .filter(|(_, is_correct)| *is_correct)
+            .map(|(id, _)| *id)
+            .collect::<Vec<_>>();
+
+        correct_ids.sort_by_key(|id| id.0);
+
+        let is_correct = selected_ids == correct_ids;
 
         transaction
             .execute(
                 "
-                INSERT INTO attempts (
-                    session_id,
-                    question_id,
-                    selected_option_id,
-                    is_correct
-                )
-                VALUES (?1, ?2, ?3, ?4)
-                ",
-                params![
-                    session_id.0,
-                    question_id.0,
-                    answer_option_id.0,
-                    is_correct as i64
-                ],
+            INSERT INTO attempts (
+                session_id,
+                question_id,
+                is_correct
+            )
+            VALUES (?1, ?2, ?3)
+            ",
+                params![session_id.0, question_id.0, is_correct as i64],
             )
             .map_err(repository_error)?;
 
+        let attempt_id = transaction.last_insert_rowid();
+
+        for answer_option_id in &selected_ids {
+            transaction
+                .execute(
+                    "
+                INSERT INTO attempt_answers (
+                    attempt_id,
+                    question_id,
+                    answer_option_id
+                )
+                VALUES (?1, ?2, ?3)
+                ",
+                    params![attempt_id, question_id.0, answer_option_id.0],
+                )
+                .map_err(repository_error)?;
+        }
+
         transaction
             .execute(
                 "
-                UPDATE quiz_sessions
-                SET current_index = current_index + 1
-                WHERE id = ?1
-                ",
+            UPDATE quiz_sessions
+            SET current_index =
+                current_index + 1
+            WHERE id = ?1
+            ",
                 params![session_id.0],
             )
             .map_err(repository_error)?;
@@ -391,15 +531,16 @@ impl SessionRepository for SqliteRepository {
         transaction
             .execute(
                 "
-                UPDATE quiz_sessions
-                SET finished_at = CURRENT_TIMESTAMP
-                WHERE id = ?1
-                  AND current_index >= (
-                      SELECT COUNT(*)
-                      FROM session_questions
-                      WHERE session_id = ?1
-                  )
-                ",
+            UPDATE quiz_sessions
+            SET finished_at =
+                CURRENT_TIMESTAMP
+            WHERE id = ?1
+              AND current_index >= (
+                  SELECT COUNT(*)
+                  FROM session_questions
+                  WHERE session_id = ?1
+              )
+            ",
                 params![session_id.0],
             )
             .map_err(repository_error)?;
@@ -408,7 +549,7 @@ impl SessionRepository for SqliteRepository {
 
         Ok(AnswerResult {
             question_id,
-            selected_option_id: answer_option_id,
+            selected_option_ids: selected_ids,
             is_correct,
         })
     }
@@ -520,12 +661,14 @@ mod tests {
 
         assert_eq!(question.id, QuestionId(1));
         assert_eq!(question.options.len(), 2);
+        assert_eq!(question.question_type, QuestionType::SingleChoice);
 
         let result = repository
-            .submit_answer(session.id, question.id, AnswerOptionId(1))
+            .submit_answer(session.id, question.id, &[AnswerOptionId(1)])
             .expect("answer should be accepted");
 
         assert!(result.is_correct);
+        assert_eq!(result.selected_option_ids, vec![AnswerOptionId(1)]);
 
         let next_question = repository
             .current_question(session.id)
