@@ -4,7 +4,8 @@ use dba_trainer_application::{RepositoryError, SessionRepository, TopicRepositor
 
 use dba_trainer_domain::{
     AnswerOption, AnswerOptionId, AnswerResult, Question, QuestionId, QuestionType, QuizScope,
-    QuizSession, SessionConfig, SessionId, Source, SourceId, SourceKind, Topic, TopicId,
+    QuizSession, SessionConfig, SessionId, SessionProgress, Source, SourceId, SourceKind, Topic,
+    TopicId, TrainingStats,
 };
 
 use rusqlite::{Connection, OptionalExtension, params};
@@ -225,6 +226,30 @@ impl SessionRepository for SqliteRepository {
 
         let transaction = self.connection.transaction().map_err(repository_error)?;
 
+        let has_active_session = transaction
+            .query_row(
+                "
+            SELECT EXISTS(
+                SELECT 1
+                FROM quiz_sessions
+                WHERE finished_at
+                    IS NULL
+                  AND cancelled_at
+                    IS NULL
+            )
+            ",
+                [],
+                |row| row.get::<_, i64>(0),
+            )
+            .map_err(repository_error)?
+            != 0;
+
+        if has_active_session {
+            return Err(RepositoryError::InvalidState(String::from(
+                "unfinished quiz session already exists",
+            )));
+        }
+
         let question_ids = {
             let mut statement = transaction
                 .prepare(
@@ -306,6 +331,7 @@ impl SessionRepository for SqliteRepository {
                 SELECT current_index
                 FROM quiz_sessions
                 WHERE id = ?1
+                  AND cancelled_at IS NULL
                 ",
                 params![session_id.0],
                 |row| row.get::<_, i64>(0),
@@ -353,6 +379,8 @@ impl SessionRepository for SqliteRepository {
             SELECT current_index
             FROM quiz_sessions
             WHERE id = ?1
+              AND finished_at IS NULL
+              AND cancelled_at IS NULL
             ",
                 params![session_id.0],
                 |row| row.get::<_, i64>(0),
@@ -550,6 +578,200 @@ impl SessionRepository for SqliteRepository {
             is_correct,
         })
     }
+
+    fn active_session(&self) -> Result<Option<SessionProgress>, RepositoryError> {
+        let row = self
+            .connection
+            .query_row(
+                "
+            SELECT
+                s.id,
+                s.scope,
+                s.topic_id,
+                s.current_index,
+
+                (
+                    SELECT COUNT(*)
+                    FROM session_questions sq
+                    WHERE sq.session_id = s.id
+                ),
+
+                (
+                    SELECT COUNT(*)
+                    FROM attempts a
+                    WHERE a.session_id = s.id
+                ),
+
+                (
+                    SELECT COALESCE(
+                        SUM(a.is_correct),
+                        0
+                    )
+                    FROM attempts a
+                    WHERE a.session_id = s.id
+                )
+
+            FROM quiz_sessions s
+
+            WHERE s.finished_at IS NULL
+              AND s.cancelled_at IS NULL
+
+            ORDER BY s.id DESC
+
+            LIMIT 1
+            ",
+                [],
+                |row| {
+                    Ok((
+                        row.get::<_, i64>(0)?,
+                        row.get::<_, String>(1)?,
+                        row.get::<_, Option<i64>>(2)?,
+                        row.get::<_, i64>(3)?,
+                        row.get::<_, i64>(4)?,
+                        row.get::<_, i64>(5)?,
+                        row.get::<_, i64>(6)?,
+                    ))
+                },
+            )
+            .optional()
+            .map_err(repository_error)?;
+
+        let Some((
+            session_id,
+            scope,
+            topic_id,
+            current_index,
+            total_questions,
+            answered_questions,
+            correct_answers,
+        )) = row
+        else {
+            return Ok(None);
+        };
+
+        let scope = match scope.as_str() {
+            "topic" => {
+                let topic_id = topic_id.ok_or_else(|| {
+                    RepositoryError::InvalidState(String::from("topic session has no topic_id"))
+                })?;
+
+                QuizScope::Topic(TopicId(topic_id))
+            }
+
+            "all" => QuizScope::AllTopics,
+
+            other => {
+                return Err(RepositoryError::InvalidState(format!(
+                    "unknown session scope: {other}"
+                )));
+            }
+        };
+
+        Ok(Some(SessionProgress {
+            id: SessionId(session_id),
+
+            scope,
+
+            current_index: current_index as usize,
+
+            total_questions: total_questions as usize,
+
+            answered_questions: answered_questions as usize,
+
+            correct_answers: correct_answers as usize,
+        }))
+    }
+
+    fn cancel_session(&mut self, session_id: SessionId) -> Result<(), RepositoryError> {
+        let changed = self
+            .connection
+            .execute(
+                "
+                UPDATE quiz_sessions
+                SET cancelled_at =
+                    CURRENT_TIMESTAMP
+                WHERE id = ?1
+                  AND finished_at IS NULL
+                  AND cancelled_at IS NULL
+                ",
+                params![session_id.0],
+            )
+            .map_err(repository_error)?;
+
+        if changed == 0 {
+            return Err(RepositoryError::InvalidState(String::from(
+                "session is not active",
+            )));
+        }
+
+        Ok(())
+    }
+
+    fn statistics(&self) -> Result<TrainingStats, RepositoryError> {
+        let completed_sessions = self
+            .connection
+            .query_row(
+                "
+                SELECT COUNT(*)
+                FROM quiz_sessions
+                WHERE finished_at
+                    IS NOT NULL
+                  AND cancelled_at
+                    IS NULL
+                ",
+                [],
+                |row| row.get::<_, i64>(0),
+            )
+            .map_err(repository_error)?;
+
+        let cancelled_sessions = self
+            .connection
+            .query_row(
+                "
+                SELECT COUNT(*)
+                FROM quiz_sessions
+                WHERE cancelled_at
+                    IS NOT NULL
+                ",
+                [],
+                |row| row.get::<_, i64>(0),
+            )
+            .map_err(repository_error)?;
+
+        let (answered_questions, correct_answers) = self
+            .connection
+            .query_row(
+                "
+            SELECT
+                COUNT(a.id),
+                COALESCE(
+                    SUM(a.is_correct),
+                    0
+                )
+            FROM attempts a
+            JOIN quiz_sessions s
+              ON s.id =
+                 a.session_id
+            WHERE s.finished_at
+                IS NOT NULL
+              AND s.cancelled_at
+                IS NULL
+            ",
+                [],
+                |row| Ok((row.get::<_, i64>(0)?, row.get::<_, i64>(1)?)),
+            )
+            .map_err(repository_error)?;
+
+        Ok(TrainingStats {
+            completed_sessions: completed_sessions as usize,
+
+            cancelled_sessions: cancelled_sessions as usize,
+
+            answered_questions: answered_questions as usize,
+
+            correct_answers: correct_answers as usize,
+        })
+    }
 }
 
 #[cfg(test)]
@@ -672,5 +894,125 @@ mod tests {
             .expect("session should load");
 
         assert!(next_question.is_none());
+    }
+
+    #[test]
+    fn finds_unfinished_session() {
+        let mut repository = seeded_repository();
+
+        let config = SessionConfig {
+            scope: QuizScope::Topic(TopicId(1)),
+
+            limit: QuestionLimit::All,
+        };
+
+        let session = repository
+            .start_session(&config)
+            .expect("session should start");
+
+        let active = repository
+            .active_session()
+            .expect("active session should load")
+            .expect("active session should exist");
+
+        assert_eq!(active.id, session.id,);
+
+        assert_eq!(active.current_index, 0,);
+
+        assert_eq!(active.total_questions, 1,);
+
+        assert_eq!(active.answered_questions, 0,);
+
+        assert_eq!(active.correct_answers, 0,);
+    }
+
+    #[test]
+    fn rejects_second_active_session() {
+        let mut repository = seeded_repository();
+
+        let config = SessionConfig {
+            scope: QuizScope::Topic(TopicId(1)),
+
+            limit: QuestionLimit::All,
+        };
+
+        repository
+            .start_session(&config)
+            .expect("first session should start");
+
+        let error = repository
+            .start_session(&config)
+            .expect_err("second active session must be rejected");
+
+        assert!(matches!(error, RepositoryError::InvalidState(_)));
+    }
+
+    #[test]
+    fn cancelled_session_is_not_resumable() {
+        let mut repository = seeded_repository();
+
+        let config = SessionConfig {
+            scope: QuizScope::Topic(TopicId(1)),
+
+            limit: QuestionLimit::All,
+        };
+
+        let session = repository
+            .start_session(&config)
+            .expect("session should start");
+
+        repository
+            .cancel_session(session.id)
+            .expect("session should cancel");
+
+        let active = repository
+            .active_session()
+            .expect("active session query should work");
+
+        assert_eq!(active, None,);
+
+        let stats = repository.statistics().expect("statistics should load");
+
+        assert_eq!(stats.cancelled_sessions, 1,);
+
+        assert_eq!(stats.completed_sessions, 0,);
+    }
+
+    #[test]
+    fn completed_session_is_counted_in_statistics() {
+        let mut repository = seeded_repository();
+
+        let config = SessionConfig {
+            scope: QuizScope::Topic(TopicId(1)),
+
+            limit: QuestionLimit::All,
+        };
+
+        let session = repository
+            .start_session(&config)
+            .expect("session should start");
+
+        let question = repository
+            .current_question(session.id)
+            .expect("question should load")
+            .expect("question should exist");
+
+        repository
+            .submit_answer(session.id, question.id, &[AnswerOptionId(1)])
+            .expect("answer should be accepted");
+
+        let stats = repository.statistics().expect("statistics should load");
+
+        assert_eq!(stats.completed_sessions, 1,);
+
+        assert_eq!(stats.cancelled_sessions, 0,);
+
+        assert_eq!(stats.answered_questions, 1,);
+
+        assert_eq!(stats.correct_answers, 1,);
+
+        assert_eq!(stats.incorrect_answers(), 0,);
+
+        assert_eq!(stats.accuracy_percent(), 100.0,);
     }
 }

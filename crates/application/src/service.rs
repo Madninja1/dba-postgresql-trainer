@@ -1,6 +1,6 @@
 use dba_trainer_domain::{
     AnswerOptionId, AnswerResult, Question, QuestionId, QuizSession, SessionConfig, SessionId,
-    Topic,
+    SessionProgress, Topic, TrainingStats,
 };
 
 use crate::{RepositoryError, SessionRepository, TopicRepository};
@@ -43,6 +43,18 @@ where
     ) -> Result<AnswerResult, RepositoryError> {
         self.repository
             .submit_answer(session_id, question_id, answer_option_ids)
+    }
+
+    pub fn active_session(&self) -> Result<Option<SessionProgress>, RepositoryError> {
+        self.repository.active_session()
+    }
+
+    pub fn cancel_session(&mut self, session_id: SessionId) -> Result<(), RepositoryError> {
+        self.repository.cancel_session(session_id)
+    }
+
+    pub fn statistics(&self) -> Result<TrainingStats, RepositoryError> {
+        self.repository.statistics()
     }
 }
 
@@ -97,6 +109,18 @@ mod tests {
                 correct_option_ids: answer_option_ids.to_vec(),
                 is_correct: true,
             })
+        }
+
+        fn active_session(&self) -> Result<Option<SessionProgress>, RepositoryError> {
+            Ok(None)
+        }
+
+        fn cancel_session(&mut self, _session_id: SessionId) -> Result<(), RepositoryError> {
+            Ok(())
+        }
+
+        fn statistics(&self) -> Result<TrainingStats, RepositoryError> {
+            Ok(TrainingStats::default())
         }
     }
 

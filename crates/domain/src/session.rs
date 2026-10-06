@@ -49,3 +49,43 @@ pub struct AnswerResult {
     pub correct_option_ids: Vec<AnswerOptionId>,
     pub is_correct: bool,
 }
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SessionProgress {
+    pub id: SessionId,
+
+    pub scope: QuizScope,
+
+    pub current_index: usize,
+
+    pub total_questions: usize,
+
+    pub answered_questions: usize,
+
+    pub correct_answers: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub struct TrainingStats {
+    pub completed_sessions: usize,
+
+    pub cancelled_sessions: usize,
+
+    pub answered_questions: usize,
+
+    pub correct_answers: usize,
+}
+
+impl TrainingStats {
+    pub fn incorrect_answers(&self) -> usize {
+        self.answered_questions.saturating_sub(self.correct_answers)
+    }
+
+    pub fn accuracy_percent(&self) -> f64 {
+        if self.answered_questions == 0 {
+            return 0.0;
+        }
+
+        (self.correct_answers as f64 / self.answered_questions as f64) * 100.0
+    }
+}

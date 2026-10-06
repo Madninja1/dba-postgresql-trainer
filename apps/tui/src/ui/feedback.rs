@@ -89,7 +89,7 @@ pub fn render(frame: &mut Frame, app: &App) {
         .wrap(Wrap { trim: true })
         .block(Block::default().title("Объяснение").borders(Borders::ALL));
 
-    let footer = Paragraph::new("Enter — следующий вопрос | q — выход")
+    let footer = Paragraph::new("Enter — следующий вопрос | Esc — отмена теста | q — выйти")
         .alignment(Alignment::Center)
         .block(Block::default().borders(Borders::ALL));
 

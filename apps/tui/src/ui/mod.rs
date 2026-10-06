@@ -1,13 +1,19 @@
+mod cancel_session;
 mod common;
 mod feedback;
 mod home;
 mod quiz;
 mod quiz_setup;
 mod results;
+mod resume;
 mod statistics;
 mod topics;
 
-use ratatui::Frame;
+use ratatui::{
+    Frame,
+    layout::{Alignment, Rect},
+    widgets::Paragraph,
+};
 
 use crate::app::{App, Screen};
 
@@ -15,6 +21,10 @@ pub fn render(frame: &mut Frame, app: &App) {
     match app.screen {
         Screen::Home => {
             home::render(frame, app);
+        }
+
+        Screen::ResumeSession => {
+            resume::render(frame, app);
         }
 
         Screen::Topics => {
@@ -33,22 +43,21 @@ pub fn render(frame: &mut Frame, app: &App) {
             feedback::render(frame, app);
         }
 
+        Screen::CancelSession => {
+            cancel_session::render(frame, app);
+        }
+
         Screen::Results => {
             results::render(frame, app);
         }
 
         Screen::Statistics => {
-            statistics::render(frame);
+            statistics::render(frame, app);
         }
     }
 
     render_error(frame, app);
 }
-
-use ratatui::{
-    layout::{Alignment, Rect},
-    widgets::Paragraph,
-};
 
 fn render_error(frame: &mut Frame, app: &App) {
     let Some(error) = app.error_message.as_deref() else {

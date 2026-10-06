@@ -2,7 +2,7 @@ use dba_trainer_application::{RepositoryError, TrainerService};
 
 use dba_trainer_domain::{
     AnswerOptionId, AnswerResult, Question, QuestionId, QuestionLimit, QuestionType, QuizScope,
-    SessionConfig, SessionId, Topic,
+    SessionConfig, SessionId, SessionProgress, Topic, TrainingStats,
 };
 
 use dba_trainer_storage_sqlite::SqliteRepository;
@@ -10,10 +10,17 @@ use dba_trainer_storage_sqlite::SqliteRepository;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Screen {
     Home,
+
+    ResumeSession,
+
     Topics,
     QuizSetup,
+
     Quiz,
     Feedback,
+
+    CancelSession,
+
     Results,
     Statistics,
 }
@@ -91,6 +98,14 @@ pub struct App {
 
     pub error_message: Option<String>,
 
+    pub resume_session: Option<SessionProgress>,
+
+    pub decision_selected: usize,
+
+    pub statistics: Option<TrainingStats>,
+
+    cancel_return_screen: Screen,
+
     session_id: Option<SessionId>,
 
     service: TrainerService<SqliteRepository>,
@@ -100,8 +115,16 @@ impl App {
     pub fn new(service: TrainerService<SqliteRepository>) -> Result<Self, RepositoryError> {
         let topics = service.topics()?;
 
+        let resume_session = service.active_session()?;
+
+        let screen = if resume_session.is_some() {
+            Screen::ResumeSession
+        } else {
+            Screen::Home
+        };
+
         Ok(Self {
-            screen: Screen::Home,
+            screen,
 
             should_quit: false,
 
@@ -133,6 +156,14 @@ impl App {
 
             session_id: None,
 
+            resume_session,
+
+            decision_selected: 0,
+
+            statistics: None,
+
+            cancel_return_screen: Screen::Quiz,
+
             service,
         })
     }
@@ -163,13 +194,11 @@ impl App {
 
             Screen::Results => self.handle_results_action(action),
 
-            Screen::Statistics => {
-                if action == Action::Back {
-                    self.screen = Screen::Home;
-                }
+            Screen::ResumeSession => self.handle_resume_action(action),
 
-                Ok(())
-            }
+            Screen::CancelSession => self.handle_cancel_action(action),
+
+            Screen::Statistics => self.handle_statistics_action(action),
         };
 
         if let Err(error) = result {
@@ -201,6 +230,8 @@ impl App {
                 }
 
                 HomeItem::Statistics => {
+                    self.statistics = Some(self.service.statistics()?);
+
                     self.screen = Screen::Statistics;
                 }
 
@@ -300,9 +331,11 @@ impl App {
             }
 
             Action::Back => {
-                self.error_message = Some(String::from(
-                    "Тест уже запущен. Завершите его или нажмите q для выхода.",
-                ));
+                self.cancel_return_screen = Screen::Quiz;
+
+                self.decision_selected = 0;
+
+                self.screen = Screen::CancelSession;
             }
 
             Action::Quit => {}
@@ -312,8 +345,20 @@ impl App {
     }
 
     fn handle_feedback_action(&mut self, action: Action) -> Result<(), RepositoryError> {
-        if action == Action::Confirm {
-            self.load_current_question()?;
+        match action {
+            Action::Confirm => {
+                self.load_current_question()?;
+            }
+
+            Action::Back => {
+                self.cancel_return_screen = Screen::Feedback;
+
+                self.decision_selected = 0;
+
+                self.screen = Screen::CancelSession;
+            }
+
+            _ => {}
         }
 
         Ok(())
@@ -327,6 +372,110 @@ impl App {
         }
 
         Ok(())
+    }
+
+    fn handle_resume_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        match action {
+            Action::Up | Action::Down => {
+                self.decision_selected = if self.decision_selected == 0 { 1 } else { 0 };
+            }
+
+            Action::Confirm => match self.decision_selected {
+                0 => {
+                    self.resume_quiz()?;
+                }
+
+                _ => {
+                    self.cancel_saved_quiz()?;
+                }
+            },
+
+            Action::Back | Action::Toggle | Action::Quit => {}
+        }
+
+        Ok(())
+    }
+
+    fn handle_cancel_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        match action {
+            Action::Up | Action::Down => {
+                self.decision_selected = if self.decision_selected == 0 { 1 } else { 0 };
+            }
+
+            Action::Confirm => {
+                if self.decision_selected == 0 {
+                    self.screen = self.cancel_return_screen;
+                } else {
+                    let session_id = self.session_id.ok_or_else(|| {
+                        RepositoryError::InvalidState(String::from("active session is missing"))
+                    })?;
+
+                    self.service.cancel_session(session_id)?;
+
+                    self.reset_quiz();
+
+                    self.screen = Screen::Home;
+                }
+            }
+
+            Action::Back => {
+                self.screen = self.cancel_return_screen;
+            }
+
+            Action::Toggle | Action::Quit => {}
+        }
+
+        Ok(())
+    }
+
+    fn handle_statistics_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        if matches!(action, Action::Back | Action::Confirm) {
+            self.screen = Screen::Home;
+        }
+
+        Ok(())
+    }
+
+    fn cancel_saved_quiz(&mut self) -> Result<(), RepositoryError> {
+        let session_id = self
+            .resume_session
+            .as_ref()
+            .map(|session| session.id)
+            .ok_or_else(|| {
+                RepositoryError::InvalidState(String::from("resume session is missing"))
+            })?;
+
+        self.service.cancel_session(session_id)?;
+
+        self.resume_session = None;
+
+        self.reset_quiz();
+
+        self.screen = Screen::Home;
+
+        Ok(())
+    }
+
+    fn resume_quiz(&mut self) -> Result<(), RepositoryError> {
+        let progress = self.resume_session.clone().ok_or_else(|| {
+            RepositoryError::InvalidState(String::from("resume session is missing"))
+        })?;
+
+        self.session_id = Some(progress.id);
+
+        self.quiz_scope = progress.scope;
+
+        self.total_questions = progress.total_questions;
+
+        self.answered_questions = progress.answered_questions;
+
+        self.correct_answers = progress.correct_answers;
+
+        self.feedback = None;
+
+        self.resume_session = None;
+
+        self.load_current_question()
     }
 
     fn start_session(&mut self) -> Result<(), RepositoryError> {

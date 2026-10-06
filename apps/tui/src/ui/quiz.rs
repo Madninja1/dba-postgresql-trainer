@@ -76,10 +76,12 @@ pub fn render(frame: &mut Frame, app: &App) {
     let answers = List::new(items).block(Block::default().title("Ответы").borders(Borders::ALL));
 
     let footer_text = match question.question_type {
-        QuestionType::SingleChoice => "↑/↓ или j/k — выбор | Enter — ответить | q — выход",
+        QuestionType::SingleChoice => {
+            "↑/↓ или j/k — выбор | Enter — ответить | Esc — отмена | q — выйти"
+        }
 
         QuestionType::MultipleChoice => {
-            "↑/↓ или j/k — выбор | Space — отметить | Enter — ответить | q — выход"
+            "↑/↓ или j/k — выбор | Space — отметить | Enter — ответить | Esc — отмена | q — выйти"
         }
     };
 
