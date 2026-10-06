@@ -2,7 +2,8 @@ use dba_trainer_application::{RepositoryError, TrainerService};
 
 use dba_trainer_domain::{
     AnswerOptionId, AnswerResult, Question, QuestionId, QuestionLimit, QuestionType, QuizScope,
-    SessionConfig, SessionId, SessionProgress, Topic, TrainingStats,
+    SessionConfig, SessionId, SessionProgress, StatisticsFilter, StatisticsLimit, StatisticsScope,
+    Topic, TopicId, TrainingStats,
 };
 
 use dba_trainer_storage_sqlite::SqliteRepository;
@@ -34,6 +35,22 @@ pub enum Action {
     Back,
     Quit,
     ClearStatistics,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum StatisticsView {
+    Root,
+    Courses,
+    Course(String),
+    Filters {
+        scope: StatisticsScope,
+        title: String,
+    },
+    Modes,
+    Detail {
+        filter: StatisticsFilter,
+        title: String,
+    },
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -107,6 +124,20 @@ pub struct App {
 
     pub statistics: Option<TrainingStats>,
 
+    pub statistics_view: StatisticsView,
+
+    pub statistics_selected: usize,
+
+    statistics_course_summaries: Vec<(String, TrainingStats)>,
+
+    statistics_topic_summaries: Vec<(TopicId, TrainingStats)>,
+
+    statistics_mode_summaries: Vec<(StatisticsLimit, TrainingStats)>,
+
+    statistics_filter_summaries: Vec<(StatisticsLimit, TrainingStats)>,
+
+    statistics_history: Vec<(StatisticsView, usize)>,
+
     cancel_return_screen: Screen,
 
     session_id: Option<SessionId>,
@@ -166,6 +197,20 @@ impl App {
             decision_selected: 0,
 
             statistics: None,
+
+            statistics_view: StatisticsView::Root,
+
+            statistics_selected: 0,
+
+            statistics_course_summaries: Vec::new(),
+
+            statistics_topic_summaries: Vec::new(),
+
+            statistics_mode_summaries: Vec::new(),
+
+            statistics_filter_summaries: Vec::new(),
+
+            statistics_history: Vec::new(),
 
             cancel_return_screen: Screen::Quiz,
 
@@ -235,8 +280,10 @@ impl App {
                 }
 
                 HomeItem::Statistics => {
-                    self.statistics = Some(self.service.statistics()?);
-
+                    self.statistics_view = StatisticsView::Root;
+                    self.statistics_selected = 0;
+                    self.statistics = None;
+                    self.statistics_history.clear();
                     self.screen = Screen::Statistics;
                 }
 
@@ -445,20 +492,353 @@ impl App {
 
     fn handle_statistics_action(&mut self, action: Action) -> Result<(), RepositoryError> {
         match action {
+            Action::Up => {
+                let count = self.statistics_item_count();
+                self.statistics_selected = previous_index(self.statistics_selected, count);
+            }
+
+            Action::Down => {
+                let count = self.statistics_item_count();
+                self.statistics_selected = next_index(self.statistics_selected, count);
+            }
+
+            Action::Confirm => {
+                self.confirm_statistics_selection()?;
+            }
+
+            Action::Back => {
+                self.back_statistics();
+            }
+
             Action::ClearStatistics => {
                 self.service.clear_statistics()?;
-
-                self.statistics = Some(self.service.statistics()?);
+                self.zero_statistics_summaries();
+                self.refresh_statistics_detail()?;
             }
 
-            Action::Back | Action::Confirm => {
-                self.screen = Screen::Home;
-            }
-
-            _ => {}
+            Action::Toggle | Action::Quit => {}
         }
 
         Ok(())
+    }
+
+    fn confirm_statistics_selection(&mut self) -> Result<(), RepositoryError> {
+        match self.statistics_view.clone() {
+            StatisticsView::Root => match self.statistics_selected {
+                0 => {
+                    self.open_statistics_detail(
+                        String::from("Общая статистика"),
+                        StatisticsFilter::all(),
+                    )?;
+                }
+                1 => {
+                    self.load_statistics_course_summaries()?;
+                    self.open_statistics_view(StatisticsView::Courses);
+                }
+                2 => {
+                    self.load_statistics_mode_summaries()?;
+                    self.open_statistics_view(StatisticsView::Modes);
+                }
+                _ => {}
+            },
+
+            StatisticsView::Courses => {
+                let course_codes = self.statistics_course_codes();
+
+                if let Some(course_code) = course_codes.get(self.statistics_selected) {
+                    let course_code = course_code.clone();
+
+                    self.load_statistics_topic_summaries(&course_code)?;
+                    self.open_statistics_view(StatisticsView::Course(course_code));
+                }
+            }
+
+            StatisticsView::Course(course_code) => {
+                if self.statistics_selected == 0 {
+                    let scope = StatisticsScope::Course(course_code.clone());
+
+                    self.load_statistics_filter_summaries(&scope)?;
+                    self.open_statistics_view(StatisticsView::Filters {
+                        scope,
+                        title: course_code.to_uppercase(),
+                    });
+                } else {
+                    let topic_index = self.statistics_selected - 1;
+                    let selected_topic = self
+                        .statistics_topics_for_course(&course_code)
+                        .get(topic_index)
+                        .map(|topic| (topic.id, topic.title.clone()));
+
+                    if let Some((topic_id, topic_title)) = selected_topic {
+                        let scope = StatisticsScope::Topic(topic_id);
+
+                        self.load_statistics_filter_summaries(&scope)?;
+                        self.open_statistics_view(StatisticsView::Filters {
+                            scope,
+                            title: format!("{} → {}", course_code.to_uppercase(), topic_title),
+                        });
+                    }
+                }
+            }
+
+            StatisticsView::Filters { scope, title } => {
+                let limit = statistics_limit_from_index(self.statistics_selected);
+
+                if let Some(limit) = limit {
+                    let detail_title = format!("{} → {}", title, statistics_limit_label(limit));
+
+                    self.open_statistics_detail(detail_title, StatisticsFilter { scope, limit })?;
+                }
+            }
+
+            StatisticsView::Modes => {
+                let limit = match self.statistics_selected {
+                    0 => Some(StatisticsLimit::Twenty),
+                    1 => Some(StatisticsLimit::Fifty),
+                    2 => Some(StatisticsLimit::AllQuestions),
+                    _ => None,
+                };
+
+                if let Some(limit) = limit {
+                    self.open_statistics_detail(
+                        format!("Все курсы → {}", statistics_limit_label(limit)),
+                        StatisticsFilter {
+                            scope: StatisticsScope::All,
+                            limit,
+                        },
+                    )?;
+                }
+            }
+
+            StatisticsView::Detail { .. } => {
+                self.back_statistics();
+            }
+        }
+
+        Ok(())
+    }
+
+    fn open_statistics_view(&mut self, view: StatisticsView) {
+        let previous = std::mem::replace(&mut self.statistics_view, view);
+
+        self.statistics_history
+            .push((previous, self.statistics_selected));
+
+        self.statistics_selected = 0;
+        self.statistics = None;
+    }
+
+    fn open_statistics_detail(
+        &mut self,
+        title: String,
+        filter: StatisticsFilter,
+    ) -> Result<(), RepositoryError> {
+        let stats = self.service.statistics(&filter)?;
+
+        self.open_statistics_view(StatisticsView::Detail { filter, title });
+        self.statistics = Some(stats);
+
+        Ok(())
+    }
+
+    fn back_statistics(&mut self) {
+        if let Some((view, selected)) = self.statistics_history.pop() {
+            self.statistics_view = view;
+            self.statistics_selected = selected;
+            self.statistics = None;
+        } else {
+            self.statistics_view = StatisticsView::Root;
+            self.statistics_selected = 0;
+            self.statistics = None;
+            self.screen = Screen::Home;
+        }
+    }
+
+    fn refresh_statistics_detail(&mut self) -> Result<(), RepositoryError> {
+        let filter = match &self.statistics_view {
+            StatisticsView::Detail { filter, .. } => filter.clone(),
+            _ => {
+                self.statistics = None;
+                return Ok(());
+            }
+        };
+
+        self.statistics = Some(self.service.statistics(&filter)?);
+
+        Ok(())
+    }
+
+    fn statistics_item_count(&self) -> usize {
+        match &self.statistics_view {
+            StatisticsView::Root => 3,
+            StatisticsView::Courses => self.statistics_course_codes().len(),
+            StatisticsView::Course(course_code) => {
+                1 + self.statistics_topics_for_course(course_code).len()
+            }
+            StatisticsView::Filters { .. } => 4,
+            StatisticsView::Modes => 3,
+            StatisticsView::Detail { .. } => 0,
+        }
+    }
+
+    pub fn statistics_course_codes(&self) -> Vec<String> {
+        let mut course_codes = self
+            .topics
+            .iter()
+            .map(|topic| topic.course_code.clone())
+            .collect::<Vec<_>>();
+
+        course_codes.sort();
+        course_codes.dedup();
+
+        course_codes
+    }
+
+    pub fn statistics_topics_for_course(&self, course_code: &str) -> Vec<&Topic> {
+        self.topics
+            .iter()
+            .filter(|topic| topic.course_code == course_code)
+            .collect()
+    }
+
+    pub fn statistics_for_course(&self, course_code: &str) -> Option<&TrainingStats> {
+        self.statistics_course_summaries
+            .iter()
+            .find(|(code, _)| code == course_code)
+            .map(|(_, stats)| stats)
+    }
+
+    pub fn statistics_for_topic(&self, topic_id: TopicId) -> Option<&TrainingStats> {
+        self.statistics_topic_summaries
+            .iter()
+            .find(|(id, _)| *id == topic_id)
+            .map(|(_, stats)| stats)
+    }
+
+    pub fn statistics_for_mode(&self, limit: StatisticsLimit) -> Option<&TrainingStats> {
+        self.statistics_mode_summaries
+            .iter()
+            .find(|(mode, _)| *mode == limit)
+            .map(|(_, stats)| stats)
+    }
+
+    pub fn statistics_for_filter_limit(&self, limit: StatisticsLimit) -> Option<&TrainingStats> {
+        self.statistics_filter_summaries
+            .iter()
+            .find(|(mode, _)| *mode == limit)
+            .map(|(_, stats)| stats)
+    }
+
+    fn load_statistics_course_summaries(&mut self) -> Result<(), RepositoryError> {
+        let course_codes = self.statistics_course_codes();
+        let mut summaries = Vec::with_capacity(course_codes.len());
+
+        for course_code in course_codes {
+            let stats = self.service.statistics(&StatisticsFilter {
+                scope: StatisticsScope::Course(course_code.clone()),
+                limit: StatisticsLimit::Any,
+            })?;
+
+            summaries.push((course_code, stats));
+        }
+
+        self.statistics_course_summaries = summaries;
+
+        Ok(())
+    }
+
+    fn load_statistics_topic_summaries(
+        &mut self,
+        course_code: &str,
+    ) -> Result<(), RepositoryError> {
+        let topic_ids = self
+            .statistics_topics_for_course(course_code)
+            .into_iter()
+            .map(|topic| topic.id)
+            .collect::<Vec<_>>();
+
+        let mut summaries = Vec::with_capacity(topic_ids.len());
+
+        for topic_id in topic_ids {
+            let stats = self.service.statistics(&StatisticsFilter {
+                scope: StatisticsScope::Topic(topic_id),
+                limit: StatisticsLimit::Any,
+            })?;
+
+            summaries.push((topic_id, stats));
+        }
+
+        self.statistics_topic_summaries = summaries;
+
+        Ok(())
+    }
+
+    fn load_statistics_mode_summaries(&mut self) -> Result<(), RepositoryError> {
+        let limits = [
+            StatisticsLimit::Twenty,
+            StatisticsLimit::Fifty,
+            StatisticsLimit::AllQuestions,
+        ];
+
+        let mut summaries = Vec::with_capacity(limits.len());
+
+        for limit in limits {
+            let stats = self.service.statistics(&StatisticsFilter {
+                scope: StatisticsScope::All,
+                limit,
+            })?;
+
+            summaries.push((limit, stats));
+        }
+
+        self.statistics_mode_summaries = summaries;
+
+        Ok(())
+    }
+
+    fn load_statistics_filter_summaries(
+        &mut self,
+        scope: &StatisticsScope,
+    ) -> Result<(), RepositoryError> {
+        let limits = [
+            StatisticsLimit::Any,
+            StatisticsLimit::Twenty,
+            StatisticsLimit::Fifty,
+            StatisticsLimit::AllQuestions,
+        ];
+
+        let mut summaries = Vec::with_capacity(limits.len());
+
+        for limit in limits {
+            let stats = self.service.statistics(&StatisticsFilter {
+                scope: scope.clone(),
+                limit,
+            })?;
+
+            summaries.push((limit, stats));
+        }
+
+        self.statistics_filter_summaries = summaries;
+
+        Ok(())
+    }
+
+    fn zero_statistics_summaries(&mut self) {
+        for (_, stats) in &mut self.statistics_course_summaries {
+            *stats = TrainingStats::default();
+        }
+
+        for (_, stats) in &mut self.statistics_topic_summaries {
+            *stats = TrainingStats::default();
+        }
+
+        for (_, stats) in &mut self.statistics_mode_summaries {
+            *stats = TrainingStats::default();
+        }
+
+        for (_, stats) in &mut self.statistics_filter_summaries {
+            *stats = TrainingStats::default();
+        }
     }
 
     fn cancel_saved_quiz(&mut self) -> Result<(), RepositoryError> {
@@ -666,6 +1046,25 @@ impl App {
         self.total_questions = 0;
 
         self.error_message = None;
+    }
+}
+
+fn statistics_limit_from_index(index: usize) -> Option<StatisticsLimit> {
+    match index {
+        0 => Some(StatisticsLimit::Any),
+        1 => Some(StatisticsLimit::Twenty),
+        2 => Some(StatisticsLimit::Fifty),
+        3 => Some(StatisticsLimit::AllQuestions),
+        _ => None,
+    }
+}
+
+pub fn statistics_limit_label(limit: StatisticsLimit) -> &'static str {
+    match limit {
+        StatisticsLimit::Any => "Все режимы",
+        StatisticsLimit::Twenty => "20 вопросов",
+        StatisticsLimit::Fifty => "50 вопросов",
+        StatisticsLimit::AllQuestions => "Все вопросы",
     }
 }
 

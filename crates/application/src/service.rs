@@ -1,6 +1,6 @@
 use dba_trainer_domain::{
     AnswerOptionId, AnswerResult, Question, QuestionId, QuizSession, SessionConfig, SessionId,
-    SessionProgress, Topic, TrainingStats,
+    SessionProgress, StatisticsFilter, Topic, TrainingStats,
 };
 
 use rand::{rng, seq::SliceRandom};
@@ -61,8 +61,8 @@ where
         self.repository.cancel_session(session_id)
     }
 
-    pub fn statistics(&self) -> Result<TrainingStats, RepositoryError> {
-        self.repository.statistics()
+    pub fn statistics(&self, filter: &StatisticsFilter) -> Result<TrainingStats, RepositoryError> {
+        self.repository.statistics(filter)
     }
 
     pub fn clear_statistics(&mut self) -> Result<(), RepositoryError> {
@@ -131,7 +131,7 @@ mod tests {
             Ok(())
         }
 
-        fn statistics(&self) -> Result<TrainingStats, RepositoryError> {
+        fn statistics(&self, _filter: &StatisticsFilter) -> Result<TrainingStats, RepositoryError> {
             Ok(TrainingStats::default())
         }
 

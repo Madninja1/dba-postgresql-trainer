@@ -10,7 +10,7 @@ pub use question::{AnswerOption, Question, QuestionType};
 
 pub use session::{
     AnswerResult, QuestionLimit, QuizScope, QuizSession, SessionConfig, SessionProgress,
-    TrainingStats,
+    StatisticsFilter, StatisticsLimit, StatisticsScope, TrainingStats,
 };
 
 pub use source::{Source, SourceKind};

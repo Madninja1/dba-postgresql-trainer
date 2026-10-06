@@ -35,7 +35,7 @@ fn action_from_key(key: KeyEvent) -> Option<Action> {
 
         (KeyCode::Enter, _) => Some(Action::Confirm),
 
-        (KeyCode::Esc, _) => Some(Action::Back),
+        (KeyCode::Esc, _) | (KeyCode::Backspace, _) => Some(Action::Back),
 
         _ => None,
     }
@@ -71,5 +71,12 @@ mod tests {
         let key = KeyEvent::new(KeyCode::Char('c'), KeyModifiers::NONE);
 
         assert_eq!(action_from_key(key), Some(Action::ClearStatistics));
+    }
+
+    #[test]
+    fn backspace_goes_back() {
+        let key = KeyEvent::new(KeyCode::Backspace, KeyModifiers::NONE);
+
+        assert_eq!(action_from_key(key), Some(Action::Back));
     }
 }

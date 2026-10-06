@@ -1,6 +1,6 @@
 use dba_trainer_domain::{
     AnswerOptionId, AnswerResult, Question, QuestionId, QuizSession, SessionConfig, SessionId,
-    SessionProgress, Topic, TrainingStats,
+    SessionProgress, StatisticsFilter, Topic, TrainingStats,
 };
 
 use crate::RepositoryError;
@@ -16,7 +16,7 @@ pub trait SessionRepository {
 
     fn cancel_session(&mut self, session_id: SessionId) -> Result<(), RepositoryError>;
 
-    fn statistics(&self) -> Result<TrainingStats, RepositoryError>;
+    fn statistics(&self, filter: &StatisticsFilter) -> Result<TrainingStats, RepositoryError>;
 
     fn current_question(&self, session_id: SessionId) -> Result<Option<Question>, RepositoryError>;
 

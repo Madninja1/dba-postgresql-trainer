@@ -4,8 +4,8 @@ use dba_trainer_application::{RepositoryError, SessionRepository, TopicRepositor
 
 use dba_trainer_domain::{
     AnswerOption, AnswerOptionId, AnswerResult, Question, QuestionId, QuestionType, QuizScope,
-    QuizSession, SessionConfig, SessionId, SessionProgress, Source, SourceId, SourceKind, Topic,
-    TopicId, TrainingStats,
+    QuizSession, SessionConfig, SessionId, SessionProgress, Source, SourceId, SourceKind,
+    StatisticsFilter, StatisticsLimit, StatisticsScope, Topic, TopicId, TrainingStats,
 };
 
 use rusqlite::{Connection, OptionalExtension, params};
@@ -707,34 +707,78 @@ impl SessionRepository for SqliteRepository {
         Ok(())
     }
 
-    fn statistics(&self) -> Result<TrainingStats, RepositoryError> {
-        let completed_sessions = self
-            .connection
-            .query_row(
-                "
-                SELECT COUNT(*)
-                FROM quiz_sessions
-                WHERE finished_at
-                    IS NOT NULL
-                  AND cancelled_at
-                    IS NULL
-                ",
-                [],
-                |row| row.get::<_, i64>(0),
-            )
-            .map_err(repository_error)?;
+    fn statistics(&self, filter: &StatisticsFilter) -> Result<TrainingStats, RepositoryError> {
+        let limit = match filter.limit {
+            StatisticsLimit::Any => "any",
+            StatisticsLimit::Twenty => "20",
+            StatisticsLimit::Fifty => "50",
+            StatisticsLimit::AllQuestions => "all",
+        };
 
-        let cancelled_sessions = self
+        let (scope, course_code, topic_id): (&str, Option<&str>, Option<i64>) = match &filter.scope
+        {
+            StatisticsScope::All => ("all", None, None),
+            StatisticsScope::Course(course_code) => ("course", Some(course_code.as_str()), None),
+            StatisticsScope::Topic(topic_id) => ("topic", None, Some(topic_id.0)),
+        };
+
+        let (completed_sessions, cancelled_sessions) = self
             .connection
             .query_row(
                 "
-                SELECT COUNT(*)
-                FROM quiz_sessions
-                WHERE cancelled_at
-                    IS NOT NULL
+                SELECT
+                    COALESCE(SUM(
+                        CASE
+                            WHEN s.finished_at IS NOT NULL
+                             AND s.cancelled_at IS NULL
+                            THEN 1
+                            ELSE 0
+                        END
+                    ), 0),
+                    COALESCE(SUM(
+                        CASE
+                            WHEN s.cancelled_at IS NOT NULL
+                            THEN 1
+                            ELSE 0
+                        END
+                    ), 0)
+                FROM quiz_sessions s
+                WHERE (
+                    ?1 = 'any'
+                    OR (?1 = '20' AND s.requested_count = 20)
+                    OR (?1 = '50' AND s.requested_count = 50)
+                    OR (?1 = 'all' AND s.requested_count IS NULL)
+                )
+                AND (
+                    ?2 = 'all'
+                    OR (
+                        ?2 = 'course'
+                        AND EXISTS (
+                            SELECT 1
+                            FROM session_questions sq
+                            JOIN questions q
+                              ON q.id = sq.question_id
+                            JOIN topics t
+                              ON t.id = q.topic_id
+                            WHERE sq.session_id = s.id
+                              AND t.course_code = ?3
+                        )
+                    )
+                    OR (
+                        ?2 = 'topic'
+                        AND EXISTS (
+                            SELECT 1
+                            FROM session_questions sq
+                            JOIN questions q
+                              ON q.id = sq.question_id
+                            WHERE sq.session_id = s.id
+                              AND q.topic_id = ?4
+                        )
+                    )
+                )
                 ",
-                [],
-                |row| row.get::<_, i64>(0),
+                params![limit, scope, course_code, topic_id],
+                |row| Ok((row.get::<_, i64>(0)?, row.get::<_, i64>(1)?)),
             )
             .map_err(repository_error)?;
 
@@ -742,33 +786,39 @@ impl SessionRepository for SqliteRepository {
             .connection
             .query_row(
                 "
-            SELECT
-                COUNT(a.id),
-                COALESCE(
-                    SUM(a.is_correct),
-                    0
-                )
-            FROM attempts a
-            JOIN quiz_sessions s
-              ON s.id =
-                 a.session_id
-            WHERE s.finished_at
-                IS NOT NULL
-              AND s.cancelled_at
-                IS NULL
-            ",
-                [],
+                SELECT
+                    COUNT(a.id),
+                    COALESCE(SUM(a.is_correct), 0)
+                FROM attempts a
+                JOIN quiz_sessions s
+                  ON s.id = a.session_id
+                JOIN questions q
+                  ON q.id = a.question_id
+                JOIN topics t
+                  ON t.id = q.topic_id
+                WHERE s.finished_at IS NOT NULL
+                  AND s.cancelled_at IS NULL
+                  AND (
+                      ?1 = 'any'
+                      OR (?1 = '20' AND s.requested_count = 20)
+                      OR (?1 = '50' AND s.requested_count = 50)
+                      OR (?1 = 'all' AND s.requested_count IS NULL)
+                  )
+                  AND (
+                      ?2 = 'all'
+                      OR (?2 = 'course' AND t.course_code = ?3)
+                      OR (?2 = 'topic' AND q.topic_id = ?4)
+                  )
+                ",
+                params![limit, scope, course_code, topic_id],
                 |row| Ok((row.get::<_, i64>(0)?, row.get::<_, i64>(1)?)),
             )
             .map_err(repository_error)?;
 
         Ok(TrainingStats {
             completed_sessions: completed_sessions as usize,
-
             cancelled_sessions: cancelled_sessions as usize,
-
             answered_questions: answered_questions as usize,
-
             correct_answers: correct_answers as usize,
         })
     }
@@ -986,7 +1036,9 @@ mod tests {
 
         assert_eq!(active, None,);
 
-        let stats = repository.statistics().expect("statistics should load");
+        let stats = repository
+            .statistics(&StatisticsFilter::all())
+            .expect("statistics should load");
 
         assert_eq!(stats.cancelled_sessions, 1,);
 
@@ -1016,7 +1068,9 @@ mod tests {
             .submit_answer(session.id, question.id, &[AnswerOptionId(1)])
             .expect("answer should be accepted");
 
-        let stats = repository.statistics().expect("statistics should load");
+        let stats = repository
+            .statistics(&StatisticsFilter::all())
+            .expect("statistics should load");
 
         assert_eq!(stats.completed_sessions, 1,);
 
@@ -1029,6 +1083,69 @@ mod tests {
         assert_eq!(stats.incorrect_answers(), 0,);
 
         assert_eq!(stats.accuracy_percent(), 100.0,);
+    }
+
+    #[test]
+    fn filters_statistics_by_mode_course_and_topic() {
+        let mut repository = seeded_repository();
+
+        let config = SessionConfig {
+            scope: QuizScope::Topic(TopicId(1)),
+            limit: QuestionLimit::Twenty,
+        };
+
+        let session = repository
+            .start_session(&config)
+            .expect("session should start");
+
+        let question = repository
+            .current_question(session.id)
+            .expect("question should load")
+            .expect("question should exist");
+
+        repository
+            .submit_answer(session.id, question.id, &[AnswerOptionId(1)])
+            .expect("answer should complete session");
+
+        let twenty = repository
+            .statistics(&StatisticsFilter {
+                scope: StatisticsScope::All,
+                limit: StatisticsLimit::Twenty,
+            })
+            .expect("20-question statistics should load");
+
+        assert_eq!(twenty.completed_sessions, 1);
+        assert_eq!(twenty.answered_questions, 1);
+
+        let fifty = repository
+            .statistics(&StatisticsFilter {
+                scope: StatisticsScope::All,
+                limit: StatisticsLimit::Fifty,
+            })
+            .expect("50-question statistics should load");
+
+        assert_eq!(fifty.completed_sessions, 0);
+        assert_eq!(fifty.answered_questions, 0);
+
+        let course = repository
+            .statistics(&StatisticsFilter {
+                scope: StatisticsScope::Course(String::from("dba-1")),
+                limit: StatisticsLimit::Any,
+            })
+            .expect("course statistics should load");
+
+        assert_eq!(course.completed_sessions, 1);
+        assert_eq!(course.correct_answers, 1);
+
+        let topic = repository
+            .statistics(&StatisticsFilter {
+                scope: StatisticsScope::Topic(TopicId(1)),
+                limit: StatisticsLimit::Any,
+            })
+            .expect("topic statistics should load");
+
+        assert_eq!(topic.completed_sessions, 1);
+        assert_eq!(topic.correct_answers, 1);
     }
 
     #[test]
@@ -1061,7 +1178,9 @@ mod tests {
             .clear_statistics()
             .expect("statistics should clear");
 
-        let stats = repository.statistics().expect("statistics should load");
+        let stats = repository
+            .statistics(&StatisticsFilter::all())
+            .expect("statistics should load");
 
         assert_eq!(stats.completed_sessions, 0);
         assert_eq!(stats.cancelled_sessions, 0);

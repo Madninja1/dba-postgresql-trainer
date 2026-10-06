@@ -65,6 +65,36 @@ pub struct SessionProgress {
     pub correct_answers: usize,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum StatisticsLimit {
+    Any,
+    Twenty,
+    Fifty,
+    AllQuestions,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum StatisticsScope {
+    All,
+    Course(String),
+    Topic(TopicId),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct StatisticsFilter {
+    pub scope: StatisticsScope,
+    pub limit: StatisticsLimit,
+}
+
+impl StatisticsFilter {
+    pub fn all() -> Self {
+        Self {
+            scope: StatisticsScope::All,
+            limit: StatisticsLimit::Any,
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct TrainingStats {
     pub completed_sessions: usize,
