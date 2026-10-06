@@ -5,3 +5,4 @@ edition = "2024"
 
 [dependencies]
 dba-trainer-domain = { path = "../domain" }
+rand = "0.10.3"

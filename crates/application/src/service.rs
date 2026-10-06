@@ -3,6 +3,8 @@ use dba_trainer_domain::{
     SessionProgress, Topic, TrainingStats,
 };
 
+use rand::{rng, seq::SliceRandom};
+
 use crate::{RepositoryError, SessionRepository, TopicRepository};
 
 pub struct TrainerService<R> {
@@ -32,7 +34,13 @@ where
         &self,
         session_id: SessionId,
     ) -> Result<Option<Question>, RepositoryError> {
-        self.repository.current_question(session_id)
+        let mut question = self.repository.current_question(session_id)?;
+
+        if let Some(question) = question.as_mut() {
+            question.options.shuffle(&mut rng());
+        }
+
+        Ok(question)
     }
 
     pub fn submit_answer(
@@ -55,6 +63,10 @@ where
 
     pub fn statistics(&self) -> Result<TrainingStats, RepositoryError> {
         self.repository.statistics()
+    }
+
+    pub fn clear_statistics(&mut self) -> Result<(), RepositoryError> {
+        self.repository.clear_statistics()
     }
 }
 
@@ -121,6 +133,10 @@ mod tests {
 
         fn statistics(&self) -> Result<TrainingStats, RepositoryError> {
             Ok(TrainingStats::default())
+        }
+
+        fn clear_statistics(&mut self) -> Result<(), RepositoryError> {
+            Ok(())
         }
     }
 

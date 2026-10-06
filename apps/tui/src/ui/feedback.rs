@@ -8,6 +8,8 @@ use crate::app::App;
 
 use super::common::render_message;
 
+use dba_trainer_domain::{Source, SourceKind};
+
 pub fn render(frame: &mut Frame, app: &App) {
     let (Some(question), Some(result)) = (app.current_question.as_ref(), app.feedback.as_ref())
     else {
@@ -69,21 +71,7 @@ pub fn render(frame: &mut Frame, app: &App) {
             .borders(Borders::ALL),
     );
 
-    let source = match question.source.url.as_deref() {
-        Some(url) => {
-            format!(
-                "{} / {}\n{}\n{}",
-                question.source.module, question.source.section, question.source.locator, url,
-            )
-        }
-
-        None => {
-            format!(
-                "{} / {}\n{}",
-                question.source.module, question.source.section, question.source.locator,
-            )
-        }
-    };
+    let source = format_source(&question.source);
 
     let explanation = Paragraph::new(format!("{}\n\nИсточник:\n{}", question.explanation, source,))
         .wrap(Wrap { trim: true })
@@ -100,4 +88,31 @@ pub fn render(frame: &mut Frame, app: &App) {
     frame.render_widget(explanation, areas[2]);
 
     frame.render_widget(footer, areas[3]);
+}
+
+fn format_source(source: &Source) -> String {
+    match source.kind {
+        SourceKind::CourseMaterial => {
+            format!(
+                "Материал курса\n{} / {}\n{}",
+                source.module, source.section, source.locator,
+            )
+        }
+
+        SourceKind::PostgreSqlDocs => match source.url.as_deref() {
+            Some(url) => {
+                format!(
+                    "Документация PostgreSQL\n{} / {}\n{}\n{}",
+                    source.module, source.section, source.locator, url,
+                )
+            }
+
+            None => {
+                format!(
+                    "Документация PostgreSQL\n{} / {}\n{}",
+                    source.module, source.section, source.locator,
+                )
+            }
+        },
+    }
 }

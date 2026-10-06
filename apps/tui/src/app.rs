@@ -33,6 +33,7 @@ pub enum Action {
     Confirm,
     Back,
     Quit,
+    ClearStatistics,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -240,7 +241,7 @@ impl App {
                 }
             },
 
-            Action::Back | Action::Toggle | Action::Quit => {}
+            Action::Back | Action::Toggle | Action::Quit | Action::ClearStatistics => {}
         }
 
         Ok(())
@@ -272,7 +273,7 @@ impl App {
                 self.screen = Screen::Home;
             }
 
-            Action::Toggle | Action::Quit => {}
+            Action::Toggle | Action::Quit | Action::ClearStatistics => {}
         }
 
         Ok(())
@@ -300,7 +301,7 @@ impl App {
                 };
             }
 
-            Action::Toggle | Action::Quit => {}
+            Action::Toggle | Action::Quit | Action::ClearStatistics => {}
         }
 
         Ok(())
@@ -338,7 +339,7 @@ impl App {
                 self.screen = Screen::CancelSession;
             }
 
-            Action::Quit => {}
+            Action::Quit | Action::ClearStatistics => {}
         }
 
         Ok(())
@@ -390,7 +391,7 @@ impl App {
                 }
             },
 
-            Action::Back | Action::Toggle | Action::Quit => {}
+            Action::Back | Action::Toggle | Action::Quit | Action::ClearStatistics => {}
         }
 
         Ok(())
@@ -422,15 +423,25 @@ impl App {
                 self.screen = self.cancel_return_screen;
             }
 
-            Action::Toggle | Action::Quit => {}
+            Action::Toggle | Action::Quit | Action::ClearStatistics => {}
         }
 
         Ok(())
     }
 
     fn handle_statistics_action(&mut self, action: Action) -> Result<(), RepositoryError> {
-        if matches!(action, Action::Back | Action::Confirm) {
-            self.screen = Screen::Home;
+        match action {
+            Action::ClearStatistics => {
+                self.service.clear_statistics()?;
+
+                self.statistics = Some(self.service.statistics()?);
+            }
+
+            Action::Back | Action::Confirm => {
+                self.screen = Screen::Home;
+            }
+
+            _ => {}
         }
 
         Ok(())

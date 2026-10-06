@@ -772,6 +772,21 @@ impl SessionRepository for SqliteRepository {
             correct_answers: correct_answers as usize,
         })
     }
+
+    fn clear_statistics(&mut self) -> Result<(), RepositoryError> {
+        self.connection
+            .execute(
+                "
+            DELETE FROM quiz_sessions
+            WHERE finished_at IS NOT NULL
+               OR cancelled_at IS NOT NULL
+            ",
+                [],
+            )
+            .map_err(repository_error)?;
+
+        Ok(())
+    }
 }
 
 #[cfg(test)]

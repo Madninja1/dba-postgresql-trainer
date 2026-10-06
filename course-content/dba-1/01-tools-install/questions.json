@@ -34,7 +34,7 @@
         "kind": "course_material",
         "module": "DBA-1",
         "section": "Инструменты и установка",
-        "locator": "Сборка PostgreSQL: GNU Make/Autoconf и Meson",
+        "locator": "Слайд 5 — Необходимое ПО",
         "url": null
       }
     },
@@ -70,7 +70,7 @@
         "kind": "course_material",
         "module": "DBA-1",
         "section": "Инструменты и установка",
-        "locator": "Начиная с версии 16 можно использовать Meson",
+        "locator": "Слайд 5 — Необходимое ПО",
         "url": null
       }
     },
@@ -106,7 +106,7 @@
         "kind": "course_material",
         "module": "DBA-1",
         "section": "Инструменты и установка",
-        "locator": "Библиотека readline",
+        "locator": "Слайд 5 — Необходимое ПО",
         "url": null
       }
     },
@@ -863,6 +863,1302 @@
         "module": "PostgreSQL 16 — pg_checksums",
         "section": "Описание",
         "locator": "Изменение файлов при enable и disable",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgchecksums"
+      }
+    },
+    {
+      "key": "dba1-tools-025",
+      "type": "single_choice",
+      "text": "Что в терминологии материала называется кластером баз данных PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Один процесс postgres",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Набор конфигурационных файлов сервера",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Набор баз данных, с которыми одновременно работает один экземпляр PostgreSQL",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Набор пользователей операционной системы",
+          "correct": false
+        }
+      ],
+      "explanation": "Один экземпляр PostgreSQL одновременно работает с несколькими базами данных; этот набор баз данных называется кластером баз данных.",
+      "source": {
+        "key": "dba1-course-cluster-definition",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Инструменты и установка",
+        "locator": "Слайд 3 — Кластер БД и сервер",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-026",
+      "type": "single_choice",
+      "text": "Что такое сервер (экземпляр сервера) PostgreSQL в формулировке материала?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Каталог PGDATA",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Программа, управляющая кластером баз данных",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Любая отдельная база данных",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Набор WAL-файлов",
+          "correct": false
+        }
+      ],
+      "explanation": "Кластер — это данные в файлах, а сервер или экземпляр сервера — программа, управляющая этим кластером.",
+      "source": {
+        "key": "dba1-course-server-definition",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Инструменты и установка",
+        "locator": "Слайд 3 — Кластер БД и сервер",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-027",
+      "type": "multiple_choice",
+      "text": "В каких случаях материал считает полезной установку PostgreSQL из исходных кодов?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Когда нужно обязательно использовать только стандартные параметры сборки",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Когда нужны нестандартные параметры сборки",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Когда требуется сборка для специфичной архитектуры",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Когда нужно понять, как устроен процесс сборки PostgreSQL",
+          "correct": true
+        }
+      ],
+      "explanation": "Материал подчёркивает пользу понимания сборки из исходников для нестандартных параметров, специфичных архитектур и общего понимания процесса установки.",
+      "source": {
+        "key": "dba1-course-source-build-purpose",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Инструменты и установка",
+        "locator": "Слайд 4 — Исходные коды",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-028",
+      "type": "multiple_choice",
+      "text": "Чем получение исходников из git-репозитория отличается от использования архива исходного кода?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Из git можно собрать версию на конкретном коммите, включая наиболее актуальную",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для сборки из git обычно требуется более широкий набор инструментов",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "В архиве уже находятся некоторые сгенерированные C-файлы",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Архив позволяет собирать только PostgreSQL 16, а git — только PostgreSQL 17",
+          "correct": false
+        }
+      ],
+      "explanation": "Git даёт доступ к любому коммиту, но требует дополнительных инструментов; в архиве часть генерируемых файлов уже подготовлена.",
+      "source": {
+        "key": "dba1-course-git-vs-archive",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Инструменты и установка",
+        "locator": "Слайд 4 — Исходные коды",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-029",
+      "type": "multiple_choice",
+      "text": "Что относится к обязательному ПО для традиционной сборки PostgreSQL, указанному в материале?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "JDK и Maven",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "tar и gzip/bzip2",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "GNU make",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Компилятор C (C89)",
+          "correct": true
+        }
+      ],
+      "explanation": "В материале к обязательному ПО отнесены tar, gzip/bzip2, GNU make и компилятор C.",
+      "source": {
+        "key": "dba1-course-required-build-tools",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Инструменты и установка",
+        "locator": "Слайд 5 — Необходимое ПО",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-030",
+      "type": "single_choice",
+      "text": "Для чего в сборке PostgreSQL используются библиотеки zlib, lz4 и zstd?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для аутентификации пользователей",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Для поддержки Unicode",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Для сжатия",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Для управления системными службами",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал прямо указывает, что zlib, lz4 и zstd используются для сжатия.",
+      "source": {
+        "key": "dba1-course-compression-libs",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Инструменты и установка",
+        "locator": "Слайд 5 — Необходимое ПО",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-031",
+      "type": "single_choice",
+      "text": "Когда библиотека readline может быть не нужна в серверной инсталляции PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Если не предполагается запускать psql в консоли",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Если используются контрольные суммы страниц",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Если сервер слушает TCP/IP",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Если включено архивирование WAL",
+          "correct": false
+        }
+      ],
+      "explanation": "Readline нужна прежде всего для удобства интерактивной командной строки; материал отмечает, что без запуска psql в консоли она может быть не нужна.",
+      "source": {
+        "key": "dba1-course-readline-optional",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Инструменты и установка",
+        "locator": "Слайд 5 — Необходимое ПО",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-032",
+      "type": "multiple_choice",
+      "text": "Какие языки упомянуты в материале как дополнительные зависимости для соответствующих процедурных языков PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Java",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Perl",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Python",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Tcl",
+          "correct": true
+        }
+      ],
+      "explanation": "Материал перечисляет Perl, Python и Tcl для использования PL/Perl, PL/Python и PL/Tcl.",
+      "source": {
+        "key": "dba1-course-procedural-languages",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Инструменты и установка",
+        "locator": "Слайд 5 — Необходимое ПО",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-033",
+      "type": "multiple_choice",
+      "text": "Какие компоненты в материале связаны с аутентификацией и шифрованием?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Kerberos",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "OpenSSL",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "OpenLDAP и PAM",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Ninja",
+          "correct": false
+        }
+      ],
+      "explanation": "В блоке дополнительного ПО материал связывает Kerberos, OpenSSL, OpenLDAP и PAM с аутентификацией и шифрованием.",
+      "source": {
+        "key": "dba1-course-auth-libs",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Инструменты и установка",
+        "locator": "Слайд 5 — Необходимое ПО",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-034",
+      "type": "single_choice",
+      "text": "Для чего в материале упоминается библиотека ICU?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для кроссплатформенной поддержки Unicode",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для сжатия WAL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Для сборки ядра Linux",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Для управления процессами PostgreSQL",
+          "correct": false
+        }
+      ],
+      "explanation": "ICU указана как библиотека для кроссплатформенной поддержки Unicode.",
+      "source": {
+        "key": "dba1-course-icu",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Инструменты и установка",
+        "locator": "Слайд 5 — Необходимое ПО",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-035",
+      "type": "multiple_choice",
+      "text": "Что верно о команде make check при сборке PostgreSQL через Autoconf/Make?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Её следует выполнять только после make install",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Она запускает регрессионные тесты собранного сервера до установки",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Её должен выполнять обычный пользователь, не root",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Её можно повторить позже для повторной проверки",
+          "correct": true
+        }
+      ],
+      "explanation": "Документация предлагает make check после сборки и до установки; тесты выполняются обычным пользователем, не root.",
+      "source": {
+        "key": "pg16-install-make-check",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "17.3.2. Процедура установки",
+        "locator": "Регрессионные тесты: make check",
+        "url": "https://postgrespro.ru/docs/postgresql/16/install-make"
+      }
+    },
+    {
+      "key": "dba1-tools-036",
+      "type": "single_choice",
+      "text": "Чем make world-bin отличается от make world?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "world-bin собирает только сервер без утилит",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "world-bin собирает документацию, а world — нет",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "world-bin включает contrib, но не документацию; world включает и contrib, и документацию",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Между ними нет различий",
+          "correct": false
+        }
+      ],
+      "explanation": "make world включает дополнительные модули и документацию, а make world-bin — дополнительные модули без документации.",
+      "source": {
+        "key": "pg16-install-make-world",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "17.3.2. Процедура установки",
+        "locator": "Цели make world и make world-bin",
+        "url": "https://postgrespro.ru/docs/postgresql/16/install-make"
+      }
+    },
+    {
+      "key": "dba1-tools-037",
+      "type": "single_choice",
+      "text": "Какой параметр configure обычно используют, чтобы изменить корневой каталог установки PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "--pgdata",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "--prefix",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "--waldir",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "--runtime-dir",
+          "correct": false
+        }
+      ],
+      "explanation": "Параметр --prefix задаёт префикс дерева установки вместо значения по умолчанию /usr/local/pgsql.",
+      "source": {
+        "key": "pg16-install-make-prefix",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "17.3.3. Параметры configure",
+        "locator": "--prefix",
+        "url": "https://postgrespro.ru/docs/postgresql/16/install-make"
+      }
+    },
+    {
+      "key": "dba1-tools-038",
+      "type": "multiple_choice",
+      "text": "Какие параметры configure включают соответствующую дополнительную функциональность PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "--with-python — PL/Python",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "--with-lz4 — поддержку сжатия LZ4",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "--with-zstd — поддержку Zstandard",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "--with-cargo — встроенную поддержку Rust",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация описывает --with-python, --with-lz4 и --with-zstd как параметры включения соответствующих возможностей.",
+      "source": {
+        "key": "pg16-install-make-features",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "17.3.3. Параметры configure",
+        "locator": "--with-python, --with-lz4, --with-zstd",
+        "url": "https://postgrespro.ru/docs/postgresql/16/install-make"
+      }
+    },
+    {
+      "key": "dba1-tools-039",
+      "type": "single_choice",
+      "text": "Какое последствие имеет сборка с --without-readline?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Отключаются редактирование командной строки и история в psql",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Отключается WAL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Запрещается использование TCP/IP",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Отключаются контрольные суммы данных",
+          "correct": false
+        }
+      ],
+      "explanation": "--without-readline запрещает использование Readline/libedit, поэтому в psql пропадают редактирование командной строки и история.",
+      "source": {
+        "key": "pg16-install-make-without-readline",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "17.3.3. Параметры configure",
+        "locator": "--without-readline",
+        "url": "https://postgrespro.ru/docs/postgresql/16/install-make"
+      }
+    },
+    {
+      "key": "dba1-tools-040",
+      "type": "single_choice",
+      "text": "Что делает команда meson setup build в процессе сборки PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Создаёт и настраивает каталог сборки build",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Запускает сервер PostgreSQL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Создаёт кластер баз данных",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Удаляет результаты предыдущей установки",
+          "correct": false
+        }
+      ],
+      "explanation": "meson setup создаёт и настраивает каталог сборки; аргумент builddir для этой команды обязателен.",
+      "source": {
+        "key": "pg16-install-meson-setup",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "17.4.2. Процедура установки",
+        "locator": "meson setup build",
+        "url": "https://postgrespro.ru/docs/postgresql/16/install-meson"
+      }
+    },
+    {
+      "key": "dba1-tools-041",
+      "type": "single_choice",
+      "text": "Какой командой Meson изменяют настройки уже созданного каталога сборки?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "meson restart",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "ninja configure",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "meson configure",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "meson initdb",
+          "correct": false
+        }
+      ],
+      "explanation": "После первоначального meson setup настройки каталога сборки изменяют командой meson configure.",
+      "source": {
+        "key": "pg16-install-meson-configure",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "17.4.2. Процедура установки",
+        "locator": "meson configure",
+        "url": "https://postgrespro.ru/docs/postgresql/16/install-meson"
+      }
+    },
+    {
+      "key": "dba1-tools-042",
+      "type": "multiple_choice",
+      "text": "Что верно о meson test при сборке PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Команда предназначена только для удаления build directory",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Она запускает регрессионные тесты собранного сервера",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Её следует выполнять обычным пользователем, не root",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Её можно выполнить до установки PostgreSQL",
+          "correct": true
+        }
+      ],
+      "explanation": "Документация предлагает meson test для регрессионных тестов после сборки и до установки, под обычным пользователем.",
+      "source": {
+        "key": "pg16-install-meson-test",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "17.4.2. Процедура установки",
+        "locator": "Регрессионные тесты: meson test",
+        "url": "https://postgrespro.ru/docs/postgresql/16/install-meson"
+      }
+    },
+    {
+      "key": "dba1-tools-043",
+      "type": "multiple_choice",
+      "text": "Какие команды корректно относятся к жизненному циклу Meson/Ninja-сборки PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "ninja initdb — инициализация каталога сборки",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "ninja install — установка собранных файлов",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "ninja clean — очистка собранных файлов",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "ninja uninstall — отмена установки",
+          "correct": true
+        }
+      ],
+      "explanation": "Документация описывает ninja install, ninja clean и ninja uninstall для установки, очистки и удаления установленного набора.",
+      "source": {
+        "key": "pg16-install-meson-ninja-lifecycle",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "17.4.2. Процедура установки",
+        "locator": "ninja install, ninja uninstall, ninja clean",
+        "url": "https://postgrespro.ru/docs/postgresql/16/install-meson"
+      }
+    },
+    {
+      "key": "dba1-tools-044",
+      "type": "single_choice",
+      "text": "Что делает параметр initdb --pwfile?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Читает пароль начального суперпользователя из первой строки указанного файла",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Записывает пароль суперпользователя в postgresql.conf",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Создаёт файл pg_hba.conf без правил аутентификации",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Выбирает каталог WAL",
+          "correct": false
+        }
+      ],
+      "explanation": "--pwfile заставляет initdb прочитать пароль начального суперпользователя из первой строки указанного файла.",
+      "source": {
+        "key": "pg16-initdb-pwfile",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — initdb",
+        "section": "Параметры",
+        "locator": "--pwfile",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-initdb"
+      }
+    },
+    {
+      "key": "dba1-tools-045",
+      "type": "single_choice",
+      "text": "Для чего предназначен initdb --sync-only?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для создания только системных каталогов",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Для безопасной записи файлов базы на диск без выполнения остальных операций initdb",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Для отключения fsync навсегда",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Для проверки SQL-синтаксиса конфигурации",
+          "correct": false
+        }
+      ],
+      "explanation": "--sync-only синхронизирует файлы базы с диском и завершает работу, не выполняя остальные операции initdb.",
+      "source": {
+        "key": "pg16-initdb-sync-only",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — initdb",
+        "section": "Параметры",
+        "locator": "-S/--sync-only",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-initdb"
+      }
+    },
+    {
+      "key": "dba1-tools-046",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о initdb --wal-segsize верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Размер сегмента WAL по умолчанию равен 16 МБ",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Значение задаётся в мегабайтах и должно быть степенью 2 в допустимом диапазоне",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Размер можно свободно менять после инициализации кластера",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Этот параметр задаётся при инициализации кластера",
+          "correct": true
+        }
+      ],
+      "explanation": "Размер WAL-сегмента задаётся при initdb; по умолчанию это 16 МБ, а изменить его позднее этим параметром нельзя.",
+      "source": {
+        "key": "pg16-initdb-wal-segsize",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — initdb",
+        "section": "Параметры",
+        "locator": "--wal-segsize",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-initdb"
+      }
+    },
+    {
+      "key": "dba1-tools-047",
+      "type": "single_choice",
+      "text": "Что фактически делает pg_ctl restart?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Только посылает SIGHUP",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Проверяет статус и ничего не меняет",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Останавливает сервер и затем запускает его снова",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Создаёт новый кластер",
+          "correct": false
+        }
+      ],
+      "explanation": "restart представляет собой остановку и последующий запуск сервера и может применяться для изменений, требующих полного перезапуска.",
+      "source": {
+        "key": "pg16-pgctl-restart",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_ctl",
+        "section": "Описание",
+        "locator": "Команда restart",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pg-ctl"
+      }
+    },
+    {
+      "key": "dba1-tools-048",
+      "type": "single_choice",
+      "text": "Для чего предназначена команда pg_ctl promote?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для перевода резервного сервера из standby в режим чтения/записи",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для повышения роли обычного пользователя до суперпользователя",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Для обновления версии PostgreSQL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Для включения контрольных сумм",
+          "correct": false
+        }
+      ],
+      "explanation": "promote выводит сервер из режима резерва и переводит его к обычным операциям чтения/записи.",
+      "source": {
+        "key": "pg16-pgctl-promote",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_ctl",
+        "section": "Описание",
+        "locator": "Команда promote",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pg-ctl"
+      }
+    },
+    {
+      "key": "dba1-tools-049",
+      "type": "single_choice",
+      "text": "Какую задачу решает параметр -l при pg_ctl start?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Задаёт файл для вывода сообщений сервера",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Задаёт локаль кластера",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Включает LZ4",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Указывает каталог расширений",
+          "correct": false
+        }
+      ],
+      "explanation": "При запуске сервера pg_ctl параметр -l позволяет направить вывод сервера в указанный файл журнала.",
+      "source": {
+        "key": "pg16-pgctl-log-file",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_ctl",
+        "section": "Описание",
+        "locator": "start и параметр -l",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pg-ctl"
+      }
+    },
+    {
+      "key": "dba1-tools-050",
+      "type": "single_choice",
+      "text": "Почему команды запуска и сопровождения пакетной установки PostgreSQL могут отличаться от команд для «чистого» PostgreSQL из исходников?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Потому что PostgreSQL из пакета не использует процессы ОС",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Потому что производитель пакета может интегрировать установку и запуск с принятыми в системе средствами",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Потому что pg_ctl существует только в исходной версии",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Потому что пакетная версия не имеет каталога данных",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава runtime оговаривает, что готовый продукт обычно интегрирован производителем с системными механизмами установки и запуска, поэтому детали могут отличаться от «чистой» сборки.",
+      "source": {
+        "key": "pg16-runtime-packaged-product",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "Глава 19. Подготовка к работе и сопровождение сервера",
+        "locator": "Предположения о «чистом» PostgreSQL и готовых продуктах",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime"
+      }
+    },
+    {
+      "key": "dba1-tools-051",
+      "type": "multiple_choice",
+      "text": "Почему материал называет готовые пакеты предпочтительным способом установки PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Такая установка понятнее и поддерживается средствами системы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Её обычно проще обновлять",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Она всегда содержит самую новую ветку разработки из git",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Для актуальных версий можно использовать репозиторий PGDG",
+          "correct": true
+        }
+      ],
+      "explanation": "Материал называет пакетную установку понятной, поддерживаемой и легко обновляемой; для актуальной версии указывается репозиторий PGDG.",
+      "source": {
+        "key": "dba1-course-packages-preferred",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Инструменты и установка",
+        "locator": "Слайд 11 — Установка пакета",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-052",
+      "type": "multiple_choice",
+      "text": "Что верно о pg_createcluster в Ubuntu согласно материалу?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Это обёртка над initdb",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "При установке пакета создаётся кластер с именем main",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Подсчёт контрольных сумм при такой инициализации по умолчанию включён",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "При пакетной установке настраивается автоматический запуск/останов сервера вместе с ОС",
+          "correct": true
+        }
+      ],
+      "explanation": "В Ubuntu pg_createcluster оборачивает initdb; пакет создаёт кластер main, checksums по умолчанию выключены, а запуск/останов интегрирован с ОС.",
+      "source": {
+        "key": "dba1-course-pg-createcluster",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Инструменты и установка",
+        "locator": "Слайд 12 — Создание кластера",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-053",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о pg_dropcluster и pg_createcluster верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_dropcluster используется для удаления кластера",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Обе утилиты специфичны для Ubuntu в контексте материала",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "В других системах всегда требуется pg_createcluster",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "В других системах кластер можно явно инициализировать через initdb",
+          "correct": true
+        }
+      ],
+      "explanation": "Материал называет pg_createcluster и pg_dropcluster Ubuntu-специфичными; в других системах используется initdb и подходящие средства ОС.",
+      "source": {
+        "key": "dba1-course-pg-dropcluster",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Инструменты и установка",
+        "locator": "Слайд 12 — Создание кластера",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-054",
+      "type": "single_choice",
+      "text": "Как в пакетном дистрибутиве Ubuntu материал предлагает обращаться к pg_ctl?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Только через SQL-функцию pg_ctl()",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Через специальную обёртку pg_ctlcluster",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Через initdb --control",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Через meson control",
+          "correct": false
+        }
+      ],
+      "explanation": "Для Ubuntu в пакетном дистрибутиве используется обёртка pg_ctlcluster; в других системах pg_ctl может использоваться непосредственно.",
+      "source": {
+        "key": "dba1-course-pg-ctlcluster",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Инструменты и установка",
+        "locator": "Слайд 14 — Управление сервером",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-055",
+      "type": "multiple_choice",
+      "text": "Какие различия между PostgreSQL в виртуальной машине и managed PostgreSQL отмечены в материале?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В виртуальной среде есть накладные расходы на виртуализацию",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "В виртуальной машине администратор может иметь полный доступ к экземпляру",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "В managed-сервисе большую часть администрирования берёт на себя провайдер",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Managed-сервис всегда предоставляет полный доступ к экземпляру и ОС",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал сопоставляет накладные расходы и полный административный доступ в VM с ограниченным доступом и большей ответственностью провайдера в DBaaS.",
+      "source": {
+        "key": "dba1-course-cloud",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Инструменты и установка",
+        "locator": "Слайд 16 — Облачные решения",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-056",
+      "type": "single_choice",
+      "text": "Какова правильная последовательность действий в практике по включению контрольных сумм?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Включить checksums → остановить сервер → проверить → запустить",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Остановить сервер → проверить состояние checksums → включить checksums → запустить сервер",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Запустить сервер → включить checksums → остановить → проверить",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Проверить checksums на работающем сервере → включить → перезапустить",
+          "correct": false
+        }
+      ],
+      "explanation": "Практика задаёт порядок: остановить сервер, проверить состояние контрольных сумм, включить их и затем запустить сервер.",
+      "source": {
+        "key": "dba1-course-checksum-practice",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Инструменты и установка",
+        "locator": "Слайд 18 — Практика: включение контрольных сумм",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-057",
+      "type": "multiple_choice",
+      "text": "Что верно о режиме pg_checksums --check?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Это режим по умолчанию, если не указан другой режим",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "При отсутствии ошибок команда возвращает нулевой код состояния",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "При обнаружении хотя бы одной ошибки возвращается ненулевой код",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Этот режим автоматически исправляет повреждённые страницы",
+          "correct": false
+        }
+      ],
+      "explanation": "--check является режимом по умолчанию; код завершения показывает, обнаружены ли ошибки контрольных сумм.",
+      "source": {
+        "key": "pg16-pgchecksums-check-status",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_checksums",
+        "section": "Описание и параметры",
+        "locator": "--check и коды завершения",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgchecksums"
+      }
+    },
+    {
+      "key": "dba1-tools-058",
+      "type": "multiple_choice",
+      "text": "Что верно о pg_checksums --no-sync?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В режиме --check этот параметр не оказывает влияния",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он может ускорить операции, не дожидаясь надёжной записи изменённых файлов",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Его рекомендуется включать в production для надёжности",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "При сбое ОС каталог с изменёнными файлами может повредиться",
+          "correct": true
+        }
+      ],
+      "explanation": "--no-sync может ускорить изменяющие операции ценой риска при сбое и не рекомендуется в production; для --check он не влияет.",
+      "source": {
+        "key": "pg16-pgchecksums-no-sync-details",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_checksums",
+        "section": "Параметры",
+        "locator": "-N/--no-sync",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgchecksums"
+      }
+    },
+    {
+      "key": "dba1-tools-059",
+      "type": "multiple_choice",
+      "text": "Какие меры предосторожности важны при включении или отключении checksums в большом или реплицируемом кластере?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "До завершения операции нельзя запускать сервер или другие программы, записывающие в каталог данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "При файловом копировании блоков изменение режима checksums нужно выполнять согласованно на узлах",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Безопасный вариант — пересоздать ведомые серверы после операции на ведущем",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Для ускорения рекомендуется параллельно запустить сервер и выполнять запись в кластер",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация предупреждает о длительности операции и рисках параллельной записи; при репликации на уровне копирования блоков режим checksums должен быть согласован.",
+      "source": {
+        "key": "pg16-pgchecksums-replication-safety",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_checksums",
+        "section": "Примечания",
+        "locator": "Безопасность enable/disable и репликация",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgchecksums"
+      }
+    },
+    {
+      "key": "dba1-tools-060",
+      "type": "single_choice",
+      "text": "Что происходит с конфигурацией checksums, если pg_checksums прерван во время enable или disable?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Она обязательно переключается в новое состояние частично",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Кластер автоматически удаляется",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Конфигурация checksums остаётся неизменной, операцию можно запустить повторно",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "PostgreSQL навсегда запрещает повторный запуск pg_checksums",
+          "correct": false
+        }
+      ],
+      "explanation": "Если pg_checksums прерван при включении или отключении, состояние настройки checksums остаётся прежним и операцию можно повторить.",
+      "source": {
+        "key": "pg16-pgchecksums-interrupted",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_checksums",
+        "section": "Примечания",
+        "locator": "Прерывание enable/disable",
         "url": "https://postgrespro.ru/docs/postgresql/16/app-pgchecksums"
       }
     }

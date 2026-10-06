@@ -38,6 +38,6 @@ pub fn render(frame: &mut Frame, app: &App) {
         frame,
         "Статистика",
         &message,
-        "Esc или Enter — назад | q — выход",
+        "c — очистить статистику | Esc или Enter — назад | q — выход",
     );
 }

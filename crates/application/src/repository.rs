@@ -26,4 +26,6 @@ pub trait SessionRepository {
         question_id: QuestionId,
         answer_option_ids: &[AnswerOptionId],
     ) -> Result<AnswerResult, RepositoryError>;
+
+    fn clear_statistics(&mut self) -> Result<(), RepositoryError>;
 }
