@@ -5,7 +5,7 @@
     {
       "key": "dba1-tools-001",
       "type": "single_choice",
-      "text": "На каких инструментах традиционно основывается сборка PostgreSQL из исходных кодов?",
+      "text": "На каких инструментах традиционно основывается сборка PostgreSQL из исходного кода?",
       "answers": [
         {
           "key": "a",
@@ -19,22 +19,22 @@
         },
         {
           "key": "c",
-          "text": "CMake и Make",
+          "text": "Gradle и CMake",
           "correct": false
         },
         {
           "key": "d",
-          "text": "Meson и Cargo",
+          "text": "Ninja и Cargo",
           "correct": false
         }
       ],
-      "explanation": "Традиционный способ сборки PostgreSQL из исходных кодов использует GNU Make и Autoconf.",
+      "explanation": "Традиционный способ сборки PostgreSQL из исходного кода основан на GNU Make и Autoconf.",
       "source": {
-        "key": "dba1-tools-build-systems",
+        "key": "dba1-tools-build-overview",
         "kind": "course_material",
         "module": "DBA-1",
         "section": "Инструменты и установка",
-        "locator": "Сборка из исходных кодов: GNU Make/Autoconf и Meson",
+        "locator": "Сборка PostgreSQL: GNU Make/Autoconf и Meson",
         "url": null
       }
     },
@@ -66,18 +66,54 @@
       ],
       "explanation": "В материалах курса указано, что начиная с PostgreSQL 16 можно использовать систему сборки Meson.",
       "source": {
-        "key": "dba1-tools-build-systems",
+        "key": "dba1-tools-meson-version",
         "kind": "course_material",
         "module": "DBA-1",
         "section": "Инструменты и установка",
-        "locator": "Сборка из исходных кодов: GNU Make/Autoconf и Meson",
+        "locator": "Начиная с версии 16 можно использовать Meson",
         "url": null
       }
     },
     {
       "key": "dba1-tools-003",
+      "type": "multiple_choice",
+      "text": "Какие возможности предоставляет библиотека readline?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Редактирование командной строки",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "История команд",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Автодополнение",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Проверка контрольных сумм страниц PostgreSQL",
+          "correct": false
+        }
+      ],
+      "explanation": "readline предоставляет редактирование командной строки, историю команд и автодополнение.",
+      "source": {
+        "key": "dba1-tools-readline",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Инструменты и установка",
+        "locator": "Библиотека readline",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-004",
       "type": "single_choice",
-      "text": "Какой инструмент сборки Meson использует по умолчанию при сборке PostgreSQL?",
+      "text": "Какой инструмент сборки Meson использует по умолчанию для компиляции PostgreSQL?",
       "answers": [
         {
           "key": "a",
@@ -100,18 +136,54 @@
           "correct": false
         }
       ],
-      "explanation": "По умолчанию Meson использует Ninja; после настройки каталога сборки PostgreSQL можно собрать командой ninja.",
+      "explanation": "По умолчанию Meson использует Ninja. После настройки каталога сборки компиляция выполняется командой ninja.",
       "source": {
         "key": "pg16-install-meson-ninja",
         "kind": "postgresql_docs",
         "module": "PostgreSQL 16",
         "section": "Сборка и установка с использованием Meson",
-        "locator": "По умолчанию Meson использует Ninja",
+        "locator": "Краткий вариант: meson setup, ninja, ninja install",
         "url": "https://postgrespro.ru/docs/postgresql/16/install-meson"
       }
     },
     {
-      "key": "dba1-tools-004",
+      "key": "dba1-tools-005",
+      "type": "multiple_choice",
+      "text": "Какие команды входят в краткую схему традиционной сборки и установки PostgreSQL через Autoconf и Make?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "./configure",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "make",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "make install",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "cargo build",
+          "correct": false
+        }
+      ],
+      "explanation": "Краткая процедура традиционной сборки включает конфигурирование через ./configure, сборку командой make и установку через make install.",
+      "source": {
+        "key": "pg16-install-make-short",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "Сборка и установка с использованием Autoconf и Make",
+        "locator": "17.3.1. Краткий вариант",
+        "url": "https://postgrespro.ru/docs/postgresql/16/install-make"
+      }
+    },
+    {
+      "key": "dba1-tools-006",
       "type": "single_choice",
       "text": "Для чего предназначена утилита initdb?",
       "answers": [
@@ -127,27 +199,63 @@
         },
         {
           "key": "c",
-          "text": "Для создания резервной копии кластера",
+          "text": "Для создания логической резервной копии",
           "correct": false
         },
         {
           "key": "d",
-          "text": "Для проверки SQL-запросов",
+          "text": "Для выполнения SQL-скриптов",
           "correct": false
         }
       ],
       "explanation": "initdb создаёт новый кластер баз данных PostgreSQL.",
       "source": {
-        "key": "pg16-initdb-description",
+        "key": "pg16-initdb-purpose",
         "kind": "postgresql_docs",
         "module": "PostgreSQL 16 — initdb",
         "section": "Описание",
-        "locator": "initdb создаёт новый кластер баз данных PostgreSQL",
+        "locator": "Создание нового кластера баз данных PostgreSQL",
         "url": "https://postgrespro.ru/docs/postgresql/16/app-initdb"
       }
     },
     {
-      "key": "dba1-tools-005",
+      "key": "dba1-tools-007",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о пользователе, запускающем initdb, верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "initdb следует выполнять от имени пользователя, под которым будет работать сервер PostgreSQL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Пользователю нужен полный доступ к создаваемым файлам и каталогам кластера",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Сервер PostgreSQL не должен запускаться от имени системного суперпользователя",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "initdb обязательно нужно запускать от root",
+          "correct": false
+        }
+      ],
+      "explanation": "initdb выполняют от имени владельца будущего серверного процесса; запуск от системного суперпользователя не допускается.",
+      "source": {
+        "key": "pg16-initdb-os-user",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — initdb",
+        "section": "Описание",
+        "locator": "Пользователь, запускающий initdb и сервер PostgreSQL",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-initdb"
+      }
+    },
+    {
+      "key": "dba1-tools-008",
       "type": "multiple_choice",
       "text": "Какими способами можно указать initdb каталог данных кластера?",
       "answers": [
@@ -172,18 +280,54 @@
           "correct": false
         }
       ],
-      "explanation": "Каталог данных initdb задаётся через -D/--pgdata либо через переменную окружения PGDATA.",
+      "explanation": "Каталог хранения данных задаётся параметром -D/--pgdata либо переменной окружения PGDATA.",
       "source": {
         "key": "pg16-initdb-pgdata",
         "kind": "postgresql_docs",
         "module": "PostgreSQL 16 — initdb",
         "section": "Параметры",
-        "locator": "-D/--pgdata и переменная окружения PGDATA",
+        "locator": "-D/--pgdata и PGDATA",
         "url": "https://postgrespro.ru/docs/postgresql/16/app-initdb"
       }
     },
     {
-      "key": "dba1-tools-006",
+      "key": "dba1-tools-009",
+      "type": "single_choice",
+      "text": "Какой провайдер локалей initdb использует по умолчанию?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "ICU",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "libc",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Java Locale",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "PostgreSQL не использует провайдер локалей",
+          "correct": false
+        }
+      ],
+      "explanation": "По умолчанию initdb использует провайдер локалей libc.",
+      "source": {
+        "key": "pg16-initdb-locale-provider",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — initdb",
+        "section": "Локали",
+        "locator": "По умолчанию используется провайдер libc",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-initdb"
+      }
+    },
+    {
+      "key": "dba1-tools-010",
       "type": "multiple_choice",
       "text": "Какие утверждения о параметре initdb -k/--data-checksums верны?",
       "answers": [
@@ -194,23 +338,23 @@
         },
         {
           "key": "b",
-          "text": "Контрольные суммы применяются ко всем объектам во всех базах данных кластера",
+          "text": "Контрольные суммы рассчитываются для всех объектов во всех базах данных кластера",
           "correct": true
         },
         {
           "key": "c",
-          "text": "Ошибки контрольных сумм могут отражаться в pg_stat_database",
+          "text": "Ошибки контрольных сумм отражаются в pg_stat_database",
           "correct": true
         },
         {
           "key": "d",
-          "text": "Контрольные суммы включаются только для системных каталогов",
+          "text": "Контрольные суммы применяются только к системным каталогам",
           "correct": false
         }
       ],
-      "explanation": "Параметр -k/--data-checksums включает контрольные суммы страниц данных для объектов кластера; ошибки контрольных сумм отражаются в статистике PostgreSQL.",
+      "explanation": "-k/--data-checksums включает контрольные суммы страниц данных; при включении они применяются ко всем объектам во всех базах данных кластера.",
       "source": {
-        "key": "pg16-initdb-data-checksums",
+        "key": "pg16-initdb-checksums",
         "kind": "postgresql_docs",
         "module": "PostgreSQL 16 — initdb",
         "section": "Параметры",
@@ -219,7 +363,151 @@
       }
     },
     {
-      "key": "dba1-tools-007",
+      "key": "dba1-tools-011",
+      "type": "multiple_choice",
+      "text": "Какие утверждения об initdb --no-sync верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "initdb может завершиться быстрее",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "При неожиданном сбое ОС каталог данных может оказаться повреждённым",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Параметр может быть полезен при тестировании",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Параметр рекомендуется использовать в production",
+          "correct": false
+        }
+      ],
+      "explanation": "--no-sync отключает ожидание надёжной записи файлов на диск. Это может ускорить initdb, но повышает риск повреждения данных при сбое и не рекомендуется для production.",
+      "source": {
+        "key": "pg16-initdb-no-sync",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — initdb",
+        "section": "Параметры",
+        "locator": "-N/--no-sync",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-initdb"
+      }
+    },
+    {
+      "key": "dba1-tools-012",
+      "type": "single_choice",
+      "text": "Что задаёт параметр initdb -U/--username?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Имя начального суперпользователя PostgreSQL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Имя каталога данных",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Имя WAL-сегмента",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Имя операционной системы",
+          "correct": false
+        }
+      ],
+      "explanation": "-U/--username задаёт имя начального суперпользователя; по умолчанию используется имя пользователя ОС, запускающего initdb.",
+      "source": {
+        "key": "pg16-initdb-username",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — initdb",
+        "section": "Параметры",
+        "locator": "-U/--username",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-initdb"
+      }
+    },
+    {
+      "key": "dba1-tools-013",
+      "type": "single_choice",
+      "text": "Для чего предназначен параметр initdb -X/--waldir?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для указания каталога хранения WAL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для указания каталога логических резервных копий",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Для выбора каталога конфигурации pg_hba.conf",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Для задания каталога расширений",
+          "correct": false
+        }
+      ],
+      "explanation": "-X/--waldir задаёт каталог, в котором будет храниться журнал предзаписи WAL.",
+      "source": {
+        "key": "pg16-initdb-waldir",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — initdb",
+        "section": "Параметры",
+        "locator": "-X/--waldir",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-initdb"
+      }
+    },
+    {
+      "key": "dba1-tools-014",
+      "type": "multiple_choice",
+      "text": "Какие операции поддерживает pg_ctl?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Запуск сервера",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Остановка сервера",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Перечитывание конфигурации",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Автоматическое выполнение VACUUM всех баз",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_ctl предназначен для инициализации и управления сервером: запуска, остановки, restart, reload, status, promote и других операций.",
+      "source": {
+        "key": "pg16-pgctl-operations",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_ctl",
+        "section": "Описание",
+        "locator": "Команды pg_ctl",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pg-ctl"
+      }
+    },
+    {
+      "key": "dba1-tools-015",
       "type": "multiple_choice",
       "text": "Какие режимы остановки поддерживает pg_ctl stop?",
       "answers": [
@@ -255,7 +543,7 @@
       }
     },
     {
-      "key": "dba1-tools-008",
+      "key": "dba1-tools-016",
       "type": "single_choice",
       "text": "Какой режим остановки pg_ctl используется по умолчанию?",
       "answers": [
@@ -280,29 +568,101 @@
           "correct": false
         }
       ],
-      "explanation": "Если режим остановки не указан, pg_ctl использует fast.",
+      "explanation": "Если -m не указан, pg_ctl использует режим fast.",
       "source": {
-        "key": "pg16-pgctl-stop-modes",
+        "key": "pg16-pgctl-default-stop",
         "kind": "postgresql_docs",
         "module": "PostgreSQL 16 — pg_ctl",
-        "section": "Остановка сервера",
-        "locator": "Режимы smart, fast и immediate",
+        "section": "Параметры",
+        "locator": "-m/--mode: fast используется по умолчанию",
         "url": "https://postgrespro.ru/docs/postgresql/16/app-pg-ctl"
       }
     },
     {
-      "key": "dba1-tools-009",
+      "key": "dba1-tools-017",
+      "type": "multiple_choice",
+      "text": "Что происходит при остановке PostgreSQL в режиме smart?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Новые подключения запрещаются",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Сервер ожидает отключения существующих клиентов",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Все серверные процессы немедленно уничтожаются",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Обязательно выполняется crash recovery",
+          "correct": false
+        }
+      ],
+      "explanation": "Smart shutdown запрещает новые подключения и ожидает, пока существующие клиенты отключатся.",
+      "source": {
+        "key": "pg16-pgctl-smart",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_ctl",
+        "section": "Остановка сервера",
+        "locator": "Режим Smart",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pg-ctl"
+      }
+    },
+    {
+      "key": "dba1-tools-018",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о режиме pg_ctl stop -m immediate верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Серверные процессы прерываются немедленно",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Штатная процедура остановки не выполняется",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "При следующем запуске потребуется восстановление после сбоя",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Сервер ждёт завершения всех пользовательских сессий",
+          "correct": false
+        }
+      ],
+      "explanation": "Immediate shutdown немедленно прерывает серверные процессы без штатной остановки, поэтому при следующем запуске потребуется crash recovery.",
+      "source": {
+        "key": "pg16-pgctl-immediate",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_ctl",
+        "section": "Остановка сервера",
+        "locator": "Режим Immediate",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pg-ctl"
+      }
+    },
+    {
+      "key": "dba1-tools-019",
       "type": "single_choice",
       "text": "Что делает команда pg_ctl reload?",
       "answers": [
         {
           "key": "a",
-          "text": "Посылает серверу SIGHUP для перечитывания конфигурационных файлов",
+          "text": "Посылает процессу postgres SIGHUP для перечитывания конфигурации",
           "correct": true
         },
         {
           "key": "b",
-          "text": "Полностью останавливает и заново запускает сервер",
+          "text": "Полностью останавливает и запускает сервер",
           "correct": false
         },
         {
@@ -312,24 +672,24 @@
         },
         {
           "key": "d",
-          "text": "Включает контрольные суммы",
+          "text": "Удаляет postmaster.pid",
           "correct": false
         }
       ],
-      "explanation": "reload посылает серверу сигнал SIGHUP, после чего PostgreSQL перечитывает конфигурационные файлы, не требующие полного перезапуска.",
+      "explanation": "reload посылает серверу SIGHUP, после чего PostgreSQL перечитывает postgresql.conf, pg_hba.conf и другие конфигурационные файлы.",
       "source": {
         "key": "pg16-pgctl-reload",
         "kind": "postgresql_docs",
         "module": "PostgreSQL 16 — pg_ctl",
         "section": "Команда reload",
-        "locator": "SIGHUP и перечитывание postgresql.conf, pg_hba.conf и других файлов",
+        "locator": "SIGHUP и перечитывание конфигурационных файлов",
         "url": "https://postgrespro.ru/docs/postgresql/16/app-pg-ctl"
       }
     },
     {
-      "key": "dba1-tools-010",
+      "key": "dba1-tools-020",
       "type": "single_choice",
-      "text": "Что показывает pg_ctl status для работающего сервера?",
+      "text": "Что показывает pg_ctl status, когда сервер работает?",
       "answers": [
         {
           "key": "a",
@@ -343,7 +703,7 @@
         },
         {
           "key": "c",
-          "text": "Список всех баз данных",
+          "text": "Список всех таблиц в кластере",
           "correct": false
         },
         {
@@ -352,7 +712,7 @@
           "correct": false
         }
       ],
-      "explanation": "Если сервер работает, pg_ctl status сообщает PID и параметры командной строки, с которыми сервер был запущен.",
+      "explanation": "Для работающего сервера pg_ctl status выводит PID и параметры командной строки, с которыми он был запущен.",
       "source": {
         "key": "pg16-pgctl-status",
         "kind": "postgresql_docs",
@@ -363,9 +723,9 @@
       }
     },
     {
-      "key": "dba1-tools-011",
+      "key": "dba1-tools-021",
       "type": "single_choice",
-      "text": "В каком состоянии должен находиться сервер перед запуском pg_checksums для существующего кластера?",
+      "text": "В каком состоянии должен находиться сервер перед запуском pg_checksums?",
       "answers": [
         {
           "key": "a",
@@ -374,12 +734,12 @@
         },
         {
           "key": "b",
-          "text": "Сервер должен работать в режиме read only",
+          "text": "Сервер должен работать в read-only режиме",
           "correct": false
         },
         {
           "key": "c",
-          "text": "Сервер должен находиться в recovery",
+          "text": "Сервер должен находиться в режиме recovery",
           "correct": false
         },
         {
@@ -388,18 +748,18 @@
           "correct": false
         }
       ],
-      "explanation": "Перед запуском pg_checksums PostgreSQL должен быть остановлен в штатном режиме.",
+      "explanation": "Перед запуском pg_checksums сервер PostgreSQL должен быть остановлен в штатном режиме.",
       "source": {
-        "key": "pg16-pgchecksums-description",
+        "key": "pg16-pgchecksums-server-state",
         "kind": "postgresql_docs",
         "module": "PostgreSQL 16 — pg_checksums",
         "section": "Описание",
-        "locator": "Перед запуском pg_checksums сервер должен быть остановлен в штатном режиме",
+        "locator": "Перед запуском pg_checksums сервер должен быть остановлен",
         "url": "https://postgrespro.ru/docs/postgresql/16/app-pgchecksums"
       }
     },
     {
-      "key": "dba1-tools-012",
+      "key": "dba1-tools-022",
       "type": "multiple_choice",
       "text": "Какие основные операции поддерживает pg_checksums?",
       "answers": [
@@ -429,8 +789,80 @@
         "key": "pg16-pgchecksums-operations",
         "kind": "postgresql_docs",
         "module": "PostgreSQL 16 — pg_checksums",
-        "section": "Описание и параметры",
-        "locator": "--check, --enable и --disable",
+        "section": "Описание",
+        "locator": "check, enable и disable",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgchecksums"
+      }
+    },
+    {
+      "key": "dba1-tools-023",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о pg_checksums --no-sync верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Операция может завершиться быстрее",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "При сбое ОС каталог с изменёнными файлами может повредиться",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Параметр не рекомендуется использовать в production",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "В режиме --check параметр ускоряет проверку контрольных сумм",
+          "correct": false
+        }
+      ],
+      "explanation": "--no-sync отключает ожидание надёжной записи файлов. Он полезен главным образом при тестировании и в режиме --check не оказывает влияния.",
+      "source": {
+        "key": "pg16-pgchecksums-no-sync",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_checksums",
+        "section": "Параметры",
+        "locator": "-N/--no-sync",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgchecksums"
+      }
+    },
+    {
+      "key": "dba1-tools-024",
+      "type": "multiple_choice",
+      "text": "Что происходит с файлами кластера при включении и отключении контрольных сумм через pg_checksums?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "При включении для блоков файлов отношений рассчитываются контрольные суммы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "При включении блоки отношений перезаписываются на месте",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "При отключении изменяется только pg_control",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "При отключении полностью переписываются все файлы отношений",
+          "correct": false
+        }
+      ],
+      "explanation": "При включении pg_checksums рассчитывает контрольную сумму каждого блока отношений и перезаписывает блоки; при отключении изменяется только pg_control.",
+      "source": {
+        "key": "pg16-pgchecksums-files",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_checksums",
+        "section": "Описание",
+        "locator": "Изменение файлов при enable и disable",
         "url": "https://postgrespro.ru/docs/postgresql/16/app-pgchecksums"
       }
     }

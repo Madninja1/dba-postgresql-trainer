@@ -46,5 +46,6 @@ impl QuizSession {
 pub struct AnswerResult {
     pub question_id: QuestionId,
     pub selected_option_ids: Vec<AnswerOptionId>,
+    pub correct_option_ids: Vec<AnswerOptionId>,
     pub is_correct: bool,
 }

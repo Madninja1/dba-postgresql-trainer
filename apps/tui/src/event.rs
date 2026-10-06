@@ -25,6 +25,8 @@ fn action_from_key(key: KeyEvent) -> Option<Action> {
         | (KeyCode::Char('й'), _)
         | (KeyCode::Char('Й'), _) => Some(Action::Quit),
 
+        (KeyCode::Char(' '), _) => Some(Action::Toggle),
+
         (KeyCode::Up, _) | (KeyCode::Char('k'), _) => Some(Action::Up),
 
         (KeyCode::Down, _) | (KeyCode::Char('j'), _) => Some(Action::Down),

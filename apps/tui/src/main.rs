@@ -28,9 +28,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let service = TrainerService::new(repository);
 
-    let topics = service.topics()?;
-
-    let app = App::new(topics);
+    let app = App::new(service)?;
 
     ratatui::run(move |terminal| run(terminal, app))?;
 

@@ -94,6 +94,7 @@ mod tests {
             Ok(AnswerResult {
                 question_id,
                 selected_option_ids: answer_option_ids.to_vec(),
+                correct_option_ids: answer_option_ids.to_vec(),
                 is_correct: true,
             })
         }

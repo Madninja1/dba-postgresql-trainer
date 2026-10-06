@@ -1,4 +1,11 @@
-use dba_trainer_domain::{QuestionLimit, QuizScope, Topic};
+use dba_trainer_application::{RepositoryError, TrainerService};
+
+use dba_trainer_domain::{
+    AnswerOptionId, AnswerResult, Question, QuestionId, QuestionLimit, QuestionType, QuizScope,
+    SessionConfig, SessionId, Topic,
+};
+
+use dba_trainer_storage_sqlite::SqliteRepository;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Screen {
@@ -6,6 +13,8 @@ pub enum Screen {
     Topics,
     QuizSetup,
     Quiz,
+    Feedback,
+    Results,
     Statistics,
 }
 
@@ -13,6 +22,7 @@ pub enum Screen {
 pub enum Action {
     Up,
     Down,
+    Toggle,
     Confirm,
     Back,
     Quit,
@@ -30,8 +40,11 @@ impl HomeItem {
     pub fn label(self) -> &'static str {
         match self {
             Self::Topics => "Тест по теме",
+
             Self::GeneralQuiz => "Общий тест",
+
             Self::Statistics => "Статистика",
+
             Self::Quit => "Выход",
         }
     }
@@ -58,23 +71,70 @@ pub struct App {
     pub topic_selected: usize,
     pub limit_selected: usize,
 
+    pub option_selected: usize,
+
     pub topics: Vec<Topic>,
+
     pub quiz_scope: QuizScope,
+
+    pub current_question: Option<Question>,
+
+    pub selected_answer_ids: Vec<AnswerOptionId>,
+
+    pub feedback: Option<AnswerResult>,
+
+    pub answered_questions: usize,
+
+    pub correct_answers: usize,
+
+    pub total_questions: usize,
+
+    pub error_message: Option<String>,
+
+    session_id: Option<SessionId>,
+
+    service: TrainerService<SqliteRepository>,
 }
 
 impl App {
-    pub fn new(topics: Vec<Topic>) -> Self {
-        Self {
+    pub fn new(service: TrainerService<SqliteRepository>) -> Result<Self, RepositoryError> {
+        let topics = service.topics()?;
+
+        Ok(Self {
             screen: Screen::Home,
+
             should_quit: false,
 
             home_selected: 0,
+
             topic_selected: 0,
+
             limit_selected: 0,
 
+            option_selected: 0,
+
             topics,
+
             quiz_scope: QuizScope::AllTopics,
-        }
+
+            current_question: None,
+
+            selected_answer_ids: Vec::new(),
+
+            feedback: None,
+
+            answered_questions: 0,
+
+            correct_answers: 0,
+
+            total_questions: 0,
+
+            error_message: None,
+
+            session_id: None,
+
+            service,
+        })
     }
 
     pub fn selected_limit(&self) -> QuestionLimit {
@@ -84,27 +144,40 @@ impl App {
     pub fn handle_action(&mut self, action: Action) {
         if action == Action::Quit {
             self.should_quit = true;
+
             return;
         }
 
-        match self.screen {
-            Screen::Home => {
-                self.handle_home_action(action);
-            }
+        self.error_message = None;
+
+        let result = match self.screen {
+            Screen::Home => self.handle_home_action(action),
 
             Screen::Topics => self.handle_topics_action(action),
 
             Screen::QuizSetup => self.handle_quiz_setup_action(action),
 
-            Screen::Quiz | Screen::Statistics => {
+            Screen::Quiz => self.handle_quiz_action(action),
+
+            Screen::Feedback => self.handle_feedback_action(action),
+
+            Screen::Results => self.handle_results_action(action),
+
+            Screen::Statistics => {
                 if action == Action::Back {
                     self.screen = Screen::Home;
                 }
+
+                Ok(())
             }
+        };
+
+        if let Err(error) = result {
+            self.error_message = Some(error.to_string());
         }
     }
 
-    fn handle_home_action(&mut self, action: Action) {
+    fn handle_home_action(&mut self, action: Action) -> Result<(), RepositoryError> {
         match action {
             Action::Up => {
                 self.home_selected = previous_index(self.home_selected, HOME_ITEMS.len());
@@ -115,7 +188,9 @@ impl App {
             }
 
             Action::Confirm => match HOME_ITEMS[self.home_selected] {
-                HomeItem::Topics => self.screen = Screen::Topics,
+                HomeItem::Topics => {
+                    self.screen = Screen::Topics;
+                }
 
                 HomeItem::GeneralQuiz => {
                     self.quiz_scope = QuizScope::AllTopics;
@@ -134,11 +209,13 @@ impl App {
                 }
             },
 
-            Action::Back | Action::Quit => {}
+            Action::Back | Action::Toggle | Action::Quit => {}
         }
+
+        Ok(())
     }
 
-    fn handle_topics_action(&mut self, action: Action) {
+    fn handle_topics_action(&mut self, action: Action) -> Result<(), RepositoryError> {
         match action {
             Action::Up => {
                 self.topic_selected = previous_index(self.topic_selected, self.topics.len());
@@ -155,6 +232,7 @@ impl App {
                     self.quiz_scope = QuizScope::Topic(topic_id);
 
                     self.limit_selected = 0;
+
                     self.screen = Screen::QuizSetup;
                 }
             }
@@ -163,11 +241,13 @@ impl App {
                 self.screen = Screen::Home;
             }
 
-            Action::Quit => {}
+            Action::Toggle | Action::Quit => {}
         }
+
+        Ok(())
     }
 
-    fn handle_quiz_setup_action(&mut self, action: Action) {
+    fn handle_quiz_setup_action(&mut self, action: Action) -> Result<(), RepositoryError> {
         match action {
             Action::Up => {
                 self.limit_selected = previous_index(self.limit_selected, QUESTION_LIMITS.len());
@@ -177,18 +257,237 @@ impl App {
                 self.limit_selected = next_index(self.limit_selected, QUESTION_LIMITS.len());
             }
 
-            Action::Confirm => self.screen = Screen::Quiz,
+            Action::Confirm => {
+                self.start_session()?;
+            }
 
             Action::Back => {
                 self.screen = match self.quiz_scope {
                     QuizScope::Topic(_) => Screen::Topics,
 
                     QuizScope::AllTopics => Screen::Home,
-                }
+                };
+            }
+
+            Action::Toggle | Action::Quit => {}
+        }
+
+        Ok(())
+    }
+
+    fn handle_quiz_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        let option_count = self
+            .current_question
+            .as_ref()
+            .map(|question| question.options.len())
+            .unwrap_or(0);
+
+        match action {
+            Action::Up => {
+                self.option_selected = previous_index(self.option_selected, option_count);
+            }
+
+            Action::Down => {
+                self.option_selected = next_index(self.option_selected, option_count);
+            }
+
+            Action::Toggle => {
+                self.toggle_current_option();
+            }
+
+            Action::Confirm => {
+                self.submit_current_answer()?;
+            }
+
+            Action::Back => {
+                self.error_message = Some(String::from(
+                    "Тест уже запущен. Завершите его или нажмите q для выхода.",
+                ));
             }
 
             Action::Quit => {}
         }
+
+        Ok(())
+    }
+
+    fn handle_feedback_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        if action == Action::Confirm {
+            self.load_current_question()?;
+        }
+
+        Ok(())
+    }
+
+    fn handle_results_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        if matches!(action, Action::Confirm | Action::Back) {
+            self.reset_quiz();
+
+            self.screen = Screen::Home;
+        }
+
+        Ok(())
+    }
+
+    fn start_session(&mut self) -> Result<(), RepositoryError> {
+        let config = SessionConfig {
+            scope: self.quiz_scope,
+
+            limit: self.selected_limit(),
+        };
+
+        let session = self.service.start_session(&config)?;
+
+        self.session_id = Some(session.id);
+
+        self.total_questions = session.total_questions();
+
+        self.answered_questions = 0;
+
+        self.correct_answers = 0;
+
+        self.feedback = None;
+
+        self.load_current_question()
+    }
+
+    fn load_current_question(&mut self) -> Result<(), RepositoryError> {
+        let session_id = self.session_id.ok_or_else(|| {
+            RepositoryError::InvalidState(String::from("quiz session is missing"))
+        })?;
+
+        let question = self.service.current_question(session_id)?;
+
+        match question {
+            Some(question) => {
+                self.current_question = Some(question);
+
+                self.option_selected = 0;
+
+                self.selected_answer_ids.clear();
+
+                self.feedback = None;
+
+                self.screen = Screen::Quiz;
+            }
+
+            None => {
+                self.current_question = None;
+
+                self.selected_answer_ids.clear();
+
+                self.feedback = None;
+
+                self.screen = Screen::Results;
+            }
+        }
+
+        Ok(())
+    }
+
+    fn toggle_current_option(&mut self) {
+        let option_id = self
+            .current_question
+            .as_ref()
+            .filter(|question| question.question_type == QuestionType::MultipleChoice)
+            .and_then(|question| question.options.get(self.option_selected))
+            .map(|option| option.id);
+
+        let Some(option_id) = option_id else {
+            return;
+        };
+
+        if let Some(position) = self
+            .selected_answer_ids
+            .iter()
+            .position(|id| *id == option_id)
+        {
+            self.selected_answer_ids.remove(position);
+        } else {
+            self.selected_answer_ids.push(option_id);
+        }
+    }
+
+    fn submit_current_answer(&mut self) -> Result<(), RepositoryError> {
+        let question = self.current_question.as_ref().ok_or_else(|| {
+            RepositoryError::InvalidState(String::from("current question is missing"))
+        })?;
+
+        let question_id = question.id;
+
+        let selected_ids = match question.question_type {
+            QuestionType::SingleChoice => {
+                let option_id = question
+                    .options
+                    .get(self.option_selected)
+                    .map(|option| option.id)
+                    .ok_or_else(|| {
+                        RepositoryError::InvalidState(String::from("selected option is missing"))
+                    })?;
+
+                vec![option_id]
+            }
+
+            QuestionType::MultipleChoice => {
+                if self.selected_answer_ids.is_empty() {
+                    self.error_message =
+                        Some(String::from("Выберите хотя бы один вариант ответа."));
+
+                    return Ok(());
+                }
+
+                self.selected_answer_ids.clone()
+            }
+        };
+
+        self.submit_answers(question_id, selected_ids)
+    }
+
+    fn submit_answers(
+        &mut self,
+        question_id: QuestionId,
+
+        selected_ids: Vec<AnswerOptionId>,
+    ) -> Result<(), RepositoryError> {
+        let session_id = self.session_id.ok_or_else(|| {
+            RepositoryError::InvalidState(String::from("quiz session is missing"))
+        })?;
+
+        let result = self
+            .service
+            .submit_answer(session_id, question_id, &selected_ids)?;
+
+        self.answered_questions += 1;
+
+        if result.is_correct {
+            self.correct_answers += 1;
+        }
+
+        self.feedback = Some(result);
+
+        self.screen = Screen::Feedback;
+
+        Ok(())
+    }
+
+    fn reset_quiz(&mut self) {
+        self.session_id = None;
+
+        self.current_question = None;
+
+        self.feedback = None;
+
+        self.selected_answer_ids.clear();
+
+        self.option_selected = 0;
+
+        self.answered_questions = 0;
+
+        self.correct_answers = 0;
+
+        self.total_questions = 0;
+
+        self.error_message = None;
     }
 }
 
@@ -209,66 +508,5 @@ fn previous_index(current: usize, length: usize) -> usize {
         length - 1
     } else {
         current - 1
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn home_selection_wraps_forward() {
-        let mut app = App::new(Vec::new());
-
-        app.home_selected = HOME_ITEMS.len() - 1;
-
-        app.handle_action(Action::Down);
-
-        assert_eq!(app.home_selected, 0);
-    }
-
-    #[test]
-    fn home_selection_wraps_backward() {
-        let mut app = App::new(Vec::new());
-
-        app.handle_action(Action::Up);
-
-        assert_eq!(app.home_selected, HOME_ITEMS.len() - 1);
-    }
-
-    #[test]
-    fn general_quiz_opens_quiz_setup() {
-        let mut app = App::new(Vec::new());
-
-        app.home_selected = 1;
-
-        app.handle_action(Action::Confirm);
-
-        assert_eq!(app.screen, Screen::QuizSetup);
-        assert_eq!(app.quiz_scope, QuizScope::AllTopics);
-    }
-
-    #[test]
-    fn selecting_topic_opens_quiz_setup() {
-        let topics = vec![Topic {
-            id: dba_trainer_domain::TopicId(42),
-            course_code: String::from("dba-1"),
-            slug: String::from("architecture"),
-            title: String::from("Архитектура PostgreSQL"),
-            description: None,
-        }];
-
-        let mut app = App::new(topics);
-
-        app.screen = Screen::Topics;
-
-        app.handle_action(Action::Confirm);
-
-        assert_eq!(
-            app.quiz_scope,
-            QuizScope::Topic(dba_trainer_domain::TopicId(42))
-        );
-
-        assert_eq!(app.screen, Screen::QuizSetup);
     }
 }

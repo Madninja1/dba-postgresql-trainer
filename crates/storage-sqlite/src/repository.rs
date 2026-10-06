@@ -546,6 +546,7 @@ impl SessionRepository for SqliteRepository {
         Ok(AnswerResult {
             question_id,
             selected_option_ids: selected_ids,
+            correct_option_ids: correct_ids,
             is_correct,
         })
     }
