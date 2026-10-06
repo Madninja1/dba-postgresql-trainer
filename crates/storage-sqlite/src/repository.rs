@@ -1030,4 +1030,49 @@ mod tests {
 
         assert_eq!(stats.accuracy_percent(), 100.0,);
     }
+
+    #[test]
+    fn clear_statistics_removes_history_but_keeps_active_session() {
+        let mut repository = seeded_repository();
+
+        let completed_config = SessionConfig {
+            scope: QuizScope::Topic(TopicId(1)),
+            limit: QuestionLimit::All,
+        };
+
+        let completed_session = repository
+            .start_session(&completed_config)
+            .expect("completed session should start");
+
+        let question = repository
+            .current_question(completed_session.id)
+            .expect("question should load")
+            .expect("question should exist");
+
+        repository
+            .submit_answer(completed_session.id, question.id, &[AnswerOptionId(1)])
+            .expect("answer should complete session");
+
+        let active_session = repository
+            .start_session(&completed_config)
+            .expect("active session should start");
+
+        repository
+            .clear_statistics()
+            .expect("statistics should clear");
+
+        let stats = repository.statistics().expect("statistics should load");
+
+        assert_eq!(stats.completed_sessions, 0);
+        assert_eq!(stats.cancelled_sessions, 0);
+        assert_eq!(stats.answered_questions, 0);
+        assert_eq!(stats.correct_answers, 0);
+
+        let active = repository
+            .active_session()
+            .expect("active session should load")
+            .expect("active session should remain");
+
+        assert_eq!(active.id, active_session.id);
+    }
 }

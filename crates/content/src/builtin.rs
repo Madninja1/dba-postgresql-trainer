@@ -24,6 +24,9 @@ mod tests {
             .find(|bundle| bundle.topic.slug == "dba1-tools-install")
             .expect("tools and installation topic should exist");
 
-        assert_eq!(tools_topic.questions.questions.len(), 24);
+        assert!(
+            tools_topic.questions.questions.len() >= 50,
+            "tools and installation topic should support 50-question mode"
+        );
     }
 }

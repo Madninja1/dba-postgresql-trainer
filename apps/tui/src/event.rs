@@ -65,4 +65,11 @@ mod tests {
 
         assert_eq!(action_from_key(key), Some(Action::Back));
     }
+
+    #[test]
+    fn c_requests_statistics_clear() {
+        let key = KeyEvent::new(KeyCode::Char('c'), KeyModifiers::NONE);
+
+        assert_eq!(action_from_key(key), Some(Action::ClearStatistics));
+    }
 }

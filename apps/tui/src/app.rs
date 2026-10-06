@@ -91,6 +91,8 @@ pub struct App {
 
     pub feedback: Option<AnswerResult>,
 
+    pub feedback_scroll: u16,
+
     pub answered_questions: usize,
 
     pub correct_answers: usize,
@@ -146,6 +148,8 @@ impl App {
             selected_answer_ids: Vec::new(),
 
             feedback: None,
+
+            feedback_scroll: 0,
 
             answered_questions: 0,
 
@@ -347,7 +351,17 @@ impl App {
 
     fn handle_feedback_action(&mut self, action: Action) -> Result<(), RepositoryError> {
         match action {
+            Action::Up => {
+                self.feedback_scroll = self.feedback_scroll.saturating_sub(1);
+            }
+
+            Action::Down => {
+                self.feedback_scroll = self.feedback_scroll.saturating_add(1);
+            }
+
             Action::Confirm => {
+                self.feedback_scroll = 0;
+
                 self.load_current_question()?;
             }
 
@@ -359,7 +373,7 @@ impl App {
                 self.screen = Screen::CancelSession;
             }
 
-            _ => {}
+            Action::Toggle | Action::ClearStatistics | Action::Quit => {}
         }
 
         Ok(())
@@ -623,6 +637,8 @@ impl App {
             self.correct_answers += 1;
         }
 
+        self.feedback_scroll = 0;
+
         self.feedback = Some(result);
 
         self.screen = Screen::Feedback;
@@ -634,6 +650,8 @@ impl App {
         self.session_id = None;
 
         self.current_question = None;
+
+        self.feedback_scroll = 0;
 
         self.feedback = None;
 

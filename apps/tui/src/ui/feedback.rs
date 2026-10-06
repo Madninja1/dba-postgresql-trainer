@@ -1,14 +1,14 @@
+use dba_trainer_domain::{AnswerOptionId, Question, Source, SourceKind};
+
 use ratatui::{
     Frame,
     layout::{Alignment, Constraint, Direction, Layout},
-    widgets::{Block, Borders, List, ListItem, Paragraph, Wrap},
+    widgets::{Block, Borders, Paragraph, Wrap},
 };
 
 use crate::app::App;
 
 use super::common::render_message;
-
-use dba_trainer_domain::{Source, SourceKind};
 
 pub fn render(frame: &mut Frame, app: &App) {
     let (Some(question), Some(result)) = (app.current_question.as_ref(), app.feedback.as_ref())
@@ -25,69 +25,75 @@ pub fn render(frame: &mut Frame, app: &App) {
 
     let areas = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([
-            Constraint::Length(3),
-            Constraint::Min(6),
-            Constraint::Length(10),
-            Constraint::Length(3),
-        ])
+        .constraints([Constraint::Min(3), Constraint::Length(3)])
         .split(frame.area());
 
-    let title = if result.is_correct {
+    let selected = format_options(question, &result.selected_option_ids);
+
+    let correct = format_options(question, &result.correct_option_ids);
+
+    let answer_word = if result.correct_option_ids.len() > 1 {
+        "Правильные ответы"
+    } else {
+        "Правильный ответ"
+    };
+
+    let status = if result.is_correct {
         "Верно"
     } else {
         "Неверно"
     };
 
-    let header = Paragraph::new(title)
-        .alignment(Alignment::Center)
-        .block(Block::default().borders(Borders::ALL));
-
-    let items = question
-        .options
-        .iter()
-        .map(|option| {
-            let correct = result.correct_option_ids.contains(&option.id);
-
-            let selected = result.selected_option_ids.contains(&option.id);
-
-            let marker = match (correct, selected) {
-                (true, true) => "✓",
-
-                (true, false) => "✓",
-
-                (false, true) => "✗",
-
-                (false, false) => " ",
-            };
-
-            ListItem::new(format!("{marker} {}", option.text))
-        })
-        .collect::<Vec<_>>();
-
-    let answers = List::new(items).block(
-        Block::default()
-            .title("Правильный ответ")
-            .borders(Borders::ALL),
-    );
-
     let source = format_source(&question.source);
 
-    let explanation = Paragraph::new(format!("{}\n\nИсточник:\n{}", question.explanation, source,))
-        .wrap(Wrap { trim: true })
-        .block(Block::default().title("Объяснение").borders(Borders::ALL));
+    let text = format!(
+        "\
+Ваш ответ:
+{selected}
 
-    let footer = Paragraph::new("Enter — следующий вопрос | Esc — отмена теста | q — выйти")
-        .alignment(Alignment::Center)
-        .block(Block::default().borders(Borders::ALL));
+{answer_word}:
+{correct}
 
-    frame.render_widget(header, areas[0]);
+Объяснение:
+{}
 
-    frame.render_widget(answers, areas[1]);
+Источник:
+{}",
+        question.explanation, source,
+    );
 
-    frame.render_widget(explanation, areas[2]);
+    let body = Paragraph::new(text)
+        .wrap(Wrap { trim: false })
+        .scroll((app.feedback_scroll, 0))
+        .block(
+            Block::default()
+                .title(format!("Результат: {status}"))
+                .borders(Borders::ALL),
+        );
 
-    frame.render_widget(footer, areas[3]);
+    let footer =
+        Paragraph::new("↑/↓ — прокрутка | Enter — следующий вопрос | Esc — отмена | q — выйти")
+            .alignment(Alignment::Center)
+            .block(Block::default().borders(Borders::ALL));
+
+    frame.render_widget(body, areas[0]);
+
+    frame.render_widget(footer, areas[1]);
+}
+
+fn format_options(question: &Question, option_ids: &[AnswerOptionId]) -> String {
+    let options = question
+        .options
+        .iter()
+        .filter(|option| option_ids.contains(&option.id))
+        .map(|option| format!("• {}", option.text,))
+        .collect::<Vec<_>>();
+
+    if options.is_empty() {
+        String::from("• вариант не найден")
+    } else {
+        options.join("\n")
+    }
 }
 
 fn format_source(source: &Source) -> String {
