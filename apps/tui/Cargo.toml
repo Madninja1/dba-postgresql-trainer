@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 crossterm = "0.29.0"
 dba-trainer-application = { path = "../../crates/application" }
+dba-trainer-content = { version = "0.1.0", path = "../../crates/content" }
 dba-trainer-domain = { version = "0.1.0", path = "../../crates/domain" }
 dba-trainer-storage-sqlite = { path = "../../crates/storage-sqlite" }
 ratatui = { version = "0.30.2", features = ["crossterm"] }

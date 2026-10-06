@@ -1,7 +1,10 @@
+mod builtin;
 mod error;
 mod loader;
 mod model;
 mod validation;
+
+pub use builtin::load_builtin_bundles;
 
 pub use error::ContentError;
 

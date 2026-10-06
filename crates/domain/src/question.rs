@@ -4,7 +4,6 @@ use crate::{AnswerOptionId, QuestionId, Source, TopicId};
 pub struct AnswerOption {
     pub id: AnswerOptionId,
     pub text: String,
-    pub is_correct: bool,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -55,12 +54,10 @@ mod tests {
                 AnswerOption {
                     id: AnswerOptionId(1),
                     text: String::from("Answer A"),
-                    is_correct: true,
                 },
                 AnswerOption {
                     id: AnswerOptionId(1),
                     text: String::from("Answer A"),
-                    is_correct: true,
                 },
             ],
         };

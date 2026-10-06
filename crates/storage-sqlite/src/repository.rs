@@ -12,7 +12,7 @@ use rusqlite::{Connection, OptionalExtension, params};
 use crate::{StorageError, db};
 
 pub struct SqliteRepository {
-    connection: Connection,
+    pub(crate) connection: Connection,
 }
 
 impl SqliteRepository {
@@ -101,13 +101,10 @@ impl SqliteRepository {
                 "
             SELECT
                 id,
-                text,
-                is_correct
-
+                text
             FROM answer_options
-
             WHERE question_id = ?1
-
+                AND is_active = 1
             ORDER BY sort_order, id
             ",
             )
@@ -119,8 +116,6 @@ impl SqliteRepository {
                     id: AnswerOptionId(row.get(0)?),
 
                     text: row.get(1)?,
-
-                    is_correct: row.get::<_, i64>(2)? != 0,
                 })
             })
             .map_err(repository_error)?;
@@ -449,6 +444,7 @@ impl SessionRepository for SqliteRepository {
                     is_correct
                 FROM answer_options
                 WHERE question_id = ?1
+                    AND is_active = 1
                 ",
                 )
                 .map_err(repository_error)?;

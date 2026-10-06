@@ -4,11 +4,13 @@ use rusqlite::Connection;
 
 use crate::StorageError;
 
-const CURRENT_SCHEMA_VERSION: i64 = 2;
+const CURRENT_SCHEMA_VERSION: i64 = 3;
 
 const MIGRATION_0001: &str = include_str!("../migrations/0001_init.sql");
 
 const MIGRATION_0002: &str = include_str!("../migrations/0002_content_and_multiple_choice.sql");
+
+const MIGRATION_0003: &str = include_str!("../migrations/0003_content_sync.sql");
 
 pub(crate) fn open(path: impl AsRef<Path>) -> Result<Connection, StorageError> {
     let connection = Connection::open(path)?;
@@ -39,6 +41,12 @@ fn prepare_connection(mut connection: Connection) -> Result<Connection, StorageE
 
     if version < 2 {
         migrate(&mut connection, MIGRATION_0002, 2)?;
+
+        version = 2;
+    }
+
+    if version < 3 {
+        migrate(&mut connection, MIGRATION_0003, 3)?;
     }
 
     Ok(connection)

@@ -281,6 +281,7 @@ name = "dba-trainer-storage-sqlite"
 version = "0.1.0"
 dependencies = [
  "dba-trainer-application",
+ "dba-trainer-content",
  "dba-trainer-domain",
  "rusqlite",
 ]
@@ -291,6 +292,7 @@ version = "0.1.0"
 dependencies = [
  "crossterm",
  "dba-trainer-application",
+ "dba-trainer-content",
  "dba-trainer-domain",
  "dba-trainer-storage-sqlite",
  "ratatui",
