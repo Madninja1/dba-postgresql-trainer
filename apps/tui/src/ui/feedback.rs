@@ -6,18 +6,20 @@ use ratatui::{
     widgets::{Block, Borders, Paragraph, Wrap},
 };
 
-use crate::app::App;
+use crate::{app::App, localization::UiStrings};
 
 use super::common::render_message;
 
 pub fn render(frame: &mut Frame, app: &App) {
+    let strings = app.strings();
+
     let (Some(question), Some(result)) = (app.current_question.as_ref(), app.feedback.as_ref())
     else {
         render_message(
             frame,
-            "Ответ",
-            "Результат ответа отсутствует.",
-            "Enter — продолжить",
+            strings.answer,
+            strings.answer_missing,
+            strings.footer_feedback,
         );
 
         return;
@@ -28,38 +30,33 @@ pub fn render(frame: &mut Frame, app: &App) {
         .constraints([Constraint::Min(3), Constraint::Length(3)])
         .split(frame.area());
 
-    let selected = format_options(question, &result.selected_option_ids);
-
-    let correct = format_options(question, &result.correct_option_ids);
+    let selected = format_options(strings, question, &result.selected_option_ids);
+    let correct = format_options(strings, question, &result.correct_option_ids);
 
     let answer_word = if result.correct_option_ids.len() > 1 {
-        "Правильные ответы"
+        strings.correct_answers
     } else {
-        "Правильный ответ"
+        strings.correct_answer
     };
 
     let status = if result.is_correct {
-        "Верно"
+        strings.correct
     } else {
-        "Неверно"
+        strings.incorrect
     };
 
-    let source = format_source(&question.source);
+    let source = format_source(strings, &question.source);
 
     let text = format!(
-        "\
-Ваш ответ:
-{selected}
-
-{answer_word}:
-{correct}
-
-Объяснение:
-{}
-
-Источник:
-{}",
-        question.explanation, source,
+        "{}:\n{}\n\n{}:\n{}\n\n{}:\n{}\n\n{}:\n{}",
+        strings.your_answer,
+        selected,
+        answer_word,
+        correct,
+        strings.explanation,
+        question.explanation,
+        strings.source,
+        source,
     );
 
     let body = Paragraph::new(text)
@@ -67,56 +64,58 @@ pub fn render(frame: &mut Frame, app: &App) {
         .scroll((app.feedback_scroll, 0))
         .block(
             Block::default()
-                .title(format!("Результат: {status}"))
+                .title(format!("{}: {status}", strings.result))
                 .borders(Borders::ALL),
         );
 
-    let footer =
-        Paragraph::new("↑/↓ — прокрутка | Enter — следующий вопрос | Esc — отмена | q — выйти")
-            .alignment(Alignment::Center)
-            .block(Block::default().borders(Borders::ALL));
+    let footer = Paragraph::new(strings.footer_feedback)
+        .alignment(Alignment::Center)
+        .block(Block::default().borders(Borders::ALL));
 
     frame.render_widget(body, areas[0]);
-
     frame.render_widget(footer, areas[1]);
 }
 
-fn format_options(question: &Question, option_ids: &[AnswerOptionId]) -> String {
+fn format_options(
+    strings: &UiStrings,
+    question: &Question,
+    option_ids: &[AnswerOptionId],
+) -> String {
     let options = question
         .options
         .iter()
         .filter(|option| option_ids.contains(&option.id))
-        .map(|option| format!("• {}", option.text,))
+        .map(|option| format!("• {}", option.text))
         .collect::<Vec<_>>();
 
     if options.is_empty() {
-        String::from("• вариант не найден")
+        strings.option_missing.to_string()
     } else {
         options.join("\n")
     }
 }
 
-fn format_source(source: &Source) -> String {
+fn format_source(strings: &UiStrings, source: &Source) -> String {
     match source.kind {
         SourceKind::CourseMaterial => {
             format!(
-                "Материал курса\n{} / {}\n{}",
-                source.module, source.section, source.locator,
+                "{}\n{} / {}\n{}",
+                strings.course_material, source.module, source.section, source.locator,
             )
         }
 
         SourceKind::PostgreSqlDocs => match source.url.as_deref() {
             Some(url) => {
                 format!(
-                    "Документация PostgreSQL\n{} / {}\n{}\n{}",
-                    source.module, source.section, source.locator, url,
+                    "{}\n{} / {}\n{}\n{}",
+                    strings.postgresql_docs, source.module, source.section, source.locator, url,
                 )
             }
 
             None => {
                 format!(
-                    "Документация PostgreSQL\n{} / {}\n{}",
-                    source.module, source.section, source.locator,
+                    "{}\n{} / {}\n{}",
+                    strings.postgresql_docs, source.module, source.section, source.locator,
                 )
             }
         },

@@ -12,6 +12,8 @@ pub fn render(frame: &mut Frame, app: &App) {
         return;
     };
 
+    let strings = app.strings();
+
     let areas = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
@@ -27,19 +29,22 @@ pub fn render(frame: &mut Frame, app: &App) {
         .min(session.total_questions);
 
     let progress = Paragraph::new(format!(
-        "Обнаружен незавершённый тест.\n\
-                 Отвечено: {} из {}\n\
-                 Следующий вопрос: {}",
-        session.answered_questions, session.total_questions, next_question,
+        "{}\n{}: {} / {}\n{}: {}",
+        strings.resume_found,
+        strings.answered,
+        session.answered_questions,
+        session.total_questions,
+        strings.next_question,
+        next_question,
     ))
     .alignment(Alignment::Center)
     .block(
         Block::default()
-            .title("Незавершённый тест")
+            .title(strings.resume_title)
             .borders(Borders::ALL),
     );
 
-    let labels = ["Продолжить тест", "Отменить тест"];
+    let labels = [strings.continue_quiz, strings.cancel_quiz];
 
     let items = labels
         .iter()
@@ -55,15 +60,14 @@ pub fn render(frame: &mut Frame, app: &App) {
         })
         .collect::<Vec<_>>();
 
-    let actions = List::new(items).block(Block::default().title("Действие").borders(Borders::ALL));
+    let actions =
+        List::new(items).block(Block::default().title(strings.action).borders(Borders::ALL));
 
-    let footer = Paragraph::new("↑/↓ — выбор | Enter — подтвердить | q — выйти")
+    let footer = Paragraph::new(strings.footer_resume)
         .alignment(Alignment::Center)
         .block(Block::default().borders(Borders::ALL));
 
     frame.render_widget(progress, areas[0]);
-
     frame.render_widget(actions, areas[1]);
-
     frame.render_widget(footer, areas[2]);
 }

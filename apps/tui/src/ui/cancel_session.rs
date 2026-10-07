@@ -8,6 +8,8 @@ use ratatui::{
 use crate::app::App;
 
 pub fn render(frame: &mut Frame, app: &App) {
+    let strings = app.strings();
+
     let areas = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
@@ -17,16 +19,16 @@ pub fn render(frame: &mut Frame, app: &App) {
         ])
         .split(frame.area());
 
-    let warning = Paragraph::new(
-        "Отменённый тест нельзя будет продолжить.\n\
-             Его ответы сохранятся в базе, но не будут учитываться \
-             в основной статистике.",
-    )
-    .alignment(Alignment::Center)
-    .wrap(Wrap { trim: true })
-    .block(Block::default().title("Отмена теста").borders(Borders::ALL));
+    let warning = Paragraph::new(strings.cancel_warning)
+        .alignment(Alignment::Center)
+        .wrap(Wrap { trim: true })
+        .block(
+            Block::default()
+                .title(strings.cancel_title)
+                .borders(Borders::ALL),
+        );
 
-    let labels = ["Продолжить тест", "Отменить тест"];
+    let labels = [strings.continue_quiz, strings.cancel_quiz];
 
     let items = labels
         .iter()
@@ -42,15 +44,14 @@ pub fn render(frame: &mut Frame, app: &App) {
         })
         .collect::<Vec<_>>();
 
-    let actions = List::new(items).block(Block::default().title("Действие").borders(Borders::ALL));
+    let actions =
+        List::new(items).block(Block::default().title(strings.action).borders(Borders::ALL));
 
-    let footer = Paragraph::new("↑/↓ — выбор | Enter — подтвердить | Esc — назад | q — выйти")
+    let footer = Paragraph::new(strings.footer_cancel)
         .alignment(Alignment::Center)
         .block(Block::default().borders(Borders::ALL));
 
     frame.render_widget(warning, areas[0]);
-
     frame.render_widget(actions, areas[1]);
-
     frame.render_widget(footer, areas[2]);
 }

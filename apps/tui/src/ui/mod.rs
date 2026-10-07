@@ -1,5 +1,6 @@
 mod cancel_session;
 mod common;
+mod courses;
 mod feedback;
 mod home;
 mod quiz;
@@ -29,6 +30,10 @@ pub fn render(frame: &mut Frame, app: &App) {
 
         Screen::Topics => {
             topics::render(frame, app);
+        }
+
+        Screen::Courses => {
+            courses::render(frame, app);
         }
 
         Screen::QuizSetup => {
@@ -78,7 +83,7 @@ fn render_error(frame: &mut Frame, app: &App) {
     );
 
     frame.render_widget(
-        Paragraph::new(format!("Ошибка: {error}")).alignment(Alignment::Center),
+        Paragraph::new(format!("{}: {error}", app.strings().error)).alignment(Alignment::Center),
         error_area,
     );
 }

@@ -13,7 +13,12 @@ use super::common::render_message;
 
 pub fn render(frame: &mut Frame, app: &App) {
     let Some(question) = app.current_question.as_ref() else {
-        render_message(frame, "Тест", "Вопрос не загружен.", "q — выход");
+        render_message(
+            frame,
+            app.strings().quiz,
+            app.strings().question_missing,
+            app.strings().footer_back,
+        );
 
         return;
     };
@@ -29,7 +34,8 @@ pub fn render(frame: &mut Frame, app: &App) {
         .split(frame.area());
 
     let header = Paragraph::new(format!(
-        "Вопрос {}/{}",
+        "{} {}/{}",
+        app.strings().question,
         app.answered_questions + 1,
         app.total_questions,
     ))
@@ -38,7 +44,11 @@ pub fn render(frame: &mut Frame, app: &App) {
 
     let question_text = Paragraph::new(question.text.as_str())
         .wrap(Wrap { trim: true })
-        .block(Block::default().title("Вопрос").borders(Borders::ALL));
+        .block(
+            Block::default()
+                .title(app.strings().question)
+                .borders(Borders::ALL),
+        );
 
     let items = question
         .options
@@ -73,16 +83,16 @@ pub fn render(frame: &mut Frame, app: &App) {
         })
         .collect::<Vec<_>>();
 
-    let answers = List::new(items).block(Block::default().title("Ответы").borders(Borders::ALL));
+    let answers = List::new(items).block(
+        Block::default()
+            .title(app.strings().answers)
+            .borders(Borders::ALL),
+    );
 
     let footer_text = match question.question_type {
-        QuestionType::SingleChoice => {
-            "↑/↓ или j/k — выбор | Enter — ответить | Esc — отмена | q — выйти"
-        }
+        QuestionType::SingleChoice => app.strings().footer_quiz_single,
 
-        QuestionType::MultipleChoice => {
-            "↑/↓ или j/k — выбор | Space — отметить | Enter — ответить | Esc — отмена | q — выйти"
-        }
+        QuestionType::MultipleChoice => app.strings().footer_quiz_multiple,
     };
 
     let footer = Paragraph::new(footer_text)

@@ -1,4 +1,4 @@
-use dba_trainer_domain::{QuestionLimit, QuizScope};
+use dba_trainer_domain::QuizScope;
 
 use crate::app::{App, QUESTION_LIMITS};
 use ratatui::widgets::List;
@@ -19,15 +19,23 @@ pub fn render(frame: &mut Frame, app: &App) {
         ])
         .split(frame.area());
 
-    let title = match app.quiz_scope {
-        QuizScope::AllTopics => String::from("Общий тест"),
+    let title = match &app.quiz_scope {
+        QuizScope::AllTopics => app.strings().general_quiz.to_string(),
+
+        QuizScope::Course(course_code) => {
+            format!(
+                "{}: {}",
+                app.strings().general_quiz,
+                course_code.to_uppercase()
+            )
+        }
 
         QuizScope::Topic(topic_id) => app
             .topics
             .iter()
-            .find(|topic| topic.id == topic_id)
-            .map(|topic| format!("Тема: {}", topic.title))
-            .unwrap_or_else(|| String::from("Тест по теме")),
+            .find(|topic| topic.id == *topic_id)
+            .map(|topic| format!("{}: {}", app.strings().topic, topic.title))
+            .unwrap_or_else(|| app.strings().topic_quiz.to_string()),
     };
 
     let header = Paragraph::new(title);
@@ -42,27 +50,17 @@ pub fn render(frame: &mut Frame, app: &App) {
                 Style::default()
             };
 
-            ListItem::new(limit_label(*limit)).style(style)
+            ListItem::new(app.strings().question_limit(*limit)).style(style)
         })
         .collect::<Vec<_>>();
 
     let list = List::new(items).block(Block::default().borders(Borders::ALL));
 
-    let footer = Paragraph::new("↑/↓ или j/k — выбор | Enter — открыть | q — выход")
+    let footer = Paragraph::new(app.strings().footer_setup)
         .alignment(Alignment::Center)
         .block(Block::default().borders(Borders::ALL));
 
     frame.render_widget(header, areas[0]);
     frame.render_widget(list, areas[1]);
     frame.render_widget(footer, areas[2]);
-}
-
-fn limit_label(limit: QuestionLimit) -> &'static str {
-    match limit {
-        QuestionLimit::Twenty => "20 вопросов",
-
-        QuestionLimit::Fifty => "50 вопросов",
-
-        QuestionLimit::All => "Все вопросы",
-    }
 }

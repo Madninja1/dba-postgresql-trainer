@@ -214,10 +214,12 @@ impl TopicRepository for SqliteRepository {
 
 impl SessionRepository for SqliteRepository {
     fn start_session(&mut self, config: &SessionConfig) -> Result<QuizSession, RepositoryError> {
-        let (scope, topic_id) = match config.scope {
-            QuizScope::Topic(topic_id) => ("topic", Some(topic_id.0)),
+        let (scope, topic_id, course_code) = match &config.scope {
+            QuizScope::Topic(topic_id) => ("topic", Some(topic_id.0), None),
 
-            QuizScope::AllTopics => ("all", None),
+            QuizScope::Course(course_code) => ("all", None, Some(course_code.as_str())),
+
+            QuizScope::AllTopics => ("all", None, None),
         };
 
         let requested_count = config.limit.as_limit().map(|value| value as i64);
@@ -254,21 +256,30 @@ impl SessionRepository for SqliteRepository {
             let mut statement = transaction
                 .prepare(
                     "
-                    SELECT id
-                    FROM questions
-                    WHERE is_active = 1
+                    SELECT q.id
+                    FROM questions q
+                    JOIN topics t
+                      ON t.id = q.topic_id
+                    WHERE q.is_active = 1
+                      AND t.is_active = 1
                       AND (
                           ?1 IS NULL
-                          OR topic_id = ?1
+                          OR q.topic_id = ?1
+                      )
+                      AND (
+                          ?2 IS NULL
+                          OR t.course_code = ?2
                       )
                     ORDER BY RANDOM()
-                    LIMIT ?2
+                    LIMIT ?3
                     ",
                 )
                 .map_err(repository_error)?;
 
             let rows = statement
-                .query_map(params![topic_id, sql_limit], |row| row.get::<_, i64>(0))
+                .query_map(params![topic_id, course_code, sql_limit], |row| {
+                    row.get::<_, i64>(0)
+                })
                 .map_err(repository_error)?;
 
             let ids = rows
@@ -288,11 +299,12 @@ impl SessionRepository for SqliteRepository {
                 INSERT INTO quiz_sessions (
                     scope,
                     topic_id,
+                    course_code,
                     requested_count
                 )
-                VALUES (?1, ?2, ?3)
+                VALUES (?1, ?2, ?3, ?4)
                 ",
-                params![scope, topic_id, requested_count],
+                params![scope, topic_id, course_code, requested_count],
             )
             .map_err(repository_error)?;
 
@@ -588,6 +600,7 @@ impl SessionRepository for SqliteRepository {
                 s.id,
                 s.scope,
                 s.topic_id,
+                s.course_code,
                 s.current_index,
 
                 (
@@ -626,10 +639,11 @@ impl SessionRepository for SqliteRepository {
                         row.get::<_, i64>(0)?,
                         row.get::<_, String>(1)?,
                         row.get::<_, Option<i64>>(2)?,
-                        row.get::<_, i64>(3)?,
+                        row.get::<_, Option<String>>(3)?,
                         row.get::<_, i64>(4)?,
                         row.get::<_, i64>(5)?,
                         row.get::<_, i64>(6)?,
+                        row.get::<_, i64>(7)?,
                     ))
                 },
             )
@@ -640,6 +654,7 @@ impl SessionRepository for SqliteRepository {
             session_id,
             scope,
             topic_id,
+            course_code,
             current_index,
             total_questions,
             answered_questions,
@@ -658,7 +673,10 @@ impl SessionRepository for SqliteRepository {
                 QuizScope::Topic(TopicId(topic_id))
             }
 
-            "all" => QuizScope::AllTopics,
+            "all" => match course_code {
+                Some(course_code) => QuizScope::Course(course_code),
+                None => QuizScope::AllTopics,
+            },
 
             other => {
                 return Err(RepositoryError::InvalidState(format!(
@@ -921,6 +939,90 @@ mod tests {
         assert_eq!(topics.len(), 1);
         assert_eq!(topics[0].id, TopicId(1));
         assert_eq!(topics[0].slug, "architecture");
+    }
+
+    #[test]
+    fn course_session_uses_only_questions_from_selected_course() {
+        let mut repository = seeded_repository();
+
+        repository
+            .connection
+            .execute_batch(
+                "
+                INSERT INTO topics (
+                    id,
+                    course_code,
+                    slug,
+                    title,
+                    description,
+                    sort_order
+                )
+                VALUES (
+                    2,
+                    'dba-2',
+                    'backup',
+                    'Backup',
+                    NULL,
+                    2
+                );
+
+                INSERT INTO sources (
+                    id,
+                    module,
+                    section,
+                    locator
+                )
+                VALUES (
+                    2,
+                    'DBA-2',
+                    'Backup section',
+                    'page 1'
+                );
+
+                INSERT INTO questions (
+                    id,
+                    topic_id,
+                    source_id,
+                    text,
+                    explanation
+                )
+                VALUES (
+                    2,
+                    2,
+                    2,
+                    'Backup question?',
+                    'Backup explanation'
+                );
+
+                INSERT INTO answer_options (
+                    id,
+                    question_id,
+                    text,
+                    is_correct,
+                    sort_order
+                )
+                VALUES
+                    (3, 2, 'Correct', 1, 1),
+                    (4, 2, 'Incorrect', 0, 2);
+                ",
+            )
+            .expect("second course data should be inserted");
+
+        let session = repository
+            .start_session(&SessionConfig {
+                scope: QuizScope::Course(String::from("dba-1")),
+                limit: QuestionLimit::All,
+            })
+            .expect("course session should start");
+
+        assert_eq!(session.question_ids, vec![QuestionId(1)]);
+
+        let active = repository
+            .active_session()
+            .expect("active session should load")
+            .expect("active session should exist");
+
+        assert_eq!(active.scope, QuizScope::Course(String::from("dba-1")));
     }
 
     #[test]

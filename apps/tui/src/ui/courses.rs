@@ -10,14 +10,15 @@ use crate::app::App;
 use super::common::render_message;
 
 pub fn render(frame: &mut Frame, app: &App) {
-    if app.topics.is_empty() {
+    let courses = app.course_codes();
+
+    if courses.is_empty() {
         render_message(
             frame,
-            app.strings().topics_title,
-            app.strings().topics_empty,
+            app.strings().general_quiz,
+            app.strings().courses_empty,
             app.strings().footer_back,
         );
-
         return;
     }
 
@@ -30,32 +31,31 @@ pub fn render(frame: &mut Frame, app: &App) {
         ])
         .split(frame.area());
 
-    let header = Paragraph::new(app.strings().topics_title)
+    let header = Paragraph::new(app.strings().choose_course)
         .alignment(Alignment::Center)
         .block(Block::default().borders(Borders::ALL));
 
-    let items = app
-        .topics
+    let items = courses
         .iter()
         .enumerate()
-        .map(|(index, topic)| {
-            let style = if index == app.topic_selected {
+        .map(|(index, course)| {
+            let style = if index == app.course_selected {
                 Style::default().add_modifier(Modifier::REVERSED)
             } else {
                 Style::default()
             };
 
-            ListItem::new(topic.title.as_str()).style(style)
+            ListItem::new(course.to_uppercase()).style(style)
         })
         .collect::<Vec<_>>();
 
-    let topics = List::new(items).block(Block::default().borders(Borders::ALL));
+    let list = List::new(items).block(Block::default().borders(Borders::ALL));
 
-    let footer = Paragraph::new(app.strings().footer_topics)
+    let footer = Paragraph::new(app.strings().footer_courses)
         .alignment(Alignment::Center)
         .block(Block::default().borders(Borders::ALL));
 
     frame.render_widget(header, areas[0]);
-    frame.render_widget(topics, areas[1]);
+    frame.render_widget(list, areas[1]);
     frame.render_widget(footer, areas[2]);
 }

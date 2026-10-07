@@ -19,6 +19,7 @@ import java.io.File
 enum class AppScreen {
     Home,
     Topics,
+    Courses,
     Limit,
     Quiz,
     Feedback,
@@ -52,6 +53,19 @@ data class ModeStatisticsRow(
 )
 
 class TrainerController(context: Context) {
+    private val preferences = context.getSharedPreferences(
+        "dba_trainer_settings",
+        Context.MODE_PRIVATE,
+    )
+
+    var language by mutableStateOf(
+        UiLanguage.fromCode(preferences.getString("ui_language", null)),
+    )
+        private set
+
+    val strings: UiStrings
+        get() = uiStrings(language)
+
     var screen by mutableStateOf(AppScreen.Home)
         private set
 
@@ -59,6 +73,9 @@ class TrainerController(context: Context) {
         private set
 
     var pendingTopic by mutableStateOf<MobileTopic?>(null)
+        private set
+
+    var pendingCourse by mutableStateOf<String?>(null)
         private set
 
     var currentQuestion by mutableStateOf<MobileQuestion?>(null)
@@ -137,34 +154,72 @@ class TrainerController(context: Context) {
     val canGoBack: Boolean
         get() = screen != AppScreen.Home
 
+    val courseCodes: List<String>
+        get() = topics
+            .map { topic -> topic.courseCode }
+            .distinct()
+            .sortedWith(courseCodeComparator)
+
     val statisticsScopeTitle: String
         get() = selectedStatisticsTopic?.let { topic ->
             "${topic.courseCode.uppercase()} → ${topic.title}"
         } ?: selectedStatisticsCourse?.uppercase().orEmpty()
 
+    fun changeLanguage(language: UiLanguage) {
+        if (this.language == language) {
+            return
+        }
+
+        this.language = language
+        preferences
+            .edit()
+            .putString("ui_language", language.code)
+            .apply()
+    }
+
     fun openTopics() {
         pendingTopic = null
+        pendingCourse = null
         screen = AppScreen.Topics
     }
 
     fun openGeneralQuiz() {
         pendingTopic = null
+        pendingCourse = null
+        screen = AppScreen.Courses
+    }
+
+    fun chooseCourse(courseCode: String) {
+        pendingTopic = null
+        pendingCourse = courseCode
         screen = AppScreen.Limit
     }
 
     fun chooseTopic(topic: MobileTopic) {
+        pendingCourse = null
         pendingTopic = topic
         screen = AppScreen.Limit
     }
 
     fun startQuiz(limit: MobileQuestionLimit) {
         runCoreAction {
-            val session = pendingTopic?.let { topic ->
-                requireTrainer().startTopicSession(
-                    topic.id,
-                    limit,
-                )
-            } ?: requireTrainer().startAllTopicsSession(limit)
+            val session = when {
+                pendingTopic != null -> {
+                    requireTrainer().startTopicSession(
+                        pendingTopic!!.id,
+                        limit,
+                    )
+                }
+
+                pendingCourse != null -> {
+                    requireTrainer().startCourseSession(
+                        pendingCourse!!,
+                        limit,
+                    )
+                }
+
+                else -> requireTrainer().startAllTopicsSession(limit)
+            }
 
             sessionId = session.id
             answeredQuestions = 0
@@ -223,7 +278,7 @@ class TrainerController(context: Context) {
         val question = currentQuestion ?: return
 
         if (selectedOptionIds.isEmpty()) {
-            errorMessage = "Выберите хотя бы один вариант ответа."
+            errorMessage = strings.selectAtLeastOne
             return
         }
 
@@ -292,7 +347,7 @@ class TrainerController(context: Context) {
     fun openOverallStatistics() {
         val stats = overallStatistics ?: return
         statisticsDetail = stats
-        statisticsDetailTitle = "Общая статистика"
+        statisticsDetailTitle = strings.overallStatistics
         statisticsDetailReturnPage = StatisticsPage.Root
         statisticsPage = StatisticsPage.Detail
     }
@@ -390,11 +445,12 @@ class TrainerController(context: Context) {
         when (screen) {
             AppScreen.Home -> Unit
             AppScreen.Topics -> screen = AppScreen.Home
+            AppScreen.Courses -> screen = AppScreen.Home
             AppScreen.Limit -> {
-                screen = if (pendingTopic == null) {
-                    AppScreen.Home
-                } else {
-                    AppScreen.Topics
+                screen = when {
+                    pendingTopic != null -> AppScreen.Topics
+                    pendingCourse != null -> AppScreen.Courses
+                    else -> AppScreen.Home
                 }
             }
 
@@ -472,21 +528,21 @@ class TrainerController(context: Context) {
         globalModeStatistics = listOf(
             ModeStatisticsRow(
                 limit = MobileStatisticsLimit.TWENTY,
-                title = "20 вопросов",
+                title = strings.twentyQuestions,
                 stats = trainer.statisticsAll(
                     MobileStatisticsLimit.TWENTY,
                 ),
             ),
             ModeStatisticsRow(
                 limit = MobileStatisticsLimit.FIFTY,
-                title = "50 вопросов",
+                title = strings.fiftyQuestions,
                 stats = trainer.statisticsAll(
                     MobileStatisticsLimit.FIFTY,
                 ),
             ),
             ModeStatisticsRow(
                 limit = MobileStatisticsLimit.ALL_QUESTIONS,
-                title = "Все вопросы",
+                title = strings.allQuestions,
                 stats = trainer.statisticsAll(
                     MobileStatisticsLimit.ALL_QUESTIONS,
                 ),
@@ -499,22 +555,22 @@ class TrainerController(context: Context) {
     ): List<ModeStatisticsRow> = listOf(
         ModeStatisticsRow(
             limit = MobileStatisticsLimit.ANY,
-            title = "Все режимы",
+            title = strings.allModes,
             stats = load(MobileStatisticsLimit.ANY),
         ),
         ModeStatisticsRow(
             limit = MobileStatisticsLimit.TWENTY,
-            title = "20 вопросов",
+            title = strings.twentyQuestions,
             stats = load(MobileStatisticsLimit.TWENTY),
         ),
         ModeStatisticsRow(
             limit = MobileStatisticsLimit.FIFTY,
-            title = "50 вопросов",
+            title = strings.fiftyQuestions,
             stats = load(MobileStatisticsLimit.FIFTY),
         ),
         ModeStatisticsRow(
             limit = MobileStatisticsLimit.ALL_QUESTIONS,
-            title = "Все вопросы",
+            title = strings.allQuestions,
             stats = load(MobileStatisticsLimit.ALL_QUESTIONS),
         ),
     )
@@ -539,6 +595,7 @@ class TrainerController(context: Context) {
         correctAnswers = 0
         totalQuestions = 0
         pendingTopic = null
+        pendingCourse = null
     }
 
     private fun requireTrainer(): MobileTrainer =
@@ -555,15 +612,28 @@ class TrainerController(context: Context) {
 
     private companion object {
         val courseCodeComparator = Comparator<String> { left, right ->
-            val leftNumber = left.substringAfter("dba-", "").toIntOrNull()
-            val rightNumber = right.substringAfter("dba-", "").toIntOrNull()
+            val leftParts = splitCourseCode(left)
+            val rightParts = splitCourseCode(right)
+
+            val prefixComparison = leftParts.first.compareTo(rightParts.first)
 
             when {
-                leftNumber != null && rightNumber != null ->
-                    leftNumber.compareTo(rightNumber)
-
+                prefixComparison != 0 -> prefixComparison
+                leftParts.second != null && rightParts.second != null ->
+                    leftParts.second!!.compareTo(rightParts.second!!)
                 else -> left.compareTo(right)
             }
+        }
+
+        fun splitCourseCode(value: String): Pair<String, Int?> {
+            val separator = value.lastIndexOf('-')
+
+            if (separator <= 0 || separator == value.lastIndex) {
+                return value to null
+            }
+
+            return value.substring(0, separator) to
+                value.substring(separator + 1).toIntOrNull()
         }
     }
 }

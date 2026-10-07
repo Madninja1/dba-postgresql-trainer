@@ -65,6 +65,17 @@ impl MobileTrainer {
         })
     }
 
+    pub fn start_course_session(
+        &self,
+        course_code: String,
+        limit: MobileQuestionLimit,
+    ) -> Result<MobileQuizSession, MobileError> {
+        self.start_session(SessionConfig {
+            scope: QuizScope::Course(course_code),
+            limit: limit.into(),
+        })
+    }
+
     pub fn start_all_topics_session(
         &self,
         limit: MobileQuestionLimit,

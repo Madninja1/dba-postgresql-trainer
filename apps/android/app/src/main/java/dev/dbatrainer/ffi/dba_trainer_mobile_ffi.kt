@@ -691,6 +691,8 @@ internal object IntegrityCheckingUniffiLib {
     ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_start_all_topics_session(
     ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_start_course_session(
+    ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_start_topic_session(
     ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_statistics_all(
@@ -740,6 +742,8 @@ internal object UniffiLib {
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_current_question(`ptr`: Long,`sessionId`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_start_all_topics_session(`ptr`: Long,`limit`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_start_course_session(`ptr`: Long,`courseCode`: RustBuffer.ByValue,`limit`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_start_topic_session(`ptr`: Long,`topicId`: Long,`limit`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
@@ -895,6 +899,9 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_start_all_topics_session() and 0xFFFF) != 51578) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_start_course_session() and 0xFFFF) != 62481) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_start_topic_session() and 0xFFFF) != 24608) {
@@ -1332,6 +1339,8 @@ public interface MobileTrainerInterface {
     
     fun `startAllTopicsSession`(`limit`: MobileQuestionLimit): MobileQuizSession
     
+    fun `startCourseSession`(`courseCode`: kotlin.String, `limit`: MobileQuestionLimit): MobileQuizSession
+    
     fun `startTopicSession`(`topicId`: kotlin.Long, `limit`: MobileQuestionLimit): MobileQuizSession
     
     fun `statisticsAll`(`limit`: MobileStatisticsLimit): MobileTrainingStats
@@ -1521,6 +1530,22 @@ open class MobileTrainer: Disposable, AutoCloseable, MobileTrainerInterface
     UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_start_all_topics_session(
         it,
         
+        FfiConverterTypeMobileQuestionLimit.lower(`limit`),_status)
+}
+    }
+    )
+    }
+    
+
+    
+    @Throws(MobileException::class)override fun `startCourseSession`(`courseCode`: kotlin.String, `limit`: MobileQuestionLimit): MobileQuizSession {
+            return FfiConverterTypeMobileQuizSession.lift(
+    callWithHandle {
+    uniffiRustCallWithError(MobileException) { _status ->
+    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_start_course_session(
+        it,
+        
+        FfiConverterString.lower(`courseCode`),
         FfiConverterTypeMobileQuestionLimit.lower(`limit`),_status)
 }
     }
@@ -1859,6 +1884,8 @@ data class MobileSessionProgress (
     , 
     val `topicId`: kotlin.Long?
     , 
+    val `courseCode`: kotlin.String?
+    , 
     val `currentIndex`: kotlin.ULong
     , 
     val `totalQuestions`: kotlin.ULong
@@ -1884,6 +1911,7 @@ public object FfiConverterTypeMobileSessionProgress: FfiConverterRustBuffer<Mobi
         return MobileSessionProgress(
             FfiConverterLong.read(buf),
             FfiConverterOptionalLong.read(buf),
+            FfiConverterOptionalString.read(buf),
             FfiConverterULong.read(buf),
             FfiConverterULong.read(buf),
             FfiConverterULong.read(buf),
@@ -1894,6 +1922,7 @@ public object FfiConverterTypeMobileSessionProgress: FfiConverterRustBuffer<Mobi
     override fun allocationSize(value: MobileSessionProgress) = (
             FfiConverterLong.allocationSize(value.`id`) +
             FfiConverterOptionalLong.allocationSize(value.`topicId`) +
+            FfiConverterOptionalString.allocationSize(value.`courseCode`) +
             FfiConverterULong.allocationSize(value.`currentIndex`) +
             FfiConverterULong.allocationSize(value.`totalQuestions`) +
             FfiConverterULong.allocationSize(value.`answeredQuestions`) +
@@ -1903,6 +1932,7 @@ public object FfiConverterTypeMobileSessionProgress: FfiConverterRustBuffer<Mobi
     override fun write(value: MobileSessionProgress, buf: ByteBuffer) {
             FfiConverterLong.write(value.`id`, buf)
             FfiConverterOptionalLong.write(value.`topicId`, buf)
+            FfiConverterOptionalString.write(value.`courseCode`, buf)
             FfiConverterULong.write(value.`currentIndex`, buf)
             FfiConverterULong.write(value.`totalQuestions`, buf)
             FfiConverterULong.write(value.`answeredQuestions`, buf)

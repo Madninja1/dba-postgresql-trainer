@@ -76,6 +76,7 @@ pub struct MobileQuizSession {
 pub struct MobileSessionProgress {
     pub id: i64,
     pub topic_id: Option<i64>,
+    pub course_code: Option<String>,
     pub current_index: u64,
     pub total_questions: u64,
     pub answered_questions: u64,
@@ -196,14 +197,16 @@ impl From<QuizSession> for MobileQuizSession {
 
 impl From<SessionProgress> for MobileSessionProgress {
     fn from(value: SessionProgress) -> Self {
-        let topic_id = match value.scope {
-            QuizScope::Topic(topic_id) => Some(topic_id.0),
-            QuizScope::AllTopics => None,
+        let (topic_id, course_code) = match value.scope {
+            QuizScope::Topic(topic_id) => (Some(topic_id.0), None),
+            QuizScope::Course(course_code) => (None, Some(course_code)),
+            QuizScope::AllTopics => (None, None),
         };
 
         Self {
             id: value.id.0,
             topic_id,
+            course_code,
             current_index: value.current_index as u64,
             total_questions: value.total_questions as u64,
             answered_questions: value.answered_questions as u64,

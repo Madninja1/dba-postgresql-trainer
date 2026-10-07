@@ -29,6 +29,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -40,6 +42,9 @@ import dev.dbatrainer.app.ModeStatisticsRow
 import dev.dbatrainer.app.StatisticsPage
 import dev.dbatrainer.app.TopicStatisticsRow
 import dev.dbatrainer.app.TrainerController
+import dev.dbatrainer.app.UiLanguage
+import dev.dbatrainer.app.UiStrings
+import dev.dbatrainer.app.uiStrings
 import dev.dbatrainer.ffi.MobileAnswerResult
 import dev.dbatrainer.ffi.MobileQuestion
 import dev.dbatrainer.ffi.MobileQuestionLimit
@@ -49,8 +54,17 @@ import dev.dbatrainer.ffi.MobileTopic
 import dev.dbatrainer.ffi.MobileTrainingStats
 import dev.dbatrainer.ffi.coreVersion
 
+private val LocalUiStrings = staticCompositionLocalOf {
+    uiStrings(UiLanguage.English)
+}
+
 @Composable
 fun TrainerApp(controller: TrainerController) {
+    CompositionLocalProvider(
+        LocalUiStrings provides controller.strings,
+    ) {
+        val strings = LocalUiStrings.current
+
     BackHandler(
         enabled = controller.canGoBack,
     ) {
@@ -69,6 +83,7 @@ fun TrainerApp(controller: TrainerController) {
             when (controller.screen) {
                 AppScreen.Home -> HomeScreen(controller)
                 AppScreen.Topics -> TopicsScreen(controller)
+                AppScreen.Courses -> CoursesScreen(controller)
                 AppScreen.Limit -> LimitScreen(controller)
                 AppScreen.Quiz -> QuizScreen(controller)
                 AppScreen.Feedback -> FeedbackScreen(controller)
@@ -82,27 +97,28 @@ fun TrainerApp(controller: TrainerController) {
         AlertDialog(
             onDismissRequest = {},
             title = {
-                Text("Незавершённый тест")
+                Text(strings.unfinishedQuiz)
             },
             text = {
                 Text(
-                    "Отвечено ${progress.answeredQuestions} " +
-                        "из ${progress.totalQuestions} вопросов.\n\n" +
-                        "Продолжить с сохранённого места?",
+                    strings.resumeMessage(
+                        progress.answeredQuestions,
+                        progress.totalQuestions,
+                    ),
                 )
             },
             confirmButton = {
                 Button(
                     onClick = controller::continueSavedSession,
                 ) {
-                    Text("Продолжить")
+                    Text(strings.continueQuiz)
                 }
             },
             dismissButton = {
                 TextButton(
                     onClick = controller::discardSavedSession,
                 ) {
-                    Text("Отменить тест")
+                    Text(strings.cancelQuiz)
                 }
             },
         )
@@ -112,26 +128,23 @@ fun TrainerApp(controller: TrainerController) {
         AlertDialog(
             onDismissRequest = controller::dismissCancelDialog,
             title = {
-                Text("Отменить тест?")
+                Text(strings.cancelQuizTitle)
             },
             text = {
-                Text(
-                    "Прогресс этого теста останется в истории как отменённый. " +
-                        "В основную статистику ответы не попадут.",
-                )
+                Text(strings.cancelQuizMessage)
             },
             confirmButton = {
                 Button(
                     onClick = controller::confirmCancelQuiz,
                 ) {
-                    Text("Отменить тест")
+                    Text(strings.cancelQuiz)
                 }
             },
             dismissButton = {
                 TextButton(
                     onClick = controller::dismissCancelDialog,
                 ) {
-                    Text("Продолжить")
+                    Text(strings.continueQuiz)
                 }
             },
         )
@@ -141,7 +154,7 @@ fun TrainerApp(controller: TrainerController) {
         AlertDialog(
             onDismissRequest = controller::dismissError,
             title = {
-                Text("Ошибка")
+                Text(strings.error)
             },
             text = {
                 Text(message)
@@ -155,10 +168,13 @@ fun TrainerApp(controller: TrainerController) {
             },
         )
     }
+    }
 }
 
 @Composable
 private fun HomeScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -172,7 +188,7 @@ private fun HomeScreen(controller: TrainerController) {
         )
 
         Text(
-            text = "Офлайн-тренажёр администратора PostgreSQL",
+            text = strings.appSubtitle,
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -183,7 +199,7 @@ private fun HomeScreen(controller: TrainerController) {
             onClick = controller::openTopics,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text("Тест по теме")
+            Text(strings.topicQuiz)
         }
 
         Spacer(Modifier.height(12.dp))
@@ -192,7 +208,7 @@ private fun HomeScreen(controller: TrainerController) {
             onClick = controller::openGeneralQuiz,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text("Общий тест")
+            Text(strings.generalQuiz)
         }
 
         Spacer(Modifier.height(12.dp))
@@ -201,13 +217,38 @@ private fun HomeScreen(controller: TrainerController) {
             onClick = controller::openStatistics,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text("Статистика")
+            Text(strings.statistics)
         }
 
-        Spacer(Modifier.height(32.dp))
+        Spacer(Modifier.height(24.dp))
 
         Text(
-            text = "Rust core ${coreVersion()}",
+            text = strings.language,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            LanguageButton(
+                text = "EN",
+                selected = controller.language == UiLanguage.English,
+                onClick = { controller.changeLanguage(UiLanguage.English) },
+            )
+            LanguageButton(
+                text = "RU",
+                selected = controller.language == UiLanguage.Russian,
+                onClick = { controller.changeLanguage(UiLanguage.Russian) },
+            )
+        }
+
+        Spacer(Modifier.height(24.dp))
+
+        Text(
+            text = "${strings.rustCore} ${coreVersion()}",
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -215,14 +256,33 @@ private fun HomeScreen(controller: TrainerController) {
 }
 
 @Composable
+private fun LanguageButton(
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    if (selected) {
+        Button(onClick = onClick) {
+            Text(text)
+        }
+    } else {
+        OutlinedButton(onClick = onClick) {
+            Text(text)
+        }
+    }
+}
+
+@Composable
 private fun TopicsScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
+
     TrainerScaffold(
-        title = "Темы",
+        title = strings.topics,
         onBack = controller::back,
     ) { modifier ->
         if (controller.topics.isEmpty()) {
             EmptyMessage(
-                text = "Темы пока не загружены.",
+                text = strings.topicsEmpty,
                 modifier = modifier,
             )
             return@TrainerScaffold
@@ -242,6 +302,68 @@ private fun TopicsScreen(controller: TrainerController) {
                         controller.chooseTopic(topic)
                     },
                 )
+            }
+        }
+    }
+}
+
+@Composable
+private fun CoursesScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
+
+    TrainerScaffold(
+        title = strings.generalQuiz,
+        onBack = controller::back,
+    ) { modifier ->
+        if (controller.courseCodes.isEmpty()) {
+            EmptyMessage(
+                text = strings.coursesEmpty,
+                modifier = modifier,
+            )
+            return@TrainerScaffold
+        }
+
+        LazyColumn(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            item {
+                Text(
+                    text = strings.chooseCourse,
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            }
+
+            items(
+                items = controller.courseCodes,
+                key = { courseCode -> courseCode },
+            ) { courseCode ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { controller.chooseCourse(courseCode) },
+                ) {
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                    ) {
+                        Text(
+                            text = courseCode.uppercase(),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+
+                        val topicCount = controller.topics.count { topic ->
+                            topic.courseCode == courseCode
+                        }
+
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            text = strings.topicCount(topicCount),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
             }
         }
     }
@@ -288,8 +410,10 @@ private fun TopicCard(
 
 @Composable
 private fun LimitScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
     val title = controller.pendingTopic?.title
-        ?: "Общий тест"
+        ?: controller.pendingCourse?.uppercase()
+        ?: strings.generalQuiz
 
     TrainerScaffold(
         title = title,
@@ -300,12 +424,12 @@ private fun LimitScreen(controller: TrainerController) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
-                text = "Количество вопросов",
+                text = strings.questionCount,
                 style = MaterialTheme.typography.titleLarge,
             )
 
             LimitButton(
-                text = "20 вопросов",
+                text = strings.twentyQuestions,
                 onClick = {
                     controller.startQuiz(
                         MobileQuestionLimit.TWENTY,
@@ -314,7 +438,7 @@ private fun LimitScreen(controller: TrainerController) {
             )
 
             LimitButton(
-                text = "50 вопросов",
+                text = strings.fiftyQuestions,
                 onClick = {
                     controller.startQuiz(
                         MobileQuestionLimit.FIFTY,
@@ -323,7 +447,7 @@ private fun LimitScreen(controller: TrainerController) {
             )
 
             LimitButton(
-                text = "Все вопросы",
+                text = strings.allQuestions,
                 onClick = {
                     controller.startQuiz(
                         MobileQuestionLimit.ALL,
@@ -349,6 +473,7 @@ private fun LimitButton(
 
 @Composable
 private fun QuizScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
     val question = controller.currentQuestion
         ?: return
 
@@ -363,7 +488,7 @@ private fun QuizScreen(controller: TrainerController) {
     }
 
     TrainerScaffold(
-        title = "Вопрос $currentNumber из ${controller.totalQuestions}",
+        title = strings.questionProgress(currentNumber, controller.totalQuestions),
         onBack = controller::requestCancelQuiz,
     ) { modifier ->
         LazyColumn(
@@ -391,9 +516,9 @@ private fun QuizScreen(controller: TrainerController) {
                         question.questionType ==
                         MobileQuestionType.MULTIPLE_CHOICE
                     ) {
-                        "Выберите все правильные варианты"
+                        strings.chooseAllCorrect
                     } else {
-                        "Выберите один вариант"
+                        strings.chooseOne
                     },
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -424,7 +549,7 @@ private fun QuizScreen(controller: TrainerController) {
                     enabled = controller.selectedOptionIds.isNotEmpty(),
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text("Ответить")
+                    Text(strings.answer)
                 }
             }
         }
@@ -475,6 +600,7 @@ private fun AnswerRow(
 
 @Composable
 private fun FeedbackScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
     val question = controller.currentQuestion
         ?: return
     val result = controller.feedback
@@ -482,9 +608,9 @@ private fun FeedbackScreen(controller: TrainerController) {
 
     TrainerScaffold(
         title = if (result.isCorrect) {
-            "Верно"
+            strings.correct
         } else {
-            "Неверно"
+            strings.incorrect
         },
         onBack = controller::requestCancelQuiz,
     ) { modifier ->
@@ -501,16 +627,17 @@ private fun FeedbackScreen(controller: TrainerController) {
 
             item {
                 InfoCard(
-                    title = "Объяснение",
+                    title = strings.explanation,
                     text = question.explanation,
                 )
             }
 
             item {
                 InfoCard(
-                    title = "Источник",
+                    title = strings.source,
                     text = formatSource(
                         question.source,
+                        strings,
                     ),
                 )
             }
@@ -520,7 +647,7 @@ private fun FeedbackScreen(controller: TrainerController) {
                     onClick = controller::nextQuestion,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text("Следующий вопрос")
+                    Text(strings.nextQuestion)
                 }
             }
         }
@@ -532,11 +659,13 @@ private fun FeedbackAnswers(
     question: MobileQuestion,
     result: MobileAnswerResult,
 ) {
+    val strings = LocalUiStrings.current
+
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(
-            text = "Ваш ответ",
+            text = strings.yourAnswer,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold,
         )
@@ -550,9 +679,9 @@ private fun FeedbackAnswers(
 
         Text(
             text = if (result.correctOptionIds.size > 1) {
-                "Правильные ответы"
+                strings.correctAnswers
             } else {
-                "Правильный ответ"
+                strings.correctAnswer
             },
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold,
@@ -614,6 +743,7 @@ private fun InfoCard(
 
 @Composable
 private fun ResultsScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
     val accuracy = if (controller.answeredQuestions == 0) {
         0.0
     } else {
@@ -629,7 +759,7 @@ private fun ResultsScreen(controller: TrainerController) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = "Тест завершён",
+            text = strings.quizCompleted,
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
         )
@@ -637,14 +767,16 @@ private fun ResultsScreen(controller: TrainerController) {
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = "${controller.correctAnswers} из " +
-                "${controller.answeredQuestions}",
+            text = strings.resultScore(
+                controller.correctAnswers,
+                controller.answeredQuestions,
+            ),
             style = MaterialTheme.typography.displaySmall,
             color = MaterialTheme.colorScheme.primary,
         )
 
         Text(
-            text = "${formatPercent(accuracy)} правильных ответов",
+            text = strings.percentCorrect(formatPercent(accuracy)),
             style = MaterialTheme.typography.titleMedium,
         )
 
@@ -654,7 +786,7 @@ private fun ResultsScreen(controller: TrainerController) {
             onClick = controller::finishResults,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text("На главную")
+            Text(strings.home)
         }
     }
 }
@@ -673,10 +805,11 @@ private fun StatisticsScreen(controller: TrainerController) {
 
 @Composable
 private fun StatisticsRootScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
     val overall = controller.overallStatistics
 
     TrainerScaffold(
-        title = "Статистика",
+        title = strings.statistics,
         onBack = controller::back,
     ) { modifier ->
         LazyColumn(
@@ -685,27 +818,27 @@ private fun StatisticsRootScreen(controller: TrainerController) {
         ) {
             item {
                 StatisticsNavigationCard(
-                    title = "Общая",
+                    title = strings.overall,
                     stats = overall,
-                    subtitle = "Все курсы, темы и режимы",
+                    subtitle = strings.allCoursesTopicsModes,
                     onClick = controller::openOverallStatistics,
                 )
             }
 
             item {
                 StatisticsNavigationCard(
-                    title = "По курсам и темам",
+                    title = strings.byCoursesAndTopics,
                     stats = overall,
-                    subtitle = "DBA-1 → тема → режим",
+                    subtitle = strings.courseTopicMode,
                     onClick = controller::openStatisticsCourses,
                 )
             }
 
             item {
                 StatisticsNavigationCard(
-                    title = "По режимам",
+                    title = strings.byModes,
                     stats = overall,
-                    subtitle = "20 / 50 / все вопросы",
+                    subtitle = strings.modesDescription,
                     onClick = controller::openStatisticsGlobalModes,
                 )
             }
@@ -716,7 +849,7 @@ private fun StatisticsRootScreen(controller: TrainerController) {
                     onClick = controller::clearStatistics,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text("Очистить статистику")
+                    Text(strings.clearStatistics)
                 }
             }
         }
@@ -725,13 +858,15 @@ private fun StatisticsRootScreen(controller: TrainerController) {
 
 @Composable
 private fun StatisticsCoursesScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
+
     TrainerScaffold(
-        title = "Статистика → Курсы",
+        title = strings.statisticsCourses,
         onBack = controller::back,
     ) { modifier ->
         if (controller.courseStatistics.isEmpty()) {
             EmptyMessage(
-                text = "Курсы пока не загружены.",
+                text = strings.coursesEmpty,
                 modifier = modifier,
             )
             return@TrainerScaffold
@@ -761,16 +896,19 @@ private fun CourseStatisticsCard(
     row: CourseStatisticsRow,
     onClick: () -> Unit,
 ) {
+    val strings = LocalUiStrings.current
+
     StatisticsNavigationCard(
         title = row.courseCode.uppercase(),
         stats = row.stats,
-        subtitle = "Статистика курса",
+        subtitle = strings.courseStatistics,
         onClick = onClick,
     )
 }
 
 @Composable
 private fun StatisticsTopicsScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
     val courseCode = controller.selectedStatisticsCourse
         ?: return
     val courseStats = controller.courseStatistics
@@ -778,7 +916,7 @@ private fun StatisticsTopicsScreen(controller: TrainerController) {
         ?.stats
 
     TrainerScaffold(
-        title = "Статистика → ${courseCode.uppercase()}",
+        title = "${strings.statistics} → ${courseCode.uppercase()}",
         onBack = controller::back,
     ) { modifier ->
         LazyColumn(
@@ -787,7 +925,7 @@ private fun StatisticsTopicsScreen(controller: TrainerController) {
         ) {
             item {
                 StatisticsNavigationCard(
-                    title = "Все темы",
+                    title = strings.allTopics,
                     stats = courseStats,
                     subtitle = courseCode.uppercase(),
                     onClick = controller::openCourseAllTopicsModes,
@@ -824,8 +962,10 @@ private fun TopicStatisticsCard(
 
 @Composable
 private fun StatisticsGlobalModesScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
+
     TrainerScaffold(
-        title = "Статистика → Режимы",
+        title = strings.statisticsModes,
         onBack = controller::back,
     ) { modifier ->
         StatisticsModesList(
@@ -877,6 +1017,7 @@ private fun StatisticsModesList(
 
 @Composable
 private fun StatisticsDetailScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
     val stats = controller.statisticsDetail
 
     TrainerScaffold(
@@ -885,7 +1026,7 @@ private fun StatisticsDetailScreen(controller: TrainerController) {
     ) { modifier ->
         if (stats == null) {
             EmptyMessage(
-                text = "Статистика пока недоступна.",
+                text = strings.statisticsUnavailable,
                 modifier = modifier,
             )
             return@TrainerScaffold
@@ -958,6 +1099,8 @@ private fun StatisticsNavigationCard(
 private fun StatisticsCard(
     stats: MobileTrainingStats,
 ) {
+    val strings = LocalUiStrings.current
+
     Card(
         modifier = Modifier.fillMaxWidth(),
     ) {
@@ -966,11 +1109,11 @@ private fun StatisticsCard(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
-                text = "Завершено тестов: ${stats.completedSessions}",
+                text = strings.completedTests(stats.completedSessions),
                 style = MaterialTheme.typography.bodyLarge,
             )
             Text(
-                text = "Отменено тестов: ${stats.cancelledSessions}",
+                text = strings.cancelledTests(stats.cancelledSessions),
                 style = MaterialTheme.typography.bodyLarge,
             )
 
@@ -979,22 +1122,22 @@ private fun StatisticsCard(
             )
 
             Text(
-                text = "Отвечено вопросов: ${stats.answeredQuestions}",
+                text = strings.answeredQuestions(stats.answeredQuestions),
                 style = MaterialTheme.typography.bodyLarge,
             )
             Text(
-                text = "Правильных ответов: ${stats.correctAnswers}",
+                text = strings.correctAnswers(stats.correctAnswers),
                 style = MaterialTheme.typography.bodyLarge,
             )
             Text(
-                text = "Неправильных ответов: ${stats.incorrectAnswers}",
+                text = strings.incorrectAnswers(stats.incorrectAnswers),
                 style = MaterialTheme.typography.bodyLarge,
             )
 
             Spacer(Modifier.height(6.dp))
 
             Text(
-                text = "Точность: ${formatPercent(stats.accuracyPercent)}",
+                text = strings.accuracy(formatPercent(stats.accuracyPercent)),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
@@ -1009,6 +1152,8 @@ private fun TrainerScaffold(
     onBack: () -> Unit,
     content: @Composable (Modifier) -> Unit,
 ) {
+    val strings = LocalUiStrings.current
+
     Scaffold(
         topBar = {
             Surface(
@@ -1023,7 +1168,7 @@ private fun TrainerScaffold(
                     TextButton(
                         onClick = onBack,
                     ) {
-                        Text("Назад")
+                        Text(strings.back)
                     }
 
                     Spacer(Modifier.width(8.dp))
@@ -1072,13 +1217,16 @@ private fun statsPercent(stats: MobileTrainingStats?): String =
         formatPercent(stats.accuracyPercent)
     }
 
-private fun formatSource(source: MobileSource): String {
+private fun formatSource(
+    source: MobileSource,
+    strings: UiStrings,
+): String {
     val parts = mutableListOf<String>()
 
     parts += if (source.url == null) {
-        "Материал курса"
+        strings.courseMaterial
     } else {
-        "Документация PostgreSQL"
+        strings.postgresqlDocumentation
     }
 
     parts += "${source.module} / ${source.section}"

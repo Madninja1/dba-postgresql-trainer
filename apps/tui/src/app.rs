@@ -8,6 +8,8 @@ use dba_trainer_domain::{
 
 use dba_trainer_storage_sqlite::SqliteRepository;
 
+use crate::localization::{UiLanguage, UiStrings, ui_strings};
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Screen {
     Home,
@@ -15,6 +17,7 @@ pub enum Screen {
     ResumeSession,
 
     Topics,
+    Courses,
     QuizSetup,
 
     Quiz,
@@ -58,27 +61,27 @@ pub enum HomeItem {
     Topics,
     GeneralQuiz,
     Statistics,
+    Language,
     Quit,
 }
 
 impl HomeItem {
-    pub fn label(self) -> &'static str {
+    pub fn label(self, strings: &UiStrings, language: UiLanguage) -> String {
         match self {
-            Self::Topics => "Тест по теме",
-
-            Self::GeneralQuiz => "Общий тест",
-
-            Self::Statistics => "Статистика",
-
-            Self::Quit => "Выход",
+            Self::Topics => strings.topic_quiz.to_string(),
+            Self::GeneralQuiz => strings.general_quiz.to_string(),
+            Self::Statistics => strings.statistics.to_string(),
+            Self::Language => format!("{}: {}", strings.language, strings.language_name(language)),
+            Self::Quit => strings.quit.to_string(),
         }
     }
 }
 
-pub const HOME_ITEMS: [HomeItem; 4] = [
+pub const HOME_ITEMS: [HomeItem; 5] = [
     HomeItem::Topics,
     HomeItem::GeneralQuiz,
     HomeItem::Statistics,
+    HomeItem::Language,
     HomeItem::Quit,
 ];
 
@@ -91,9 +94,11 @@ pub const QUESTION_LIMITS: [QuestionLimit; 3] = [
 pub struct App {
     pub screen: Screen,
     pub should_quit: bool,
+    pub language: UiLanguage,
 
     pub home_selected: usize,
     pub topic_selected: usize,
+    pub course_selected: usize,
     pub limit_selected: usize,
 
     pub option_selected: usize,
@@ -146,7 +151,10 @@ pub struct App {
 }
 
 impl App {
-    pub fn new(service: TrainerService<SqliteRepository>) -> Result<Self, RepositoryError> {
+    pub fn new(
+        service: TrainerService<SqliteRepository>,
+        language: UiLanguage,
+    ) -> Result<Self, RepositoryError> {
         let topics = service.topics()?;
 
         let resume_session = service.active_session()?;
@@ -162,9 +170,13 @@ impl App {
 
             should_quit: false,
 
+            language,
+
             home_selected: 0,
 
             topic_selected: 0,
+
+            course_selected: 0,
 
             limit_selected: 0,
 
@@ -218,6 +230,10 @@ impl App {
         })
     }
 
+    pub fn strings(&self) -> &'static UiStrings {
+        ui_strings(self.language)
+    }
+
     pub fn selected_limit(&self) -> QuestionLimit {
         QUESTION_LIMITS[self.limit_selected]
     }
@@ -235,6 +251,8 @@ impl App {
             Screen::Home => self.handle_home_action(action),
 
             Screen::Topics => self.handle_topics_action(action),
+
+            Screen::Courses => self.handle_courses_action(action),
 
             Screen::QuizSetup => self.handle_quiz_setup_action(action),
 
@@ -272,11 +290,8 @@ impl App {
                 }
 
                 HomeItem::GeneralQuiz => {
-                    self.quiz_scope = QuizScope::AllTopics;
-
-                    self.limit_selected = 0;
-
-                    self.screen = Screen::QuizSetup;
+                    self.course_selected = 0;
+                    self.screen = Screen::Courses;
                 }
 
                 HomeItem::Statistics => {
@@ -285,6 +300,10 @@ impl App {
                     self.statistics = None;
                     self.statistics_history.clear();
                     self.screen = Screen::Statistics;
+                }
+
+                HomeItem::Language => {
+                    self.language = self.language.toggle();
                 }
 
                 HomeItem::Quit => {
@@ -330,6 +349,36 @@ impl App {
         Ok(())
     }
 
+    fn handle_courses_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        let courses = self.course_codes();
+
+        match action {
+            Action::Up => {
+                self.course_selected = previous_index(self.course_selected, courses.len());
+            }
+
+            Action::Down => {
+                self.course_selected = next_index(self.course_selected, courses.len());
+            }
+
+            Action::Confirm => {
+                if let Some(course_code) = courses.get(self.course_selected) {
+                    self.quiz_scope = QuizScope::Course(course_code.clone());
+                    self.limit_selected = 0;
+                    self.screen = Screen::QuizSetup;
+                }
+            }
+
+            Action::Back => {
+                self.screen = Screen::Home;
+            }
+
+            Action::Toggle | Action::Quit | Action::ClearStatistics => {}
+        }
+
+        Ok(())
+    }
+
     fn handle_quiz_setup_action(&mut self, action: Action) -> Result<(), RepositoryError> {
         match action {
             Action::Up => {
@@ -345,9 +394,9 @@ impl App {
             }
 
             Action::Back => {
-                self.screen = match self.quiz_scope {
+                self.screen = match &self.quiz_scope {
                     QuizScope::Topic(_) => Screen::Topics,
-
+                    QuizScope::Course(_) => Screen::Courses,
                     QuizScope::AllTopics => Screen::Home,
                 };
             }
@@ -526,10 +575,8 @@ impl App {
         match self.statistics_view.clone() {
             StatisticsView::Root => match self.statistics_selected {
                 0 => {
-                    self.open_statistics_detail(
-                        String::from("Общая статистика"),
-                        StatisticsFilter::all(),
-                    )?;
+                    let title = self.strings().overall_statistics.to_string();
+                    self.open_statistics_detail(title, StatisticsFilter::all())?;
                 }
                 1 => {
                     self.load_statistics_course_summaries()?;
@@ -585,7 +632,8 @@ impl App {
                 let limit = statistics_limit_from_index(self.statistics_selected);
 
                 if let Some(limit) = limit {
-                    let detail_title = format!("{} → {}", title, statistics_limit_label(limit));
+                    let detail_title =
+                        format!("{} → {}", title, self.strings().statistics_limit(limit));
 
                     self.open_statistics_detail(detail_title, StatisticsFilter { scope, limit })?;
                 }
@@ -600,8 +648,14 @@ impl App {
                 };
 
                 if let Some(limit) = limit {
+                    let title = format!(
+                        "{} → {}",
+                        self.strings().all_courses,
+                        self.strings().statistics_limit(limit),
+                    );
+
                     self.open_statistics_detail(
-                        format!("Все курсы → {}", statistics_limit_label(limit)),
+                        title,
                         StatisticsFilter {
                             scope: StatisticsScope::All,
                             limit,
@@ -681,7 +735,7 @@ impl App {
         }
     }
 
-    pub fn statistics_course_codes(&self) -> Vec<String> {
+    pub fn course_codes(&self) -> Vec<String> {
         let mut course_codes = self
             .topics
             .iter()
@@ -690,8 +744,11 @@ impl App {
 
         course_codes.sort();
         course_codes.dedup();
-
         course_codes
+    }
+
+    pub fn statistics_course_codes(&self) -> Vec<String> {
+        self.course_codes()
     }
 
     pub fn statistics_topics_for_course(&self, course_code: &str) -> Vec<&Topic> {
@@ -885,7 +942,7 @@ impl App {
 
     fn start_session(&mut self) -> Result<(), RepositoryError> {
         let config = SessionConfig {
-            scope: self.quiz_scope,
+            scope: self.quiz_scope.clone(),
 
             limit: self.selected_limit(),
         };
@@ -984,8 +1041,8 @@ impl App {
 
             QuestionType::MultipleChoice => {
                 if self.selected_answer_ids.is_empty() {
-                    self.error_message =
-                        Some(String::from("Выберите хотя бы один вариант ответа."));
+                    let message = self.strings().select_at_least_one.to_string();
+                    self.error_message = Some(message);
 
                     return Ok(());
                 }
@@ -1056,15 +1113,6 @@ fn statistics_limit_from_index(index: usize) -> Option<StatisticsLimit> {
         2 => Some(StatisticsLimit::Fifty),
         3 => Some(StatisticsLimit::AllQuestions),
         _ => None,
-    }
-}
-
-pub fn statistics_limit_label(limit: StatisticsLimit) -> &'static str {
-    match limit {
-        StatisticsLimit::Any => "Все режимы",
-        StatisticsLimit::Twenty => "20 вопросов",
-        StatisticsLimit::Fifty => "50 вопросов",
-        StatisticsLimit::AllQuestions => "Все вопросы",
     }
 }
 

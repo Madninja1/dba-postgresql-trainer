@@ -31,13 +31,17 @@ pub fn render(frame: &mut Frame, app: &App) {
                 Style::default()
             };
 
-            ListItem::new(item.label()).style(style)
+            ListItem::new(item.label(app.strings(), app.language)).style(style)
         })
         .collect::<Vec<_>>();
 
-    let menu = List::new(items).block(Block::default().title("Главное меню").borders(Borders::ALL));
+    let menu = List::new(items).block(
+        Block::default()
+            .title(app.strings().main_menu)
+            .borders(Borders::ALL),
+    );
 
-    let footer = Paragraph::new("↑/↓ или j/k — выбор | Enter — открыть | q — выход")
+    let footer = Paragraph::new(app.strings().footer_menu)
         .alignment(Alignment::Center)
         .block(Block::default().borders(Borders::ALL));
 
