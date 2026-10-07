@@ -1,0 +1,1811 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-testing-app-architecture",
+  "questions": [
+    {
+      "key": "rust1-testing-app-architecture-001",
+      "type": "single_choice",
+      "text": "Что сообщает атрибут `#[test]` у функции?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Функцию нужно выполнить как тест при `cargo test`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Функция должна запускаться только в release-профиле",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Функция автоматически становится публичной",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Функция обязана возвращать `Result`",
+          "correct": false
+        }
+      ],
+      "explanation": "`#[test]` помечает обычную функцию как тестовую: Cargo включает её в тестовый бинарный файл и выполняет при `cargo test`.",
+      "source": {
+        "key": "rust1-testing-app-architecture-test-attribute",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — «Написание автоматизированных тестов», PDF стр. 276–279",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-002",
+      "type": "single_choice",
+      "text": "Что проверяет `assert_eq!(actual, expected)`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Что два значения равны",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Что два значения различаются",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Что выражение имеет тип `bool`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Что функция завершилась без `panic!`",
+          "correct": false
+        }
+      ],
+      "explanation": "`assert_eq!` сравнивает два значения на равенство и при несовпадении завершает тест неуспешно, показывая сравниваемые значения.",
+      "source": {
+        "key": "rust1-testing-app-architecture-assertions",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — раздел о макросах `assert!`, `assert_eq!` и `assert_ne!`, PDF стр. 282–289",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-003",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о проверках в тестах верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`assert!(condition)` ожидает значение `true`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`assert_ne!(a, b)` проверяет, что значения различаются",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`assert_eq!` и `assert_ne!` могут выводить сравниваемые значения при ошибке",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`assert!` автоматически проверяет все ветви `match`",
+          "correct": false
+        }
+      ],
+      "explanation": "`assert!` проверяет логическое условие, а `assert_eq!` и `assert_ne!` предназначены для равенства и неравенства. Проверка исчерпывающих ветвей `match` относится к компилятору, а не к `assert!`.",
+      "source": {
+        "key": "rust1-testing-app-architecture-assertions-q003",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — раздел о макросах проверки, PDF стр. 282–289",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-004",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `#[should_panic]` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Тест проходит, если внутри действительно происходит `panic!`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Параметр `expected` позволяет проверить подстроку сообщения panic",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Без `expected` тест может пройти из-за panic по неожиданной причине",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Атрибут превращает любую ошибку компиляции в успешный тест",
+          "correct": false
+        }
+      ],
+      "explanation": "`#[should_panic]` предназначен для ожидаемой паники. `expected` делает проверку точнее, требуя нужную подстроку в сообщении. Ошибки компиляции этот атрибут не превращает в успешные тесты.",
+      "source": {
+        "key": "rust1-testing-app-architecture-should-panic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — проверка panic с `#[should_panic]`, PDF стр. 291–293",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-005",
+      "type": "single_choice",
+      "text": "Как интерпретируется тестовая функция, возвращающая `Result<(), String>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`Ok(())` означает успех, `Err(...)` — провал теста",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Любой `Result` считается успехом",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Тест проходит только при `Err(...)`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Такая сигнатура допустима только для integration tests",
+          "correct": false
+        }
+      ],
+      "explanation": "Тест может возвращать `Result`: успешное выполнение выражается через `Ok(())`, а ошибка — через `Err(...)`. Это также позволяет использовать `?` внутри теста.",
+      "source": {
+        "key": "rust1-testing-app-architecture-result-tests",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — тесты, возвращающие `Result<T, E>`, PDF стр. 294–295",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-006",
+      "type": "multiple_choice",
+      "text": "Какие свойства имеет типичный модуль unit-тестов с `#[cfg(test)]`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Компилируется при запуске тестов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Может использовать `use super::*` для доступа к родительскому модулю",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Может проверять приватные функции родительского модуля",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Обязан находиться только в каталоге `tests/`",
+          "correct": false
+        }
+      ],
+      "explanation": "`#[cfg(test)]` обычно окружает модуль unit-тестов рядом с кодом. Как дочерний модуль он может обращаться к приватным элементам родителя. Каталог `tests/` используется для интеграционных тестов.",
+      "source": {
+        "key": "rust1-testing-app-architecture-unit-tests",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — «Организация тестов», unit tests, PDF стр. 304–307",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-007",
+      "type": "single_choice",
+      "text": "Чем integration test отличается от unit test в модели книги?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он использует библиотеку как внешний код и видит её публичный API",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он всегда может напрямую вызывать приватные функции библиотеки",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Он компилируется только вместе с `main.rs`, но не с `lib.rs`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Он не запускается командой `cargo test`",
+          "correct": false
+        }
+      ],
+      "explanation": "Интеграционный тест является внешним по отношению к библиотеке и проверяет её через публичный API, как обычный пользователь крейта.",
+      "source": {
+        "key": "rust1-testing-app-architecture-integration-tests",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — «Интеграционные тесты», PDF стр. 307–310",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-008",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о каталоге `tests/` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Cargo ищет там интеграционные тесты",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Каждый тестовый файл компилируется как отдельный crate",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Для файлов в `tests/` не требуется `#[cfg(test)]`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Файлы из `tests/` получают доступ ко всем private-функциям `src/lib.rs`",
+          "correct": false
+        }
+      ],
+      "explanation": "Каталог `tests/` имеет специальное значение для Cargo. Каждый файл интеграционных тестов — отдельный crate и использует только публичный API библиотеки.",
+      "source": {
+        "key": "rust1-testing-app-architecture-integration-tests",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — «Интеграционные тесты», PDF стр. 307–310",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-009",
+      "type": "multiple_choice",
+      "text": "Какие способы управления запуском тестов показаны в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Фильтрация тестов по имени через `cargo test <имя>`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Пометка дорогого теста атрибутом `#[ignore]`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Запуск игнорируемых тестов через `cargo test -- --ignored`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Обязательный последовательный запуск всех тестов по умолчанию",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга показывает фильтрацию по имени и механизм `#[ignore]`. По умолчанию тесты могут выполняться параллельно, поэтому обязательной последовательности нет.",
+      "source": {
+        "key": "rust1-testing-app-architecture-running-tests",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — управление запуском тестов, PDF стр. 296–303",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-010",
+      "type": "single_choice",
+      "text": "Какую роль выполняет `Config` в приложении `minigrep` после рефакторинга?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Объединяет связанные параметры запуска в одну структуру",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Хранит результаты всех тестов",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Заменяет `Result` при обработке ошибок",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Отвечает за блокировку stdout",
+          "correct": false
+        }
+      ],
+      "explanation": "`Config` группирует связанные параметры запуска, например запрос, путь к файлу и настройку регистра, вместо разрозненных переменных.",
+      "source": {
+        "key": "rust1-testing-app-architecture-config",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — рефакторинг аргументов в `Config`, PDF стр. 323–329",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-011",
+      "type": "multiple_choice",
+      "text": "Почему `Config::build` возвращает `Result`, а не завершает программу через `panic!`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Недостаток аргументов — ожидаемая ошибка пользовательского ввода",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Функция может сообщить проблему вызывающему коду",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Решение о сообщении и завершении процесса можно оставить `main`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`Result` автоматически печатает ошибку в stderr",
+          "correct": false
+        }
+      ],
+      "explanation": "В книге разбор конфигурации отделён от реакции на ошибку: `Config::build` возвращает `Err`, а `main` решает, как сообщить пользователю и завершить процесс.",
+      "source": {
+        "key": "rust1-testing-app-architecture-config-build",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — улучшение обработки ошибок при разборе аргументов, PDF стр. 326–330",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-012",
+      "type": "single_choice",
+      "text": "Что выражает сигнатура `fn run(config: Config) -> Result<(), Box<dyn Error>>` в проекте `minigrep`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "При успехе полезного возвращаемого значения нет, а при ошибке она передаётся вызывающему коду",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`run` всегда завершает процесс самостоятельно",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`run` обязательно возвращает строку с содержимым файла",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Функция не может использовать оператор `?`",
+          "correct": false
+        }
+      ],
+      "explanation": "`Result<(), Box<dyn Error>>` означает `Ok(())` при успешном выполнении ради побочных эффектов и `Err(...)` при сбое. Ошибки могут распространяться оператором `?`.",
+      "source": {
+        "key": "rust1-testing-app-architecture-run-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — «Возврат ошибок из функции run», PDF стр. 330–332",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-013",
+      "type": "single_choice",
+      "text": "Что означает `Ok(())` в конце успешной функции `run`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Успех без отдельного полезного возвращаемого значения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Пустую ошибку",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Принудительный `panic!`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Завершение всех потоков программы",
+          "correct": false
+        }
+      ],
+      "explanation": "Единичный тип `()` используется, когда функция вызывается ради действий. Поэтому успешный результат оформляется как `Ok(())`.",
+      "source": {
+        "key": "rust1-testing-app-architecture-run-result-q013",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — `run` с `Result<(), Box<dyn Error>>`, PDF стр. 331",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-014",
+      "type": "multiple_choice",
+      "text": "Что даёт перенос `Config`, `Config::build` и `run` из `main.rs` в `lib.rs`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Уменьшает число обязанностей `main`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Позволяет напрямую тестировать библиотечную логику",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Создаёт публичный API библиотеки для бинарного crate",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Делает обработку ошибок невозможной в `main`",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга переносит основную логику в `lib.rs`, чтобы `main.rs` оставался тонкой оболочкой, а функции библиотеки можно было вызывать напрямую в тестах.",
+      "source": {
+        "key": "rust1-testing-app-architecture-main-lib-split",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — «Разделение кода на библиотечный крейт», PDF стр. 332–334",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-015",
+      "type": "single_choice",
+      "text": "Что делает код `if let Err(e) = run(config) { ... }` в `main`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Обрабатывает только случай ошибки `run`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Распаковывает только `Ok(())`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Заставляет `run` никогда не возвращать ошибку",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Превращает `run` в unit test",
+          "correct": false
+        }
+      ],
+      "explanation": "Так как при успехе `run` возвращает только `()`, `main` интересует именно `Err`; `if let Err(e)` позволяет обработать ошибку и завершить процесс.",
+      "source": {
+        "key": "rust1-testing-app-architecture-run-main-error",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — «Обработка ошибок, возвращённых из run в main», PDF стр. 332",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-016",
+      "type": "multiple_choice",
+      "text": "Какие обязанности по итоговой архитектуре книги остаются у `main.rs`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Получение внешних аргументов запуска",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Создание `Config`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Вызов `run` и верхнеуровневая реакция на ошибку",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Реализация всей логики поиска строк",
+          "correct": false
+        }
+      ],
+      "explanation": "После разделения основная логика поиска переносится в библиотечный crate. `main` остаётся точкой входа: получает ввод, строит конфигурацию, вызывает библиотеку и реагирует на ошибки.",
+      "source": {
+        "key": "rust1-testing-app-architecture-main-lib-split-q016",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — разделение обязанностей бинарного и библиотечного crate, PDF стр. 332–334",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-017",
+      "type": "single_choice",
+      "text": "Для чего в `Config` добавляется поле `ignore_case`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы `run` мог выбрать поиск с учётом регистра или без него",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы включить режим release",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы отключить integration tests",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы хранить код ошибки процесса",
+          "correct": false
+        }
+      ],
+      "explanation": "Значение `ignore_case` используется функцией `run` для выбора между `search` и `search_case_insensitive`.",
+      "source": {
+        "key": "rust1-testing-app-architecture-env-config",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — поиск без учёта регистра и переменная среды `IGNORE_CASE`, PDF стр. 345–347",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-018",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `stdout` и `stderr` в `minigrep` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Обычные результаты программы выводятся через `println!` в stdout",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Диагностические ошибки следует выводить через `eprintln!` в stderr",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Разделение позволяет перенаправлять нормальный вывод отдельно от ошибок",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`eprintln!` автоматически преобразует `Err` в `Ok`",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга разделяет нормальный вывод и диагностику: `println!` используется для stdout, `eprintln!` — для stderr, чтобы перенаправление результата не скрывало ошибки.",
+      "source": {
+        "key": "rust1-testing-app-architecture-stdout-stderr",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — вывод ошибок в stderr вместо stdout, PDF стр. 349–351",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-019",
+      "type": "multiple_choice",
+      "text": "Какие шаги входят в показанный цикл TDD? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Написать тест, который сначала завершается неудачей",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Убедиться, что тест падает по ожидаемой причине",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Написать минимальный код для прохождения теста и затем рефакторить",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Сначала удалить все тесты после успешной компиляции",
+          "correct": false
+        }
+      ],
+      "explanation": "В проекте `minigrep` книга показывает цикл: сначала падающий тест, проверка причины падения, затем минимальная реализация, успешный тест и рефакторинг.",
+      "source": {
+        "key": "rust1-testing-app-architecture-tdd",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — «Развитие функциональности библиотеки разработкой на основе тестов», PDF стр. 334–340",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-020",
+      "type": "single_choice",
+      "text": "Почему после переноса основной логики в `lib.rs` писать тесты поиска стало проще?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Функции можно вызывать напрямую с разными аргументами и проверять возвращаемые значения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`cargo test` перестал компилировать `main.rs`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Все функции автоматически стали `const`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Тестам больше не нужен компилятор Rust",
+          "correct": false
+        }
+      ],
+      "explanation": "После выделения библиотеки тесты могут напрямую вызывать функции поиска, вместо запуска бинарного файла и организации ввода через командную строку.",
+      "source": {
+        "key": "rust1-testing-app-architecture-tdd-q020",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — начало TDD после разделения `main.rs` и `lib.rs`, PDF стр. 334",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-021",
+      "type": "single_choice",
+      "text": "Что делает тест неуспешным, если внутри тестовой функции происходит неожиданный `panic!`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Тест считается проваленным",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Тест автоматически помечается `ignored`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Cargo повторяет тест до успеха",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Паника преобразуется в `Ok(())`",
+          "correct": false
+        }
+      ],
+      "explanation": "Обычный тест проходит, если его код завершается без паники; неожиданный `panic!` означает неуспешный тест.",
+      "source": {
+        "key": "rust1-testing-app-architecture-test-anatomy",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — «Структура тестирующей функции», PDF стр. 277–280",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-022",
+      "type": "multiple_choice",
+      "text": "Какие элементы типичной тестовой функции показаны в главе 11? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Атрибут `#[test]`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Подготовка нужных данных или состояния",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Вызов проверяемого кода",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Проверка результата с помощью assert-макросов или другого условия ошибки",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Тестовую функцию обязательно нужно вручную вызвать из `main()`",
+          "correct": false
+        }
+      ],
+      "explanation": "В материале тест описан как функция с `#[test]`, которая подготавливает данные, запускает проверяемый код и утверждает ожидаемый результат.",
+      "source": {
+        "key": "rust1-testing-app-architecture-test-anatomy-q022",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — «Как писать тесты» и «Структура тестирующей функции», PDF стр. 277–280",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-023",
+      "type": "single_choice",
+      "text": "Что произойдёт в тесте `assert!(larger.can_hold(&smaller));`, если выражение вернёт `false`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Макрос вызовет панику, и тест завершится неуспешно",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Cargo инвертирует условие и продолжит",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Будет только предупреждение",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Тест станет интеграционным",
+          "correct": false
+        }
+      ],
+      "explanation": "`assert!` проходит при `true` и вызывает панику при `false`, поэтому тест становится неуспешным.",
+      "source": {
+        "key": "rust1-testing-app-architecture-assert",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — «Проверка результатов с помощью макроса assert!», PDF стр. 281–284",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-024",
+      "type": "multiple_choice",
+      "text": "Для чего пользовательское сообщение у `assert!` полезно при провале теста? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Можно показать фактически полученное значение",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Можно добавить контекст о нарушенном ожидании",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Сообщение форматируется подобно аргументам `format!`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Оно меняет условие `false` на `true`",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга добавляет собственное сообщение к `assert!`, чтобы вывод теста содержал фактические данные и помогал понять причину провала.",
+      "source": {
+        "key": "rust1-testing-app-architecture-assert-message",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — «Создание сообщений об ошибках», PDF стр. 288–290",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-025",
+      "type": "single_choice",
+      "text": "Какой тест из двух лучше переживёт изменение приветствия с `Hello, Carol!` на другой текст, если важно только наличие имени?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`assert!(result.contains(\"Carol\"))`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`assert_eq!(result, \"Hello, Carol!\")`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`assert_ne!(result.len(), 0)` независимо от имени",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`#[should_panic]`",
+          "correct": false
+        }
+      ],
+      "explanation": "В примере книги проверяется только требуемое свойство — присутствие имени — чтобы тест не зависел от несущественной формулировки приветствия.",
+      "source": {
+        "key": "rust1-testing-app-architecture-behavior-test",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — пример `greeting_contains_name`, PDF стр. 288–290",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-026",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `#[should_panic(expected = \"...\")]` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Тест должен вызвать панику",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Сообщение panic должно содержать указанную подстроку",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Можно выбрать только уникальную устойчивую часть сообщения",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Полное совпадение сообщения обязательно во всех случаях",
+          "correct": false
+        }
+      ],
+      "explanation": "`expected` проверяет наличие подстроки в panic-сообщении; книга отмечает, что можно выбирать достаточную уникальную часть, а не обязательно полное сообщение.",
+      "source": {
+        "key": "rust1-testing-app-architecture-should-panic-expected",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — точная проверка panic через `expected`, PDF стр. 292–294",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-027",
+      "type": "single_choice",
+      "text": "Как в тесте, возвращающем `Result<(), String>`, проверить, что операция должна вернуть ошибку `Err`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Не применять `?` к этому Result и проверить `assert!(value.is_err())`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Всегда применять `?`, потому что он подтверждает Err",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Добавить `#[should_panic]`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Проверить только `value.is_ok()`",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал прямо советует не использовать `?` для Result, от которого ожидается `Err`, а проверить `value.is_err()` через `assert!`.",
+      "source": {
+        "key": "rust1-testing-app-architecture-result-error-test",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — «Использование Result<T, E> в тестах», PDF стр. 295",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-028",
+      "type": "multiple_choice",
+      "text": "Что верно о тестах, возвращающих `Result<T, E>`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Они могут использовать оператор `?` для промежуточных операций",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`Ok(())` может означать успешный тест",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`Err(...)` означает неуспешный тест",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Их следует сочетать с `#[should_panic]` для проверки Err",
+          "correct": false
+        }
+      ],
+      "explanation": "Возврат Result удобен для `?`; однако книга отдельно указывает, что `#[should_panic]` с такими тестами не используется.",
+      "source": {
+        "key": "rust1-testing-app-architecture-result-tests-q028",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — «Использование Result<T, E> в тестах», PDF стр. 295",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-029",
+      "type": "single_choice",
+      "text": "Зачем может понадобиться `cargo test -- --test-threads=1`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы запускать тесты последовательно одним тестовым потоком",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы использовать один CPU для компиляции release",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы выполнить только один тест по имени",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы включить вывод stdout успешных тестов",
+          "correct": false
+        }
+      ],
+      "explanation": "Флаг `--test-threads=1` уменьшает число потоков тестового раннера до одного, что полезно, если тесты конфликтуют из-за общего состояния или ресурсов.",
+      "source": {
+        "key": "rust1-testing-app-architecture-test-threads",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — «Контролирование хода выполнения тестов», PDF стр. 296–299",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-030",
+      "type": "multiple_choice",
+      "text": "Почему параллельный запуск тестов по умолчанию может быть проблемой? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Тесты могут одновременно читать и изменять один и тот же общий ресурс",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Тесты могут мешать друг другу при использовании одного файла",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Порядок выполнения тестов нельзя использовать как надёжную зависимость",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Параллельность автоматически делает любой тест недетерминированным",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга предупреждает о тестах, использующих общее состояние, например один файл: параллельное выполнение может создать взаимное влияние.",
+      "source": {
+        "key": "rust1-testing-app-architecture-test-threads-q030",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — параллельный и последовательный запуск тестов, PDF стр. 296–299",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-031",
+      "type": "single_choice",
+      "text": "Что делает `cargo test -- --show-output` с выводом успешных тестов?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Показывает вывод, который тестовый раннер обычно захватывает",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Прячет сообщения проваленных тестов",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Запускает только тесты с `println!`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Перенаправляет stdout в stderr",
+          "correct": false
+        }
+      ],
+      "explanation": "По умолчанию вывод успешных тестов скрывается; `--show-output` позволяет увидеть его.",
+      "source": {
+        "key": "rust1-testing-app-architecture-show-output",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — «Демонстрация результатов работы функции», PDF стр. 299–301",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-032",
+      "type": "multiple_choice",
+      "text": "Какие варианты фильтрации тестов описаны в главе 11? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Передать часть имени после `cargo test`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Запустить один тест по его имени",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Одной строкой-фильтром выбрать несколько тестов, чьи имена её содержат",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Фильтрация требует изменять `#[test]` в исходном коде",
+          "correct": false
+        }
+      ],
+      "explanation": "Аргумент команды `cargo test` используется как фильтр имени: он может выбрать один тест или несколько тестов с общей подстрокой.",
+      "source": {
+        "key": "rust1-testing-app-architecture-test-filter",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — «Запуск подмножества тестов по имени», PDF стр. 301–303",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-033",
+      "type": "single_choice",
+      "text": "Что делает атрибут `#[ignore]` у теста при обычном `cargo test`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Исключает этот тест из обычного запуска",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Заставляет тест считаться успешным без выполнения",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Запускает тест первым",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Удаляет тест из бинарного файла навсегда",
+          "correct": false
+        }
+      ],
+      "explanation": "Тест с `#[ignore]` пропускается при обычном запуске и отображается как ignored.",
+      "source": {
+        "key": "rust1-testing-app-architecture-ignore",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — «Игнорирование тестов», PDF стр. 303–304",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-034",
+      "type": "multiple_choice",
+      "text": "Как можно запускать ignored-тесты? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`cargo test -- --ignored` — только ignored-тесты",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`cargo test -- --include-ignored` — и обычные, и ignored",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Удалить `#[ignore]` и запустить обычный `cargo test`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`cargo build --ignored`",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава показывает `--ignored` и `--include-ignored`; временное снятие атрибута также возвращает тест в обычный набор, а `cargo build --ignored` к тестовому раннеру не относится.",
+      "source": {
+        "key": "rust1-testing-app-architecture-ignore",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — «Игнорирование тестов», PDF стр. 303–304",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-035",
+      "type": "single_choice",
+      "text": "Почему unit-тест внутри `mod tests` может вызвать приватную функцию родительского модуля?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Дочерние модули имеют доступ к элементам своих родительских модулей",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`#[test]` автоматически делает всё `pub`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`use super::*` отключает приватность во всём crate",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Приватность в Rust не действует при `cargo test`",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга демонстрирует тест приватной функции из дочернего модуля `tests`; правила модулей позволяют дочернему модулю видеть элементы родителя.",
+      "source": {
+        "key": "rust1-testing-app-architecture-private-tests",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — «Тестирование приватных функций», PDF стр. 306–307",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-036",
+      "type": "multiple_choice",
+      "text": "Какие свойства integration tests следуют из того, что каждый файл в `tests/` — отдельный crate? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Нужно импортировать библиотеку проекта в область видимости",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Доступен только публичный API библиотеки",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Каждый файл компилируется отдельно",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Приватные функции `src/lib.rs` доступны напрямую без `pub`",
+          "correct": false
+        }
+      ],
+      "explanation": "Отдельный тестовый crate ведёт себя как внешний пользователь библиотеки: импортирует её и может использовать только публичные элементы.",
+      "source": {
+        "key": "rust1-testing-app-architecture-integration-crates",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — «Каталог tests», PDF стр. 307–309",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-037",
+      "type": "single_choice",
+      "text": "Почему файл общих помощников лучше разместить как `tests/common/mod.rs`, а не `tests/common.rs`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Так Cargo не будет считать `common` отдельным integration-test crate",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Потому что `.rs` запрещён в каталоге `tests`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы модуль стал публичным API библиотеки",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы `common` компилировался в release без тестов",
+          "correct": false
+        }
+      ],
+      "explanation": "Файл `tests/common.rs` Cargo воспринимает как отдельный integration test и показывает лишний запуск с 0 тестов; `tests/common/mod.rs` используется как вспомогательный модуль.",
+      "source": {
+        "key": "rust1-testing-app-architecture-integration-common",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — «Подмодули в интеграционных тестах», PDF стр. 309–311",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-038",
+      "type": "multiple_choice",
+      "text": "Что верно об integration tests для проекта, содержащего только `src/main.rs`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Такой binary crate нельзя импортировать в integration test как библиотеку",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Полезную логику рекомендуют вынести в `src/lib.rs`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`src/main.rs` может оставаться тонким кодом запуска библиотеки",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Достаточно добавить `#[cfg(test)]` в `main.rs`, чтобы внешний integration test получил private API",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга рекомендует бинарным проектам выносить основную функциональность в библиотечный crate, чтобы integration tests могли проверять её публичный API.",
+      "source": {
+        "key": "rust1-testing-app-architecture-binary-integration",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 11 — «Интеграционные тесты для бинарных крейтов», PDF стр. 311–313",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-039",
+      "type": "single_choice",
+      "text": "Что содержит `args[0]` после `let args: Vec<String> = env::args().collect();` в примере `minigrep`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Путь или имя запущенной программы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Первый пользовательский поисковый запрос",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Путь к файлу для поиска",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Всегда пустую строку",
+          "correct": false
+        }
+      ],
+      "explanation": "В проекте `minigrep` пользовательские аргументы начинают брать с индекса 1, потому что `args[0]` соответствует имени/пути программы.",
+      "source": {
+        "key": "rust1-testing-app-architecture-cli-args",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — «Чтение значений аргументов», PDF стр. 315–318",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-040",
+      "type": "multiple_choice",
+      "text": "Какие проблемы есть у раннего варианта `let query = &args[1]; let file_path = &args[2];`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "При недостатке аргументов индексирование может вызвать panic",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Логика разбора аргументов смешана с обязанностями `main`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Связь между двумя параметрами конфигурации явно не выражена отдельным типом",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Индексирование `Vec` автоматически возвращает `Result`, который уже обработан",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава последовательно исправляет эти недостатки: проверяет длину, выделяет разбор конфигурации и группирует параметры в `Config`.",
+      "source": {
+        "key": "rust1-testing-app-architecture-config-refactor",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — аргументы командной строки и рефакторинг `Config`, PDF стр. 317–326",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-041",
+      "type": "single_choice",
+      "text": "Какой тип результата возвращает `fs::read_to_string(file_path)` в проекте?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`std::io::Result<String>`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Всегда `String` без возможности ошибки",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`Option<&str>`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`Vec<u8>` без Result",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал указывает, что `fs::read_to_string` читает файл в строку и возвращает `std::io::Result<String>`.",
+      "source": {
+        "key": "rust1-testing-app-architecture-read-file",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — «Чтение файла», PDF стр. 318–320",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-042",
+      "type": "multiple_choice",
+      "text": "Какие цели разделения ответственности для binary-проекта перечислены при рефакторинге `minigrep`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Разделить разбор конфигурации и основную логику",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Сделать обработку ошибок понятнее и сосредоточить её на верхнем уровне",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Оставить `main` небольшой",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Поместить весь код, включая каждую деталь поиска, обратно в `main`",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга выделяет конфигурацию и рабочую функцию из `main`, оставляя точке входа orchestration и верхнеуровневую обработку ошибок.",
+      "source": {
+        "key": "rust1-testing-app-architecture-separation",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — «Рефакторинг для улучшения модульности и обработки ошибок» и «Разделение ответственности для бинарных проектов», PDF стр. 320–327",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-043",
+      "type": "single_choice",
+      "text": "Почему `Config::build` в книге возвращает `Result<Config, &'static str>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Успех возвращает готовый `Config`, а ожидаемая ошибка разбора — строковое сообщение",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Потому что `Config` невозможно вернуть напрямую из функции",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы автоматически печатать backtrace",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы `Config` стал `Copy`",
+          "correct": false
+        }
+      ],
+      "explanation": "Возврат `Result` отделяет создание корректной конфигурации от обработки ожидаемой ошибки; литеральное сообщение имеет время жизни `'static`.",
+      "source": {
+        "key": "rust1-testing-app-architecture-config-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — «Возвращение Result вместо вызова panic!», PDF стр. 326–329",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-044",
+      "type": "multiple_choice",
+      "text": "Что делает `unwrap_or_else` в обработке результата `Config::build`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "При `Ok` извлекает внутренний `Config`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "При `Err` вызывает переданное замыкание",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "В примере замыкание печатает ошибку и вызывает `process::exit(1)`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Всегда вызывает замыкание даже при `Ok`",
+          "correct": false
+        }
+      ],
+      "explanation": "`unwrap_or_else` позволяет получить успешное значение либо выполнить код замыкания с внутренней ошибкой.",
+      "source": {
+        "key": "rust1-testing-app-architecture-unwrap-or-else",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — «Вызов Config::build и обработка ошибок», PDF стр. 328–330",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-045",
+      "type": "single_choice",
+      "text": "Что делает `process::exit(1)` в обработчике ошибки `minigrep`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Немедленно завершает программу с ненулевым кодом состояния",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Возвращает `Err(1)` из `main` без завершения",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Повторно запускает программу с одним аргументом",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Очищает только текущую функцию и продолжает `main`",
+          "correct": false
+        }
+      ],
+      "explanation": "В материале `process::exit` используется после печати диагностического сообщения, чтобы немедленно остановить процесс и вернуть код 1.",
+      "source": {
+        "key": "rust1-testing-app-architecture-process-exit",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — обработка ошибки через `process::exit`, PDF стр. 329–330",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-046",
+      "type": "multiple_choice",
+      "text": "Что даёт замена `.expect(...)` на оператор `?` внутри `run`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Ошибка чтения файла возвращается вызывающему коду",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`run` перестаёт обязательно паниковать при этой ошибке",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Верхнеуровневый `main` может централизованно обработать Err",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Оператор `?` превращает любую ошибку в успешный `Ok(())`",
+          "correct": false
+        }
+      ],
+      "explanation": "В `run` оператор `?` распространяет ошибку, а не вызывает panic, что позволяет `main` определить реакцию на сбой.",
+      "source": {
+        "key": "rust1-testing-app-architecture-question-operator",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — «Возврат ошибок из функции run», PDF стр. 330–332",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-047",
+      "type": "single_choice",
+      "text": "Зачем функции `search` нужна явная связь времени жизни возвращаемых `&str` с аргументом `contents`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Возвращаемые срезы указывают на строки внутри `contents`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Возвращаемые срезы всегда принадлежат `query`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Время жизни нужно только для скорости компиляции",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Без lifetime функция автоматически клонирует `contents`",
+          "correct": false
+        }
+      ],
+      "explanation": "Результат `search` содержит строковые срезы из `contents`, поэтому аннотация времени жизни сообщает компилятору источник этих ссылок.",
+      "source": {
+        "key": "rust1-testing-app-architecture-search-lifetime",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — реализация `search` и явное время жизни, PDF стр. 336–339",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-048",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `search_case_insensitive` в материале верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Запрос переводится в нижний регистр",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Каждая строка также сравнивается через `to_lowercase()`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Функция сохраняет исходные строки в результате, а не их lowercase-копии",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`to_lowercase()` не создаёт новых данных",
+          "correct": false
+        }
+      ],
+      "explanation": "Для сравнения создаются lowercase-представления, но в результирующий вектор помещаются исходные срезы строк; книга отдельно отмечает создание новых данных `to_lowercase`.",
+      "source": {
+        "key": "rust1-testing-app-architecture-case-insensitive",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — поиск без учёта регистра, PDF стр. 343–346",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-049",
+      "type": "single_choice",
+      "text": "Как определяется режим нечувствительного к регистру поиска через `IGNORE_CASE`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Если `env::var(\"IGNORE_CASE\")` возвращает `Ok`, переменная считается установленной независимо от конкретного значения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только если значение точно равно строке `true`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только если значение равно `1` на всех системах",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "По наличию файла с именем `IGNORE_CASE`",
+          "correct": false
+        }
+      ],
+      "explanation": "В книге проверяется сам факт успешного чтения переменной окружения: любое установленное значение включает режим.",
+      "source": {
+        "key": "rust1-testing-app-architecture-ignore-case-env",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — переменная среды `IGNORE_CASE`, PDF стр. 346–348",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-050",
+      "type": "multiple_choice",
+      "text": "Какие преимущества даёт вывод ошибок через `eprintln!` вместо `println!`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Ошибки идут в stderr",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Обычный результат остаётся в stdout",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Можно перенаправить нормальный вывод в файл, сохранив диагностику на экране",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`eprintln!` делает ошибочный код автоматически успешным",
+          "correct": false
+        }
+      ],
+      "explanation": "Разделение stdout и stderr позволяет независимо перенаправлять полезный результат и диагностические сообщения.",
+      "source": {
+        "key": "rust1-testing-app-architecture-stderr",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тестирование и архитектура приложения",
+        "locator": "Глава 12 — «Запись сообщений об ошибках в Standard Error вместо Standard Output», PDF стр. 349–351",
+        "url": null
+      }
+    }
+  ]
+}

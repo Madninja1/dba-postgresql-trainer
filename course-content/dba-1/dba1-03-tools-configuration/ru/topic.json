@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "dba-1",
+  "slug": "dba1-tools-configuration",
+  "notes_part": 3,
+  "topic_number": 3,
+  "title": "Конфигурация сервера",
+  "description": "Файлы конфигурации PostgreSQL, изменение и применение параметров, ALTER SYSTEM, параметры текущего сеанса и строки подключения libpq",
+  "sort_order": 30
+}

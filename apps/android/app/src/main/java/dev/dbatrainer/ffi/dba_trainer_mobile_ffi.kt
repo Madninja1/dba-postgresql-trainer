@@ -2025,6 +2025,10 @@ data class MobileTopic (
     , 
     val `slug`: kotlin.String
     , 
+    val `notesPart`: kotlin.Long
+    , 
+    val `topicNumber`: kotlin.Long
+    , 
     val `title`: kotlin.String
     , 
     val `description`: kotlin.String?
@@ -2047,6 +2051,8 @@ public object FfiConverterTypeMobileTopic: FfiConverterRustBuffer<MobileTopic> {
             FfiConverterLong.read(buf),
             FfiConverterString.read(buf),
             FfiConverterString.read(buf),
+            FfiConverterLong.read(buf),
+            FfiConverterLong.read(buf),
             FfiConverterString.read(buf),
             FfiConverterOptionalString.read(buf),
         )
@@ -2056,6 +2062,8 @@ public object FfiConverterTypeMobileTopic: FfiConverterRustBuffer<MobileTopic> {
             FfiConverterLong.allocationSize(value.`id`) +
             FfiConverterString.allocationSize(value.`courseCode`) +
             FfiConverterString.allocationSize(value.`slug`) +
+            FfiConverterLong.allocationSize(value.`notesPart`) +
+            FfiConverterLong.allocationSize(value.`topicNumber`) +
             FfiConverterString.allocationSize(value.`title`) +
             FfiConverterOptionalString.allocationSize(value.`description`)
     )
@@ -2064,6 +2072,8 @@ public object FfiConverterTypeMobileTopic: FfiConverterRustBuffer<MobileTopic> {
             FfiConverterLong.write(value.`id`, buf)
             FfiConverterString.write(value.`courseCode`, buf)
             FfiConverterString.write(value.`slug`, buf)
+            FfiConverterLong.write(value.`notesPart`, buf)
+            FfiConverterLong.write(value.`topicNumber`, buf)
             FfiConverterString.write(value.`title`, buf)
             FfiConverterOptionalString.write(value.`description`, buf)
     }

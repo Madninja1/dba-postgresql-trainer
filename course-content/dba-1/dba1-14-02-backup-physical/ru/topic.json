@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "dba-1",
+  "slug": "dba1-backup-physical",
+  "notes_part": 14,
+  "topic_number": 18,
+  "title": "Физическое резервное копирование и восстановление",
+  "description": "Холодные и горячие физические копии PostgreSQL, pg_basebackup, протокол репликации, базовые копии, непрерывное и потоковое архивирование WAL и управляемое восстановление",
+  "sort_order": 141
+}

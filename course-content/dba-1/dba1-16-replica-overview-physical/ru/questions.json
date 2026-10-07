@@ -1,0 +1,726 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-replica-logical",
+  "questions": [
+    {
+      "key": "dba1-replica-logical-001",
+      "type": "single_choice",
+      "text": "Что передаёт логическая репликация PostgreSQL согласно материалу занятия?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Изменения строк выбранных таблиц",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Побайтовую копию всего кластера",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только текст выполненных SQL-команд",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только файлы системного каталога",
+          "correct": false
+        }
+      ],
+      "explanation": "Логическая репликация передаёт изменения строк таблиц, а не физическую копию файлов и не исходный текст SQL-команд.",
+      "source": {
+        "key": "dba1-16-logical-overview",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Логическая репликация",
+        "locator": "Общий принцип логической репликации",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logical-replication"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-002",
+      "type": "multiple_choice",
+      "text": "Какие свойства логической репликации отличают её от физической в изложении занятия? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Можно выборочно реплицировать отдельные таблицы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Не требуется двоичная совместимость серверов",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Поток данных можно организовывать в разных направлениях",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Она всегда создаёт точную копию всего кластера",
+          "correct": false
+        }
+      ],
+      "explanation": "Логическая репликация работает на более высоком уровне: позволяет выбирать таблицы, не требует двоичной совместимости и может входить в разнонаправленные схемы.",
+      "source": {
+        "key": "dba1-16-logical-properties",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Особенности",
+        "locator": "Сравнение физической и логической репликации",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-logical-003",
+      "type": "single_choice",
+      "text": "Какая модель используется встроенной логической репликацией PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Публикация — подписка",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Общий дисковый массив",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Двухфазная фиксация между всеми серверами",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Периодический pg_dump — pg_restore",
+          "correct": false
+        }
+      ],
+      "explanation": "На публикующем сервере определяется публикация, а другой сервер создаёт подписку и получает соответствующие изменения.",
+      "source": {
+        "key": "dba1-16-pub-sub",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Публикация и подписка",
+        "locator": "Модель публикация-подписка",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logical-replication"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-004",
+      "type": "multiple_choice",
+      "text": "Что может задавать публикация в PostgreSQL 16 согласно материалу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Набор публикуемых таблиц",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Набор публикуемых столбцов",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Условие фильтрации строк",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Физический каталог хранения файлов таблицы на подписчике",
+          "correct": false
+        }
+      ],
+      "explanation": "Публикация определяет логический набор данных. В материале отдельно отмечена возможность публиковать только часть столбцов и строк таблицы.",
+      "source": {
+        "key": "postgresql-16-logical-publication",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Публикация",
+        "locator": "Выбор таблиц, столбцов и строк",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logical-replication-publication"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-005",
+      "type": "single_choice",
+      "text": "Что делает logical replication worker на сервере-подписчике?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Получает изменения и применяет их на подписчике",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Создаёт физическую резервную копию публикующего сервера",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Запускает CHECKPOINT на публикующем сервере",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Компилирует полученный SQL-код перед передачей издателю",
+          "correct": false
+        }
+      ],
+      "explanation": "В схеме занятия wal sender находится на стороне источника, а logical replication worker на стороне подписчика получает и применяет изменения.",
+      "source": {
+        "key": "dba1-16-worker",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Логическая репликация",
+        "locator": "wal sender и logical replication worker",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-logical-006",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о передаче данных между публикацией и подпиской верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Реплицируются изменения строк, а не исходные SQL-команды",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Подписчик применяет полученные изменения без обычного разбора и планирования исходной SQL-команды",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Для передачи используется слот логической репликации",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Подписчик обязан повторно выполнить исходный текст запроса издателя",
+          "correct": false
+        }
+      ],
+      "explanation": "Логическая репликация передаёт результат изменения данных на уровне строк. На стороне подписчика не требуется заново выполнять исходную SQL-команду публикации.",
+      "source": {
+        "key": "postgresql-16-logical-message-flow",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Передача изменений",
+        "locator": "Поток сообщений логической репликации",
+        "url": "https://postgrespro.ru/docs/postgresql/16/protocol-logical-replication#PROTOCOL-LOGICAL-MESSAGES-FLOW"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-007",
+      "type": "single_choice",
+      "text": "Что может произойти при создании подписки с данными таблиц?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Может быть выполнена начальная синхронизация содержимого таблиц",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Схема всех таблиц всегда автоматически создаётся из DDL публикации",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Весь кластер подписчика заменяется физической копией издателя",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Все локальные данные подписчика обязательно удаляются",
+          "correct": false
+        }
+      ],
+      "explanation": "При создании подписки может выполняться начальная синхронизация данных, но необходимые таблицы на подписчике должны существовать заранее.",
+      "source": {
+        "key": "postgresql-16-logical-subscription",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Подписка",
+        "locator": "Начальная синхронизация",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logical-replication-subscription"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-008",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о начальной синхронизации и структуре таблиц верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Содержимое таблиц может быть скопировано при начальной синхронизации",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "DDL-команды публикации автоматически не передаются",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Таблицы-приёмники на подписчике требуется подготовить",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "CREATE TABLE на издателе автоматически создаёт такую же таблицу у каждого подписчика",
+          "correct": false
+        }
+      ],
+      "explanation": "Логическая репликация синхронизирует данные, но не переносит схему автоматически. DDL необходимо применять отдельно.",
+      "source": {
+        "key": "dba1-16-initial-sync",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Публикация и подписка",
+        "locator": "Начальная синхронизация и DDL",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-logical-009",
+      "type": "single_choice",
+      "text": "Зачем при UPDATE и DELETE логической репликации требуется replica identity?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы идентифицировать старую версию изменяемой или удаляемой строки",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы выбрать каталог для файлов WAL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы определить пользователя, выполнившего запрос",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы зашифровать соединение между серверами",
+          "correct": false
+        }
+      ],
+      "explanation": "INSERT создаёт новую строку, а при UPDATE и DELETE подписчику необходимо понять, какую существующую строку нужно изменить или удалить.",
+      "source": {
+        "key": "postgresql-16-replica-identity",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Идентификация строк",
+        "locator": "ALTER TABLE и REPLICA IDENTITY",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-altertable"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-010",
+      "type": "multiple_choice",
+      "text": "Какие способы идентификации строки для логической репликации рассматриваются в занятии? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Столбцы первичного ключа",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Подходящий уникальный индекс",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Все столбцы строки",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Только физический номер блока и смещение строки",
+          "correct": false
+        }
+      ],
+      "explanation": "По умолчанию используется первичный ключ, но REPLICA IDENTITY позволяет выбрать подходящий уникальный индекс или использовать все столбцы.",
+      "source": {
+        "key": "dba1-16-replica-identity-options",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Идентификация строк",
+        "locator": "Варианты replica identity",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-logical-011",
+      "type": "single_choice",
+      "text": "Как логическая репликация обрабатывает DDL-команды?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "DDL автоматически не реплицируется, изменения схемы нужно переносить отдельно",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "DDL всегда автоматически выполняется на всех подписчиках",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "DDL реплицируется только для представлений",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "DDL сначала преобразуется в физический WAL-клон всего кластера",
+          "correct": false
+        }
+      ],
+      "explanation": "Одно из основных ограничений встроенной логической репликации — отсутствие автоматической передачи изменений схемы.",
+      "source": {
+        "key": "postgresql-16-logical-restrictions-ddl",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Ограничения",
+        "locator": "DDL не реплицируется",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logical-replication-restrictions"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-012",
+      "type": "multiple_choice",
+      "text": "Что не реплицируется встроенной логической репликацией согласно занятию? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "DDL-команды",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Значения последовательностей",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Большие объекты lo",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Изменения строк обычных публикуемых таблиц",
+          "correct": false
+        }
+      ],
+      "explanation": "В занятии отдельно перечислены DDL, значения последовательностей и большие объекты как данные, которые обычная логическая репликация не переносит.",
+      "source": {
+        "key": "postgresql-16-logical-restrictions",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Ограничения",
+        "locator": "Нереплицируемые объекты",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logical-replication-restrictions"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-013",
+      "type": "single_choice",
+      "text": "Какие отношения могут непосредственно участвовать во встроенной логической репликации согласно материалу?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Обычные базовые и секционированные таблицы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только обычные представления",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только материализованные представления",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только внешние таблицы",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал ограничивает непосредственную логическую репликацию обычными базовыми и секционированными таблицами; представления и внешние таблицы к ним не относятся.",
+      "source": {
+        "key": "dba1-16-replicated-relations",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Ограничения",
+        "locator": "Поддерживаемые виды отношений",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-logical-014",
+      "type": "multiple_choice",
+      "text": "Какие проблемы могут возникнуть из-за того, что значения последовательностей не реплицируются? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Два сервера могут попытаться использовать одинаковое значение суррогатного ключа",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Может возникнуть нарушение ограничения уникальности",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Для снижения риска можно выделять серверам разные диапазоны идентификаторов",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "PostgreSQL автоматически синхронизирует sequence после каждого INSERT",
+          "correct": false
+        }
+      ],
+      "explanation": "Если запись возможна на нескольких серверах, независимые последовательности способны выдавать пересекающиеся значения. В занятии предлагаются разные диапазоны либо UUID.",
+      "source": {
+        "key": "dba1-16-sequence-conflicts",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Ограничения",
+        "locator": "Последовательности и уникальные идентификаторы",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-logical-015",
+      "type": "single_choice",
+      "text": "Что происходит, если применение логически реплицируемого изменения нарушает ограничение целостности на подписчике?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Применение изменений приостанавливается до ручного разрешения конфликта",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Подписчик автоматически удаляет конфликтующую строку",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Публикующий сервер автоматически откатывает исходную транзакцию",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Конфликт игнорируется без сообщения",
+          "correct": false
+        }
+      ],
+      "explanation": "Автоматического универсального разрешения таких конфликтов нет. Процесс применения останавливается, пока администратор не устранит причину.",
+      "source": {
+        "key": "postgresql-16-logical-conflicts",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Конфликты",
+        "locator": "Нарушения ограничений целостности",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logical-replication-conflicts"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-016",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о конфликтах логической репликации соответствуют материалу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Конфликт может быть связан с локальными данными подписчика",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Причиной может стать нарушение ограничения целостности",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Автоматическое универсальное разрешение конфликтов не поддерживается",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Любой конфликт автоматически решается по принципу last write wins",
+          "correct": false
+        }
+      ],
+      "explanation": "Подписчик остаётся обычной базой PostgreSQL и может содержать собственные данные, поэтому применение входящих изменений способно вступать с ними в конфликт.",
+      "source": {
+        "key": "postgresql-16-logical-conflicts-behavior",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Конфликты",
+        "locator": "Конфликты с локальными данными",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logical-replication-conflicts"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-017",
+      "type": "single_choice",
+      "text": "Для чего параметр subscription streaming полезен при долгих транзакциях?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он позволяет передавать изменения подписчику до фиксации длинной транзакции, уменьшая необходимость удерживать их только на стороне публикации",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он автоматически превращает логическую репликацию в физическую",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Он запрещает выполнение длинных транзакций",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Он передаёт на подписчик только DDL-команды",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал отмечает проблему длинных транзакций и возможность streaming передавать изменения раньше, сохраняя или применяя их на стороне подписчика.",
+      "source": {
+        "key": "postgresql-16-alter-subscription-streaming",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Подписка",
+        "locator": "Параметр streaming",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-altersubscription"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-018",
+      "type": "multiple_choice",
+      "text": "Какие задачи логической репликации рассматриваются в занятии? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Консолидация данных нескольких филиалов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Организация передачи изменений в обе стороны между серверами",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Переход между основными версиями PostgreSQL с сокращением перерыва обслуживания",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Побайтовое зеркалирование всей файловой системы PostgreSQL",
+          "correct": false
+        }
+      ],
+      "explanation": "Курс показывает логическую репликацию как более гибкий механизм для выборочного объединения данных, разнонаправленных схем и миграции между версиями.",
+      "source": {
+        "key": "dba1-16-use-cases",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Применение логической репликации",
+        "locator": "Сценарии использования",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-logical-019",
+      "type": "single_choice",
+      "text": "Почему логическая репликация может использоваться при переходе между различными основными версиями PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для неё не требуется двоичная совместимость серверов, достаточно совместимости протокола",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Она копирует исполняемые файлы старой версии на новый сервер",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Она заставляет новый сервер использовать формат файлов старой версии",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Она автоматически обновляет все расширения и DDL без подготовки",
+          "correct": false
+        }
+      ],
+      "explanation": "Физическая репликация зависит от двоичной совместимости, тогда как логическая передаёт изменения через логический протокол, что делает возможным сценарий миграции между основными версиями.",
+      "source": {
+        "key": "dba1-16-major-upgrade",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Обновление серверов",
+        "locator": "Обновление основной версии",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-logical-020",
+      "type": "multiple_choice",
+      "text": "Что необходимо учитывать при построении двунаправленной логической репликации одной таблицы между двумя серверами? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Данные могут изменяться локально на обоих серверах",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Нужно учитывать вероятность конфликтов",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Необходимо продумать уникальность генерируемых идентификаторов",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Встроенная логическая репликация автоматически разрешает любые конкурирующие изменения",
+          "correct": false
+        }
+      ],
+      "explanation": "Разнонаправленная схема возможна, но оба сервера остаются активными и могут изменять данные. Поэтому ограничения, последовательности и конфликты становятся обязанностью проектирования и администрирования.",
+      "source": {
+        "key": "postgresql-16-logical-bidirectional",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Разнонаправленная репликация",
+        "locator": "Практика и ограничения",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logical-replication-restrictions"
+      }
+    }
+  ]
+}

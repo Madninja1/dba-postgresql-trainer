@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "rust-1",
+  "slug": "rust1-advanced-rust",
+  "notes_part": 15,
+  "topic_number": 15,
+  "title": "Полная модель языка: trait objects, patterns, unsafe, macros",
+  "description": "Trait objects и dynamic dispatch, state pattern, синтаксис patterns, unsafe Rust, продвинутые traits и типы, declarative и procedural macros.",
+  "sort_order": 150
+}

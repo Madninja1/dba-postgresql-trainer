@@ -1,0 +1,1806 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-borrowing-slices",
+  "questions": [
+    {
+      "key": "rust1-borrowing-slices-001",
+      "type": "single_choice",
+      "text": "Что позволяет сделать ссылка `&s1` в примере `calculate_length`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Обратиться к значению без принятия владения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Глубоко скопировать `String`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Немедленно удалить `String`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Изменить значение независимо от типа ссылки",
+          "correct": false
+        }
+      ],
+      "explanation": "Ссылка позволяет использовать значение, не принимая право владения над ним.",
+      "source": {
+        "key": "rust1-borrowing-slices-reference",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Ссылки и заимствование», стр. 95–96",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-002",
+      "type": "single_choice",
+      "text": "Чем ссылка в объяснении отличается от обычного указателя?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Она гарантированно указывает на допустимое значение определённого типа в течение срока жизни ссылки",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Она всегда равна нулю",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Она обязательно владеет данными",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Она может существовать только для `String`",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал подчёркивает гарантию действительности ссылки в течение её срока существования.",
+      "source": {
+        "key": "rust1-borrowing-slices-reference-validity",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Ссылки и заимствование», стр. 95",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-003",
+      "type": "single_choice",
+      "text": "Какой тип параметра использует функция `calculate_length`, чтобы не забирать владение `String`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "String",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "&String",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "&mut usize",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "usize",
+          "correct": false
+        }
+      ],
+      "explanation": "В примере параметр имеет тип `&String`.",
+      "source": {
+        "key": "rust1-borrowing-slices-calculate-length",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — листинг с `calculate_length`, стр. 95–96",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-004",
+      "type": "single_choice",
+      "text": "Как называется процесс создания ссылки?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Клонирование",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Заимствование",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Перемещение",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Затенение",
+          "correct": false
+        }
+      ],
+      "explanation": "Создание ссылки называется заимствованием.",
+      "source": {
+        "key": "rust1-borrowing-slices-borrowing",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Ссылки и заимствование», стр. 97",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-005",
+      "type": "single_choice",
+      "text": "Что произойдёт, если функция принимает `&String` и пытается вызвать `push_str` через эту ссылку?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Код не скомпилируется: неизменяемая ссылка не разрешает изменение",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Строка изменится",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Строка автоматически клонируется",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Ссылка станет `&mut String` автоматически",
+          "correct": false
+        }
+      ],
+      "explanation": "Как и переменные, ссылки по умолчанию неизменяемы; через `&String` менять строку нельзя.",
+      "source": {
+        "key": "rust1-borrowing-slices-immutable-reference",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — листинг 4-6, стр. 97",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-006",
+      "type": "single_choice",
+      "text": "Какой тип ссылки нужен функции, которая должна изменить переданный `String`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "&String",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "&mut String",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "String::ref",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "mut String без `&` обязательно",
+          "correct": false
+        }
+      ],
+      "explanation": "Для изменения заимствованного значения используется изменяемая ссылка `&mut String`.",
+      "source": {
+        "key": "rust1-borrowing-slices-mutable-reference",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Изменяемые ссылки», стр. 97–98",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-007",
+      "type": "single_choice",
+      "text": "Почему код с `let r1 = &mut s; let r2 = &mut s; println!(\"{r1}, {r2}\");` не компилируется?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Нельзя одновременно иметь две активные изменяемые ссылки на одно значение",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`String` нельзя объявлять `mut`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`println!` запрещает ссылки",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`&mut` работает только с числами",
+          "correct": false
+        }
+      ],
+      "explanation": "Изменяемая ссылка эксклюзивна: второе изменяемое заимствование конфликтует с первым, пока первое ещё используется.",
+      "source": {
+        "key": "rust1-borrowing-slices-one-mutable",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Изменяемые ссылки», стр. 98–99",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-008",
+      "type": "single_choice",
+      "text": "Как можно последовательно создать две изменяемые ссылки на одно значение без одновременного использования в показанном приёме?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Разместить первую ссылку во внутренней области, чтобы она завершилась до создания второй",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Использовать обе в одном `println!`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Сделать исходную строку неизменяемой",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Заменить обе ссылки на указатели без правил",
+          "correct": false
+        }
+      ],
+      "explanation": "Фигурные скобки создают отдельную область; после завершения первой ссылки можно создать новую изменяемую ссылку.",
+      "source": {
+        "key": "rust1-borrowing-slices-mutable-scopes",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Изменяемые ссылки», стр. 99",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-009",
+      "type": "single_choice",
+      "text": "Что запрещено, пока активны неизменяемые ссылки `r1` и `r2` на `s`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Создать изменяемую ссылку `&mut s`, если неизменяемые ссылки ещё будут использованы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Создать вторую неизменяемую ссылку",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Прочитать значение через `r1`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Завершить область видимости",
+          "correct": false
+        }
+      ],
+      "explanation": "Нельзя одновременно иметь активное неизменяемое и изменяемое заимствование одних данных.",
+      "source": {
+        "key": "rust1-borrowing-slices-mixed-borrows",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Изменяемые ссылки», стр. 99–100",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-010",
+      "type": "single_choice",
+      "text": "Почему разрешены несколько неизменяемых ссылок на одно значение?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Читатели не изменяют данные и не мешают чтению друг друга",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Каждая ссылка автоматически создаёт копию данных",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Неизменяемые ссылки не проверяются компилятором",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Они всегда имеют разные значения",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал объясняет, что несколько читателей не влияют на данные друг друга.",
+      "source": {
+        "key": "rust1-borrowing-slices-many-immutable",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Изменяемые ссылки», стр. 100",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-011",
+      "type": "single_choice",
+      "text": "До какого момента продолжается область действия ссылки в приведённом объяснении?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "До её последнего использования",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Всегда до конца программы",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только до следующей строки",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "До первого объявления `mut` в файле",
+          "correct": false
+        }
+      ],
+      "explanation": "Область действия ссылки начинается при введении и продолжается до её последнего использования.",
+      "source": {
+        "key": "rust1-borrowing-slices-reference-scope",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Изменяемые ссылки», стр. 100",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-012",
+      "type": "single_choice",
+      "text": "Почему после `println!(\"{r1} and {r2}\");` можно создать `let r3 = &mut s;` в приведённом примере?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`r1` и `r2` больше не используются, поэтому их заимствования закончились",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`println!` превращает ссылки в копии владельца",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`r3` не является ссылкой",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Неизменяемые ссылки всегда совместимы с изменяемой независимо от использования",
+          "correct": false
+        }
+      ],
+      "explanation": "Последнее использование `r1`/`r2` происходит до создания `r3`, поэтому области заимствований не перекрываются.",
+      "source": {
+        "key": "rust1-borrowing-slices-non-overlap",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Изменяемые ссылки», стр. 100",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-013",
+      "type": "single_choice",
+      "text": "Что такое висячая ссылка в объяснении главы?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Ссылка на память, которая уже могла быть освобождена или передана другому",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Любая изменяемая ссылка",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Ссылка на строковый литерал",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Копия значения `i32`",
+          "correct": false
+        }
+      ],
+      "explanation": "Висячая ссылка указывает на память, которая больше не содержит исходные действительные данные.",
+      "source": {
+        "key": "rust1-borrowing-slices-dangling",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Висячие ссылки», стр. 101",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-014",
+      "type": "single_choice",
+      "text": "Почему `fn dangle() -> &String { let s = String::from(\"hello\"); &s }` отклоняется?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`s` уничтожается при завершении функции, и возвращаемая ссылка стала бы недействительной",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`String` нельзя создавать внутри функции",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Функция обязана возвращать `usize`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Ссылки можно возвращать только из `main`",
+          "correct": false
+        }
+      ],
+      "explanation": "Локальная `s` выходит из области и освобождается, поэтому ссылка на неё не может быть возвращена.",
+      "source": {
+        "key": "rust1-borrowing-slices-dangle-code",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Висячие ссылки», стр. 101–102",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-015",
+      "type": "single_choice",
+      "text": "Какое исправление `dangle` показано в материале?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Вернуть `String` как владеющее значение",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Вернуть `&String` без изменений",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Вызвать `drop(s)` перед возвратом ссылки",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Сделать `s` неизменяемой",
+          "correct": false
+        }
+      ],
+      "explanation": "Функция `no_dangle` возвращает `String`, перемещая владение наружу.",
+      "source": {
+        "key": "rust1-borrowing-slices-no-dangle",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Висячие ссылки», стр. 102",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-016",
+      "type": "single_choice",
+      "text": "Какое итоговое правило ссылок сформулировано в конце раздела?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Все ссылки должны быть действительными",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Любая ссылка может быть висячей до первого использования",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Ссылки должны всегда быть изменяемыми",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Ссылка обязана владеть значением",
+          "correct": false
+        }
+      ],
+      "explanation": "Одно из итоговых правил: все ссылки должны быть действительными.",
+      "source": {
+        "key": "rust1-borrowing-slices-reference-rules",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Правила работы с ссылками», стр. 102",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-017",
+      "type": "single_choice",
+      "text": "Что такое срез согласно началу раздела?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Ссылка на непрерывную последовательность элементов коллекции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Владеющая копия всей коллекции",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только индекс конца строки",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Тип, доступный только для массивов",
+          "correct": false
+        }
+      ],
+      "explanation": "Срез ссылается на непрерывную последовательность элементов и является разновидностью ссылки.",
+      "source": {
+        "key": "rust1-borrowing-slices-slice-definition",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — раздел «Тип срезы», стр. 103",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-018",
+      "type": "single_choice",
+      "text": "Владеет ли срез данными?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Нет, срез является ссылкой и не имеет владения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Да, всегда",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только строковый срез владеет",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только массивный срез владеет",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал прямо говорит, что срез как вид ссылки не имеет права владения.",
+      "source": {
+        "key": "rust1-borrowing-slices-slice-ownership",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — раздел «Тип срезы», стр. 103",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-019",
+      "type": "single_choice",
+      "text": "Какую проблему имеет вариант `first_word`, возвращающий только `usize`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Индекс отделён от состояния `String` и может стать недействительным после изменения строки",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`usize` нельзя возвращать из функции",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Индекс всегда равен нулю",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`String` нельзя очищать",
+          "correct": false
+        }
+      ],
+      "explanation": "Отдельный индекс не связан с данными: после изменения строки он может потерять смысл.",
+      "source": {
+        "key": "rust1-borrowing-slices-index-problem",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — листинги 4-7 и 4-8, стр. 103–105",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-020",
+      "type": "single_choice",
+      "text": "Что делает `s.clear()` в примере с устаревшим индексом первого слова?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Очищает `String`, делая её пустой",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Удаляет только пробелы",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Возвращает первое слово",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Клонирует строку",
+          "correct": false
+        }
+      ],
+      "explanation": "В листинге `s.clear()` опустошает строку; сохранённый ранее индекс 5 остаётся числом, но больше не соответствует содержимому.",
+      "source": {
+        "key": "rust1-borrowing-slices-clear-index",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — листинг 4-8, стр. 104–105",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-021",
+      "type": "single_choice",
+      "text": "Как записывается тип строкового среза?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "&str",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "String",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "str[]",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "&StringSlice",
+          "correct": false
+        }
+      ],
+      "explanation": "Для строкового среза используется тип `&str`.",
+      "source": {
+        "key": "rust1-borrowing-slices-str-type",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — раздел «Строковые срезы», стр. 107–108",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-022",
+      "type": "single_choice",
+      "text": "Что обозначает `&s[0..5]`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Срез от индекса 0 до индекса 5, не включая 5",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Срез только байта 5",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Срез с индексами 0–5 включительно",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Копию всей строки",
+          "correct": false
+        }
+      ],
+      "explanation": "Диапазон `[starting_index..ending_index]` включает начало и исключает конечный индекс.",
+      "source": {
+        "key": "rust1-borrowing-slices-slice-range",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — раздел «Строковые срезы», стр. 105",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-023",
+      "type": "single_choice",
+      "text": "Какая сокращённая запись эквивалентна `&s[0..2]`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "&s[..2]",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "&s[2..]",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "&s[..]",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "&s[0..=2]",
+          "correct": false
+        }
+      ],
+      "explanation": "Начальный индекс 0 можно опустить: `&s[..2]`.",
+      "source": {
+        "key": "rust1-borrowing-slices-slice-start",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — раздел «Строковые срезы», стр. 106–107",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-024",
+      "type": "single_choice",
+      "text": "Какая сокращённая запись эквивалентна срезу от индекса 3 до конца строки?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "&s[3..]",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "&s[..3]",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "&s[..]",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "&s[0..3]",
+          "correct": false
+        }
+      ],
+      "explanation": "При срезе до последнего байта конечную границу можно опустить.",
+      "source": {
+        "key": "rust1-borrowing-slices-slice-end",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — раздел «Строковые срезы», стр. 107",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-025",
+      "type": "single_choice",
+      "text": "Какой тип имеет строковый литерал `\"Hello, world!\"` в объяснении после изучения срезов?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "&str",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "String",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "char",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "&mut String",
+          "correct": false
+        }
+      ],
+      "explanation": "Строковые литералы рассматриваются как строковые срезы `&str` на данные в бинарном файле.",
+      "source": {
+        "key": "rust1-borrowing-slices-literal-str",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — раздел «Строковые литералы — это срезы», стр. 109",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-026",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о ссылках из примера `calculate_length` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`&s1` создаёт ссылку на `s1`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Ссылка не владеет данными",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "После завершения параметра-ссылки исходный `String` не удаляется",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Передача ссылки обязательно перемещает владение строкой",
+          "correct": false
+        }
+      ],
+      "explanation": "Ссылка предоставляет доступ без владения, поэтому функция не должна возвращать строку для восстановления владельца.",
+      "source": {
+        "key": "rust1-borrowing-slices-reference-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Ссылки и заимствование», стр. 95–96",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-027",
+      "type": "multiple_choice",
+      "text": "Какие элементы меняются, чтобы функция `change` могла изменить строку через заимствование? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Исходная переменная объявляется `mut`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "В вызове используется `&mut s`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Параметр функции имеет тип `&mut String`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Достаточно оставить параметр `&String` и ничего больше не менять",
+          "correct": false
+        }
+      ],
+      "explanation": "Для изменяемого заимствования изменяемыми должны быть исходная переменная и ссылка, а сигнатура должна принимать `&mut String`.",
+      "source": {
+        "key": "rust1-borrowing-slices-mutable-change",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Изменяемые ссылки», стр. 97–98",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-028",
+      "type": "multiple_choice",
+      "text": "Какие утверждения об одновременных изменяемых ссылках верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В один момент нельзя иметь две активные `&mut` на одни данные",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Ограничение делает изменение контролируемым",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Это ограничение помогает предотвращать гонки данных",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Количество одновременных `&mut` на одни данные не ограничено",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал связывает эксклюзивность изменяемой ссылки с предотвращением гонок данных.",
+      "source": {
+        "key": "rust1-borrowing-slices-mutable-exclusivity",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Изменяемые ссылки», стр. 98–99",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-029",
+      "type": "multiple_choice",
+      "text": "Какие три условия гонки данных перечислены в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Два или больше указателей одновременно используют одни данные",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Хотя бы один указатель используется для записи",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Нет механизма синхронизации доступа",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Все участники только читают неизменяемые данные",
+          "correct": false
+        }
+      ],
+      "explanation": "Гонка данных требует совместного доступа, записи хотя бы одним участником и отсутствия синхронизации.",
+      "source": {
+        "key": "rust1-borrowing-slices-data-race",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Изменяемые ссылки», стр. 99",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-030",
+      "type": "multiple_choice",
+      "text": "Какие способы позволяют иметь несколько изменяемых ссылок на одно значение последовательно, а не одновременно? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Ограничить первую ссылку отдельным блоком",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Создать вторую после окончания области первой",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Не использовать ссылки одновременно",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Создать обе до блока и использовать вместе",
+          "correct": false
+        }
+      ],
+      "explanation": "Разные, не перекрывающиеся области позволяют последовательно создавать изменяемые ссылки.",
+      "source": {
+        "key": "rust1-borrowing-slices-sequential-mut",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Изменяемые ссылки», стр. 99",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-031",
+      "type": "multiple_choice",
+      "text": "Какие комбинации ссылок на одно значение разрешены правилами, если их области активности перекрываются? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Одна изменяемая ссылка",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Несколько неизменяемых ссылок",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Любое количество изменяемых и неизменяемых одновременно",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Две изменяемые ссылки, если обе используются позже",
+          "correct": false
+        }
+      ],
+      "explanation": "Итоговое правило: либо одна изменяемая ссылка, либо любое число неизменяемых, но не оба режима одновременно.",
+      "source": {
+        "key": "rust1-borrowing-slices-borrow-combinations",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — разделы «Изменяемые ссылки» и «Правила работы с ссылками», стр. 99–102",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-032",
+      "type": "multiple_choice",
+      "text": "Почему одновременная изменяемая ссылка конфликтует с активной неизменяемой? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Пользователь неизменяемой ссылки не ожидает внезапного изменения данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Изменяемая ссылка может менять значение",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Правило запрещает перекрытие чтения и записи",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Потому что неизменяемая ссылка автоматически владеет данными",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал мотивирует правило предсказуемостью чтения: данные не должны меняться под активным неизменяемым читателем.",
+      "source": {
+        "key": "rust1-borrowing-slices-read-write-conflict",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Изменяемые ссылки», стр. 100",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-033",
+      "type": "multiple_choice",
+      "text": "Какие утверждения об области действия ссылок подтверждает пример `r1`, `r2`, затем `r3`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Она может закончиться до конца лексического блока после последнего использования",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Последнее использование `r1` и `r2` — первый `println!`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "После этого можно создать `&mut s`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Любая ссылка считается активной строго до закрывающей фигурной скобки независимо от использования",
+          "correct": false
+        }
+      ],
+      "explanation": "Компилятор учитывает последнее использование ссылки, поэтому неперекрывающиеся заимствования допустимы.",
+      "source": {
+        "key": "rust1-borrowing-slices-last-use",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Изменяемые ссылки», стр. 100",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-034",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о висячих ссылках верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Они могут указывать на уже освобождённую память",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Rust-компилятор стремится не допустить их",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Данные не должны выйти из области раньше ссылки на них",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Функция `dangle` из материала успешно компилируется без изменений",
+          "correct": false
+        }
+      ],
+      "explanation": "Пример `dangle` специально показывает ошибку компиляции, предотвращающую висячую ссылку.",
+      "source": {
+        "key": "rust1-borrowing-slices-dangling-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Висячие ссылки», стр. 101–102",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-035",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `no_dangle` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Функция возвращает `String`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Владение строкой перемещается вызывающей стороне",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Локальные данные не освобождаются до передачи владения наружу",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Функция возвращает ссылку на уничтоженную локальную строку",
+          "correct": false
+        }
+      ],
+      "explanation": "Возврат владеющего `String` решает проблему: владение перемещается наружу.",
+      "source": {
+        "key": "rust1-borrowing-slices-no-dangle-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Висячие ссылки», стр. 102",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-036",
+      "type": "multiple_choice",
+      "text": "Какие правила ссылок подведены в итогах раздела? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Либо одна изменяемая ссылка, либо любое количество неизменяемых",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Все ссылки должны быть действительными",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Изменяемые и неизменяемые ссылки на одни данные можно свободно смешивать одновременно",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Допускается любое количество висячих ссылок, пока они не разыменованы",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел завершает обсуждение двумя правилами: режим эксклюзивной записи/множественного чтения и действительность всех ссылок.",
+      "source": {
+        "key": "rust1-borrowing-slices-rules-summary",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Ссылки и заимствование",
+        "locator": "Глава 4 — раздел «Правила работы с ссылками», стр. 102",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-037",
+      "type": "multiple_choice",
+      "text": "Какие действия выполняет первоначальная версия `first_word`, возвращающая `usize`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Преобразует строку в байты через `as_bytes`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Итерируется по байтам",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Ищет байт пробела",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Возвращает владеющий `String` с первым словом",
+          "correct": false
+        }
+      ],
+      "explanation": "Функция ищет первый пробел и возвращает индекс или длину строки, но не часть строки.",
+      "source": {
+        "key": "rust1-borrowing-slices-first-word-index",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — листинг 4-7, стр. 103–104",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-038",
+      "type": "multiple_choice",
+      "text": "Что возвращает `enumerate` в описании `first_word`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Каждый элемент как часть кортежа",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Первый элемент кортежа — индекс",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Второй элемент — ссылка на элемент",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Только длину коллекции",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал объясняет `iter().enumerate()` как последовательность кортежей индекс + ссылка на элемент.",
+      "source": {
+        "key": "rust1-borrowing-slices-enumerate",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — объяснение листинга 4-7, стр. 104",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-039",
+      "type": "multiple_choice",
+      "text": "Почему сохранённый `usize` из старой версии `first_word` хрупок? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он не связан с состоянием исходной `String`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "После `s.clear()` число остаётся прежним",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Изменение строки может сделать индекс бессмысленным",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Компилятор связывает такой индекс со строкой и всегда запрещает её изменение",
+          "correct": false
+        }
+      ],
+      "explanation": "Отдельный индекс не несёт связи с исходными данными, поэтому логическая ошибка может остаться незамеченной.",
+      "source": {
+        "key": "rust1-borrowing-slices-stale-index",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — листинг 4-8 и обсуждение, стр. 104–105",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-040",
+      "type": "multiple_choice",
+      "text": "Какие данные концептуально хранит строковый срез по объяснению? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Ссылку на начальную точку",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Длину среза",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Связь с исходными данными",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Независимую глубокую копию всей `String`",
+          "correct": false
+        }
+      ],
+      "explanation": "Срез представлен ссылкой на начало и длиной; он заимствует исходные данные.",
+      "source": {
+        "key": "rust1-borrowing-slices-slice-layout",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — раздел «Строковые срезы», стр. 105–106, 108",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-041",
+      "type": "multiple_choice",
+      "text": "Какие пары записей среза объявлены эквивалентными? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`&s[0..2]` и `&s[..2]`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`&s[3..len]` и `&s[3..]`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`&s[0..len]` и `&s[..]`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`&s[0..2]` и `&s[0..=2]`",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал показывает сокращения пропуском нулевой начальной или конечной границы; inclusive-диапазон здесь не эквивалентен.",
+      "source": {
+        "key": "rust1-borrowing-slices-slice-shortcuts",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — раздел «Строковые срезы», стр. 106–107",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-042",
+      "type": "multiple_choice",
+      "text": "Какие требования к индексам строкового среза указаны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Они должны лежать на допустимых границах UTF-8-символов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Разрез многобайтового символа может привести к ошибке",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "В вводном примере раздел предполагает ASCII",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Индекс всегда измеряется количеством пользовательских «символов» независимо от байтов",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел предупреждает о границах UTF-8 и для простоты далее предполагает ASCII.",
+      "source": {
+        "key": "rust1-borrowing-slices-utf8-boundary",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — примечание о границах строковых срезов, стр. 107",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-043",
+      "type": "multiple_choice",
+      "text": "Какие преимущества версии `first_word`, возвращающей `&str`, описаны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Результат связан с базовыми данными",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Компилятор может предотвратить изменение строки, пока срез ещё используется",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Срез делает класс ошибок с устаревшим индексом невозможным в показанном сценарии",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Функция получает владение всей `String`",
+          "correct": false
+        }
+      ],
+      "explanation": "Срез связывает результат с исходной строкой и включает правила заимствования в проверку корректности.",
+      "source": {
+        "key": "rust1-borrowing-slices-first-word-slice",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — переписанный `first_word`, стр. 107–109",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-044",
+      "type": "multiple_choice",
+      "text": "Почему `s.clear()` конфликтует с активным `word: &str` в примере? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`word` является неизменяемым заимствованием части `s`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`clear` требует изменяемого доступа к `s`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`word` используется после `clear`, поэтому неизменяемое заимствование ещё активно",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`clear` не изменяет строку и потому конфликт объяснить нельзя",
+          "correct": false
+        }
+      ],
+      "explanation": "Одновременная необходимость изменяемого и активного неизменяемого заимствования нарушает правила.",
+      "source": {
+        "key": "rust1-borrowing-slices-clear-borrow",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — обсуждение ошибки после `s.clear()`, стр. 108–109",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-045",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о строковых литералах как срезах верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Их тип — `&str`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Они указывают на конкретное место в бинарном файле",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Они неизменяемы",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Каждый литерал имеет тип `String` и владеет кучей",
+          "correct": false
+        }
+      ],
+      "explanation": "После введения срезов материал объясняет литералы как неизменяемые `&str`.",
+      "source": {
+        "key": "rust1-borrowing-slices-literal-slice",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — раздел «Строковые литералы — это срезы», стр. 109",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-046",
+      "type": "multiple_choice",
+      "text": "Какие аргументы в листинге показаны допустимыми для `fn first_word(s: &str) -> &str`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Часть `String`: `&my_string[0..6]`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Вся `String` как `&my_string[..]`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Ссылка `&my_string`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Только владеющий `String`, переданный без `&`",
+          "correct": false
+        }
+      ],
+      "explanation": "Сигнатура `&str` делает функцию гибкой для срезов и ссылок на `String`.",
+      "source": {
+        "key": "rust1-borrowing-slices-str-param-string",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — раздел «Строковые срезы как параметры», стр. 109–110",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-047",
+      "type": "multiple_choice",
+      "text": "Какие формы строкового литерала можно передать функции `first_word(&str)` по листингу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Частичный срез литерала",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Полный срез литерала",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Сам строковый литерал напрямую",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Только после `String::from`",
+          "correct": false
+        }
+      ],
+      "explanation": "Строковый литерал уже является `&str`, поэтому его можно передавать напрямую или брать его срез.",
+      "source": {
+        "key": "rust1-borrowing-slices-str-param-literal",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — листинг 4-9 и пример вызовов, стр. 110",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-048",
+      "type": "multiple_choice",
+      "text": "Почему параметр `&str` назван более общим для `first_word`, чем `&String`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он принимает строковые срезы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он работает со строковыми литералами",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Он может использоваться с `String` через ссылку/срез",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Он требует владения `String`",
+          "correct": false
+        }
+      ],
+      "explanation": "Использование `&str` расширяет набор допустимых строковых источников без передачи владения.",
+      "source": {
+        "key": "rust1-borrowing-slices-str-api",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — раздел «Строковые срезы как параметры», стр. 109–110",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-049",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о срезе массива из примера верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для `let a = [1,2,3,4,5]` выражение `&a[1..3]` даёт элементы `[2,3]`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Тип такого среза — `&[i32]`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Он хранит ссылку на первый элемент и длину",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Он владеет независимой копией массива",
+          "correct": false
+        }
+      ],
+      "explanation": "Другие срезы работают аналогично строковым: ссылка + длина, без владения.",
+      "source": {
+        "key": "rust1-borrowing-slices-array-slice",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — раздел «Другие срезы», стр. 110–111",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-050",
+      "type": "multiple_choice",
+      "text": "Какие концепции, по итогам главы 4, обеспечивают безопасность памяти во время компиляции? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Владение",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Заимствование",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Срезы",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Автоматическое выполнение всех тестов",
+          "correct": false
+        }
+      ],
+      "explanation": "В итогах главы прямо названы владение, заимствование и срезы.",
+      "source": {
+        "key": "rust1-borrowing-slices-chapter-summary",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Тип срезы",
+        "locator": "Глава 4 — «Итоги», стр. 111",
+        "url": null
+      }
+    }
+  ]
+}

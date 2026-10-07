@@ -38,6 +38,14 @@ fn validate_topic(topic: &TopicDocument, errors: &mut Vec<String>) {
         errors.push(format!("invalid topic slug: {}", topic.slug));
     }
 
+    if topic.notes_part <= 0 {
+        errors.push(String::from("topic notes_part must be greater than zero"));
+    }
+
+    if topic.topic_number <= 0 {
+        errors.push(String::from("topic topic_number must be greater than zero"));
+    }
+
     if topic.title.trim().is_empty() {
         errors.push(String::from("topic title must not be empty"));
     }
@@ -244,11 +252,27 @@ fn validate_source(question_key: &str, source: &SourceDocument, errors: &mut Vec
 }
 
 fn valid_course_code(value: &str) -> bool {
-    let Some(number) = value.strip_prefix("dba-") else {
+    let Some((track, number)) = value.rsplit_once('-') else {
         return false;
     };
 
-    if number.is_empty() {
+    if track.is_empty() || number.is_empty() {
+        return false;
+    }
+
+    if !track
+        .chars()
+        .next()
+        .is_some_and(|character| character.is_ascii_lowercase())
+    {
+        return false;
+    }
+
+    if track.split('-').any(str::is_empty)
+        || !track.chars().all(|character| {
+            character.is_ascii_lowercase() || character.is_ascii_digit() || character == '-'
+        })
+    {
         return false;
     }
 
@@ -256,11 +280,7 @@ fn valid_course_code(value: &str) -> bool {
         return false;
     }
 
-    match number.parse::<u32>() {
-        Ok(number) => number > 0,
-
-        Err(_) => false,
-    }
+    number.parse::<u32>().is_ok_and(|number| number > 0)
 }
 
 fn valid_key(value: &str) -> bool {
@@ -281,4 +301,44 @@ fn valid_url(value: &str) -> bool {
     let value = value.trim();
 
     value.starts_with("https://") || value.starts_with("http://")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::valid_course_code;
+
+    #[test]
+    fn accepts_supported_course_code_shape() {
+        for value in [
+            "dba-1",
+            "dba-01",
+            "rust-1",
+            "sql-1",
+            "python-1",
+            "postgresql-dba-2",
+            "rust2026-1",
+        ] {
+            assert!(valid_course_code(value), "expected '{value}' to be valid");
+        }
+    }
+
+    #[test]
+    fn rejects_invalid_course_codes() {
+        for value in [
+            "",
+            "dba",
+            "DBA-1",
+            "rust-0",
+            "rust-x",
+            "-1",
+            "1-1",
+            "rust--advanced-1",
+            "rust_advanced-1",
+        ] {
+            assert!(
+                !valid_course_code(value),
+                "expected '{value}' to be invalid"
+            );
+        }
+    }
 }

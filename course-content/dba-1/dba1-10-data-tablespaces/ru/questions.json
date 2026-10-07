@@ -1,0 +1,726 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-data-tablespaces",
+  "questions": [
+    {
+      "key": "dba1-data-tablespaces-001",
+      "type": "single_choice",
+      "text": "Для чего в PostgreSQL используются табличные пространства?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для управления физическим размещением файлов объектов базы данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для разграничения транзакций по уровням изоляции",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Для хранения только журналов WAL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Для определения порядка поиска схем",
+          "correct": false
+        }
+      ],
+      "explanation": "Табличное пространство задаёт расположение данных в файловой системе и позволяет размещать разные объекты на разных носителях.",
+      "source": {
+        "key": "dba1-10-purpose",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Табличные пространства",
+        "locator": "Слайд 3, назначение табличных пространств",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-tablespaces-002",
+      "type": "multiple_choice",
+      "text": "Какие задачи могут решаться с помощью табличных пространств? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Разместить активно используемые данные на более быстром накопителе",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Разместить архивные данные на более медленном накопителе",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Использовать свободное место другого файлового раздела",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Автоматически реплицировать объект на все серверы кластера",
+          "correct": false
+        }
+      ],
+      "explanation": "Табличные пространства позволяют выбирать физическое хранилище для объектов и тем самым управлять доступным дисковым пространством и характеристиками ввода-вывода.",
+      "source": {
+        "key": "postgresql-16-tablespaces-use",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Табличные пространства",
+        "locator": "23.6, назначение и примеры использования",
+        "url": "https://postgrespro.ru/docs/postgresql/16/manage-ag-tablespaces"
+      }
+    },
+    {
+      "key": "dba1-data-tablespaces-003",
+      "type": "single_choice",
+      "text": "Какие два табличных пространства автоматически создаются при инициализации кластера PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_default и pg_global",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_catalog и public",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "template0 и template1",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_data и pg_wal",
+          "correct": false
+        }
+      ],
+      "explanation": "При инициализации кластера создаются стандартные табличные пространства pg_default и pg_global.",
+      "source": {
+        "key": "dba1-10-standard-tablespaces",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Табличные пространства",
+        "locator": "Слайд 3, pg_default и pg_global",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-tablespaces-004",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о связи баз данных и табличных пространств верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Одно табличное пространство может использоваться несколькими базами данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Одна база данных может содержать объекты в нескольких табличных пространствах",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "У базы данных есть табличное пространство по умолчанию",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Каждое табличное пространство может принадлежать только одной базе данных",
+          "correct": false
+        }
+      ],
+      "explanation": "Табличные пространства являются объектами уровня кластера. Одно пространство может использоваться разными базами, а одна база может размещать свои объекты в разных пространствах.",
+      "source": {
+        "key": "dba1-10-database-relation",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Табличные пространства",
+        "locator": "Слайд 3, базы данных и табличные пространства",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-tablespaces-005",
+      "type": "single_choice",
+      "text": "Для чего используется табличное пространство pg_global?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для объектов системного каталога, общих для всего кластера",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для всех временных таблиц любого пользователя",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Исключительно для пользовательских индексов",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Исключительно для WAL",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_global содержит системные объекты, которые относятся ко всему кластеру, а не к отдельной базе данных.",
+      "source": {
+        "key": "dba1-10-pg-global",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Табличные пространства",
+        "locator": "Слайд 3, назначение pg_global",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-tablespaces-006",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о табличном пространстве базы данных по умолчанию верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В нём создаются объекты базы, если другое пространство не указано",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "В нём располагаются системные каталоги этой базы данных",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Изначально для template0 и template1 используется pg_default",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Оно всегда обязано оставаться pg_default и не может быть изменено",
+          "correct": false
+        }
+      ],
+      "explanation": "У каждой базы есть пространство по умолчанию. Изначально эту роль обычно выполняет pg_default, но для базы может быть назначено другое пространство.",
+      "source": {
+        "key": "dba1-10-default-tablespace",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Табличные пространства",
+        "locator": "Слайд 3, табличное пространство базы по умолчанию",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-tablespaces-007",
+      "type": "single_choice",
+      "text": "Какое табличное пространство получит новая база данных, если CREATE DATABASE выполняется без предложения TABLESPACE?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Табличное пространство базы-шаблона, из которой она создаётся",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Всегда pg_global",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Случайно выбранное пользовательское пространство",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Пространство первой созданной таблицы",
+          "correct": false
+        }
+      ],
+      "explanation": "Если TABLESPACE не указан, новая база наследует табличное пространство копируемой базы-шаблона. Поэтому при обычной конфигурации результатом часто оказывается pg_default.",
+      "source": {
+        "key": "postgresql-16-database-tablespace",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Табличное пространство базы данных",
+        "locator": "23.6, наследование пространства базы-шаблона",
+        "url": "https://postgrespro.ru/docs/postgresql/16/manage-ag-tablespaces"
+      }
+    },
+    {
+      "key": "dba1-data-tablespaces-008",
+      "type": "multiple_choice",
+      "text": "Какие требования предъявляются к каталогу, указанному в CREATE TABLESPACE ... LOCATION? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Каталог должен существовать",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Каталог должен быть пустым",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Каталог должен принадлежать пользователю ОС, под которым работает PostgreSQL",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Каталог обязательно должен находиться внутри PGDATA",
+          "correct": false
+        }
+      ],
+      "explanation": "Пользовательское пространство как раз позволяет разместить данные вне основного каталога PGDATA. Указанный каталог должен быть заранее создан, пуст и доступен серверу PostgreSQL.",
+      "source": {
+        "key": "postgresql-16-create-tablespace-location",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Создание табличного пространства",
+        "locator": "23.6, CREATE TABLESPACE и требования к LOCATION",
+        "url": "https://postgrespro.ru/docs/postgresql/16/manage-ag-tablespaces"
+      }
+    },
+    {
+      "key": "dba1-data-tablespaces-009",
+      "type": "single_choice",
+      "text": "Где PostgreSQL размещает символические ссылки на каталоги пользовательских табличных пространств?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "PGDATA/pg_tblspc",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "PGDATA/base",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "PGDATA/global",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "PGDATA/pg_wal",
+          "correct": false
+        }
+      ],
+      "explanation": "Для пользовательских табличных пространств PostgreSQL создаёт в PGDATA/pg_tblspc символические ссылки на фактические каталоги хранения.",
+      "source": {
+        "key": "dba1-10-pg-tblspc",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Каталоги",
+        "locator": "Слайд 4, PGDATA/pg_tblspc",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-tablespaces-010",
+      "type": "multiple_choice",
+      "text": "Какие соответствия стандартных табличных пространств и каталогов верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_global — PGDATA/global",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_default — PGDATA/base",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Пользовательские пространства представлены ссылками из PGDATA/pg_tblspc",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_global — PGDATA/pg_wal",
+          "correct": false
+        }
+      ],
+      "explanation": "Стандартные пространства находятся непосредственно внутри PGDATA: pg_global в global, а pg_default использует base. Для пользовательских пространств применяются ссылки в pg_tblspc.",
+      "source": {
+        "key": "dba1-10-directories",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Каталоги",
+        "locator": "Слайд 4, физическое расположение табличных пространств",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-tablespaces-011",
+      "type": "single_choice",
+      "text": "Как посмотреть список существующих табличных пространств в psql?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\db",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\dt",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "\\dn",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "\\du",
+          "correct": false
+        }
+      ],
+      "explanation": "Для просмотра списка табличных пространств в psql используется метакоманда \\db. Те же сведения можно получать из системного каталога pg_tablespace.",
+      "source": {
+        "key": "postgresql-16-list-tablespaces",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Табличные пространства",
+        "locator": "23.6, pg_tablespace и метакоманда \\db",
+        "url": "https://postgrespro.ru/docs/postgresql/16/manage-ag-tablespaces"
+      }
+    },
+    {
+      "key": "dba1-data-tablespaces-012",
+      "type": "multiple_choice",
+      "text": "Какие объекты PostgreSQL могут размещаться в выбранных табличных пространствах? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Таблицы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Индексы",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Целые базы данных",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Файл postgresql.conf как объект базы данных",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация прямо указывает возможность выбирать табличные пространства для таблиц, индексов и целых баз данных.",
+      "source": {
+        "key": "postgresql-16-tablespace-objects",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Использование табличных пространств",
+        "locator": "23.6, объекты в табличных пространствах",
+        "url": "https://postgrespro.ru/docs/postgresql/16/manage-ag-tablespaces"
+      }
+    },
+    {
+      "key": "dba1-data-tablespaces-013",
+      "type": "single_choice",
+      "text": "Какой параметр можно установить, чтобы CREATE TABLE и CREATE INDEX без явного TABLESPACE использовали выбранное табличное пространство?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "default_tablespace",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "search_path",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "data_directory",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "shared_buffers",
+          "correct": false
+        }
+      ],
+      "explanation": "Непустое значение default_tablespace используется как неявное TABLESPACE при создании таблиц и индексов, если пространство не задано непосредственно командой.",
+      "source": {
+        "key": "postgresql-16-default-tablespace",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Использование табличных пространств",
+        "locator": "23.6, параметр default_tablespace",
+        "url": "https://postgrespro.ru/docs/postgresql/16/manage-ag-tablespaces"
+      }
+    },
+    {
+      "key": "dba1-data-tablespaces-014",
+      "type": "multiple_choice",
+      "text": "Что относится к параметру temp_tablespaces? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он влияет на размещение временных таблиц и индексов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он влияет на размещение временных файлов некоторых операций, например сортировки",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "В нём можно задать список нескольких табличных пространств",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Он определяет расположение postgresql.conf",
+          "correct": false
+        }
+      ],
+      "explanation": "temp_tablespaces предназначен для временных объектов и файлов. Несколько пространств позволяют распределять соответствующую нагрузку.",
+      "source": {
+        "key": "postgresql-16-temp-tablespaces",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Использование табличных пространств",
+        "locator": "23.6, параметр temp_tablespaces",
+        "url": "https://postgrespro.ru/docs/postgresql/16/manage-ag-tablespaces"
+      }
+    },
+    {
+      "key": "dba1-data-tablespaces-015",
+      "type": "single_choice",
+      "text": "Можно ли удалить табличное пространство, пока в нём находятся объекты базы данных?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Нет, перед DROP TABLESPACE пространство должно быть освобождено от объектов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Да, объекты автоматически перемещаются в pg_default",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Да, если использовать CASCADE",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Да, но только если это пространство использует несколько баз",
+          "correct": false
+        }
+      ],
+      "explanation": "DROP TABLESPACE применяется к пустому пространству. Пока существуют использующие его объекты, пространство удалить нельзя.",
+      "source": {
+        "key": "postgresql-16-drop-tablespace",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Удаление табличного пространства",
+        "locator": "23.6, удаление пустого пространства",
+        "url": "https://postgrespro.ru/docs/postgresql/16/manage-ag-tablespaces"
+      }
+    },
+    {
+      "key": "dba1-data-tablespaces-016",
+      "type": "multiple_choice",
+      "text": "Что позволяет изменить команда ALTER TABLESPACE? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Имя табличного пространства",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Владельца табличного пространства",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Параметры табличного пространства через SET и RESET",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Физический путь LOCATION существующего пространства специальным предложением LOCATION",
+          "correct": false
+        }
+      ],
+      "explanation": "Синтаксис ALTER TABLESPACE PostgreSQL 16 включает RENAME, OWNER, SET и RESET. Изменение LOCATION этим оператором не предусмотрено.",
+      "source": {
+        "key": "postgresql-16-alter-tablespace",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "ALTER TABLESPACE",
+        "locator": "Синтаксис ALTER TABLESPACE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-altertablespace"
+      }
+    },
+    {
+      "key": "dba1-data-tablespaces-017",
+      "type": "single_choice",
+      "text": "Какая команда соответствует практическому заданию установить random_page_cost = 1.1 для pg_default?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "ALTER TABLESPACE pg_default SET (random_page_cost = 1.1);",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "ALTER DATABASE pg_default SET random_page_cost = 1.1;",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "ALTER TABLESPACE pg_default LOCATION random_page_cost = 1.1;",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "SET TABLESPACE pg_default random_page_cost = 1.1;",
+          "correct": false
+        }
+      ],
+      "explanation": "Для параметров конкретного табличного пространства применяется ALTER TABLESPACE ... SET (...). Именно такой способ предлагается в дополнительной практике.",
+      "source": {
+        "key": "dba1-10-practice-random-page-cost",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика+",
+        "locator": "Слайд 8, random_page_cost для pg_default",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-tablespaces-018",
+      "type": "multiple_choice",
+      "text": "Какие параметры табличного пространства поддерживает ALTER TABLESPACE ... SET в PostgreSQL 16 согласно приведённой документации? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "seq_page_cost",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "random_page_cost",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "effective_io_concurrency",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "shared_buffers",
+          "correct": false
+        }
+      ],
+      "explanation": "В документации PostgreSQL 16 для ALTER TABLESPACE перечислены seq_page_cost, random_page_cost и effective_io_concurrency.",
+      "source": {
+        "key": "postgresql-16-tablespace-parameters",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "ALTER TABLESPACE",
+        "locator": "Параметры табличного пространства",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-altertablespace"
+      }
+    },
+    {
+      "key": "dba1-data-tablespaces-019",
+      "type": "single_choice",
+      "text": "Что означает уменьшение random_page_cost относительно seq_page_cost с точки зрения приведённого в занятии примера?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Планировщик будет считать произвольный доступ относительно менее дорогим, что может сделать индексный доступ привлекательнее",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "PostgreSQL автоматически переместит индексы в pg_global",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Последовательное чтение станет физически невозможно",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Все таблицы будут немедленно перестроены",
+          "correct": false
+        }
+      ],
+      "explanation": "В дополнительной практике указано, что чем меньше соотношение стоимости произвольного чтения к последовательному, тем чаще планировщик может предпочитать индексный доступ последовательному сканированию.",
+      "source": {
+        "key": "dba1-10-page-cost",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика+",
+        "locator": "Слайд 8, seq_page_cost и random_page_cost",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-tablespaces-020",
+      "type": "multiple_choice",
+      "text": "Какие действия входят в практическое упражнение по табличным пространствам? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Создать новое табличное пространство",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Назначить его пространством по умолчанию для template1 и создать новую базу",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Найти в PGDATA символическую ссылку на каталог созданного пространства",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Перенести каталог pg_global на другой сервер без остановки PostgreSQL",
+          "correct": false
+        }
+      ],
+      "explanation": "Практика проверяет полный жизненный цикл пользовательского пространства: создание, влияние шаблона на новую базу, физическую ссылку в PGDATA и последующее удаление.",
+      "source": {
+        "key": "dba1-10-practice",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика",
+        "locator": "Слайд 7, задания 1–5",
+        "url": null
+      }
+    }
+  ]
+}

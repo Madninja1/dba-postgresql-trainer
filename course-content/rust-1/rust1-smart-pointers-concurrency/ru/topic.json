@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "rust-1",
+  "slug": "rust1-smart-pointers-concurrency",
+  "notes_part": 14,
+  "topic_number": 14,
+  "title": "Указатели и многопоточность",
+  "description": "Box, Deref и Drop, Rc, RefCell и Weak, ссылочные циклы, потоки, каналы, Mutex, Arc и маркерные traits Send и Sync.",
+  "sort_order": 140
+}

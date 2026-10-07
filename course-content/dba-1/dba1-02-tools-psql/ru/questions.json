@@ -1,0 +1,870 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-tools-psql",
+  "questions": [
+    {
+      "key": "dba1-tools-psql-001",
+      "type": "multiple_choice",
+      "text": "Какие возможности psql указаны в материалах? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Интерактивное выполнение SQL-запросов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Выполнение команд из файлов",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Использование собственных метакоманд psql",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Автоматическая инициализация нового кластера PostgreSQL при каждом запуске",
+          "correct": false
+        }
+      ],
+      "explanation": "psql является терминальным клиентом PostgreSQL. Он позволяет интерактивно выполнять запросы, получать команды из файлов или аргументов командной строки и предоставляет собственные метакоманды.",
+      "source": {
+        "key": "dba1-tools-psql-purpose",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "psql",
+        "locator": "Документация PostgreSQL 16 — psql, раздел «Описание»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-002",
+      "type": "single_choice",
+      "text": "Какой запуск psql задаёт базу appdb, пользователя dba, сервер db01 и порт 5433?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "psql -d appdb -U dba -h db01 -p 5433",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "psql -U appdb -d dba -p db01 -h 5433",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "psql -h appdb -p dba -d db01 -U 5433",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "psql -p appdb -h dba -U db01 -d 5433",
+          "correct": false
+        }
+      ],
+      "explanation": "В psql параметр -d задаёт базу данных, -U — пользователя, -h — узел, а -p — порт сервера.",
+      "source": {
+        "key": "dba1-tools-psql-connection",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Подключение",
+        "locator": "Слайд 4 «Подключение», запуск psql",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-psql-003",
+      "type": "multiple_choice",
+      "text": "Какие значения psql использует по умолчанию, если соответствующие параметры подключения явно не заданы? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Имя пользователя базы данных совпадает с именем пользователя операционной системы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Имя базы данных по умолчанию совпадает с определённым именем пользователя базы данных",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Имя базы данных всегда равно postgres независимо от пользователя",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Пользователь базы данных всегда равен postgres",
+          "correct": false
+        }
+      ],
+      "explanation": "Если пользователь не указан, psql по умолчанию использует имя пользователя операционной системы. После определения пользователя его имя применяется и как имя базы данных по умолчанию.",
+      "source": {
+        "key": "dba1-tools-psql-connection-defaults",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Подключение",
+        "locator": "Документация PostgreSQL 16 — psql, раздел «Подключение к базе данных»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-004",
+      "type": "single_choice",
+      "text": "Вы уже находитесь внутри psql. Какой командой можно посмотреть информацию о текущем соединении?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\connect",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "\\conninfo",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "\\help",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "\\list",
+          "correct": false
+        }
+      ],
+      "explanation": "Команда \\conninfo предназначена для вывода информации о текущем подключении. Команда \\connect используется для установки нового подключения.",
+      "source": {
+        "key": "dba1-tools-psql-connection-004",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Подключение",
+        "locator": "Слайд 4 «Подключение», блок «Информация о текущем подключении»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-psql-005",
+      "type": "multiple_choice",
+      "text": "Какие соответствия между справочными командами и их назначением верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\? — список и краткое описание команд psql",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\? variables — справка по переменным psql",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "\\h — справка по SQL-командам",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "\\q — вывод синтаксиса SQL-команды",
+          "correct": false
+        }
+      ],
+      "explanation": "В psql команда \\? показывает справку по метакомандам, \\? variables — по переменным psql, а \\h или \\help — по SQL-командам. \\q завершает работу с psql.",
+      "source": {
+        "key": "dba1-tools-psql-help",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Получение справки",
+        "locator": "Слайд 5 «Получение справки»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-psql-006",
+      "type": "single_choice",
+      "text": "Что делает параметр psql -c?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Передаёт указанную команду psql для выполнения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Указывает каталог конфигурации PostgreSQL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Всегда открывает новое интерактивное соединение после выполнения команды",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Включает только развёрнутый режим отображения результатов",
+          "correct": false
+        }
+      ],
+      "explanation": "Параметр -c, или --command, передаёт psql команду для выполнения. Если используются -c или -f, после обработки заданных команд psql завершается, а не переходит к чтению команд со стандартного ввода.",
+      "source": {
+        "key": "dba1-tools-psql-command-line",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "psql",
+        "locator": "Документация PostgreSQL 16 — psql, параметр -c/--command",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-007",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о параметре psql -f верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он читает команды из указанного файла",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Его можно комбинировать с параметром -c",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "По назначению он во многом соответствует метакоманде \\i",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "После обработки файла psql обязательно продолжает читать команды со стандартного ввода",
+          "correct": false
+        }
+      ],
+      "explanation": "Параметр -f читает команды из файла, может повторяться и сочетаться с -c и по существу близок к метакоманде \\i. При наличии -c или -f psql завершается после обработки этих параметров.",
+      "source": {
+        "key": "dba1-tools-psql-command-line-007",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "psql",
+        "locator": "Документация PostgreSQL 16 — psql, параметр -f/--file",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-008",
+      "type": "single_choice",
+      "text": "Как psql отличает собственную метакоманду от обычной SQL-команды?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Метакоманда начинается с обратной косой черты",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Метакоманда всегда начинается с двух дефисов",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Метакоманда обязательно заканчивается двоеточием",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Метакоманда заключается в квадратные скобки",
+          "correct": false
+        }
+      ],
+      "explanation": "Собственные команды psql начинаются с обратной косой черты. Они обрабатываются самим psql, а не сервером как SQL.",
+      "source": {
+        "key": "dba1-tools-psql-metacommands",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Получение справки",
+        "locator": "Слайд 5 «Получение справки»; документация PostgreSQL 16 — psql, раздел «Метакоманды»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-009",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о вводе SQL в интерактивном psql верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Точка с запятой обычно завершает SQL-команду и отправляет её серверу",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Обычный перевод строки сам по себе не обязан завершать SQL-команду",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "SQL-команду можно вводить на нескольких строках",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Любая команда, начинающаяся с обратной косой черты, передаётся серверу как SQL",
+          "correct": false
+        }
+      ],
+      "explanation": "В обычном режиме psql отправляет SQL-команду серверу после завершающей точки с запятой. Перевод строки не обязательно завершает оператор, поэтому SQL удобно вводить в несколько строк. Метакоманды с обратной косой чертой обрабатывает сам psql.",
+      "source": {
+        "key": "dba1-tools-psql-sql-input",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "psql",
+        "locator": "Документация PostgreSQL 16 — psql, разделы «Ввод SQL-команд» и «Метакоманды»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-010",
+      "type": "multiple_choice",
+      "text": "Какие соответствия переменных окружения libpq параметрам соединения верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "PGHOST — host",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "PGDATABASE — dbname",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "PGPORT — user",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "PGUSER — port",
+          "correct": false
+        }
+      ],
+      "explanation": "PGHOST соответствует параметру host, PGDATABASE — dbname, PGPORT — port, а PGUSER — user. Эти переменные позволяют задавать значения параметров соединения по умолчанию.",
+      "source": {
+        "key": "dba1-tools-psql-libpq-envars",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Переменные окружения",
+        "locator": "Документация PostgreSQL 16 — раздел 34.15 «Переменные окружения»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/libpq-envars"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-011",
+      "type": "single_choice",
+      "text": "Какой способ хранения пароля документация рекомендует рассмотреть вместо PGPASSWORD?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Файл паролей .pgpass",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Переменную PGPORT",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Переменную PROMPT1",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Файл postgresql.conf",
+          "correct": false
+        }
+      ],
+      "explanation": "Использование PGPASSWORD не рекомендуется по соображениям безопасности, поскольку в некоторых системах переменные окружения процессов могут быть доступны другим пользователям. Документация предлагает вместо этого использовать файл паролей.",
+      "source": {
+        "key": "dba1-tools-psql-libpq-envars-011",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Переменные окружения",
+        "locator": "Документация PostgreSQL 16 — раздел 34.15 «Переменные окружения», PGPASSWORD",
+        "url": "https://postgrespro.ru/docs/postgresql/16/libpq-envars"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-012",
+      "type": "single_choice",
+      "text": "Какой формат строки соответствует записи в файле .pgpass?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "имя_узла:порт:база_данных:имя_пользователя:пароль",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "имя_пользователя:пароль:имя_узла:база_данных",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "база_данных=имя_пользователя=пароль=порт",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "имя_узла;база_данных;пароль",
+          "correct": false
+        }
+      ],
+      "explanation": "Строка файла паролей содержит пять полей в порядке: имя узла, порт, база данных, имя пользователя и пароль.",
+      "source": {
+        "key": "dba1-tools-psql-pgpass",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Файл паролей",
+        "locator": "Документация PostgreSQL 16 — раздел 34.16 «Файл паролей»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/libpq-pgpass"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-013",
+      "type": "multiple_choice",
+      "text": "Какие правила обработки записей .pgpass верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В первых четырёх полях можно использовать * для соответствия любому значению",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Используется пароль из первой подходящей строки",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Символы : и \\ внутри значения при необходимости экранируются обратной косой чертой",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "При наличии нескольких подходящих строк всегда выбирается последняя",
+          "correct": false
+        }
+      ],
+      "explanation": "Первые четыре поля .pgpass допускают символ *, а поиск прекращается на первой подходящей записи. Поэтому более конкретные записи при использовании шаблонов следует располагать раньше. Двоеточие и обратная косая черта экранируются.",
+      "source": {
+        "key": "dba1-tools-psql-pgpass-013",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Файл паролей",
+        "locator": "Документация PostgreSQL 16 — раздел 34.16 «Файл паролей», формат и выбор записи",
+        "url": "https://postgrespro.ru/docs/postgresql/16/libpq-pgpass"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-014",
+      "type": "single_choice",
+      "text": "Что произойдёт в Unix, если файл ~/.pgpass доступен группе или остальным пользователям?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Файл будет игнорироваться",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "psql автоматически исправит права доступа",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Файл будет использоваться только для локальных подключений",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "psql удалит из файла пароли",
+          "correct": false
+        }
+      ],
+      "explanation": "В Unix файл паролей должен запрещать доступ группе и остальным пользователям. В документации в качестве подходящего варианта указан режим 0600. При менее строгих правах файл игнорируется.",
+      "source": {
+        "key": "dba1-tools-psql-pgpass-014",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Файл паролей",
+        "locator": "Документация PostgreSQL 16 — раздел 34.16 «Файл паролей», права доступа",
+        "url": "https://postgrespro.ru/docs/postgresql/16/libpq-pgpass"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-015",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о pg_service.conf верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Файл позволяет связать набор параметров подключения с именем службы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Имя службы можно указать через PGSERVICE",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Файл использует формат, подобный INI, где имя секции является именем службы",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Изменение параметров службы требует перекомпиляции клиентского приложения",
+          "correct": false
+        }
+      ],
+      "explanation": "Файл соединений служб связывает имя службы с параметрами соединения. Службу можно выбрать через PGSERVICE, а сам файл имеет формат INI. Одно из назначений механизма — возможность изменять параметры соединения без перекомпиляции приложения.",
+      "source": {
+        "key": "dba1-tools-psql-pgservice",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Файл соединений служб",
+        "locator": "Документация PostgreSQL 16 — раздел 34.17 «Файл соединений служб»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/libpq-pgservice"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-016",
+      "type": "single_choice",
+      "text": "Один и тот же параметр подключения задан в переменной окружения, pg_service.conf и непосредственно в строке подключения. Какое значение имеет наивысший приоритет согласно документации?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Значение непосредственно из строки подключения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Значение из переменной окружения",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Значение из pg_service.conf всегда имеет абсолютный приоритет",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Выбирается случайное из трёх значений",
+          "correct": false
+        }
+      ],
+      "explanation": "Параметр из файла службы переопределяет соответствующую переменную окружения, но сам может быть переопределён значением, непосредственно указанным в строке подключения.",
+      "source": {
+        "key": "dba1-tools-psql-pgservice-016",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Файл соединений служб",
+        "locator": "Документация PostgreSQL 16 — раздел 34.17 «Файл соединений служб», объединение параметров",
+        "url": "https://postgrespro.ru/docs/postgresql/16/libpq-pgservice"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-017",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о переменных приглашения psql верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "PROMPT1 задаёт обычное приглашение при ожидании новой команды",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "PROMPT2 используется, когда psql ожидает продолжение незавершённой команды",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "PROMPT1 задаёт пароль пользователя для соединения",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "PROMPT2 определяет программу постраничного просмотра",
+          "correct": false
+        }
+      ],
+      "explanation": "PROMPT1 отвечает за основное приглашение psql. PROMPT2 выводится при продолжении ввода, например если команда ещё не завершена точкой с запятой или не закрыты кавычки.",
+      "source": {
+        "key": "dba1-tools-psql-prompt",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Настройка приглашения",
+        "locator": "Документация PostgreSQL 16 — psql, раздел «Выдача приглашения»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql#APP-PSQL-PROMPTING"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-018",
+      "type": "single_choice",
+      "text": "Какой командой psql можно включить отображение времени выполнения каждого SQL-оператора?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\timing on",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\time start",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "\\profile on",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "\\duration enable",
+          "correct": false
+        }
+      ],
+      "explanation": "Метакоманда \\timing on включает отображение времени выполнения каждого SQL-оператора. Вызов \\timing без параметра переключает текущее состояние.",
+      "source": {
+        "key": "dba1-tools-psql-timing",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Настройка psql",
+        "locator": "Документация PostgreSQL 16 — psql, метакоманда \\timing",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-019",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о постраничном просмотре вывода psql верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Программу постраничного просмотра можно задать через PSQL_PAGER",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Настройкой pager можно управлять через \\pset",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Если заданы и PSQL_PAGER, и PAGER, сначала рассматривается PSQL_PAGER",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "psql всегда использует постраничник, даже если его явно отключить",
+          "correct": false
+        }
+      ],
+      "explanation": "psql поддерживает переменные PSQL_PAGER и PAGER и настройки \\pset pager. PSQL_PAGER имеет приоритет перед PAGER. Постраничник можно отключить.",
+      "source": {
+        "key": "dba1-tools-psql-pager",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Настройка вывода",
+        "locator": "Документация PostgreSQL 16 — psql, PSQL_PAGER/PAGER и \\pset pager",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-020",
+      "type": "single_choice",
+      "text": "В практическом задании требуется вывести список баз данных в подробном виде. Какая команда указана в материале?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\l+",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\conninfo+",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "\\h+",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "\\q+",
+          "correct": false
+        }
+      ],
+      "explanation": "В практической части материала для вывода подробного списка баз данных предлагается использовать команду \\l+.",
+      "source": {
+        "key": "dba1-tools-psql-practice",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика",
+        "locator": "Слайд 8 «Практика», задание 2",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-psql-021",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о файле .psqlrc и настройках psql подтверждаются материалом? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В .psqlrc можно разместить настройки, которые должны применяться при последующих запусках psql",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Через \\setenv в .psqlrc можно задать PSQL_PAGER только для сеансов psql",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Параметр -X позволяет запустить psql без чтения стартовых файлов psqlrc",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": ".psqlrc является серверным конфигурационным файлом и читается процессом postgres",
+          "correct": false
+        }
+      ],
+      "explanation": "В практической части .psqlrc используется для постоянных пользовательских настроек psql, в том числе через \\setenv. Параметр -X, или --no-psqlrc, запрещает чтение системного и пользовательского стартовых файлов psql.",
+      "source": {
+        "key": "dba1-tools-psql-psqlrc",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика",
+        "locator": "Слайд 8 «Практика» и документация PostgreSQL 16 — psql, параметр -X/--no-psqlrc",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-022",
+      "type": "multiple_choice",
+      "text": "Что делает ON_ERROR_ROLLBACK=on при работе внутри блока транзакции? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "psql неявно создаёт SAVEPOINT перед каждой командой",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "При ошибке psql откатывается к созданной точке сохранения",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "После ошибки транзакция может продолжать работу",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Каждая успешная команда автоматически завершает транзакцию командой COMMIT",
+          "correct": false
+        }
+      ],
+      "explanation": "При ON_ERROR_ROLLBACK=on psql устанавливает неявную точку сохранения перед каждой командой в блоке транзакции. Если команда завершается ошибкой, выполняется откат к этой точке, что позволяет продолжить транзакцию.",
+      "source": {
+        "key": "dba1-tools-psql-on-error-rollback",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика+",
+        "locator": "Слайд 9 «Практика+»; документация PostgreSQL 16 — psql, переменная ON_ERROR_ROLLBACK",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-023",
+      "type": "single_choice",
+      "text": "Чем значение ON_ERROR_ROLLBACK=interactive отличается от ON_ERROR_ROLLBACK=on?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Откат после ошибки применяется только в интерактивных сеансах, но не при чтении скриптов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Откат применяется только при выполнении скриптов",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Любая ошибка немедленно завершает psql",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Значение interactive полностью отключает точки сохранения",
+          "correct": false
+        }
+      ],
+      "explanation": "Значение interactive включает описанное поведение только для интерактивных сеансов psql. При выполнении команд из скриптов оно не применяется.",
+      "source": {
+        "key": "dba1-tools-psql-on-error-rollback-023",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Переменные psql",
+        "locator": "Документация PostgreSQL 16 — psql, переменная ON_ERROR_ROLLBACK",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-024",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о параметре psql -1/--single-transaction верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он применяется вместе с одним или несколькими параметрами -c и/или -f",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "psql выполняет BEGIN перед первой обрабатываемой командой и COMMIT после последней",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "При ошибке и ON_ERROR_STOP вместо COMMIT выполняется ROLLBACK",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Он предназначен только для изменения внешнего вида приглашения psql",
+          "correct": false
+        }
+      ],
+      "explanation": "Параметр --single-transaction оборачивает обработку команд, переданных через -c и -f, в одну транзакцию. При установленном ON_ERROR_STOP ошибка приводит к ROLLBACK вместо завершающего COMMIT.",
+      "source": {
+        "key": "dba1-tools-psql-single-transaction",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "psql",
+        "locator": "Документация PostgreSQL 16 — psql, параметр -1/--single-transaction",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    }
+  ]
+}

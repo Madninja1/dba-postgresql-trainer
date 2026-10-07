@@ -1,0 +1,1806 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-cargo-project-structure",
+  "questions": [
+    {
+      "key": "rust1-cargo-project-structure-001",
+      "type": "single_choice",
+      "text": "Какой инструмент в материале используется для управления версиями Rust и связанными инструментами?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "rustup",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "cargo",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "rustfmt",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "rustc",
+          "correct": false
+        }
+      ],
+      "explanation": "`rustup` описан как инструмент командной строки для управления версиями Rust и связанными с ним инструментами.",
+      "source": {
+        "key": "rust1-cargo-project-structure-rustup",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Установка",
+        "locator": "Глава 1 — раздел «Установка», стр. 9",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-002",
+      "type": "single_choice",
+      "text": "Какой командой материал предлагает проверить, правильно ли установлен Rust?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "cargo --version",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "rustc --version",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "rustup doc",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "cargo check",
+          "correct": false
+        }
+      ],
+      "explanation": "Для проверки установки предлагается выполнить `rustc --version` и убедиться, что вывод содержит сведения о версии.",
+      "source": {
+        "key": "rust1-cargo-project-structure-installation-check",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Установка",
+        "locator": "Глава 1 — раздел «Устранение возможных ошибок», стр. 10–11",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-003",
+      "type": "single_choice",
+      "text": "Какой командой после установки через rustup предлагается обновить Rust?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "rustup update",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "cargo update",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "rustc update",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "cargo upgrade",
+          "correct": false
+        }
+      ],
+      "explanation": "В разделе об обновлении указана команда `rustup update`.",
+      "source": {
+        "key": "rust1-cargo-project-structure-rustup-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Установка",
+        "locator": "Глава 1 — раздел «Обновление и удаление», стр. 11",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-004",
+      "type": "single_choice",
+      "text": "Что делает команда `rustup doc` согласно материалу?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Удаляет локальную документацию",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Открывает локальную документацию в браузере",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Публикует документацию на Crates.io",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Форматирует документационные комментарии",
+          "correct": false
+        }
+      ],
+      "explanation": "Установка Rust включает локальную документацию; `rustup doc` открывает её в браузере.",
+      "source": {
+        "key": "rust1-cargo-project-structure-local-docs",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Установка",
+        "locator": "Глава 1 — раздел «Локальная документация», стр. 11–12",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-005",
+      "type": "single_choice",
+      "text": "Какое расширение имеют исходные файлы Rust в разделе «Привет, мир!»?",
+      "answers": [
+        {
+          "key": "a",
+          "text": ".rust",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": ".rs",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": ".rc",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": ".cargo",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал прямо указывает, что файлы Rust заканчиваются расширением `.rs`.",
+      "source": {
+        "key": "rust1-cargo-project-structure-source-files",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, мир!",
+        "locator": "Глава 1 — раздел «Написание и запуск первой Rust программы», стр. 14",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-006",
+      "type": "single_choice",
+      "text": "Какая функция является первым выполняемым кодом в каждой исполняемой Rust-программе по материалу?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "start",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "run",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "main",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "init",
+          "correct": false
+        }
+      ],
+      "explanation": "Функция `main` названа первым кодом, который запускается в каждой исполняемой программе Rust.",
+      "source": {
+        "key": "rust1-cargo-project-structure-main",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, мир!",
+        "locator": "Глава 1 — раздел «Анатомия программы на Rust», стр. 14–15",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-007",
+      "type": "single_choice",
+      "text": "Что означает в `println!` восклицательный знак согласно разбору «Привет, мир!»?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Вызов макроса, а не обычной функции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Принудительный вывод в stderr",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Завершение программы",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Создание изменяемой строки",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал поясняет, что `!` означает вызов макроса; без него запись выглядела бы как вызов функции.",
+      "source": {
+        "key": "rust1-cargo-project-structure-println-macro",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, мир!",
+        "locator": "Глава 1 — раздел «Анатомия программы на Rust», стр. 15",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-008",
+      "type": "single_choice",
+      "text": "Какой командой компилируется одиночный файл `main.rs` в примере без Cargo?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "cargo main.rs",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "rustc main.rs",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "rustup main.rs",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "rustfmt main.rs",
+          "correct": false
+        }
+      ],
+      "explanation": "Перед запуском пример компилируется командой `rustc main.rs`.",
+      "source": {
+        "key": "rust1-cargo-project-structure-rustc",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, мир!",
+        "locator": "Глава 1 — раздел «Компиляция и запуск — это отдельные шаги», стр. 15–16",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-009",
+      "type": "single_choice",
+      "text": "Как характеризуется Rust в объяснении раздельных шагов компиляции и запуска?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Только интерпретируемый язык",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Предварительно скомпилированный язык",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Язык, требующий виртуальную машину для любого бинарника",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Язык без двоичных исполняемых файлов",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал называет Rust предварительно скомпилированным языком и отмечает, что готовый исполняемый файл можно передать другому пользователю.",
+      "source": {
+        "key": "rust1-cargo-project-structure-compiled-language",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, мир!",
+        "locator": "Глава 1 — раздел «Компиляция и запуск — это отдельные шаги», стр. 16",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-010",
+      "type": "single_choice",
+      "text": "Что такое Cargo согласно материалу?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Только форматтер",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Система сборки и менеджер пакетов Rust",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Только компилятор C",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только отладчик",
+          "correct": false
+        }
+      ],
+      "explanation": "Cargo прямо определяется как система сборки и менеджер пакетов Rust.",
+      "source": {
+        "key": "rust1-cargo-project-structure-cargo-role",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, Cargo!",
+        "locator": "Глава 1 — раздел «Привет, Cargo!», стр. 17",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-011",
+      "type": "single_choice",
+      "text": "Какая команда создаёт новый Cargo-проект `hello_cargo`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "cargo init-file hello_cargo",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "cargo new hello_cargo",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "rustc new hello_cargo",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "cargo build hello_cargo",
+          "correct": false
+        }
+      ],
+      "explanation": "В примере новый проект создаётся командой `cargo new hello_cargo`.",
+      "source": {
+        "key": "rust1-cargo-project-structure-cargo-new",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, Cargo!",
+        "locator": "Глава 1 — раздел «Создание проекта с помощью Cargo», стр. 17",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-012",
+      "type": "single_choice",
+      "text": "Где Cargo ожидает исходные файлы проекта?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В каталоге `src`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только в корне проекта",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "В `target/debug`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "В `.git`",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал говорит, что Cargo ожидает исходные файлы внутри каталога `src`.",
+      "source": {
+        "key": "rust1-cargo-project-structure-project-layout",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, Cargo!",
+        "locator": "Глава 1 — раздел «Создание проекта с помощью Cargo», стр. 18–19",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-013",
+      "type": "single_choice",
+      "text": "Какой файл является конфигурационным файлом Cargo в формате TOML?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Cargo.lock",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "main.rs",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Cargo.toml",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": ".gitignore",
+          "correct": false
+        }
+      ],
+      "explanation": "`Cargo.toml` описан как конфигурационный файл Cargo в формате TOML.",
+      "source": {
+        "key": "rust1-cargo-project-structure-cargo-toml",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, Cargo!",
+        "locator": "Глава 1 — раздел «Создание проекта с помощью Cargo», стр. 18",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-014",
+      "type": "single_choice",
+      "text": "Для чего служит секция `[dependencies]` в `Cargo.toml`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для списка внешних зависимостей проекта",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для исходного кода `main`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Для вывода компилятора",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Для хранения Git-коммитов",
+          "correct": false
+        }
+      ],
+      "explanation": "Секция `[dependencies]` является началом списка внешних пакетов, от которых зависит проект.",
+      "source": {
+        "key": "rust1-cargo-project-structure-dependencies",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, Cargo!",
+        "locator": "Глава 1 — раздел «Создание проекта с помощью Cargo», стр. 18",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-015",
+      "type": "single_choice",
+      "text": "Куда помещается бинарный файл обычной отладочной сборки Cargo?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "target/release",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "target/debug",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "src/bin",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Корень проекта",
+          "correct": false
+        }
+      ],
+      "explanation": "Стандартная сборка является отладочной, поэтому Cargo помещает бинарник в `target/debug`.",
+      "source": {
+        "key": "rust1-cargo-project-structure-debug-build",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, Cargo!",
+        "locator": "Глава 1 — раздел «Сборка и запуск Cargo проекта», стр. 19",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-016",
+      "type": "single_choice",
+      "text": "Что хранит `Cargo.lock` согласно материалу?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Точные версии зависимостей проекта",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Текст программы",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только номер версии Rust",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Историю Git",
+          "correct": false
+        }
+      ],
+      "explanation": "`Cargo.lock` хранит точные версии зависимостей и используется для воспроизводимых сборок.",
+      "source": {
+        "key": "rust1-cargo-project-structure-cargo-lock",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, Cargo!",
+        "locator": "Глава 1 — раздел «Сборка и запуск Cargo проекта», стр. 19; глава 2 — раздел «Обеспечение воспроизводимых сборок с помощью файла Cargo.lock», стр. 32",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-017",
+      "type": "single_choice",
+      "text": "Что делает `cargo run`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Только форматирует код",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Компилирует проект и запускает полученный бинарный файл",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Только проверяет код без бинарника",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Удаляет `target`",
+          "correct": false
+        }
+      ],
+      "explanation": "`cargo run` объединяет сборку и запуск проекта одной командой.",
+      "source": {
+        "key": "rust1-cargo-project-structure-cargo-run",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, Cargo!",
+        "locator": "Глава 1 — раздел «Сборка и запуск Cargo проекта», стр. 20",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-018",
+      "type": "single_choice",
+      "text": "Что делает `cargo check`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Создаёт release-бинарник",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Проверяет компилируемость кода, не создавая исполняемый файл",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Создаёт новый проект",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Обновляет все зависимости вне ограничений Cargo.toml",
+          "correct": false
+        }
+      ],
+      "explanation": "`cargo check` быстро проверяет, компилируется ли код, и пропускает создание исполняемого файла.",
+      "source": {
+        "key": "rust1-cargo-project-structure-cargo-check",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, Cargo!",
+        "locator": "Глава 1 — раздел «Сборка и запуск Cargo проекта», стр. 20–21",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-019",
+      "type": "single_choice",
+      "text": "Какой командой создаётся оптимизированная release-сборка?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "cargo release",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "cargo build --release",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "cargo run --debug",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "rustc --check",
+          "correct": false
+        }
+      ],
+      "explanation": "Для финальной оптимизированной сборки материал использует `cargo build --release`.",
+      "source": {
+        "key": "rust1-cargo-project-structure-release",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, Cargo!",
+        "locator": "Глава 1 — раздел «Сборка финальной версии (Release)», стр. 21",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-020",
+      "type": "single_choice",
+      "text": "Почему в игре «Угадайка» переменная `guess` объявлена как `let mut guess`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Потому что `read_line` должен изменить содержимое строки",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Потому что все `String` обязаны быть mutable",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Потому что `println!` принимает только mutable значения",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Потому что `String::new` возвращает число",
+          "correct": false
+        }
+      ],
+      "explanation": "`read_line` записывает пользовательский ввод в переданную строку, поэтому она должна быть изменяемой.",
+      "source": {
+        "key": "rust1-cargo-project-structure-guess-input",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Программируем игру в загадки",
+        "locator": "Глава 2 — разделы «Хранение значений с помощью переменных» и «Получение пользовательского ввода», стр. 25–27",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-021",
+      "type": "single_choice",
+      "text": "Что возвращает `read_line` кроме изменения строки с пользовательским вводом?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Значение типа Result",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Всегда `String`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только `bool`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Ничего",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал указывает, что `read_line` возвращает `Result`, который кодирует успешный или неуспешный исход операции.",
+      "source": {
+        "key": "rust1-cargo-project-structure-read-line-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Программируем игру в загадки",
+        "locator": "Глава 2 — раздел «Обработка потенциального сбоя с помощью типа Result», стр. 27–28",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-022",
+      "type": "single_choice",
+      "text": "Что делает `expect` для значения `Result::Err` в рассматриваемом примере?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Возвращает пустую строку",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Вызывает сбой программы и выводит переданное сообщение",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Игнорирует ошибку без вывода",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Автоматически повторяет чтение",
+          "correct": false
+        }
+      ],
+      "explanation": "Если `Result` равен `Err`, метод `expect` аварийно завершает программу и показывает заданное сообщение.",
+      "source": {
+        "key": "rust1-cargo-project-structure-expect",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Программируем игру в загадки",
+        "locator": "Глава 2 — раздел «Обработка потенциального сбоя с помощью типа Result», стр. 28",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-023",
+      "type": "single_choice",
+      "text": "Зачем в игре используется `guess.trim()` перед `parse()`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы удалить пробельные символы, включая перевод строки после ввода",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы добавить пробелы между цифрами",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы преобразовать число обратно в строку",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы случайно перемешать символы",
+          "correct": false
+        }
+      ],
+      "explanation": "`trim` убирает пробельные символы в начале и конце, в том числе `\n` или `\r\n`, добавленные после ввода.",
+      "source": {
+        "key": "rust1-cargo-project-structure-trim-parse",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Программируем игру в загадки",
+        "locator": "Глава 2 — раздел «Сравнение догадки с секретным числом», стр. 37–38",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-024",
+      "type": "single_choice",
+      "text": "Какие варианты перечисления `Ordering` названы в материале?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Some, None, Error",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Less, Greater, Equal",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Ok, Err, Pending",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Before, Same, After",
+          "correct": false
+        }
+      ],
+      "explanation": "`std::cmp::Ordering` имеет варианты `Less`, `Greater` и `Equal` для трёх исходов сравнения.",
+      "source": {
+        "key": "rust1-cargo-project-structure-ordering",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Программируем игру в загадки",
+        "locator": "Глава 2 — раздел «Сравнение догадки с секретным числом», стр. 35",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-025",
+      "type": "single_choice",
+      "text": "Что означает диапазон `1..=100` в объяснении генерации случайного числа?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "От 1 включительно до 100 включительно",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "От 1 включительно до 100 исключительно",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только числа 1 и 100",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "От 0 до 99",
+          "correct": false
+        }
+      ],
+      "explanation": "Форма `start..=end` включает обе границы; для числа от 1 до 100 в материале используется `1..=100`.",
+      "source": {
+        "key": "rust1-cargo-project-structure-inclusive-range",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Программируем игру в загадки",
+        "locator": "Глава 2 — раздел «Генерация случайного числа», стр. 33–34",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-026",
+      "type": "multiple_choice",
+      "text": "Какие темы прямо перечислены в начале главы «Начало работы»? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Установка Rust",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Программа Hello, world!",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Использование Cargo",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Написание макросов процедурного типа",
+          "correct": false
+        }
+      ],
+      "explanation": "Начало главы перечисляет установку Rust, написание Hello, world! и использование Cargo.",
+      "source": {
+        "key": "rust1-cargo-project-structure-chapter-one-topics",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Начало работы",
+        "locator": "Глава 1 — введение, стр. 8",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-027",
+      "type": "multiple_choice",
+      "text": "Какие утверждения об условных обозначениях командной строки верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Строки для ввода обычно начинаются с `$`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Символ `$` вводить не нужно",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Строки без `$` обычно показывают вывод предыдущей команды",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Во всех PowerShell-примерах обязательно используется `$`",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал объясняет `$` как приглашение оболочки, которое не вводится; строки без него обычно являются выводом, а PowerShell-специфичные примеры могут использовать `>`.",
+      "source": {
+        "key": "rust1-cargo-project-structure-shell-notation",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Установка",
+        "locator": "Глава 1 — раздел «Условные обозначения командной строки», стр. 9",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-028",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о компоновщике и C-компиляторе приведены в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Rust использует компоновщик для объединения скомпилированных выходных данных в один файл",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Ошибки компоновки могут потребовать установки C-компилятора",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Некоторые Rust-пакеты зависят от C-кода",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Компоновщик нужен только для форматирования исходников",
+          "correct": false
+        }
+      ],
+      "explanation": "В разделе установки компоновщик описан как средство объединения выходных данных; C-компилятор часто включает компоновщик и нужен некоторым зависимостям с C-кодом.",
+      "source": {
+        "key": "rust1-cargo-project-structure-linker",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Установка",
+        "locator": "Глава 1 — раздел «Установка», стр. 10",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-029",
+      "type": "multiple_choice",
+      "text": "Какие команды относятся к обслуживанию установки Rust через rustup? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`rustup update`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`rustup self uninstall`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`rustup doc`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`cargo new`",
+          "correct": false
+        }
+      ],
+      "explanation": "Разделы главы 1 используют `rustup update` для обновления, `rustup self uninstall` для удаления и `rustup doc` для локальной документации.",
+      "source": {
+        "key": "rust1-cargo-project-structure-rustup-commands",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Установка",
+        "locator": "Глава 1 — разделы «Обновление и удаление» и «Локальная документация», стр. 11",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-030",
+      "type": "multiple_choice",
+      "text": "Какие детали функции `main` подтверждает разбор программы «Привет, мир!»? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Она объявляется с `fn`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Её тело заключено в фигурные скобки",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "В приведённом варианте она не имеет параметров",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Она обязана возвращать `String`",
+          "correct": false
+        }
+      ],
+      "explanation": "Разбор показывает `fn main() { ... }`: параметров нет, тело в `{}`, обязательного возврата `String` нет.",
+      "source": {
+        "key": "rust1-cargo-project-structure-main-anatomy",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, мир!",
+        "locator": "Глава 1 — раздел «Анатомия программы на Rust», стр. 14–15",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-031",
+      "type": "multiple_choice",
+      "text": "Какие детали строки `println!(\"Привет, мир!\");` отмечены в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`println!` является макросом",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Строка передаётся макросу как аргумент",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Точка с запятой завершает выражение/строку кода",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Восклицательный знак означает изменяемость переменной",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал отдельно разбирает макрос `println!`, его строковый аргумент и завершающую точку с запятой.",
+      "source": {
+        "key": "rust1-cargo-project-structure-println-details",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, мир!",
+        "locator": "Глава 1 — раздел «Анатомия программы на Rust», стр. 15",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-032",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о компиляции через `rustc` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Команде передаётся имя исходного файла",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "После успешной компиляции получается двоичный исполняемый файл",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "На Windows исполняемый файл в примере называется `main.exe`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`rustc` автоматически создаёт `Cargo.toml`",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава показывает `rustc main.rs`, получение бинарника и различие имени исполняемого файла на Windows.",
+      "source": {
+        "key": "rust1-cargo-project-structure-rustc-output",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, мир!",
+        "locator": "Глава 1 — раздел «Компиляция и запуск — это отдельные шаги», стр. 15–16",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-033",
+      "type": "multiple_choice",
+      "text": "Какие задачи Cargo перечислены в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Сборка кода",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Загрузка библиотек-зависимостей",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Сборка этих библиотек",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Автоматическое написание бизнес-логики программы",
+          "correct": false
+        }
+      ],
+      "explanation": "Cargo выполняет сборку кода, загрузку зависимостей и их сборку; бизнес-логику он не пишет.",
+      "source": {
+        "key": "rust1-cargo-project-structure-cargo-tasks",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, Cargo!",
+        "locator": "Глава 1 — раздел «Привет, Cargo!», стр. 17",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-034",
+      "type": "multiple_choice",
+      "text": "Что создаёт `cargo new hello_cargo` в описанном новом проекте? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`Cargo.toml`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Каталог `src` с `main.rs`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Git-репозиторий и `.gitignore` при обычном создании вне существующего Git-репозитория",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Оптимизированный бинарник `target/release/hello_cargo`",
+          "correct": false
+        }
+      ],
+      "explanation": "После `cargo new` перечислены `Cargo.toml`, `src/main.rs` и инициализация Git; release-бинарник появляется только после соответствующей сборки.",
+      "source": {
+        "key": "rust1-cargo-project-structure-cargo-new-files",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, Cargo!",
+        "locator": "Глава 1 — раздел «Создание проекта с помощью Cargo», стр. 18",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-035",
+      "type": "multiple_choice",
+      "text": "Какая информация показана в секции `[package]` примера `Cargo.toml`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Имя пакета",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Версия пакета",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Редакция Rust (`edition`)",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Список содержимого `src/main.rs`",
+          "correct": false
+        }
+      ],
+      "explanation": "В примере `[package]` содержит `name`, `version` и `edition`.",
+      "source": {
+        "key": "rust1-cargo-project-structure-package-section",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, Cargo!",
+        "locator": "Глава 1 — раздел «Создание проекта с помощью Cargo», стр. 18",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-036",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о размещении файлов Cargo-проекта верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Исходный код находится в `src`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`Cargo.toml` находится в верхнем каталоге проекта",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Корень проекта может содержать README и сведения о лицензии",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Cargo требует помещать `main.rs` в `target/debug`",
+          "correct": false
+        }
+      ],
+      "explanation": "Cargo ожидает код в `src`, конфигурацию и другие не исходные файлы — в верхнем каталоге.",
+      "source": {
+        "key": "rust1-cargo-project-structure-layout",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, Cargo!",
+        "locator": "Глава 1 — раздел «Создание проекта с помощью Cargo», стр. 19",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-037",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `cargo build` и `Cargo.lock` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Обычная сборка создаёт бинарник в `target/debug`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Первый `cargo build` создаёт `Cargo.lock`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`Cargo.lock` хранит точные версии зависимостей",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Материал советует вручную редактировать `Cargo.lock` после каждой сборки",
+          "correct": false
+        }
+      ],
+      "explanation": "Описаны `target/debug`, создание `Cargo.lock` и автоматическое управление его содержимым Cargo.",
+      "source": {
+        "key": "rust1-cargo-project-structure-build-lock",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, Cargo!",
+        "locator": "Глава 1 — раздел «Сборка и запуск Cargo проекта», стр. 19",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-038",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о повторном `cargo run` без изменений верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Cargo может определить, что файлы не менялись",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Cargo может не пересобирать проект",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Уже готовый бинарник просто запускается",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Cargo обязательно удаляет `target` и собирает всё заново",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал показывает, что при отсутствии изменений Cargo пропускает ненужную пересборку и запускает бинарник.",
+      "source": {
+        "key": "rust1-cargo-project-structure-incremental-run",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, Cargo!",
+        "locator": "Глава 1 — раздел «Сборка и запуск Cargo проекта», стр. 20",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-039",
+      "type": "multiple_choice",
+      "text": "Какие различия между `cargo check` и `cargo build` указаны в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`cargo check` проверяет, компилируется ли код",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`cargo check` не создаёт исполняемый файл",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`cargo check` часто быстрее `cargo build`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`cargo build` никогда не создаёт исполняемый файл",
+          "correct": false
+        }
+      ],
+      "explanation": "`cargo check` пропускает кодогенерацию бинарника, поэтому часто быстрее; `cargo build` создаёт исполняемый файл.",
+      "source": {
+        "key": "rust1-cargo-project-structure-check-build",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, Cargo!",
+        "locator": "Глава 1 — раздел «Сборка и запуск Cargo проекта», стр. 20–21",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-040",
+      "type": "multiple_choice",
+      "text": "Какие свойства release-сборки описаны в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Создаётся с `cargo build --release`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Бинарник помещается в `target/release`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Включает оптимизации",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Компилируется быстрее debug-сборки именно из-за оптимизаций",
+          "correct": false
+        }
+      ],
+      "explanation": "Release-профиль включает оптимизации и кладёт бинарник в `target/release`, но оптимизации увеличивают время компиляции.",
+      "source": {
+        "key": "rust1-cargo-project-structure-release-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, Cargo!",
+        "locator": "Глава 1 — раздел «Сборка финальной версии (Release)», стр. 21",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-041",
+      "type": "multiple_choice",
+      "text": "В каких ситуациях материал особенно подчёркивает пользу Cargo? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Когда проект вырастает до нескольких файлов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Когда проекту нужны зависимости",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Когда нужно координировать сборку более сложного проекта",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Когда требуется заменить язык Rust на C",
+          "correct": false
+        }
+      ],
+      "explanation": "Cargo становится особенно полезен для более сложных, многофайловых проектов и проектов с зависимостями.",
+      "source": {
+        "key": "rust1-cargo-project-structure-cargo-convention",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Привет, Cargo!",
+        "locator": "Глава 1 — раздел «Cargo как Конвенция», стр. 21",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-042",
+      "type": "multiple_choice",
+      "text": "Какие элементы вводятся в область видимости в игре «Угадайка» с помощью `use`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`std::io` для ввода/вывода",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`std::cmp::Ordering` для результатов сравнения",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Функциональность из `rand`, необходимая для генерации случайного числа",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Любая переменная пользователя автоматически через `use`",
+          "correct": false
+        }
+      ],
+      "explanation": "В главе используются `use std::io`, `use std::cmp::Ordering` и импорт функциональности `rand` для соответствующих задач.",
+      "source": {
+        "key": "rust1-cargo-project-structure-uses",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Программируем игру в загадки",
+        "locator": "Глава 2 — разделы «Обработка догадки», «Генерация случайного числа» и «Сравнение догадки с секретным числом», стр. 24–35",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-043",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `String::new()` в игре подтверждаются материалом? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Это ассоциированная функция типа `String`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Она создаёт новую пустую строку",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Синтаксис `::` связывает имя функции с типом `String`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Она читает строку из stdin сама по себе",
+          "correct": false
+        }
+      ],
+      "explanation": "`String::new` названа ассоциированной функцией, создающей пустой `String`; ввод выполняет отдельный вызов `read_line`.",
+      "source": {
+        "key": "rust1-cargo-project-structure-string-new",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Программируем игру в загадки",
+        "locator": "Глава 2 — раздел «Хранение значений с помощью переменных», стр. 26",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-044",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `&mut guess` в вызове `read_line` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`&` обозначает ссылку",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`mut` делает эту ссылку изменяемой",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`read_line` получает возможность изменить содержимое строки",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Передача `&mut guess` обязательно перемещает владение строкой в `read_line`",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал объясняет `&mut guess` как изменяемую ссылку, через которую `read_line` записывает ввод, не требуя копирования данных.",
+      "source": {
+        "key": "rust1-cargo-project-structure-mutable-reference-intro",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Программируем игру в загадки",
+        "locator": "Глава 2 — раздел «Получение пользовательского ввода», стр. 26–27",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-045",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `Result` и `expect` в примере `read_line` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`Result` имеет варианты `Ok` и `Err`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`Ok` содержит успешно полученное значение",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`Err` содержит информацию о неудаче",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`expect` превращает любой `Err` в `Ok`",
+          "correct": false
+        }
+      ],
+      "explanation": "`Result` кодирует успех и ошибку через `Ok`/`Err`; `expect` при `Err` завершает программу, а не превращает ошибку в успех.",
+      "source": {
+        "key": "rust1-cargo-project-structure-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Программируем игру в загадки",
+        "locator": "Глава 2 — раздел «Обработка потенциального сбоя с помощью типа Result», стр. 27–28",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-046",
+      "type": "multiple_choice",
+      "text": "Какие способы подстановки значений в `println!` показаны в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Имя переменной внутри фигурных скобок, например `{guess}`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Пустой заполнитель `{}` и выражение после строки формата",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Несколько выражений после строки формата в порядке заполнителей",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Использование квадратных скобок `[]` как единственного заполнителя",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал показывает именованный заполнитель и пустые `{}` с последующими выражениями.",
+      "source": {
+        "key": "rust1-cargo-project-structure-println-placeholders",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Программируем игру в загадки",
+        "locator": "Глава 2 — раздел «Вывод значений с помощью заполнителей println!», стр. 29",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-047",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о внешнем крейте `rand` приведены в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Его добавляют в `[dependencies]` файла Cargo.toml",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Cargo загружает нужные зависимости из реестра, связанного с Crates.io",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Cargo может также загрузить зависимости самого `rand`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`rand` является встроенной частью стандартной библиотеки Rust в этом разделе",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава подчёркивает, что случайные числа не входят здесь в стандартную библиотеку; `rand` добавляется как внешняя зависимость, а Cargo загружает и её транзитивные зависимости.",
+      "source": {
+        "key": "rust1-cargo-project-structure-rand-dependency",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Программируем игру в загадки",
+        "locator": "Глава 2 — раздел «Использование крейта для получения дополнительного функционала», стр. 30–31",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-048",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о воспроизводимой сборке через `Cargo.lock` подтверждаются материалом? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Cargo записывает выбранные версии зависимостей в `Cargo.lock`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "При последующих сборках Cargo использует записанные версии",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Это помогает пересобирать тот же артефакт с теми же версиями",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`Cargo.lock` заставляет Cargo всегда игнорировать ограничения из `Cargo.toml` при явном обновлении",
+          "correct": false
+        }
+      ],
+      "explanation": "Файл блокировки фиксирует выбранные версии для последующих сборок; явное обновление может изменить его в рамках спецификаций.",
+      "source": {
+        "key": "rust1-cargo-project-structure-reproducible-builds",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Программируем игру в загадки",
+        "locator": "Глава 2 — раздел «Обеспечение воспроизводимых сборок с помощью файла Cargo.lock», стр. 32",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-049",
+      "type": "multiple_choice",
+      "text": "Какие действия выполняет `cargo update` в описанном сценарии? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Игнорирует текущие зафиксированные версии из Cargo.lock при поиске обновления",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Ищет последние версии, удовлетворяющие требованиям Cargo.toml",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Записывает выбранные версии обратно в Cargo.lock",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Всегда переходит на любую следующую несовместимую major/minor-версию независимо от Cargo.toml",
+          "correct": false
+        }
+      ],
+      "explanation": "`cargo update` пересчитывает версии согласно спецификациям `Cargo.toml` и обновляет `Cargo.lock`; несовместимые с ограничением версии не выбираются автоматически.",
+      "source": {
+        "key": "rust1-cargo-project-structure-cargo-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Программируем игру в загадки",
+        "locator": "Глава 2 — раздел «Обновление пакета для получения новой версии», стр. 32–33",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-050",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о сравнении догадки через `cmp` и `match` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`cmp` возвращает значение `Ordering`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`match` выбирает код по варианту `Ordering`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "После первого совпавшего шаблона остальные ветви не рассматриваются",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`cmp` сравнивает `String` и число без необходимости преобразования типов",
+          "correct": false
+        }
+      ],
+      "explanation": "В главе `cmp` возвращает `Ordering`, `match` обрабатывает его ветви и останавливается на первом совпадении; исходную строку требуется преобразовать в число.",
+      "source": {
+        "key": "rust1-cargo-project-structure-cmp-match",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Программируем игру в загадки",
+        "locator": "Глава 2 — раздел «Сравнение догадки с секретным числом», стр. 35–38",
+        "url": null
+      }
+    }
+  ]
+}

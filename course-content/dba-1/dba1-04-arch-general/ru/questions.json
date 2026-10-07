@@ -1,0 +1,1106 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-arch-general",
+  "questions": [
+    {
+      "key": "dba1-arch-general-001",
+      "type": "single_choice",
+      "text": "Как в общей архитектуре PostgreSQL клиентское приложение обычно взаимодействует с сервером?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Через драйвер, реализующий протокол PostgreSQL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только через прямое чтение файлов кластера",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только через общий сегмент памяти сервера",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Через системный каталог без сетевого протокола",
+          "correct": false
+        }
+      ],
+      "explanation": "Клиент и сервер должны использовать один протокол взаимодействия. Обычно клиент работает через драйвер, который реализует протокол PostgreSQL; драйвер может использовать libpq или реализовывать протокол самостоятельно.",
+      "source": {
+        "key": "dba1-arch-general-client-server",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Клиент и сервер",
+        "locator": "Слайд 3 «Клиент и сервер»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/protocol"
+      }
+    },
+    {
+      "key": "dba1-arch-general-002",
+      "type": "multiple_choice",
+      "text": "Какие действия входят в базовое взаимодействие клиента с сервером PostgreSQL? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Подключение к одной из баз данных кластера",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Аутентификация подключающегося клиента",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Отправка SQL-запросов серверу и получение результата",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Прямое изменение клиентом страниц данных на диске",
+          "correct": false
+        }
+      ],
+      "explanation": "Протокол позволяет клиенту подключиться к базе данных кластера; сервер выполняет аутентификацию, затем принимает SQL-запросы, выполняет их и возвращает результат. Клиент не изменяет файлы данных напрямую.",
+      "source": {
+        "key": "dba1-arch-general-client-server",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Клиент и сервер",
+        "locator": "Слайд 3 «Клиент и сервер»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/protocol"
+      }
+    },
+    {
+      "key": "dba1-arch-general-003",
+      "type": "multiple_choice",
+      "text": "Какие свойства входят в ACID согласно материалу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Атомарность",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Согласованность",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Изоляция",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Долговечность",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Автоматическое резервное копирование",
+          "correct": false
+        }
+      ],
+      "explanation": "ACID включает атомарность, согласованность, изоляцию и долговечность. Резервное копирование само по себе не является буквой ACID.",
+      "source": {
+        "key": "dba1-arch-general-transactions",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Транзакции",
+        "locator": "Слайд 4 «Транзакции»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transactions"
+      }
+    },
+    {
+      "key": "dba1-arch-general-004",
+      "type": "single_choice",
+      "text": "Что означает атомарность транзакции?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Транзакция выполняется полностью либо не выполняется вовсе",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Все транзакции обязательно выполняются последовательно",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Результат транзакции хранится только в памяти",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Транзакция не может содержать больше одной SQL-команды",
+          "correct": false
+        }
+      ],
+      "explanation": "Атомарность означает принцип «всё или ничего»: изменения транзакции либо фиксируются целиком, либо не фиксируются.",
+      "source": {
+        "key": "dba1-arch-general-transactions",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Транзакции",
+        "locator": "Слайд 4 «Транзакции»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transactions"
+      }
+    },
+    {
+      "key": "dba1-arch-general-005",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о завершении транзакции верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "BEGIN отмечает начало транзакции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "COMMIT фиксирует изменения",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "ROLLBACK отменяет изменения транзакции",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "COMMIT начинает новую транзакцию и отменяет предыдущую",
+          "correct": false
+        }
+      ],
+      "explanation": "В материале BEGIN отмечает начало транзакции, COMMIT — фиксацию изменений, а ROLLBACK — отмену изменений.",
+      "source": {
+        "key": "dba1-arch-general-transactions",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Транзакции",
+        "locator": "Слайд 4 «Транзакции»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transactions"
+      }
+    },
+    {
+      "key": "dba1-arch-general-006",
+      "type": "single_choice",
+      "text": "Кто, как правило, управляет границами транзакций в PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Клиентское приложение",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Операционная система",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Планировщик запросов",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Буферный кеш",
+          "correct": false
+        }
+      ],
+      "explanation": "Как правило, именно клиентское приложение определяет команды, входящие в транзакцию, и выполняет фиксацию или отмену. На стороне сервера транзакциями также могут управлять хранимые процедуры.",
+      "source": {
+        "key": "dba1-arch-general-transactions",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Транзакции",
+        "locator": "Слайд 4 «Транзакции»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transactions"
+      }
+    },
+    {
+      "key": "dba1-arch-general-007",
+      "type": "multiple_choice",
+      "text": "Какие основные стадии проходит обычный запрос в PostgreSQL? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Разбор",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Переписывание",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Планирование",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Выполнение",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Обязательная компиляция сервера PostgreSQL",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал выделяет стадии разбора, переписывания, планирования и выполнения запроса.",
+      "source": {
+        "key": "dba1-arch-general-query-execution",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Выполнение запроса",
+        "locator": "Слайд 6 «Выполнение запроса»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/query-path"
+      }
+    },
+    {
+      "key": "dba1-arch-general-008",
+      "type": "single_choice",
+      "text": "Для чего при семантическом разборе запроса нужен системный каталог?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы получить метаинформацию об объектах базы данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы хранить строки результата каждого SELECT",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы заменить журнал WAL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы управлять TCP-соединением клиента",
+          "correct": false
+        }
+      ],
+      "explanation": "Системный каталог содержит метаинформацию о базе данных, необходимую, например, чтобы определить, существуют ли таблицы и другие объекты, на которые ссылается запрос.",
+      "source": {
+        "key": "dba1-arch-general-query-execution",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Выполнение запроса",
+        "locator": "Слайд 6 «Выполнение запроса»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/query-path"
+      }
+    },
+    {
+      "key": "dba1-arch-general-009",
+      "type": "single_choice",
+      "text": "Какую задачу выполняет планировщик запросов?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Выбирает план выполнения, в том числе решает, использовать ли индексы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Проверяет пароль клиента при подключении",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Создаёт файлы таблиц на уровне операционной системы",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Фиксирует каждую транзакцию вместо клиента",
+          "correct": false
+        }
+      ],
+      "explanation": "SQL является декларативным языком: запрос описывает требуемые данные, а планировщик определяет способ выполнения, например целесообразность использования индексов.",
+      "source": {
+        "key": "dba1-arch-general-query-execution",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Выполнение запроса",
+        "locator": "Слайд 6 «Выполнение запроса»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/query-path"
+      }
+    },
+    {
+      "key": "dba1-arch-general-010",
+      "type": "multiple_choice",
+      "text": "Какая информация помогает планировщику качественно выбрать план? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Размеры таблиц",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Распределение данных в таблицах",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Статистика",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Пароль текущего пользователя",
+          "correct": false
+        }
+      ],
+      "explanation": "Для планирования нужна статистика, содержащая сведения о размерах таблиц и распределении данных. Пароль пользователя к выбору плана не относится.",
+      "source": {
+        "key": "dba1-arch-general-query-execution",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Выполнение запроса",
+        "locator": "Слайд 6 «Выполнение запроса»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/query-path"
+      }
+    },
+    {
+      "key": "dba1-arch-general-011",
+      "type": "multiple_choice",
+      "text": "Что даёт подготовка оператора в расширенном режиме протокола? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Разбор и переписывание можно выполнить заранее",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Можно сохранить дерево разбора",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "При выполнении привязываются конкретные значения параметров",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Каждый запуск обязан заново выполнять синтаксический разбор",
+          "correct": false
+        }
+      ],
+      "explanation": "Подготовленный оператор позволяет заранее выполнить разбор и переписывание и сохранить дерево разбора; конкретные параметры привязываются при выполнении.",
+      "source": {
+        "key": "dba1-arch-general-prepared-statements",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Подготовка операторов",
+        "locator": "Слайд 7 «Подготовка операторов»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-prepare"
+      }
+    },
+    {
+      "key": "dba1-arch-general-012",
+      "type": "single_choice",
+      "text": "На каком этапе подготовленного параметризованного запроса задаются конкретные значения параметров?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "На этапе привязки",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "На этапе аутентификации",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "При запуске postmaster",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "При записи страницы в WAL",
+          "correct": false
+        }
+      ],
+      "explanation": "После подготовки запроса конкретные значения параметров задаются на этапе привязки.",
+      "source": {
+        "key": "dba1-arch-general-prepared-statements",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Подготовка операторов",
+        "locator": "Слайд 7 «Подготовка операторов»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-prepare"
+      }
+    },
+    {
+      "key": "dba1-arch-general-013",
+      "type": "multiple_choice",
+      "text": "Какие дополнительные свойства подготовленных операторов указаны в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "PostgreSQL в некоторых случаях может сохранить план и не планировать повторно",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Их использование предотвращает внедрение SQL-кода",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Они требуют отдельного backend для каждого выполнения одного запроса",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Они всегда обходят планировщик независимо от ситуации",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал отмечает возможность повторного использования плана в некоторых случаях и защиту от внедрения SQL-кода. Повторное планирование не исключается безусловно.",
+      "source": {
+        "key": "dba1-arch-general-prepared-statements",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Подготовка операторов",
+        "locator": "Слайд 7 «Подготовка операторов»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-prepare"
+      }
+    },
+    {
+      "key": "dba1-arch-general-014",
+      "type": "single_choice",
+      "text": "Для чего в расширенном режиме протокола используются курсоры?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы получать результат частями, по мере необходимости",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы менять размер страницы данных",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы перезапускать backend после ошибки",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы хранить параметры сервера вместо postgresql.conf",
+          "correct": false
+        }
+      ],
+      "explanation": "Курсор позволяет не получать весь набор результата сразу, а работать с ним итеративно, получая строки по мере необходимости.",
+      "source": {
+        "key": "dba1-arch-general-cursors",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Курсоры",
+        "locator": "Слайд 9 «Курсоры»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-declare"
+      }
+    },
+    {
+      "key": "dba1-arch-general-015",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о курсоре верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Открытый курсор на сервере представлен порталом",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "С курсором можно работать с результатом строка за строкой",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Запрос курсора неявно подготавливается",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Курсор обязательно возвращает весь результат клиенту одним сообщением",
+          "correct": false
+        }
+      ],
+      "explanation": "Курсор позволяет итеративно получать данные; открытый курсор представлен порталом, а использованный в нём запрос неявно подготавливается.",
+      "source": {
+        "key": "dba1-arch-general-cursors",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Курсоры",
+        "locator": "Слайд 9 «Курсоры»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-declare"
+      }
+    },
+    {
+      "key": "dba1-arch-general-016",
+      "type": "single_choice",
+      "text": "Какова роль процесса postmaster в описанной архитектуре PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он запускает остальные процессы, следит за ними и принимает новые подключения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он является локальным кешем каждого клиентского процесса",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Он выполняет только планирование SQL-запросов",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Он заменяет менеджер пула соединений",
+          "correct": false
+        }
+      ],
+      "explanation": "При старте сервера запускается postmaster: он создаёт остальные процессы, следит за ними и слушает входящие соединения.",
+      "source": {
+        "key": "dba1-arch-general-processes-memory",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Процессы и память",
+        "locator": "Слайд 11 «Процессы и память»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-017",
+      "type": "multiple_choice",
+      "text": "Что хранится или выделяется в локальной памяти обслуживающего процесса backend? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Разобранные запросы и их планы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Состояние открытых курсоров",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Кеш системного каталога",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Место для сортировок и соединений",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Общий буферный кеш, доступный всем backend",
+          "correct": false
+        }
+      ],
+      "explanation": "Локальная память backend используется для состояния конкретного обслуживаемого соединения и выполнения его запросов. Общий буферный кеш расположен в общей памяти.",
+      "source": {
+        "key": "dba1-arch-general-processes-memory",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Процессы и память",
+        "locator": "Слайд 11 «Процессы и память»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-018",
+      "type": "single_choice",
+      "text": "Что происходит при новом клиентском подключении в классической процессной модели PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Postmaster создаёт отдельный backend, и клиент дальше общается с ним",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Все клиенты всегда обслуживаются одним единственным backend",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Клиент получает прямой доступ к общей памяти сервера",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Создаётся отдельный кластер PostgreSQL",
+          "correct": false
+        }
+      ],
+      "explanation": "Для каждого нового клиента postmaster порождает обслуживающий процесс backend; этот процесс также выполняет аутентификацию.",
+      "source": {
+        "key": "dba1-arch-general-processes-memory",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Процессы и память",
+        "locator": "Слайд 11 «Процессы и память»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-019",
+      "type": "multiple_choice",
+      "text": "Какие механизмы используются при одновременной работе множества процессов? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Короткоживущие блокировки для объектов общей памяти",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "MVCC и снимки данных для работы с табличными данными",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Блокировка только конфликтующих изменений ещё не зафиксированных данных",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Глобальная остановка всех чтений до завершения любой транзакции",
+          "correct": false
+        }
+      ],
+      "explanation": "Для общей памяти применяются короткие блокировки. Для табличных данных PostgreSQL опирается на MVCC и снимки, стараясь блокировать только конфликтующие изменения.",
+      "source": {
+        "key": "dba1-arch-general-many-clients",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Много клиентов",
+        "locator": "Слайд 12 «Много клиентов»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-020",
+      "type": "single_choice",
+      "text": "Какие свойства транзакций, согласно конспекту, в первую очередь обеспечивает многоверсионность?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Атомарность, согласованность и изоляцию",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только долговечность",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только согласованность и долговечность",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только атомарность",
+          "correct": false
+        }
+      ],
+      "explanation": "В материале многоверсионность названа основным механизмом, обеспечивающим первые три свойства транзакций: атомарность, согласованность и изоляцию.",
+      "source": {
+        "key": "dba1-arch-general-many-clients",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Много клиентов",
+        "locator": "Слайд 12 «Много клиентов»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-021",
+      "type": "single_choice",
+      "text": "Когда имеет смысл использовать пул соединений?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Когда клиентов слишком много или соединения слишком часто создаются и разрываются",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только когда на сервере отсутствует WAL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только для изменения размера страниц данных",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только для выполнения VACUUM",
+          "correct": false
+        }
+      ],
+      "explanation": "Пул соединений рекомендуется рассматривать при большом числе клиентов или при частом установлении и разрыве соединений.",
+      "source": {
+        "key": "dba1-arch-general-connection-pool",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Пул соединений",
+        "locator": "Слайд 13 «Пул соединений»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-022",
+      "type": "multiple_choice",
+      "text": "Как работает менеджер пула соединений в описанной схеме? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Клиенты подключаются к менеджеру пула, а не напрямую к PostgreSQL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Менеджер держит открытыми несколько соединений с сервером",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Для запроса клиента используется одно из свободных серверных соединений",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Каждый запрос обязательно создаёт новый backend и сразу уничтожает его",
+          "correct": false
+        }
+      ],
+      "explanation": "Менеджер пула принимает клиентские соединения и переиспользует ограниченный набор открытых соединений с PostgreSQL.",
+      "source": {
+        "key": "dba1-arch-general-connection-pool",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Пул соединений",
+        "locator": "Слайд 13 «Пул соединений»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-023",
+      "type": "multiple_choice",
+      "text": "Что важно учитывать при использовании пула соединений? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Разные клиенты могут по очереди использовать один и тот же backend",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "В локальной памяти backend может сохраняться состояние, например подготовленные запросы",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "С точки зрения сервера число соединений можно удерживать относительно постоянным",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Пул делает локальную память backend общей для всех процессов PostgreSQL",
+          "correct": false
+        }
+      ],
+      "explanation": "При пуле несколько клиентов могут разделять один backend во времени, а backend хранит локальное состояние. Поэтому это состояние необходимо учитывать при проектировании приложения.",
+      "source": {
+        "key": "dba1-arch-general-connection-pool",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Пул соединений",
+        "locator": "Слайд 13 «Пул соединений»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-024",
+      "type": "single_choice",
+      "text": "Каков обычный размер страницы данных PostgreSQL согласно материалу?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "8 Кбайт",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "512 байт",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "64 Кбайт",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "1 Мбайт",
+          "correct": false
+        }
+      ],
+      "explanation": "Файлы логически делятся на страницы (блоки), обычный размер страницы — 8 Кбайт. Другой размер можно задать лишь при сборке сервера.",
+      "source": {
+        "key": "dba1-arch-general-storage-pages",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Хранение данных",
+        "locator": "Слайд 14 «Хранение данных»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-025",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о страницах хранения PostgreSQL верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Страница содержит заголовок и полезные данные",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Между ними может оставаться свободное пространство",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Работающий кластер использует один размер страниц",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Размер каждой страницы динамически выбирается отдельно при каждом SELECT",
+          "correct": false
+        }
+      ],
+      "explanation": "Страница имеет внутреннюю разметку, содержит заголовок и данные, а при неполном заполнении — свободное пространство. Размер страницы задаётся для собранного сервера, а не выбирается для каждого запроса.",
+      "source": {
+        "key": "dba1-arch-general-storage-pages",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Хранение данных",
+        "locator": "Слайд 14 «Хранение данных»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-026",
+      "type": "single_choice",
+      "text": "Где расположен буферный кеш PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В общей памяти, доступной процессам PostgreSQL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только в локальной памяти одного backend",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только в файле Cargo.lock",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только на стороне клиента",
+          "correct": false
+        }
+      ],
+      "explanation": "Буферный кеш PostgreSQL находится в общей памяти, чтобы разные серверные процессы могли использовать кешированные страницы.",
+      "source": {
+        "key": "dba1-arch-general-storage-wal",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Хранение данных",
+        "locator": "Слайд 15 «Хранение данных»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-027",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о кешировании и дисковом вводе-выводе верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "PostgreSQL обращается к дискам через операционную систему",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "У операционной системы есть собственный кеш данных",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Если страницы нет в буферном кеше PostgreSQL, она ещё может оказаться в кеше ОС",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Изменённая страница обязана немедленно синхронно записываться на диск после каждого изменения",
+          "correct": false
+        }
+      ],
+      "explanation": "Помимо общего буферного кеша PostgreSQL существует кеш ОС. Изменённые страницы могут быть записаны на диск позже, поэтому долговечность требует дополнительного механизма.",
+      "source": {
+        "key": "dba1-arch-general-storage-wal",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Хранение данных",
+        "locator": "Слайд 15 «Хранение данных»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-028",
+      "type": "single_choice",
+      "text": "Зачем PostgreSQL постоянно ведёт журнал WAL в контексте долговечности?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы после сбоя повторить потерянные операции и восстановить согласованное состояние",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы заменить системный каталог",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы хранить пароли всех клиентов",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы выбирать размер страницы для каждого запроса",
+          "correct": false
+        }
+      ],
+      "explanation": "При сбое содержимое оперативной памяти может пропасть вместе с ещё не записанными страницами. Журнал позволяет восстановить потерянные изменения и вернуть данные в согласованное состояние.",
+      "source": {
+        "key": "dba1-arch-general-storage-wal",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Хранение данных",
+        "locator": "Слайд 15 «Хранение данных»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-029",
+      "type": "multiple_choice",
+      "text": "Какие возможности могут добавлять расширения PostgreSQL согласно материалу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Новые типы данных и операторы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Новые типы индексов",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Фоновые рабочие процессы",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Доступ к внешним источникам данных",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Обязательную замену процессной модели PostgreSQL на один поток",
+          "correct": false
+        }
+      ],
+      "explanation": "Архитектура PostgreSQL допускает расширения, добавляющие типы и операторы, методы индексации, фоновые задачи, работу с внешними источниками и другие возможности.",
+      "source": {
+        "key": "dba1-arch-general-extensibility",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Расширяемость",
+        "locator": "Слайд 16 «Расширяемость»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-030",
+      "type": "single_choice",
+      "text": "Что сказано в материале об установке большинства расширений PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Большинство расширений можно устанавливать «на лету» без рестарта сервера",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Каждое расширение требует пересборки ядра PostgreSQL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Расширения доступны только клиентским приложениям",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Перед установкой любого расширения необходимо удалить кластер",
+          "correct": false
+        }
+      ],
+      "explanation": "Конспект подчёркивает расширяемость PostgreSQL и отмечает, что большинство расширений можно устанавливать без перезапуска сервера.",
+      "source": {
+        "key": "dba1-arch-general-extensibility",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Расширяемость",
+        "locator": "Слайд 16 «Расширяемость»",
+        "url": null
+      }
+    }
+  ]
+}

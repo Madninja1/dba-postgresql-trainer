@@ -1,0 +1,813 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-arch-mvcc-overview",
+  "questions": [
+    {
+      "key": "dba1-arch-mvcc-overview-001",
+      "type": "single_choice",
+      "text": "Что означает многоверсионность в PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Возможность существования нескольких версий одной и той же строки",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Хранение нескольких копий всей базы данных",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Автоматическое создание нескольких индексов",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Одновременный запуск нескольких экземпляров PostgreSQL",
+          "correct": false
+        }
+      ],
+      "explanation": "В материале многоверсионность определяется как наличие нескольких версий одной и той же строки.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-mvcc",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Многоверсионность",
+        "locator": "Слайд 3 «Многоверсионность»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/mvcc-intro"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-002",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о версиях строк соответствуют материалу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "У одной строки могут существовать несколько версий",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Версии различаются временем действия",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "В качестве времени используются номера транзакций",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Номера транзакций выдаются по возрастанию",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Каждая версия строки обязательно хранится в отдельной таблице",
+          "correct": false
+        }
+      ],
+      "explanation": "Курс связывает время действия версии строки с идентификаторами транзакций, которые выдаются по возрастанию.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-mvcc",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Многоверсионность",
+        "locator": "Слайд 3 «Многоверсионность»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/mvcc-intro"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-003",
+      "type": "single_choice",
+      "text": "С чем работает транзакция при использовании MVCC?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Со снимком данных — согласованным срезом на определённый момент",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только с физическим содержимым файлов на текущую миллисекунду",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только с данными, изменёнными самой транзакцией",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "С резервной копией кластера",
+          "correct": false
+        }
+      ],
+      "explanation": "Снимок представляет согласованный срез данных, определяющий, какие версии строк видит транзакция.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-snapshot",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Снимки данных",
+        "locator": "Раздел о снимках данных",
+        "url": "https://postgrespro.ru/docs/postgresql/16/mvcc-intro"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-004",
+      "type": "single_choice",
+      "text": "Чем прежде всего отличаются уровни изоляции в рассматриваемой модели PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Моментом создания снимка данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Размером страницы данных",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Форматом WAL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Количество разрешённых таблиц",
+          "correct": false
+        }
+      ],
+      "explanation": "В итогах материала прямо отмечено, что уровни изоляции отличаются временем создания снимка.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-isolation",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Уровни изоляции",
+        "locator": "Раздел об уровнях изоляции",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transaction-iso"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-005",
+      "type": "single_choice",
+      "text": "Как PostgreSQL обрабатывает уровень Read Uncommitted?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он фактически работает как Read Committed",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он работает как Serializable",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Он полностью отключает MVCC",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Он является уровнем по умолчанию",
+          "correct": false
+        }
+      ],
+      "explanation": "Read Uncommitted как отдельная семантика в PostgreSQL не поддерживается и ведёт себя как Read Committed.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-isolation-005",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Уровни изоляции",
+        "locator": "Слайд 5 «Уровни изоляции»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transaction-iso"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-006",
+      "type": "single_choice",
+      "text": "Какой уровень изоляции используется в PostgreSQL по умолчанию?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Read Committed",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Read Uncommitted",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Repeatable Read",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Serializable",
+          "correct": false
+        }
+      ],
+      "explanation": "Курс прямо указывает Read Committed как уровень изоляции PostgreSQL по умолчанию.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-read-committed",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Уровни изоляции",
+        "locator": "Слайд 5 «Read Committed»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transaction-iso"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-007",
+      "type": "single_choice",
+      "text": "Когда создаётся снимок данных на уровне Read Committed?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В начале выполнения каждого SQL-оператора",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Один раз при запуске сервера",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только при COMMIT",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Один раз для всего клиентского сеанса",
+          "correct": false
+        }
+      ],
+      "explanation": "На Read Committed новый снимок строится для каждого оператора SQL.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-read-committed",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Уровни изоляции",
+        "locator": "Слайд 5 «Read Committed»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transaction-iso"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-008",
+      "type": "single_choice",
+      "text": "Почему два одинаковых SELECT в одной транзакции Read Committed могут вернуть разные результаты?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Каждый оператор получает новый снимок и может увидеть зафиксированные между запросами изменения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "PostgreSQL случайным образом выбирает версии строк",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Read Committed не использует снимки",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Первый SELECT всегда блокирует второй",
+          "correct": false
+        }
+      ],
+      "explanation": "Поскольку снимок строится в начале каждого оператора, следующий запрос может увидеть уже другие зафиксированные данные.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-read-committed-008",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Уровни изоляции",
+        "locator": "Раздел «Read Committed»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transaction-iso"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-009",
+      "type": "single_choice",
+      "text": "Когда создаётся снимок на уровне Repeatable Read?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "При выполнении первого оператора транзакции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Перед каждым отдельным оператором",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только после COMMIT",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "При каждом обращении к новой таблице",
+          "correct": false
+        }
+      ],
+      "explanation": "В материале это описано как создание снимка в начале транзакции, точнее — при выполнении её первого оператора.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-repeatable-read",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Уровни изоляции",
+        "locator": "Слайд 5 «Repeatable Read»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transaction-iso"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-010",
+      "type": "multiple_choice",
+      "text": "Какие свойства Repeatable Read подчёркиваются в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Все запросы транзакции работают с одним снимком",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Запросы в транзакции видят одну и ту же согласованную картину данных",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Уровень удобен для отчётов из нескольких запросов",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Для каждого оператора обязательно создаётся новый снимок",
+          "correct": false
+        }
+      ],
+      "explanation": "Repeatable Read сохраняет один снимок на протяжении транзакции, поэтому подходит, например, для многошаговых отчётов.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-repeatable-read-010",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Уровни изоляции",
+        "locator": "Раздел «Repeatable Read»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transaction-iso"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-011",
+      "type": "multiple_choice",
+      "text": "Что верно для уровня Serializable в рассматриваемом материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он обеспечивает полную изоляцию",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Программу можно писать так, как будто транзакция работает одна",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Некоторые транзакции могут быть прерваны",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Приложение должно уметь повторять прерванные транзакции",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Он гарантирует, что ни одна транзакция никогда не будет отменена",
+          "correct": false
+        }
+      ],
+      "explanation": "Serializable обеспечивает наиболее строгую изоляцию, но цена этого — возможность прерывания транзакций, которые приложение должно повторять.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-serializable",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Уровни изоляции",
+        "locator": "Раздел «Serializable»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transaction-iso"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-012",
+      "type": "single_choice",
+      "text": "Почему при многоверсионности требуется периодическая очистка?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Потому что старые версии строк со временем перестают быть нужны",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Потому что после каждого SELECT повреждаются страницы",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Потому что MVCC удаляет индексы",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Потому что снимки нельзя использовать более одного раза",
+          "correct": false
+        }
+      ],
+      "explanation": "MVCC оставляет исторические версии строк; когда они уже не могут понадобиться ни одной транзакции, их следует очищать.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-vacuum",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Очистка",
+        "locator": "Раздел об очистке старых версий",
+        "url": "https://postgrespro.ru/docs/postgresql/16/routine-vacuuming"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-013",
+      "type": "multiple_choice",
+      "text": "Как может выполняться очистка старых версий строк? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Фоновыми процессами",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Вручную командой VACUUM",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Только при перезапуске сервера",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только командой DROP TABLE",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал указывает как автоматическую фоновую очистку, так и возможность выполнить её вручную с помощью VACUUM.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-vacuum-013",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Очистка",
+        "locator": "Раздел об очистке",
+        "url": "https://postgrespro.ru/docs/postgresql/16/routine-vacuuming"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-014",
+      "type": "single_choice",
+      "text": "Как долгие транзакции и долго выполняющиеся запросы влияют на очистку?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Они могут удерживать горизонт очистки и мешать удалению старых версий строк",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Они автоматически удаляют все старые версии",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Они отключают MVCC для других сеансов",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Они заставляют PostgreSQL сразу выполнить полный VACUUM",
+          "correct": false
+        }
+      ],
+      "explanation": "Старая транзакция всё ещё может нуждаться в старых версиях, поэтому горизонт очистки не может продвинуться дальше неё.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-vacuum-horizon",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Очистка",
+        "locator": "Раздел о горизонте очистки",
+        "url": "https://postgrespro.ru/docs/postgresql/16/routine-vacuuming"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-015",
+      "type": "multiple_choice",
+      "text": "К чему может привести несвоевременная очистка исторических версий? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Таблицы будут занимать лишнее место",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Индексы будут разрастаться",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Поиск актуальных версий может замедляться",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "PostgreSQL перестанет поддерживать транзакции",
+          "correct": false
+        }
+      ],
+      "explanation": "Накопление ненужных версий увеличивает объём таблиц и индексов и ухудшает работу с актуальными версиями.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-vacuum-015",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Очистка",
+        "locator": "Раздел о последствиях несвоевременной очистки",
+        "url": "https://postgrespro.ru/docs/postgresql/16/routine-vacuuming"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-016",
+      "type": "single_choice",
+      "text": "Как MVCC влияет на необходимое количество блокировок?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Позволяет обходиться минимально необходимым количеством блокировок",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Требует блокировки всей базы при каждом чтении",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Полностью запрещает любые блокировки",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Использует блокировки только для SELECT",
+          "correct": false
+        }
+      ],
+      "explanation": "Одно из преимуществ многоверсионности — снижение необходимости в блокировках, что повышает параллелизм работы.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-locking",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Блокировки",
+        "locator": "Раздел о роли блокировок при MVCC",
+        "url": "https://postgrespro.ru/docs/postgresql/16/explicit-locking"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-017",
+      "type": "single_choice",
+      "text": "Что происходит при обычном чтении строки в PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтение не блокирует ни читающие, ни пишущие транзакции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Строка блокируется от любых изменений до конца сеанса",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Блокируется вся таблица",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "SELECT всегда ждёт завершения всех других транзакций",
+          "correct": false
+        }
+      ],
+      "explanation": "Обычное чтение благодаря MVCC не требует блокировать строки от чтения или изменения.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-row-locks",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Блокировки",
+        "locator": "Слайд 8 «Блокировки строк»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/explicit-locking"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-018",
+      "type": "single_choice",
+      "text": "Что происходит при изменении строки?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Строка блокируется для других изменений, но остаётся доступной для чтения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Строка становится недоступна даже для SELECT",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Блокируется весь кластер",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Никакой блокировки не возникает даже для конкурирующих изменений",
+          "correct": false
+        }
+      ],
+      "explanation": "Изменение строки конфликтует с другими изменениями этой строки, но не мешает её обычному чтению.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-row-locks",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Блокировки",
+        "locator": "Слайд 8 «Блокировки строк»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/explicit-locking"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-019",
+      "type": "single_choice",
+      "text": "Когда транзакция может ожидать освобождения блокировки строки?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Когда пытается изменить строку, уже изменённую другой незавершённой транзакцией",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "При любом обычном SELECT",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "При чтении системного каталога",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "При каждом BEGIN",
+          "correct": false
+        }
+      ],
+      "explanation": "Конфликт возникает между конкурирующими изменениями одной строки: второй писатель должен дождаться разрешения ситуации с первым.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-row-locks-019",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Блокировки",
+        "locator": "Раздел о блокировках строк",
+        "url": "https://postgrespro.ru/docs/postgresql/16/explicit-locking"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-020",
+      "type": "multiple_choice",
+      "text": "Для чего PostgreSQL использует блокировки уровня таблицы согласно материалу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы не позволить изменить или удалить таблицу, пока с ней работает другая операция",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы ограничить чтение во время некоторых операций перестроения или перемещения таблицы",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Чтобы каждый SELECT обязательно выполнялся последовательно",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы заменить механизм MVCC",
+          "correct": false
+        }
+      ],
+      "explanation": "Помимо блокировок строк существуют блокировки более высокого уровня, необходимые для согласования операций со структурой и физическим состоянием таблиц.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-table-locks",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Блокировки",
+        "locator": "Слайд 8 «Блокировки таблиц»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/explicit-locking"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-021",
+      "type": "multiple_choice",
+      "text": "Что верно о времени жизни блокировок? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Они могут устанавливаться автоматически по мере необходимости",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Некоторые блокировки можно устанавливать вручную",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Они обычно снимаются автоматически при завершении транзакции",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Блокировка, установленная после SAVEPOINT, может быть снята при откате к этой точке",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Все блокировки сохраняются до перезапуска PostgreSQL",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал связывает основное время жизни блокировок с транзакцией; при откате к точке сохранения блокировки, взятые после неё, также могут быть освобождены.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-lock-lifetime",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Блокировки",
+        "locator": "Слайд 8 «Время жизни блокировок»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/explicit-locking"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-022",
+      "type": "single_choice",
+      "text": "Как лучше всего кратко описать взаимодействие читателей и писателей при MVCC в PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Писатели не блокируют читателей, а читатели не блокируют никого",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Любой читатель блокирует всех писателей",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Любой писатель блокирует все чтения таблицы",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтение и запись никогда не могут выполняться одновременно",
+          "correct": false
+        }
+      ],
+      "explanation": "Именно эта формулировка вынесена в итоговый слайд темы как одно из ключевых следствий MVCC.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-summary",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Итоги",
+        "locator": "Слайд 11 «Итоги»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/mvcc-intro"
+      }
+    }
+  ]
+}

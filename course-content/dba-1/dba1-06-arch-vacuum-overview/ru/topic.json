@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "dba-1",
+  "slug": "dba1-arch-vacuum-overview",
+  "notes_part": 6,
+  "topic_number": 6,
+  "title": "Очистка и разрастание",
+  "description": "Ручной VACUUM и ANALYZE, разрастание таблиц и индексов, диагностика bloat, VACUUM FULL, REINDEX и pg_repack",
+  "sort_order": 60
+}

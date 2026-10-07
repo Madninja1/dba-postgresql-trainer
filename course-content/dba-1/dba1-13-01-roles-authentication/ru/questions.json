@@ -1,0 +1,582 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-access-roles-authentication",
+  "questions": [
+    {
+      "key": "dba1-access-roles-authentication-001",
+      "type": "single_choice",
+      "text": "Для каких двух основных задач используются роли PostgreSQL согласно материалу?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для представления пользователей, подключающихся к СУБД, и для объединения ролей при настройке доступа",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только для хранения паролей и параметров сети",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только для владения таблицами",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Для замены схем и табличных пространств",
+          "correct": false
+        }
+      ],
+      "explanation": "В конспекте роль рассматривается и как пользователь, способный подключаться к СУБД, и как элемент иерархии ролей, удобной для управления доступом.",
+      "source": {
+        "key": "dba1-13-role-purpose",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Роли и атрибуты",
+        "locator": "Назначение ролей",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-002",
+      "type": "multiple_choice",
+      "text": "Какие соответствия атрибутов ролей и их назначения верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "LOGIN — возможность подключаться",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "SUPERUSER — полномочия суперпользователя",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "CREATEDB — возможность создавать базы данных",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "CREATEROLE — разрешение создавать табличные пространства",
+          "correct": false
+        }
+      ],
+      "explanation": "Слайд перечисляет LOGIN, SUPERUSER, CREATEDB и CREATEROLE; CREATEROLE относится к управлению ролями, а не к табличным пространствам.",
+      "source": {
+        "key": "dba1-13-role-attributes",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Роли и атрибуты",
+        "locator": "LOGIN, SUPERUSER, CREATEDB, CREATEROLE",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-003",
+      "type": "single_choice",
+      "text": "Какой атрибут роли необходим, чтобы роль могла использоваться для обычного подключения к PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "LOGIN",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "CREATEDB",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "SUPERUSER",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "CREATEROLE",
+          "correct": false
+        }
+      ],
+      "explanation": "LOGIN непосредственно обозначает возможность роли входить в сеанс PostgreSQL.",
+      "source": {
+        "key": "postgresql-16-role-attributes",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Атрибуты ролей",
+        "locator": "LOGIN",
+        "url": "https://postgrespro.ru/docs/postgresql/16/role-attributes"
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-004",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о создании ролей соответствуют материалу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Роль можно создать командой CREATE ROLE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "При создании можно задавать атрибуты роли",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Возможность входа определяется атрибутом LOGIN",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Каждая новая роль автоматически получает SUPERUSER",
+          "correct": false
+        }
+      ],
+      "explanation": "CREATE ROLE создаёт роль и позволяет определить её свойства. SUPERUSER не выдаётся автоматически.",
+      "source": {
+        "key": "postgresql-16-create-role",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Создание ролей",
+        "locator": "CREATE ROLE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-createrole"
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-005",
+      "type": "single_choice",
+      "text": "В каком файле PostgreSQL задаются правила допуска клиентов и методы их аутентификации?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_hba.conf",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_ident.sql",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_roles.conf",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "postgresql.auto.sql",
+          "correct": false
+        }
+      ],
+      "explanation": "Конспект определяет pg_hba.conf как файл host-based authentication, содержащий правила подключения.",
+      "source": {
+        "key": "postgresql-16-client-authentication",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Подключение к серверу",
+        "locator": "pg_hba.conf",
+        "url": "https://postgrespro.ru/docs/postgresql/16/client-authentication"
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-006",
+      "type": "multiple_choice",
+      "text": "Какие поля учитываются при выборе подходящей записи pg_hba.conf в показанной в занятии структуре? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Тип подключения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "База данных",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Пользователь",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Имя SQL-таблицы, к которой выполняется первый запрос",
+          "correct": false
+        }
+      ],
+      "explanation": "Строка pg_hba.conf сопоставляется с параметрами подключения, включая тип, базу, пользователя и при сетевом подключении адрес.",
+      "source": {
+        "key": "dba1-13-pg-hba-fields",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Подключение к серверу",
+        "locator": "TYPE, DATABASE, USER, ADDRESS, METHOD",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-007",
+      "type": "single_choice",
+      "text": "Как PostgreSQL выбирает правило из pg_hba.conf?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Просматривает строки сверху вниз и использует первую подходящую",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Собирает все подходящие строки и объединяет их",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Всегда использует последнюю подходящую строку",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Выбирает правило случайным образом",
+          "correct": false
+        }
+      ],
+      "explanation": "Порядок записей принципиален: выбирается первая строка, соответствующая параметрам подключения.",
+      "source": {
+        "key": "dba1-13-pg-hba-order",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Подключение к серверу",
+        "locator": "Просмотр pg_hba.conf сверху вниз",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-008",
+      "type": "multiple_choice",
+      "text": "Что происходит после нахождения первой подходящей строки pg_hba.conf? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Применяется указанный в строке метод аутентификации",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Проверяется возможность роли входить в сеанс",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Проверяется право CONNECT к базе данных",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "При неуспехе автоматически проверяется следующая подходящая строка",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал подчёркивает, что после выбора первой строки выполняются соответствующие проверки, а следующие строки уже не рассматриваются.",
+      "source": {
+        "key": "dba1-13-pg-hba-checks",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Подключение к серверу",
+        "locator": "Аутентификация, LOGIN и CONNECT",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-009",
+      "type": "single_choice",
+      "text": "Что означает тип подключения local в pg_hba.conf в примере занятия?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Подключение через локальный сокет",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Любое TCP/IP-подключение",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Подключение только суперпользователя",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Подключение только к базе postgres",
+          "correct": false
+        }
+      ],
+      "explanation": "На схеме pg_hba.conf тип local сопоставлен локальному сокету, а host — TCP/IP.",
+      "source": {
+        "key": "dba1-13-pg-hba-types",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Подключение к серверу",
+        "locator": "local и host",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-010",
+      "type": "multiple_choice",
+      "text": "Какие соответствия методов аутентификации и их смысла приведены в занятии? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "trust — разрешить подключение без проверки пароля",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "reject — отказать в подключении",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "peer — получить сведения о пользователе от операционной системы",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "scram-sha-256 — всегда разрешить подключение без аутентификации",
+          "correct": false
+        }
+      ],
+      "explanation": "Слайд прямо сопоставляет trust с разрешением, reject с отказом, peer с проверкой через ОС, а scram-sha-256 и md5 — с парольной аутентификацией.",
+      "source": {
+        "key": "postgresql-16-auth-methods",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Методы аутентификации",
+        "locator": "trust, reject, peer, scram-sha-256",
+        "url": "https://postgrespro.ru/docs/postgresql/16/auth-methods"
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-011",
+      "type": "single_choice",
+      "text": "Какой метод в приведённом конспекте запрашивает сведения о пользователе у операционной системы для локального подключения?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "peer",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "reject",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "trust",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "scram-sha-256",
+          "correct": false
+        }
+      ],
+      "explanation": "В материале peer описан как метод, который получает имя пользователя от операционной системы.",
+      "source": {
+        "key": "postgresql-16-auth-peer",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Методы аутентификации",
+        "locator": "peer",
+        "url": "https://postgrespro.ru/docs/postgresql/16/auth-methods"
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-012",
+      "type": "multiple_choice",
+      "text": "Какие методы из приведённого материала относятся к парольной аутентификации? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "scram-sha-256",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "md5",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "peer",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "reject",
+          "correct": false
+        }
+      ],
+      "explanation": "На слайде scram-sha-256 и md5 объединены как методы, при которых у клиента запрашивается пароль.",
+      "source": {
+        "key": "dba1-13-password-auth",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Парольная аутентификация",
+        "locator": "scram-sha-256 и md5",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-013",
+      "type": "single_choice",
+      "text": "Что произойдёт, если ни одна строка pg_hba.conf не соответствует параметрам нового подключения?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Подключение будет отклонено",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Будет автоматически применён trust",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Будет автоматически применён peer",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Сервер создаст подходящее правило",
+          "correct": false
+        }
+      ],
+      "explanation": "Правила pg_hba.conf образуют явный список допуска. Если подходящей записи нет, подключение не разрешается.",
+      "source": {
+        "key": "postgresql-16-client-authentication-013",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Подключение к серверу",
+        "locator": "Отсутствие подходящего правила",
+        "url": "https://postgrespro.ru/docs/postgresql/16/client-authentication"
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-014",
+      "type": "multiple_choice",
+      "text": "Какие условия должны быть выполнены для успешного подключения в модели, показанной в занятии? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Должна найтись подходящая запись pg_hba.conf",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Должна успешно пройти указанная записью аутентификация",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Роль должна иметь возможность LOGIN и необходимый доступ CONNECT",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Роль обязательно должна быть SUPERUSER",
+          "correct": false
+        }
+      ],
+      "explanation": "Подключение определяется сразу несколькими проверками: правилом pg_hba.conf, методом аутентификации и полномочиями роли.",
+      "source": {
+        "key": "dba1-13-connection-checks",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Подключение к серверу",
+        "locator": "Последовательность проверки подключения",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-015",
+      "type": "single_choice",
+      "text": "В практическом задании для alice и bob включён peer. Почему одного изменения pg_hba.conf недостаточно для успешного входа?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Необходимо корректное соответствие пользователя операционной системы роли PostgreSQL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для peer всегда требуется SUPERUSER",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Метод peer работает только через TCP/IP",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Для peer требуется включить CREATEDB",
+          "correct": false
+        }
+      ],
+      "explanation": "Практика предлагает сначала убедиться, что вход через peer невозможен без нужного отображения пользователя ОС.",
+      "source": {
+        "key": "dba1-13-practice-peer",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика+",
+        "locator": "alice, bob и peer",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-016",
+      "type": "multiple_choice",
+      "text": "Какие действия входят в практику по настройке аутентификации alice и bob? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Создать роли alice и bob",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Изменить pg_hba.conf",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Проверить разрешение и запрет подключений при разных настройках",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Выдать обеим ролям SUPERUSER для проверки peer",
+          "correct": false
+        }
+      ],
+      "explanation": "Практическая часть строится вокруг создания ролей, изменения pg_hba.conf и проверки поведения различных правил аутентификации.",
+      "source": {
+        "key": "dba1-13-practice-auth",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика+",
+        "locator": "alice и bob, задания по pg_hba.conf",
+        "url": null
+      }
+    }
+  ]
+}

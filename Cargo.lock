@@ -425,7 +425,7 @@ dependencies = [
 
 [[package]]
 name = "dba-trainer-application"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "dba-trainer-domain",
  "rand 0.10.3",
@@ -433,7 +433,7 @@ dependencies = [
 
 [[package]]
 name = "dba-trainer-content"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -441,11 +441,11 @@ dependencies = [
 
 [[package]]
 name = "dba-trainer-domain"
-version = "0.2.0"
+version = "0.3.0"
 
 [[package]]
 name = "dba-trainer-mobile-ffi"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "dba-trainer-application",
  "dba-trainer-content",
@@ -457,7 +457,7 @@ dependencies = [
 
 [[package]]
 name = "dba-trainer-storage-sqlite"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "dba-trainer-application",
  "dba-trainer-content",
@@ -467,7 +467,7 @@ dependencies = [
 
 [[package]]
 name = "dba-trainer-tui"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "crossterm",
  "dba-trainer-application",

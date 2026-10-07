@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "dba-1",
+  "slug": "dba1-admin-logging",
+  "notes_part": 12,
+  "topic_number": 13,
+  "title": "Журналирование и анализ журнала",
+  "description": "Приёмники сообщений PostgreSQL, logging_collector, файлы журналов, ротация, внешняя ротация и анализ серверных журналов",
+  "sort_order": 121
+}

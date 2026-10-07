@@ -56,6 +56,8 @@ mod tests {
         "schema_version": 1,
         "course": "dba-1",
         "slug": "dba1-tools-install",
+        "notes_part": 1,
+        "topic_number": 1,
         "title": "Инструменты и установка",
         "description": "Test topic",
         "sort_order": 10
@@ -156,6 +158,8 @@ mod tests {
                 "schema_version": 1,
                 "course": "dba-3",
                 "slug": "dba3-test-topic",
+                "notes_part": 1,
+                "topic_number": 1,
                 "title": "DBA-3 Test",
                 "description": null,
                 "sort_order": 10
@@ -340,6 +344,8 @@ mod tests {
                 "schema_version": 1,
                 "course": "dba-1",
                 "slug": "dba1-tools-install",
+                "notes_part": 1,
+                "topic_number": 1,
                 "title": "Tools",
                 "description": null,
                 "sort_order": 10,

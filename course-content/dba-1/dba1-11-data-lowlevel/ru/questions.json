@@ -1,0 +1,741 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-data-lowlevel",
+  "questions": [
+    {
+      "key": "dba1-data-lowlevel-001",
+      "type": "single_choice",
+      "text": "Каким объектам PostgreSQL обычно соответствует физическое хранилище в виде одного или нескольких слоёв отношения?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Объектам, хранящим данные: таблицам, индексам, последовательностям и материализованным представлениям",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только таблицам",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только базам данных целиком",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только представлениям и функциям",
+          "correct": false
+        }
+      ],
+      "explanation": "Для объектов, которые физически хранят данные, PostgreSQL использует отношения, представленные несколькими слоями, или forks.",
+      "source": {
+        "key": "dba1-11-relation-forks",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Слои объекта",
+        "locator": "Слайд 3, объекты и слои",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-002",
+      "type": "multiple_choice",
+      "text": "Какие слои отношений рассматриваются в занятии? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "main",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "fsm",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "vm",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "init",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "wal",
+          "correct": false
+        }
+      ],
+      "explanation": "В материале рассматриваются основной слой, карта свободного пространства, карта видимости и слой инициализации. WAL не является слоем (fork) отношения из перечисленного набора.",
+      "source": {
+        "key": "dba1-11-fork-types",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Слои",
+        "locator": "Слайд 4, main, init, vm, fsm",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-003",
+      "type": "single_choice",
+      "text": "Что хранится в основном слое main отношения?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Собственно данные: версии строк таблицы или индексные записи",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только информация о свободном месте",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только информация о видимости страниц",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Резервная пустая копия отношения после сбоя",
+          "correct": false
+        }
+      ],
+      "explanation": "Основной слой содержит сами данные отношения. Он существует для любых объектов, физически хранящих данные.",
+      "source": {
+        "key": "dba1-11-main",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Слои",
+        "locator": "Слайд 4, основной слой",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-004",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о сегментах файлов отношения верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Большой слой разбивается на сегменты",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Типичный предельный размер одного сегмента — 1 ГБ",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Следующие сегменты могут получать имена с суффиксами .1, .2 и далее",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Каждый сегмент обязательно соответствует отдельной SQL-таблице",
+          "correct": false
+        }
+      ],
+      "explanation": "Один слой отношения при росте разбивается на физические сегменты. В занятии показаны файлы NNN, NNN.1, NNN.2 и размер сегмента 1 ГБ.",
+      "source": {
+        "key": "dba1-11-segments",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Слои объекта",
+        "locator": "Слайд 3, сегменты по 1 ГБ",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-005",
+      "type": "single_choice",
+      "text": "Какой суффикс имеет файл слоя free space map?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "_fsm",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "_vm",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "_init",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "_wal",
+          "correct": false
+        }
+      ],
+      "explanation": "Файлы карты свободного пространства имеют суффикс _fsm.",
+      "source": {
+        "key": "postgresql-16-fsm",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Free Space Map",
+        "locator": "Storage Page Layout / Free Space Map",
+        "url": "https://postgrespro.ru/docs/postgresql/16/storage-fsm"
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-006",
+      "type": "multiple_choice",
+      "text": "Что верно для слоя FSM? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он хранит сведения о свободном пространстве",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он помогает находить страницы, подходящие для размещения новых данных",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Он может существовать и для таблиц, и для индексов",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Он содержит сами версии строк таблицы",
+          "correct": false
+        }
+      ],
+      "explanation": "FSM — карта свободного пространства. В конспекте отдельно подчёркивается, что такой слой применяется и для таблиц, и для индексов.",
+      "source": {
+        "key": "dba1-11-fsm",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Слои",
+        "locator": "Слайд 4, карта свободного пространства",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-007",
+      "type": "single_choice",
+      "text": "Какой суффикс имеет файл visibility map?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "_vm",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "_fsm",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "_init",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "_visibility",
+          "correct": false
+        }
+      ],
+      "explanation": "Файлы карты видимости имеют суффикс _vm.",
+      "source": {
+        "key": "postgresql-16-vm",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Visibility Map",
+        "locator": "Visibility Map",
+        "url": "https://postgrespro.ru/docs/postgresql/16/storage-vm"
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-008",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о visibility map верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Это битовая карта видимости",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Файл этого слоя имеет суффикс _vm",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "В рассматриваемой модели слой существует для таблиц",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Это основной файл, содержащий версии строк",
+          "correct": false
+        }
+      ],
+      "explanation": "VM хранит служебную информацию о видимости страниц и является отдельным слоем таблицы, а не основным хранилищем строк.",
+      "source": {
+        "key": "dba1-11-vm",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Слои",
+        "locator": "Слайд 4, карта видимости",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-009",
+      "type": "single_choice",
+      "text": "Для каких объектов создаётся слой init?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для нежурналируемых таблиц и их индексов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для всех обычных таблиц",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только для системных каталогов",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только для временных представлений",
+          "correct": false
+        }
+      ],
+      "explanation": "Слой инициализации имеет суффикс _init и существует у UNLOGGED-отношений.",
+      "source": {
+        "key": "postgresql-16-init-fork",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Слой инициализации",
+        "locator": "Database File Layout, init fork",
+        "url": "https://postgrespro.ru/docs/postgresql/16/storage-init"
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-010",
+      "type": "multiple_choice",
+      "text": "Что характерно для нежурналируемых таблиц и их слоя init? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Изменения таких таблиц не записываются в WAL обычным образом",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Работа с ними может быть быстрее благодаря отсутствию обычного журналирования",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "После сбоя основной слой может быть восстановлен из состояния слоя init",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Слой init предназначен для хранения актуальных пользовательских строк при штатной работе",
+          "correct": false
+        }
+      ],
+      "explanation": "Init представляет исходное пустое состояние нежурналируемого отношения и используется после сбоя, поскольку содержимое UNLOGGED-таблицы нельзя восстановить по WAL.",
+      "source": {
+        "key": "dba1-11-init",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Слои",
+        "locator": "Слайд 4, init и UNLOGGED",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-011",
+      "type": "single_choice",
+      "text": "Какое ограничение на версию строки приводит к необходимости механизма TOAST?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Версия строки должна помещаться на одну страницу",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Строка не может содержать более одного текстового поля",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Строка всегда должна помещаться в один 1-ГБ сегмент",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Все значения переменной длины должны храниться отдельно",
+          "correct": false
+        }
+      ],
+      "explanation": "TOAST решает проблему больших значений при условии, что версия строки должна физически помещаться на одну страницу.",
+      "source": {
+        "key": "dba1-11-toast-row",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "TOAST",
+        "locator": "Слайд 6, версия строки и TOAST",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-012",
+      "type": "multiple_choice",
+      "text": "Какие действия PostgreSQL может применять к большим значениям в рамках TOAST? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Сжать значение",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Вынести значение в отдельную TOAST-таблицу",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Сначала сжать, а затем при необходимости вынести",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Переместить всю базу данных в другой tablespace",
+          "correct": false
+        }
+      ],
+      "explanation": "В материале перечислены сжатие, вынос и сочетание этих способов для уменьшения размера основной версии строки.",
+      "source": {
+        "key": "postgresql-16-toast-mechanisms",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "TOAST",
+        "locator": "TOAST, compression and out-of-line storage",
+        "url": "https://postgrespro.ru/docs/postgresql/16/storage-toast"
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-013",
+      "type": "single_choice",
+      "text": "В какой схеме располагаются обычные TOAST-таблицы?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_toast",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "public",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_catalog",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "information_schema",
+          "correct": false
+        }
+      ],
+      "explanation": "Для основной таблицы при необходимости создаётся служебная TOAST-таблица в схеме pg_toast.",
+      "source": {
+        "key": "dba1-11-toast-schema",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "TOAST",
+        "locator": "Слайд 6, схема pg_toast",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-014",
+      "type": "multiple_choice",
+      "text": "Какие свойства TOAST-таблицы указаны в занятии? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Она имеет собственный индекс",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Большие значения хранятся в ней фрагментами",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Обращение к ней прозрачно для приложения",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Она заменяет основной слой исходной таблицы",
+          "correct": false
+        }
+      ],
+      "explanation": "TOAST-таблица является вспомогательным отношением: содержит фрагменты длинных значений, обслуживается индексом и используется PostgreSQL прозрачно.",
+      "source": {
+        "key": "dba1-11-toast-table",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "TOAST",
+        "locator": "Слайд 6, свойства TOAST-таблицы",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-015",
+      "type": "single_choice",
+      "text": "Что происходит с уже вынесенным TOAST-значением, если UPDATE создаёт новую версию основной строки, но само длинное поле не меняется?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Новая версия строки может ссылаться на то же TOAST-значение",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "TOAST-значение обязательно полностью дублируется",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Поле автоматически заменяется NULL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Вся TOAST-таблица пересоздаётся",
+          "correct": false
+        }
+      ],
+      "explanation": "TOAST имеет собственную версионность. Если длинное значение не изменилось, новая версия основной строки может продолжать ссылаться на существующее значение, экономя место.",
+      "source": {
+        "key": "postgresql-16-toast-mvcc",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "TOAST",
+        "locator": "TOAST и повторное использование неизменённых значений",
+        "url": "https://postgrespro.ru/docs/postgresql/16/storage-toast"
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-016",
+      "type": "multiple_choice",
+      "text": "Какие функции используются в занятии для определения размеров отношений и связанных объектов? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_relation_size",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_table_size",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_indexes_size",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_total_relation_size",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "pg_database_size",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал последовательно рассматривает размер отдельного слоя, таблицы с TOAST, индексов и полный размер отношения. `pg_database_size` измеряет размер базы данных, а не размер отношения или связанных с ним объектов из перечисленного набора.",
+      "source": {
+        "key": "dba1-11-size-functions",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Размер таблицы",
+        "locator": "Слайд 8, функции размеров",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-017",
+      "type": "single_choice",
+      "text": "Что показывает pg_table_size для обычной таблицы согласно материалу?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Размер таблицы вместе с её TOAST-частью, но без обычных индексов таблицы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только размер основного слоя main",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только сумму всех обычных индексов",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Полный размер всей базы данных",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_table_size включает саму таблицу и её TOAST-часть с индексом TOAST, но не обычные индексы основной таблицы.",
+      "source": {
+        "key": "dba1-11-pg-table-size",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Размер таблицы",
+        "locator": "Слайд 8, pg_table_size",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-018",
+      "type": "multiple_choice",
+      "text": "Какие соответствия функций и результатов верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_relation_size — размер выбранного слоя отношения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_indexes_size — суммарный размер обычных индексов таблицы",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_total_relation_size — полный размер таблицы вместе с её индексами",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_indexes_size — размер всей базы данных вместе с WAL",
+          "correct": false
+        }
+      ],
+      "explanation": "Каждая из функций имеет свой уровень охвата: отдельный слой, индексы или полное отношение с зависимыми структурами.",
+      "source": {
+        "key": "dba1-11-size-comparison",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Размер таблицы",
+        "locator": "Слайд 8, сравнение функций размеров",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-019",
+      "type": "single_choice",
+      "text": "В практическом задании создана UNLOGGED-таблица. Наличие какого файла подтверждает существование её слоя инициализации?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Файла с суффиксом _init",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Файла с суффиксом _vm",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Файла с суффиксом _fsm",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Файла с суффиксом _toast",
+          "correct": false
+        }
+      ],
+      "explanation": "Практика предлагает создать нежурналируемую таблицу и непосредственно проверить наличие слоя init, файл которого имеет суффикс _init.",
+      "source": {
+        "key": "dba1-11-practice-init",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика",
+        "locator": "Практика, задание 1",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-020",
+      "type": "multiple_choice",
+      "text": "Какие действия входят в практическое задание по TOAST? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Создать таблицу со столбцом text",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Определить стратегию хранения этого столбца",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Изменить стратегию на external и вставить короткое и длинное значения",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Проверить TOAST-таблицу прямым запросом и объяснить результат",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Перезапустить сервер PostgreSQL перед проверкой TOAST-таблицы",
+          "correct": false
+        }
+      ],
+      "explanation": "Практика связывает настройку стратегии хранения с наблюдением того, какие значения фактически попадают в TOAST-таблицу. Перезапуск сервера не входит в перечисленные шаги практического задания.",
+      "source": {
+        "key": "dba1-11-practice-toast",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика",
+        "locator": "Практика, задание 2",
+        "url": null
+      }
+    }
+  ]
+}

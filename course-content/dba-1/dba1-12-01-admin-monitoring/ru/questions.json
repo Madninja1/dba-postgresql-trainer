@@ -1,0 +1,587 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-admin-monitoring",
+  "questions": [
+    {
+      "key": "dba1-admin-monitoring-001",
+      "type": "single_choice",
+      "text": "Какие средства операционной системы приведены в материале для просмотра процессов PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "ps и pgrep",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "df и du",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "grep и awk",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "VACUUM и ANALYZE",
+          "correct": false
+        }
+      ],
+      "explanation": "Для наблюдения за процессами PostgreSQL материал приводит системные команды ps и pgrep.",
+      "source": {
+        "key": "dba1-12-os-processes",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Средства ОС",
+        "locator": "Слайд о процессах PostgreSQL",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-002",
+      "type": "multiple_choice",
+      "text": "Какие утилиты в конспекте относятся к наблюдению за использованием ресурсов системы? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "iostat",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "vmstat",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "sar",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "top",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "pg_dump",
+          "correct": false
+        }
+      ],
+      "explanation": "Именно iostat, vmstat, sar и top перечислены как средства наблюдения за использованием ресурсов ОС. `pg_dump` предназначен для логического резервного копирования, а не для наблюдения за использованием ресурсов ОС.",
+      "source": {
+        "key": "dba1-12-os-resources",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Средства ОС",
+        "locator": "Слайд «Использование ресурсов»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-003",
+      "type": "single_choice",
+      "text": "Для чего в контексте мониторинга PostgreSQL используется параметр update_process_title?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для обновления отображаемого статуса серверных процессов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для изменения имени текущей базы данных",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Для включения сборщика статистики запросов",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Для изменения имени файла журнала",
+          "correct": false
+        }
+      ],
+      "explanation": "Параметр update_process_title связан с информацией о процессах, видимой средствами операционной системы.",
+      "source": {
+        "key": "dba1-12-process-title",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Средства ОС",
+        "locator": "Слайд о процессах, update_process_title",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-004",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о мониторинге дискового пространства средствами ОС соответствуют материалу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "df можно использовать для оценки использования файловых систем",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "du позволяет оценивать место, занимаемое каталогами и файлами",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "quota относится к контролю дисковых квот",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Для контроля свободного диска достаточно только pg_stat_activity",
+          "correct": false
+        }
+      ],
+      "explanation": "В блоке о дисковом пространстве перечислены df, du и quota; системные представления PostgreSQL не заменяют контроль файловой системы.",
+      "source": {
+        "key": "postgresql-16-diskusage",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Дисковое пространство",
+        "locator": "Контроль использования диска",
+        "url": "https://postgrespro.ru/docs/postgresql/16/diskusage"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-005",
+      "type": "single_choice",
+      "text": "Какое представление является основным источником информации о текущей активности серверных процессов PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_stat_activity",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_stat_progress_vacuum",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_tablespace",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_settings",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_stat_activity относится к динамической статистике и показывает сведения о серверных процессах и их текущей активности.",
+      "source": {
+        "key": "postgresql-16-monitoring-stats",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Статистика PostgreSQL",
+        "locator": "Представление pg_stat_activity",
+        "url": "https://postgrespro.ru/docs/postgresql/16/monitoring-stats"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-006",
+      "type": "multiple_choice",
+      "text": "Какая информация может использоваться при анализе текущих сеансов через pg_stat_activity? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Состояние сеанса",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Текущий запрос",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Время начала запроса или транзакции",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Содержимое всех страниц таблиц в буферном кеше",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_stat_activity предназначено для анализа процессов и сеансов, включая их состояние и выполняемую работу, а не содержимого страниц данных.",
+      "source": {
+        "key": "postgresql-16-monitoring-stats-006",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Статистика PostgreSQL",
+        "locator": "pg_stat_activity",
+        "url": "https://postgrespro.ru/docs/postgresql/16/monitoring-stats"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-007",
+      "type": "single_choice",
+      "text": "Где обслуживающие процессы PostgreSQL размещают накопительную статистику во время работы сервера согласно материалу?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В разделяемой памяти",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только в WAL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "В postgresql.conf",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "В таблицах пользователя public",
+          "correct": false
+        }
+      ],
+      "explanation": "Конспект показывает передачу накопительной статистики в разделяемую память; обновления выполняются не непрерывно после каждого события.",
+      "source": {
+        "key": "dba1-12-cumulative-stats",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Накопительная статистика",
+        "locator": "Схема работы подсистемы статистики",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-008",
+      "type": "multiple_choice",
+      "text": "Какие значения stats_fetch_consistency перечислены в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "none",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "cache",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "snapshot",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "serializable",
+          "correct": false
+        }
+      ],
+      "explanation": "На схеме подсистемы статистики явно перечислены режимы none, cache и snapshot.",
+      "source": {
+        "key": "dba1-12-stats-consistency",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Накопительная статистика",
+        "locator": "stats_fetch_consistency",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-009",
+      "type": "single_choice",
+      "text": "Какое представление следует использовать для наблюдения за ходом VACUUM?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_stat_progress_vacuum",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_stat_progress_analyze",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_stat_activity_vacuum",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_vacuum_status",
+          "correct": false
+        }
+      ],
+      "explanation": "Для VACUUM, включая работу процессов автоочистки, материал указывает pg_stat_progress_vacuum.",
+      "source": {
+        "key": "postgresql-16-progress-reporting",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Выполнение команд",
+        "locator": "VACUUM — pg_stat_progress_vacuum",
+        "url": "https://postgrespro.ru/docs/postgresql/16/progress-reporting"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-010",
+      "type": "multiple_choice",
+      "text": "Какие соответствия длительных операций и представлений прогресса верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "ANALYZE — pg_stat_progress_analyze",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "CREATE INDEX и REINDEX — pg_stat_progress_create_index",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "CLUSTER и VACUUM FULL — pg_stat_progress_cluster",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "ANALYZE — pg_stat_progress_copy",
+          "correct": false
+        }
+      ],
+      "explanation": "Эти соответствия непосредственно приведены в таблице представлений для отслеживания длительных команд.",
+      "source": {
+        "key": "postgresql-16-progress-reporting-010",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Выполнение команд",
+        "locator": "Таблица представлений pg_stat_progress_*",
+        "url": "https://postgrespro.ru/docs/postgresql/16/progress-reporting"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-011",
+      "type": "single_choice",
+      "text": "Какое представление показывает прогресс выполнения COPY?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_stat_progress_copy",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_stat_progress_cluster",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_stat_copy",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_copy_activity",
+          "correct": false
+        }
+      ],
+      "explanation": "Для COPY в материале указано представление pg_stat_progress_copy.",
+      "source": {
+        "key": "postgresql-16-progress-reporting-011",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Выполнение команд",
+        "locator": "COPY — pg_stat_progress_copy",
+        "url": "https://postgrespro.ru/docs/postgresql/16/progress-reporting"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-012",
+      "type": "multiple_choice",
+      "text": "Какие операции относятся к тем, для которых материал показывает специализированные представления прогресса? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Создание базовой резервной копии",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "CREATE INDEX",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "VACUUM FULL",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Обычный SELECT любой сложности",
+          "correct": false
+        }
+      ],
+      "explanation": "Список progress-представлений охватывает лишь определённые потенциально длительные операции, а не произвольный SELECT.",
+      "source": {
+        "key": "dba1-12-progress-views",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Выполнение команд",
+        "locator": "Слайд 10, представления прогресса",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-013",
+      "type": "single_choice",
+      "text": "Что делает параметр cluster_name в контексте мониторинга процессов?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Задаёт имя кластера, которое может отображаться в статусе серверных процессов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Переименовывает каталог PGDATA",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Создаёт новую базу данных",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Выбирает каталог журналов",
+          "correct": false
+        }
+      ],
+      "explanation": "В блоке средств ОС cluster_name приводится вместе с update_process_title как параметр, помогающий идентифицировать процессы PostgreSQL.",
+      "source": {
+        "key": "dba1-12-cluster-name",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Средства ОС",
+        "locator": "cluster_name",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-014",
+      "type": "multiple_choice",
+      "text": "Почему при диагностике PostgreSQL полезно сочетать внутренние представления СУБД и средства операционной системы? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "PostgreSQL работает под управлением ОС и зависит от доступных ей ресурсов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Средства ОС позволяют видеть потребление CPU, памяти и дисковой подсистемы",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Представления PostgreSQL дают информацию о внутреннем состоянии сеансов и объектов",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Внутренняя статистика PostgreSQL полностью заменяет мониторинг ОС",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал рассматривает оба уровня как взаимодополняющие: ОС показывает ресурсы и процессы, а PostgreSQL — внутреннее состояние сервера.",
+      "source": {
+        "key": "dba1-12-monitoring-levels",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Средства ОС",
+        "locator": "Связь мониторинга PostgreSQL и ОС",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-015",
+      "type": "single_choice",
+      "text": "Какое представление следует использовать для наблюдения за созданием базовой резервной копии?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_stat_progress_basebackup",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_stat_progress_backup",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_stat_backup_activity",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_stat_progress_copy",
+          "correct": false
+        }
+      ],
+      "explanation": "Созданию базовой резервной копии соответствует pg_stat_progress_basebackup.",
+      "source": {
+        "key": "postgresql-16-progress-reporting-015",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Выполнение команд",
+        "locator": "pg_stat_progress_basebackup",
+        "url": "https://postgrespro.ru/docs/postgresql/16/progress-reporting"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-016",
+      "type": "multiple_choice",
+      "text": "Какие характеристики нужно учитывать при чтении накопительной статистики PostgreSQL согласно материалу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Статистика передаётся в разделяемую память не после каждого отдельного события",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "В рамках транзакции возможны разные режимы согласованности получаемой статистики",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "stats_fetch_consistency влияет на способ получения статистического снимка",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Все статистические значения всегда обновляются синхронно после каждой строки SQL",
+          "correct": false
+        }
+      ],
+      "explanation": "Конспект специально показывает задержку обновления накопительной статистики и режимы none, cache и snapshot для её чтения.",
+      "source": {
+        "key": "dba1-12-cumulative-stats-016",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Накопительная статистика",
+        "locator": "Схема сбора статистики и stats_fetch_consistency",
+        "url": null
+      }
+    }
+  ]
+}

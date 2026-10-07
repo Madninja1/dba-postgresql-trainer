@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "dba-1",
+  "slug": "dba1-backup-logical",
+  "notes_part": 14,
+  "topic_number": 17,
+  "title": "Логическое резервное копирование",
+  "description": "Выгрузка данных через COPY и psql, резервное копирование баз с pg_dump, восстановление через psql и pg_restore, а также копирование всего кластера и глобальных объектов с pg_dumpall",
+  "sort_order": 140
+}

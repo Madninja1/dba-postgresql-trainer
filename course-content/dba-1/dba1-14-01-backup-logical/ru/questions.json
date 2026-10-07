@@ -1,0 +1,582 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-backup-logical",
+  "questions": [
+    {
+      "key": "dba1-backup-logical-001",
+      "type": "single_choice",
+      "text": "Что сохраняется при логическом резервном копировании PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Логическое представление объектов и данных, пригодное для последующего воссоздания",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Точная побайтовая копия всего PGDATA",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только сегменты WAL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только файлы конфигурации сервера",
+          "correct": false
+        }
+      ],
+      "explanation": "Логическое резервирование работает на уровне объектов, их определений и данных, в отличие от физического копирования файлов кластера.",
+      "source": {
+        "key": "dba1-14-logical-overview",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Логическое резервное копирование",
+        "locator": "Обзор логического копирования",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-logical-002",
+      "type": "multiple_choice",
+      "text": "Какие задачи позволяет решать COPY в рассматриваемом занятии? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Выгружать содержимое таблицы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Выгружать результат запроса",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Загружать строки в существующую таблицу",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Создавать физическую копию всего кластера",
+          "correct": false
+        }
+      ],
+      "explanation": "COPY используется для обмена табличными данными с файлами или потоками, а не для физической копии PGDATA.",
+      "source": {
+        "key": "postgresql-16-copy",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "COPY",
+        "locator": "Резервирование и восстановление отдельных данных",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-copy"
+      }
+    },
+    {
+      "key": "dba1-backup-logical-003",
+      "type": "single_choice",
+      "text": "Кому должен быть доступен файл при использовании серверной команды SQL COPY?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Пользователю операционной системы, под которым работает сервер PostgreSQL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только пользователю, запустившему psql",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Любому пользователю базы данных независимо от файловых прав",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только владельцу исходной таблицы в SQL",
+          "correct": false
+        }
+      ],
+      "explanation": "SQL COPY выполняется сервером, поэтому файл должен быть доступен серверному процессу PostgreSQL.",
+      "source": {
+        "key": "dba1-14-copy-server",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "COPY",
+        "locator": "Серверный вариант SQL COPY",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-logical-004",
+      "type": "multiple_choice",
+      "text": "Какие различия между SQL COPY и psql \\copy показаны в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "SQL COPY является серверным вариантом",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\copy выполняет файловую операцию на стороне клиента psql",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Для \\copy файл должен быть доступен пользователю, запустившему psql",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "\\copy всегда создаёт полный дамп базы данных",
+          "correct": false
+        }
+      ],
+      "explanation": "Главное различие касается того, на какой стороне открывается файл: сервером при COPY или клиентом при \\copy.",
+      "source": {
+        "key": "dba1-14-copy-client-server",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "COPY",
+        "locator": "SQL COPY и psql \\copy",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-logical-005",
+      "type": "single_choice",
+      "text": "Какая утилита предназначена для создания полноценной логической резервной копии отдельной базы данных?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_dump",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_basebackup",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_receivewal",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_ctl",
+          "correct": false
+        }
+      ],
+      "explanation": "В занятии pg_dump представлен как основной инструмент логического резервирования одной базы данных.",
+      "source": {
+        "key": "postgresql-16-pg-dump",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_dump",
+        "locator": "Назначение pg_dump",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgdump"
+      }
+    },
+    {
+      "key": "dba1-backup-logical-006",
+      "type": "multiple_choice",
+      "text": "Какие результаты может создавать pg_dump согласно конспекту? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "SQL-скрипт",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Архив в специальном формате с оглавлением",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Дамп ограниченного набора объектов",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Побайтовую копию каталога PGDATA",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал показывает SQL-вывод и специальные архивные форматы, а также возможность выбирать выгружаемые таблицы, схемы, DDL или данные.",
+      "source": {
+        "key": "postgresql-16-pg-dump-formats",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_dump",
+        "locator": "Форматы и выбор объектов",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgdump"
+      }
+    },
+    {
+      "key": "dba1-backup-logical-007",
+      "type": "single_choice",
+      "text": "Как в материале предлагается восстанавливать дамп pg_dump, представленный обычным SQL-скриптом?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Выполнить скрипт через psql",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Передать его pg_basebackup",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Скопировать его в pg_wal",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Передать его pg_receivewal",
+          "correct": false
+        }
+      ],
+      "explanation": "SQL-дамп уже состоит из команд SQL, поэтому для восстановления его выполняют через клиент PostgreSQL.",
+      "source": {
+        "key": "dba1-14-pg-dump-sql-restore",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_dump",
+        "locator": "Восстановление SQL-скрипта",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-logical-008",
+      "type": "multiple_choice",
+      "text": "Какие возможности pg_restore подчёркиваются в занятии? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Восстанавливать архивы pg_dump специального формата",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Ограничивать набор объектов уже на этапе восстановления",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Поддерживать параллельное восстановление для подходящих форматов",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Восстанавливать только завершённые сегменты WAL",
+          "correct": false
+        }
+      ],
+      "explanation": "Преимущество архивного формата состоит в наличии оглавления, позволяющего выбирать объекты при восстановлении и использовать параллельную работу.",
+      "source": {
+        "key": "postgresql-16-pg-restore",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_restore",
+        "locator": "Выбор объектов и параллельное восстановление",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgrestore"
+      }
+    },
+    {
+      "key": "dba1-backup-logical-009",
+      "type": "single_choice",
+      "text": "Из какого шаблона материал рекомендует создать новую базу перед восстановлением полноценного дампа?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "template0",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "template1",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "postgres",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_global",
+          "correct": false
+        }
+      ],
+      "explanation": "В конспекте прямо указано создать целевую базу из template0 перед восстановлением.",
+      "source": {
+        "key": "dba1-14-restore-template0",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_dump",
+        "locator": "Подготовка базы перед восстановлением",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-logical-010",
+      "type": "multiple_choice",
+      "text": "Что согласно материалу может потребоваться подготовить до восстановления дампа отдельной базы? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Необходимые роли",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Необходимые табличные пространства",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Целевую базу данных",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Все исходные сегменты WAL за время жизни базы",
+          "correct": false
+        }
+      ],
+      "explanation": "Дамп отдельной базы не является полной копией всех глобальных объектов кластера, поэтому зависимости вроде ролей и tablespace должны существовать.",
+      "source": {
+        "key": "dba1-14-pg-dump-prerequisites",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_dump",
+        "locator": "Роли и табличные пространства перед восстановлением",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-logical-011",
+      "type": "single_choice",
+      "text": "Какая утилита предназначена для логической резервной копии всего кластера, включая глобальные объекты?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_dumpall",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_restore",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_receivewal",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "COPY",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_dumpall последовательно выгружает базы кластера и сохраняет информацию, относящуюся ко всему кластеру.",
+      "source": {
+        "key": "postgresql-16-pg-dumpall",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_dumpall",
+        "locator": "Копия всего кластера",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pg-dumpall"
+      }
+    },
+    {
+      "key": "dba1-backup-logical-012",
+      "type": "multiple_choice",
+      "text": "Какие свойства pg_dumpall указаны в занятии? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он сохраняет базы данных кластера",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он сохраняет глобальные объекты, включая роли и табличные пространства",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Результатом является SQL-скрипт",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Результатом обязательно является архив для pg_restore",
+          "correct": false
+        }
+      ],
+      "explanation": "В отличие от pg_dump с его архивными форматами, pg_dumpall формирует SQL-скрипт для последующего выполнения.",
+      "source": {
+        "key": "postgresql-16-pg-dumpall-012",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_dumpall",
+        "locator": "Результат работы и глобальные объекты",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pg-dumpall"
+      }
+    },
+    {
+      "key": "dba1-backup-logical-013",
+      "type": "single_choice",
+      "text": "Почему в конспекте рекомендуется запускать pg_dumpall от имени суперпользователя?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Утилите нужен доступ ко всем объектам всех баз кластера",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Иначе она не может читать WAL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Иначе невозможно запустить PostgreSQL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Потому что pg_dumpall всегда выполняет initdb",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_dumpall подключается к базам кластера и должен иметь достаточные права для чтения сохраняемых объектов.",
+      "source": {
+        "key": "dba1-14-pg-dumpall-access",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_dumpall",
+        "locator": "Доступ ко всем базам и объектам",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-logical-014",
+      "type": "multiple_choice",
+      "text": "Какие подходы позволяют сочетать pg_dump и pg_dumpall согласно материалу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Выгрузить глобальные объекты с pg_dumpall",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Выгружать отдельные базы с pg_dump",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Использовать такой подход вместо полного pg_dumpall, когда это удобнее",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Использовать pg_dump для потокового получения WAL",
+          "correct": false
+        }
+      ],
+      "explanation": "Конспект прямо отмечает возможность отдельно сохранить глобальные объекты, а базы резервировать через pg_dump.",
+      "source": {
+        "key": "dba1-14-global-only",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_dumpall",
+        "locator": "Глобальные объекты и pg_dump",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-logical-015",
+      "type": "single_choice",
+      "text": "Как восстанавливается результат обычного полного pg_dumpall?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Как SQL-скрипт через psql",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только через pg_restore",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Через pg_basebackup",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Через restore_command",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_dumpall выдаёт SQL-скрипт, поэтому его восстановление выполняется исполнением этого скрипта.",
+      "source": {
+        "key": "postgresql-16-pg-dumpall-015",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_dumpall",
+        "locator": "Восстановление через psql",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pg-dumpall"
+      }
+    },
+    {
+      "key": "dba1-backup-logical-016",
+      "type": "multiple_choice",
+      "text": "Администратору требуется восстановить только часть объектов из заранее созданного архивного дампа. Какие свойства выбранного подхода соответствуют материалу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Дамп должен быть в подходящем специальном формате pg_dump",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для восстановления применяется pg_restore",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Набор восстанавливаемых объектов можно ограничить на этапе восстановления",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Для этого обязательно нужен архив WAL",
+          "correct": false
+        }
+      ],
+      "explanation": "Архивный формат с оглавлением позволяет pg_restore выбирать нужные объекты уже после создания резервной копии.",
+      "source": {
+        "key": "postgresql-16-pg-restore-016",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_restore",
+        "locator": "Выбор объектов при восстановлении",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgrestore"
+      }
+    }
+  ]
+}

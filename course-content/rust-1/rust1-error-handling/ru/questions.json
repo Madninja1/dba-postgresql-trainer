@@ -1,0 +1,1806 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-error-handling",
+  "questions": [
+    {
+      "key": "rust1-error-handling-001",
+      "type": "single_choice",
+      "text": "На какие две основные категории глава 9 делит ошибки?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Исправимые и неисправимые",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Синтаксические и лексические",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Статические и динамические",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Сетевые и файловые",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал разделяет ошибки на recoverable и unrecoverable, что определяет выбор между Result и panic!.",
+      "source": {
+        "key": "rust1-error-handling-intro",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Обработка ошибок",
+        "locator": "Глава 9 — введение в обработку ошибок, стр. 210",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-002",
+      "type": "multiple_choice",
+      "text": "Какие соответствия между ошибками и механизмами Rust верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для исправимых ошибок используется Result<T, E>",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для неисправимых ошибок используется panic!",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Rust в этой главе не опирается на механизм исключений",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Любая исправимая ошибка обязательно приводит к немедленному завершению программы",
+          "correct": false
+        }
+      ],
+      "explanation": "Rust различает восстановимые и невосстановимые ситуации: Result позволяет обработать ошибку, а panic! завершает выполнение.",
+      "source": {
+        "key": "rust1-error-handling-intro",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Обработка ошибок",
+        "locator": "Глава 9 — введение в обработку ошибок, стр. 210",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-003",
+      "type": "single_choice",
+      "text": "Какой пример неисправимой ошибки приводит материал?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Попытка обратиться к элементу за пределами границ массива/вектора",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Пользователь ввёл число, которое можно попросить ввести ещё раз",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Файл не найден, но его можно создать",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Временное отсутствие сетевого ответа, которое можно повторить",
+          "correct": false
+        }
+      ],
+      "explanation": "Выход за границы рассматривается как симптом дефекта кода и пример ситуации для panic!.",
+      "source": {
+        "key": "rust1-error-handling-intro",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Обработка ошибок",
+        "locator": "Глава 9 — введение в обработку ошибок, стр. 210",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-004",
+      "type": "multiple_choice",
+      "text": "Какими способами, согласно материалу, может возникнуть panic? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Явным вызовом макроса panic!",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Выполнением операции, которая сама вызывает panic",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Например, обращением по недопустимому индексу",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Только через Result::Err",
+          "correct": false
+        }
+      ],
+      "explanation": "Паника может быть вызвана явно или возникнуть в библиотечном/языковом коде из-за некорректной операции.",
+      "source": {
+        "key": "rust1-error-handling-panic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Неустранимые ошибки с макросом panic!",
+        "locator": "Глава 9 — panic!, unwind/abort и backtrace, стр. 210–215",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-005",
+      "type": "single_choice",
+      "text": "Что делает программа по умолчанию при panic!?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Печатает сообщение, раскручивает стек, очищает данные и завершает работу",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Игнорирует ошибку и продолжает",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Автоматически преобразует panic в Result",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Перезапускает функцию",
+          "correct": false
+        }
+      ],
+      "explanation": "Поведение по умолчанию включает сообщение об ошибке, unwind стека и завершение процесса.",
+      "source": {
+        "key": "rust1-error-handling-panic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Неустранимые ошибки с макросом panic!",
+        "locator": "Глава 9 — panic!, unwind/abort и backtrace, стр. 210–215",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-006",
+      "type": "multiple_choice",
+      "text": "Что означает раскрутка стека при panic? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Rust проходит обратно по стеку вызовов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "При этом очищаются данные обнаруженных функций",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Это может создавать дополнительную работу",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Это то же самое, что немедленный abort без очистки",
+          "correct": false
+        }
+      ],
+      "explanation": "Unwinding выполняет проход по стеку с очисткой, в отличие от немедленного abort.",
+      "source": {
+        "key": "rust1-error-handling-panic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Неустранимые ошибки с макросом panic!",
+        "locator": "Глава 9 — panic!, unwind/abort и backtrace, стр. 210–215",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-007",
+      "type": "single_choice",
+      "text": "Что меняет `panic = \"abort\"` в профиле Cargo?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Программа при panic завершается без раскрутки и очистки стека",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "panic становится предупреждением",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Result автоматически заменяется Option",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Cargo запрещает использовать panic!",
+          "correct": false
+        }
+      ],
+      "explanation": "Режим abort останавливает программу сразу; освобождение памяти процесса остаётся операционной системе.",
+      "source": {
+        "key": "rust1-error-handling-panic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Неустранимые ошибки с макросом panic!",
+        "locator": "Глава 9 — panic!, unwind/abort и backtrace, стр. 210–215",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-008",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о режиме abort при panic верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он может уменьшать размер исполняемого файла",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он избегает работы по раскрутке стека",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Память завершившегося процесса затем очищает операционная система",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Он позволяет программе продолжить с места panic",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал связывает abort с отсутствием unwind и возможностью уменьшить бинарник; продолжения выполнения после panic нет.",
+      "source": {
+        "key": "rust1-error-handling-panic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Неустранимые ошибки с макросом panic!",
+        "locator": "Глава 9 — panic!, unwind/abort и backtrace, стр. 210–215",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-009",
+      "type": "single_choice",
+      "text": "Для чего используется переменная окружения `RUST_BACKTRACE` в примерах главы?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы вывести обратную трассировку вызовов, приведших к panic",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы подавить panic",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы включить оптимизации release",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы преобразовать ошибку в Result",
+          "correct": false
+        }
+      ],
+      "explanation": "Backtrace помогает увидеть цепочку вызовов и найти место в своём коде, которое привело к панике.",
+      "source": {
+        "key": "rust1-error-handling-panic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Неустранимые ошибки с макросом panic!",
+        "locator": "Глава 9 — panic!, unwind/abort и backtrace, стр. 210–215",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-010",
+      "type": "multiple_choice",
+      "text": "Какие условия упомянуты для полезного backtrace? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Нужно включить вывод через RUST_BACKTRACE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для подробной информации нужны debug symbols",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Debug symbols по умолчанию есть у cargo build/run без --release",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Backtrace гарантированно одинаков на всех ОС и версиях Rust",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал предупреждает, что вывод может различаться, и отмечает роль debug symbols.",
+      "source": {
+        "key": "rust1-error-handling-panic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Неустранимые ошибки с макросом panic!",
+        "locator": "Глава 9 — panic!, unwind/abort и backtrace, стр. 210–215",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-011",
+      "type": "single_choice",
+      "text": "С какого места рекомендуется начинать поиск причины panic в backtrace?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "С первой строки трассировки, указывающей на файл вашего проекта",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "С самой последней строки стандартной библиотеки независимо от контекста",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "С Cargo.toml",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "С места объявления Vec<T>",
+          "correct": false
+        }
+      ],
+      "explanation": "В примере предлагается найти первую строку с упоминанием собственного исходного файла и исследовать действие, вызвавшее проблему.",
+      "source": {
+        "key": "rust1-error-handling-panic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Неустранимые ошибки с макросом panic!",
+        "locator": "Глава 9 — panic!, unwind/abort и backtrace, стр. 210–215",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-012",
+      "type": "multiple_choice",
+      "text": "Что верно для примера с `v[99]`, когда вектор содержит три элемента? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Будет panic из-за выхода индекса за границы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Использование [] предполагает существование элемента",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Backtrace может показать путь до места вызова",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Операция вернёт None без panic",
+          "correct": false
+        }
+      ],
+      "explanation": "Индексирование [] требует действительного индекса; None возвращает метод get, а не оператор индексации.",
+      "source": {
+        "key": "rust1-error-handling-panic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Неустранимые ошибки с макросом panic!",
+        "locator": "Глава 9 — panic!, unwind/abort и backtrace, стр. 210–215",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-013",
+      "type": "single_choice",
+      "text": "Что представляет тип `Result<T, E>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Enum с вариантами Ok(T) и Err(E)",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Структуру с полями value и error, которые всегда присутствуют вместе",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Ссылку на panic",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Тип, содержащий только ошибку",
+          "correct": false
+        }
+      ],
+      "explanation": "Result кодирует успешный и ошибочный исходы через два варианта перечисления.",
+      "source": {
+        "key": "rust1-error-handling-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Исправимые ошибки с Result",
+        "locator": "Глава 9 — Result<T, E> и обработка File::open, стр. 215–220",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-014",
+      "type": "multiple_choice",
+      "text": "Какие роли у параметров `T` и `E` в Result<T, E>? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "T — тип значения внутри Ok при успехе",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "E — тип значения ошибки внутри Err",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Они делают Result применимым к разным видам успешных значений и ошибок",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "T и E всегда обязаны быть одним и тем же типом",
+          "correct": false
+        }
+      ],
+      "explanation": "Обобщённые параметры позволяют Result представлять множество разных операций.",
+      "source": {
+        "key": "rust1-error-handling-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Исправимые ошибки с Result",
+        "locator": "Глава 9 — Result<T, E> и обработка File::open, стр. 215–220",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-015",
+      "type": "single_choice",
+      "text": "Какой тип успешного значения возвращает `File::open` в приведённом примере?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "std::fs::File",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "String",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "bool",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "usize",
+          "correct": false
+        }
+      ],
+      "explanation": "В примере File::open успешный вариант Result содержит дескриптор файла типа std::fs::File.",
+      "source": {
+        "key": "rust1-error-handling-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Исправимые ошибки с Result",
+        "locator": "Глава 9 — Result<T, E> и обработка File::open, стр. 215–220",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-016",
+      "type": "multiple_choice",
+      "text": "Что можно сделать при обработке `File::open` через match? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Извлечь File из Ok",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для определённого Err, например NotFound, предпринять отдельное действие",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Для других ошибок выбрать иной путь обработки",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Match автоматически гарантирует, что файл существует",
+          "correct": false
+        }
+      ],
+      "explanation": "Match позволяет разветвить обработку по Ok и видам Err, не сводя все неудачи к одной реакции.",
+      "source": {
+        "key": "rust1-error-handling-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Исправимые ошибки с Result",
+        "locator": "Глава 9 — Result<T, E> и обработка File::open, стр. 215–220",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-017",
+      "type": "single_choice",
+      "text": "Почему обработка ошибки открытия файла может включать создание нового файла?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Потому что отсутствие файла может быть исправимой ситуацией",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Потому что File::open всегда создаёт файл сам",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Потому что Result не позволяет вернуть Err",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Потому что panic! запрещён для файлов",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава приводит отсутствие файла как пример ошибки, из которой программа может восстановиться, создав файл вместо завершения.",
+      "source": {
+        "key": "rust1-error-handling-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Исправимые ошибки с Result",
+        "locator": "Глава 9 — Result<T, E> и обработка File::open, стр. 215–220",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-018",
+      "type": "multiple_choice",
+      "text": "Какие преимущества явного `match` над Result показаны в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Можно различать отдельные виды ошибок",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Можно выбирать разные действия для разных Err",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Можно получить успешное значение из Ok",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Match всегда короче unwrap",
+          "correct": false
+        }
+      ],
+      "explanation": "Полный match даёт гибкий контроль, хотя он может быть многословнее вспомогательных методов.",
+      "source": {
+        "key": "rust1-error-handling-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Исправимые ошибки с Result",
+        "locator": "Глава 9 — Result<T, E> и обработка File::open, стр. 215–220",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-019",
+      "type": "single_choice",
+      "text": "Что делает `unwrap()` для `Result` при варианте `Ok`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Возвращает значение внутри Ok",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Вызывает panic независимо от варианта",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Возвращает сам Result без изменений",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Преобразует Ok в None",
+          "correct": false
+        }
+      ],
+      "explanation": "unwrap — краткий способ получить успешное значение; паника возникает только в случае Err.",
+      "source": {
+        "key": "rust1-error-handling-unwrap-expect",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Лаконичные способы обработки ошибок — unwrap и expect",
+        "locator": "Глава 9 — unwrap и expect, стр. 220",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-020",
+      "type": "multiple_choice",
+      "text": "Какие утверждения об `unwrap()` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "При Ok возвращает внутреннее значение",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "При Err вызывает panic!",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Это более краткая альтернатива некоторому match",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "При Err всегда возвращает значение по умолчанию",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал описывает unwrap как краткий доступ к Result со стандартной panic-реакцией на Err.",
+      "source": {
+        "key": "rust1-error-handling-unwrap-expect",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Лаконичные способы обработки ошибок — unwrap и expect",
+        "locator": "Глава 9 — unwrap и expect, стр. 220",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-021",
+      "type": "single_choice",
+      "text": "Чем `expect(\"...\")` полезно отличается от `unwrap()`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Позволяет задать собственное сообщение для panic при Err",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Никогда не вызывает panic",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Работает только с Ok и не принимает Err",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Преобразует Result в Option",
+          "correct": false
+        }
+      ],
+      "explanation": "expect имеет то же основное поведение, но добавляет осмысленное сообщение об ожидании успешного результата.",
+      "source": {
+        "key": "rust1-error-handling-unwrap-expect",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Лаконичные способы обработки ошибок — unwrap и expect",
+        "locator": "Глава 9 — unwrap и expect, стр. 220",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-022",
+      "type": "multiple_choice",
+      "text": "Почему материал предпочитает хорошее сообщение в `expect` в рабочем коде? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Оно выражает предположение о том, почему операция должна быть успешной",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Оно облегчает поиск источника panic",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Оно даёт больше информации для отладки",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Оно гарантирует отсутствие ошибки",
+          "correct": false
+        }
+      ],
+      "explanation": "expect не устраняет ошибку, но делает диагностическое сообщение более информативным.",
+      "source": {
+        "key": "rust1-error-handling-unwrap-expect",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Лаконичные способы обработки ошибок — unwrap и expect",
+        "locator": "Глава 9 — unwrap и expect, стр. 220",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-023",
+      "type": "single_choice",
+      "text": "Что означает «проброс ошибки»?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Функция возвращает ошибку вызывающему коду вместо окончательной обработки на месте",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Функция игнорирует Err и продолжает",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Функция всегда вызывает panic!",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Ошибка записывается только в лог и теряется",
+          "correct": false
+        }
+      ],
+      "explanation": "Propagation передаёт решение вызывающей стороне, где может быть больше контекста для реакции.",
+      "source": {
+        "key": "rust1-error-handling-propagation",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Проброс ошибок",
+        "locator": "Глава 9 — проброс ошибок и оператор ?, стр. 220–225",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-024",
+      "type": "multiple_choice",
+      "text": "Зачем может быть полезно распространять ошибку вверх? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Вызывающий код может иметь больше информации о нужной реакции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Вызывающий код может выбрать восстановление или panic",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Функция сохраняет информацию об ошибке в Result",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Проброс означает, что ошибка больше недоступна вызывающему коду",
+          "correct": false
+        }
+      ],
+      "explanation": "Проброс отдаёт управление и данные об ошибке вызывающей стороне.",
+      "source": {
+        "key": "rust1-error-handling-propagation",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Проброс ошибок",
+        "locator": "Глава 9 — проброс ошибок и оператор ?, стр. 220–225",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-025",
+      "type": "single_choice",
+      "text": "Что делает оператор `?` при `Ok`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Извлекает успешное значение, и функция продолжает выполнение",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Немедленно завершает программу",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Возвращает Ok из всей функции независимо от остального кода",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Преобразует Ok в None",
+          "correct": false
+        }
+      ],
+      "explanation": "`?` сокращает match: успешное значение становится результатом выражения.",
+      "source": {
+        "key": "rust1-error-handling-question-mark",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Сокращение для проброса ошибок: оператор ?",
+        "locator": "Глава 9 — оператор ? с Result и Option, стр. 222–227",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-026",
+      "type": "multiple_choice",
+      "text": "Что делает `?` при `Err` для Result? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Досрочно возвращает ошибку из текущей функции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Передаёт ошибку вызывающему коду",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Может преобразовать тип ошибки через From",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Продолжает выполнение следующей строки как будто ошибки нет",
+          "correct": false
+        }
+      ],
+      "explanation": "Err через ? приводит к раннему возврату; при необходимости From преобразует ошибку к типу, объявленному в возвращаемом Result.",
+      "source": {
+        "key": "rust1-error-handling-question-mark",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Сокращение для проброса ошибок: оператор ?",
+        "locator": "Глава 9 — оператор ? с Result и Option, стр. 222–227",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-027",
+      "type": "single_choice",
+      "text": "Чем оператор `?` отличается от вручную написанного match из примера проброса?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Кроме краткости, ошибка при ? проходит через преобразование From",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`?` запрещено использовать с Result",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "match всегда вызывает panic, а ? никогда",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`?` автоматически логирует ошибку",
+          "correct": false
+        }
+      ],
+      "explanation": "В материале отдельно отмечено преобразование ошибки через From при использовании ?.",
+      "source": {
+        "key": "rust1-error-handling-question-mark",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Сокращение для проброса ошибок: оператор ?",
+        "locator": "Глава 9 — оператор ? с Result и Option, стр. 222–227",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-028",
+      "type": "multiple_choice",
+      "text": "Какие формы сокращения кода чтения файла показаны в главе? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Использование ? вместо match для каждого Result",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Цепочка вызовов с несколькими ?",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Использование `fs::read_to_string` как ещё более короткого варианта",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Обязательное ручное чтение каждого байта",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава последовательно сокращает код: ручной match, ?, цепочка ?, затем готовая функция стандартной библиотеки.",
+      "source": {
+        "key": "rust1-error-handling-question-mark",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Сокращение для проброса ошибок: оператор ?",
+        "locator": "Глава 9 — оператор ? с Result и Option, стр. 222–227",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-029",
+      "type": "single_choice",
+      "text": "Почему `?` после `File::open` нельзя использовать в `fn main() { ... }`, возвращающей `()`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Потому что возвращаемый тип функции несовместим с ранним возвратом Result-ошибки",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Потому что main вообще не может обращаться к файлам",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Потому что ? доступен только внутри библиотек",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Потому что File::open возвращает Option",
+          "correct": false
+        }
+      ],
+      "explanation": "Оператор ? требует совместимого возвращаемого типа, чтобы при Err можно было досрочно вернуть ошибку.",
+      "source": {
+        "key": "rust1-error-handling-main-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Использование ? в main",
+        "locator": "Глава 9 — main, возвращающая Result, стр. 225–228",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-030",
+      "type": "multiple_choice",
+      "text": "Какие способы исправить функцию, где `?` используется с Result, но возвращаемый тип несовместим? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Изменить возвращаемый тип функции на совместимый Result, если это допустимо",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Обработать Result через match",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Использовать подходящий метод Result вместо ?",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Просто удалить тип ошибки из File::open без обработки",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал предлагает либо поменять сигнатуру, либо обработать Result вручную/методом.",
+      "source": {
+        "key": "rust1-error-handling-main-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Использование ? в main",
+        "locator": "Глава 9 — main, возвращающая Result, стр. 225–228",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-031",
+      "type": "single_choice",
+      "text": "Как ведёт себя `?` для `Option<T>` при `None`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Досрочно возвращает None из функции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Вызывает panic!",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Преобразует None в Err автоматически",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Создаёт Some со значением по умолчанию",
+          "correct": false
+        }
+      ],
+      "explanation": "Для Option оператор ? аналогично сокращает ранний возврат, но возвращает None, а не Err.",
+      "source": {
+        "key": "rust1-error-handling-question-mark",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Сокращение для проброса ошибок: оператор ?",
+        "locator": "Глава 9 — оператор ? с Result и Option, стр. 222–227",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-032",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `?` с Option верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "При Some внутреннее значение становится результатом выражения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "При None происходит ранний возврат None",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Использовать ? над Option следует в функции с совместимым Option-возвратом",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`?` сам преобразует Option в Result",
+          "correct": false
+        }
+      ],
+      "explanation": "Option и Result имеют схожий паттерн ?, но не преобразуются автоматически друг в друга.",
+      "source": {
+        "key": "rust1-error-handling-question-mark",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Сокращение для проброса ошибок: оператор ?",
+        "locator": "Глава 9 — оператор ? с Result и Option, стр. 222–227",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-033",
+      "type": "single_choice",
+      "text": "Что нужно сделать, если требуется явно преобразовать Result и Option друг в друга в рассматриваемых случаях?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Использовать подходящие методы вроде ok или ok_or",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Полагаться на автоматическое преобразование ?",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Использовать только panic!",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Добавить mut к переменной",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал прямо указывает, что ? не смешивает Result и Option; преобразование выполняют явно.",
+      "source": {
+        "key": "rust1-error-handling-question-mark",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Сокращение для проброса ошибок: оператор ?",
+        "locator": "Глава 9 — оператор ? с Result и Option, стр. 222–227",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-034",
+      "type": "multiple_choice",
+      "text": "Что верно для функции `last_char_of_first_line(text: &str) -> Option<char>` из примера? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`lines().next()?` рано возвращает None, если первой строки нет",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "После ? можно вызвать chars() у найденной строки",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "last() снова возвращает Option<char>",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Функция обязана возвращать Result<char, E>",
+          "correct": false
+        }
+      ],
+      "explanation": "Пример показывает лаконичное использование ? внутри функции, возвращающей Option.",
+      "source": {
+        "key": "rust1-error-handling-question-mark",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Сокращение для проброса ошибок: оператор ?",
+        "locator": "Глава 9 — оператор ? с Result и Option, стр. 222–227",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-035",
+      "type": "single_choice",
+      "text": "Какой вариант сигнатуры main позволяет использовать `?` над `File::open` в приведённом примере?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`fn main() -> Result<(), Box<dyn Error>>`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`fn main() -> ()` только",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`fn main() -> i32` без Result",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`fn main() -> String` обязательно",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава показывает main, возвращающую Result<(), Box<dyn Error>>, и завершает её Ok(()).",
+      "source": {
+        "key": "rust1-error-handling-main-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Использование ? в main",
+        "locator": "Глава 9 — main, возвращающая Result, стр. 225–228",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-036",
+      "type": "multiple_choice",
+      "text": "Что верно о `Box<dyn Error>` в объяснении примера main? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для целей главы его предлагают воспринимать как «любой вид ошибки»",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он позволяет сигнатуре main быть совместимой с разными ошибками",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Он используется вместе с Result<(), ...>",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Это означает отсутствие ошибок в программе",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал упрощённо описывает Box<dyn Error> как способ допустить разные виды ошибок в Err.",
+      "source": {
+        "key": "rust1-error-handling-main-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Использование ? в main",
+        "locator": "Глава 9 — main, возвращающая Result, стр. 225–228",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-037",
+      "type": "single_choice",
+      "text": "Какой код завершения получает программа, если main возвращает `Ok(())`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "0",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "1 всегда",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "-1 обязательно",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Код завершения не связан с Result",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава указывает: Ok(()) приводит к успешному коду завершения 0.",
+      "source": {
+        "key": "rust1-error-handling-main-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Использование ? в main",
+        "locator": "Глава 9 — main, возвращающая Result, стр. 225–228",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-038",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о завершении main, возвращающей Result, верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Ok(()) соответствует коду завершения 0",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Err приводит к ненулевому коду завершения",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Это согласуется с распространённым соглашением исполняемых программ",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Err всегда превращается в код 0",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал связывает Result main с традиционными кодами завершения процесса.",
+      "source": {
+        "key": "rust1-error-handling-main-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Использование ? в main",
+        "locator": "Глава 9 — main, возвращающая Result, стр. 225–228",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-039",
+      "type": "single_choice",
+      "text": "Почему возврат `Result` назван хорошим выбором по умолчанию для функции, которая может дать сбой?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он оставляет вызывающему коду решение, как реагировать на ошибку",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он гарантирует, что функция никогда не ошибётся",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Он запрещает вызывающему коду вызвать panic!",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Он автоматически повторяет операцию",
+          "correct": false
+        }
+      ],
+      "explanation": "Result делегирует решение вызывающей стороне вместо того, чтобы объявлять ситуацию необратимой внутри функции.",
+      "source": {
+        "key": "rust1-error-handling-choice",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "panic! или не panic!",
+        "locator": "Глава 9 — выбор между panic! и Result, стр. 228–231",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-040",
+      "type": "multiple_choice",
+      "text": "Какие последствия выбора `panic!` вместо Result отмечены? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Код не может восстановить выполнение после panic",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Функция сама решает, что ситуация необратима",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Вызывающему коду не передаётся обычный Result для выбора стратегии",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "panic даёт вызывающему коду больше контроля, чем Result",
+          "correct": false
+        }
+      ],
+      "explanation": "panic отнимает у вызывающего кода возможность обычного восстановления, тогда как Result её сохраняет.",
+      "source": {
+        "key": "rust1-error-handling-choice",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "panic! или не panic!",
+        "locator": "Глава 9 — выбор между panic! и Result, стр. 228–231",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-041",
+      "type": "single_choice",
+      "text": "В каких ситуациях материал допускает более уместное использование panic/unwrap вместо подробного Result-кода?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В примерах, прототипах и тестах",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Во всех библиотечных API без исключения",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только при сетевых запросах",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только в release-сборках",
+          "correct": false
+        }
+      ],
+      "explanation": "Для учебных примеров, прототипов и тестов подробная обработка ошибок может мешать основной цели, поэтому panic-подход бывает оправдан.",
+      "source": {
+        "key": "rust1-error-handling-choice",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "panic! или не panic!",
+        "locator": "Глава 9 — выбор между panic! и Result, стр. 228–231",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-042",
+      "type": "multiple_choice",
+      "text": "Почему `unwrap` или `expect` могут быть приемлемы в тестах и прототипах? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Panic явно показывает, что предположение теста/прототипа нарушено",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Код становится короче для демонстрации основной идеи",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "В таких контекстах завершение при неожидаемой ошибке может быть желаемым",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Потому что unwrap в тестах не может panic",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава допускает краткие panic-методы, когда цель — быстро выявить нарушение предположения, а не строить пользовательское восстановление.",
+      "source": {
+        "key": "rust1-error-handling-choice",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "panic! или не panic!",
+        "locator": "Глава 9 — выбор между panic! и Result, стр. 228–231",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-043",
+      "type": "single_choice",
+      "text": "Что делать, если программист знает больше компилятора и может доказать, что Result фактически всегда Ok в конкретном месте?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Можно использовать unwrap/expect, особенно документируя причину через expect",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Компилятор автоматически удалит Result без кода",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Нужно обязательно писать бесконечный retry",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Result нельзя распаковывать в таком случае",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал рассматривает случаи, когда логика программы гарантирует успех сильнее, чем это видно системе типов.",
+      "source": {
+        "key": "rust1-error-handling-choice",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "panic! или не panic!",
+        "locator": "Глава 9 — выбор между panic! и Result, стр. 228–231",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-044",
+      "type": "multiple_choice",
+      "text": "Какие рекомендации даны для некорректных входных данных вызывающего кода? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Если продолжение работы может быть небезопасным или бессмысленным, panic может быть оправдан",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Публичный контракт должен описывать условия, нарушение которых ведёт к panic",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Лучше кодировать допустимые состояния в типах, когда это возможно",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Любое неверное значение всегда надо молча исправлять",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава связывает panic с нарушением контракта и рекомендует использовать типы для предотвращения недопустимых состояний, где возможно.",
+      "source": {
+        "key": "rust1-error-handling-choice",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "panic! или не panic!",
+        "locator": "Глава 9 — выбор между panic! и Result, стр. 228–231",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-045",
+      "type": "single_choice",
+      "text": "Зачем в примере `Guess` поле `value` делают private?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы внешний код не мог записать непроверенное значение напрямую",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы значение нельзя было читать даже методам структуры",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Потому что i32 нельзя делать public",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы структура занимала меньше памяти",
+          "correct": false
+        }
+      ],
+      "explanation": "Private-поле заставляет внешний код проходить через проверяемый способ создания значения.",
+      "source": {
+        "key": "rust1-error-handling-custom-type",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Создание собственных типов для проверки",
+        "locator": "Глава 9 — пример типа Guess и валидации диапазона, стр. 231–234",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-046",
+      "type": "multiple_choice",
+      "text": "Что даёт конструктор `Guess::new` в примере? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Проверяет допустимый диапазон",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Не создаёт Guess при недопустимом значении, а вызывает panic по логике примера",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Гарантирует, что созданный через него Guess удовлетворяет инварианту",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Разрешает внешнему коду обходить проверку прямой записью private-поля",
+          "correct": false
+        }
+      ],
+      "explanation": "Смысл типа Guess — сосредоточить проверку в точке создания и защитить поле от обхода этой проверки.",
+      "source": {
+        "key": "rust1-error-handling-custom-type",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Создание собственных типов для проверки",
+        "locator": "Глава 9 — пример типа Guess и валидации диапазона, стр. 231–234",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-047",
+      "type": "single_choice",
+      "text": "Какое преимущество получает функция, принимающая `Guess` вместо обычного `i32`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Она может полагаться на ранее проверенный диапазон и не повторять ту же проверку",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Она автоматически становится generic",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Она больше не может читать число",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Она всегда возвращает Result",
+          "correct": false
+        }
+      ],
+      "explanation": "Тип несёт гарантию инварианта, поэтому функции, работающие с Guess, не обязаны заново проверять диапазон.",
+      "source": {
+        "key": "rust1-error-handling-custom-type",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Создание собственных типов для проверки",
+        "locator": "Глава 9 — пример типа Guess и валидации диапазона, стр. 231–234",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-048",
+      "type": "multiple_choice",
+      "text": "Какие идеи демонстрирует пользовательский тип для валидации? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Скрывать внутреннее значение private-полем",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Проверять ограничения при создании",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Выражать допустимые состояния через типы",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Дублировать одинаковую проверку в каждой функции, принимающей значение",
+          "correct": false
+        }
+      ],
+      "explanation": "Пример показывает, как тип может централизовать инвариант вместо повторения runtime-проверок повсюду.",
+      "source": {
+        "key": "rust1-error-handling-custom-type",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Создание собственных типов для проверки",
+        "locator": "Глава 9 — пример типа Guess и валидации диапазона, стр. 231–234",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-049",
+      "type": "single_choice",
+      "text": "Какой общий вывод главы 9 о Result?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он использует систему типов, чтобы явно сообщить о возможной неудаче и дать коду шанс восстановиться",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он скрывает факт возможной ошибки от вызывающего кода",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Он всегда означает неисправимую ошибку",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Он заменяет систему типов для функций с ошибками",
+          "correct": false
+        }
+      ],
+      "explanation": "Итог подчёркивает, что Result делает потенциальный успех/неудачу частью типа и позволяет вызывающему коду реагировать.",
+      "source": {
+        "key": "rust1-error-handling-intro",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Обработка ошибок",
+        "locator": "Глава 9 — введение в обработку ошибок, стр. 210",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-050",
+      "type": "multiple_choice",
+      "text": "Какие заключения об обработке ошибок следуют из итогов главы 9? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "panic! сигнализирует о состоянии, которое программа не может обработать",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Result сообщает вызывающему коду о потенциальном успехе или неудаче",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Правильный выбор между ними помогает писать более надёжный код",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "panic! и Result всегда взаимозаменяемы без изменения смысла API",
+          "correct": false
+        }
+      ],
+      "explanation": "Итог главы противопоставляет необрабатываемое состояние и восстанавливаемую ошибку и связывает осознанный выбор с надёжностью программы.",
+      "source": {
+        "key": "rust1-error-handling-intro",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Обработка ошибок",
+        "locator": "Глава 9 — введение в обработку ошибок, стр. 210",
+        "url": null
+      }
+    }
+  ]
+}

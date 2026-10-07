@@ -18,6 +18,7 @@ import java.io.File
 
 enum class AppScreen {
     Home,
+    TopicCourses,
     Topics,
     Courses,
     Limit,
@@ -70,6 +71,9 @@ class TrainerController(context: Context) {
         private set
 
     var topics by mutableStateOf<List<MobileTopic>>(emptyList())
+        private set
+
+    var selectedTopicCourse by mutableStateOf<String?>(null)
         private set
 
     var pendingTopic by mutableStateOf<MobileTopic?>(null)
@@ -161,6 +165,12 @@ class TrainerController(context: Context) {
             .distinct()
             .sortedWith(courseCodeComparator)
 
+    val topicsForSelectedCourse: List<MobileTopic>
+        get() {
+            val courseCode = selectedTopicCourse ?: return emptyList()
+            return topics.filter { topic -> topic.courseCode == courseCode }
+        }
+
     val statisticsScopeTitle: String
         get() = selectedStatisticsTopic?.let { topic ->
             "${topic.courseCode.uppercase()} → ${topic.title}"
@@ -183,6 +193,14 @@ class TrainerController(context: Context) {
     }
 
     fun openTopics() {
+        selectedTopicCourse = null
+        pendingTopic = null
+        pendingCourse = null
+        screen = AppScreen.TopicCourses
+    }
+
+    fun chooseTopicCourse(courseCode: String) {
+        selectedTopicCourse = courseCode
         pendingTopic = null
         pendingCourse = null
         screen = AppScreen.Topics
@@ -449,7 +467,8 @@ class TrainerController(context: Context) {
     fun back() {
         when (screen) {
             AppScreen.Home -> Unit
-            AppScreen.Topics -> screen = AppScreen.Home
+            AppScreen.TopicCourses -> screen = AppScreen.Home
+            AppScreen.Topics -> screen = AppScreen.TopicCourses
             AppScreen.Courses -> screen = AppScreen.Home
             AppScreen.Limit -> {
                 screen = when {
@@ -599,6 +618,7 @@ class TrainerController(context: Context) {
         answeredQuestions = 0
         correctAnswers = 0
         totalQuestions = 0
+        selectedTopicCourse = null
         pendingTopic = null
         pendingCourse = null
     }

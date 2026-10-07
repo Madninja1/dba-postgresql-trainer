@@ -35,6 +35,8 @@ pub struct MobileTopic {
     pub id: i64,
     pub course_code: String,
     pub slug: String,
+    pub notes_part: i64,
+    pub topic_number: i64,
     pub title: String,
     pub description: Option<String>,
 }
@@ -128,6 +130,8 @@ impl From<Topic> for MobileTopic {
             id: value.id.0,
             course_code: value.course_code,
             slug: value.slug,
+            notes_part: value.notes_part,
+            topic_number: value.topic_number,
             title: value.title,
             description: value.description,
         }

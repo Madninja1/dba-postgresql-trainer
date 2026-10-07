@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "rust-1",
+  "slug": "rust1-ownership",
+  "notes_part": 3,
+  "topic_number": 3,
+  "title": "Владение и память",
+  "description": "Стек и куча, правила владения, области видимости, String, перемещение, клонирование, Copy, Drop и передача владения через функции.",
+  "sort_order": 30
+}

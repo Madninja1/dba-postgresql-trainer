@@ -91,6 +91,8 @@ fn sync_topic(transaction: &Transaction<'_>, topic: &TopicDocument) -> rusqlite:
             slug,
             title,
             description,
+            notes_part,
+            topic_number,
             sort_order,
             is_active,
             course_code,
@@ -101,9 +103,11 @@ fn sync_topic(transaction: &Transaction<'_>, topic: &TopicDocument) -> rusqlite:
             ?2,
             ?3,
             ?4,
-            1,
             ?5,
-            ?6
+            ?6,
+            1,
+            ?7,
+            ?8
         )
 
         ON CONFLICT(content_key)
@@ -112,6 +116,10 @@ fn sync_topic(transaction: &Transaction<'_>, topic: &TopicDocument) -> rusqlite:
             title = excluded.title,
             description =
                 excluded.description,
+            notes_part =
+                excluded.notes_part,
+            topic_number =
+                excluded.topic_number,
             sort_order =
                 excluded.sort_order,
             is_active = 1,
@@ -122,6 +130,8 @@ fn sync_topic(transaction: &Transaction<'_>, topic: &TopicDocument) -> rusqlite:
             topic.slug,
             topic.title,
             topic.description,
+            topic.notes_part,
+            topic.topic_number,
             topic.sort_order,
             topic.course,
             topic.slug,
@@ -333,6 +343,8 @@ mod tests {
         {
             "schema_version": 1,
             "course": "dba-1",
+            "notes_part": 1,
+            "topic_number": 1,
             "slug": "dba1-test",
             "title": "Test",
             "description": null,

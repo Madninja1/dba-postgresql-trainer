@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "dba-1",
+  "slug": "dba1-arch-wal-overview",
+  "notes_part": 7,
+  "topic_number": 7,
+  "title": "Буферный кеш и WAL",
+  "description": "Устройство буферного кеша, вытеснение страниц, журнал предзаписи, восстановление после сбоя, контрольные точки и обслуживающие процессы PostgreSQL",
+  "sort_order": 70
+}

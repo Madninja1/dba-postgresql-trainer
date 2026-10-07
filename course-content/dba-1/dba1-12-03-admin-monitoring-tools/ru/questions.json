@@ -1,0 +1,592 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-admin-monitoring-tools",
+  "questions": [
+    {
+      "key": "dba1-admin-monitoring-tools-001",
+      "type": "single_choice",
+      "text": "Зачем на практике используется внешняя система мониторинга PostgreSQL согласно конспекту?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы регулярно собирать, хранить и визуализировать метрики PostgreSQL и операционной системы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы полностью заменить сервер PostgreSQL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы хранить пользовательские таблицы вне PGDATA",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы отключить сбор статистики самим PostgreSQL",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал подчёркивает необходимость системы, которая собирает разнообразные метрики, сохраняет их историю и отображает результаты в удобной форме.",
+      "source": {
+        "key": "dba1-12-external-monitoring",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Внешний мониторинг",
+        "locator": "Требования к полноценной системе мониторинга",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-002",
+      "type": "multiple_choice",
+      "text": "Какие универсальные системы мониторинга перечислены в конспекте? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Zabbix",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Munin",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Cacti",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_repack",
+          "correct": false
+        }
+      ],
+      "explanation": "Zabbix, Munin и Cacti приведены как примеры универсальных систем мониторинга.",
+      "source": {
+        "key": "dba1-12-external-monitoring-002",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Внешний мониторинг",
+        "locator": "Универсальные системы",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-003",
+      "type": "single_choice",
+      "text": "Какой из перечисленных инструментов конспект относит к специализированным средствам мониторинга PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pgpro_pwr",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "logrotate",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "iostat",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_checksums",
+          "correct": false
+        }
+      ],
+      "explanation": "В блоке специализированных систем PostgreSQL перечислены pg_profile, pgpro_pwr, PGObserver, PoWA и OPM.",
+      "source": {
+        "key": "dba1-12-postgresql-monitoring-tools",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Внешний мониторинг",
+        "locator": "Системы мониторинга PostgreSQL",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-004",
+      "type": "multiple_choice",
+      "text": "Какие средства в лекции перечислены именно среди систем мониторинга PostgreSQL? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_profile",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "PGObserver",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "PostgreSQL Workload Analyzer (PoWA)",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Open PostgreSQL Monitoring (OPM)",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "pg_dump",
+          "correct": false
+        }
+      ],
+      "explanation": "Все четыре названия присутствуют на слайде специализированных систем мониторинга PostgreSQL. `pg_dump` не относится к перечисленным в лекции системам мониторинга PostgreSQL.",
+      "source": {
+        "key": "dba1-12-postgresql-monitoring-tools",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Внешний мониторинг",
+        "locator": "Системы мониторинга PostgreSQL",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-005",
+      "type": "single_choice",
+      "text": "Каково основное назначение расширения pg_stat_statements в рамках этой темы?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Собирать агрегированную статистику выполнения SQL-запросов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Перемещать таблицы между табличными пространствами",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Ротировать серверные журналы",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Создавать резервные копии",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_stat_statements предназначено для накопления статистики планирования и выполнения SQL-операторов.",
+      "source": {
+        "key": "postgresql-16-pg-stat-statements",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_stat_statements",
+        "locator": "Назначение расширения",
+        "url": "https://postgrespro.ru/docs/postgresql/16/pgstatstatements"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-006",
+      "type": "multiple_choice",
+      "text": "Какие действия требуется выполнить в практической работе с pg_stat_statements? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Подготовить загрузку библиотеки расширения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Создать расширение",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Выполнить несколько запросов",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Изучить содержимое представления pg_stat_statements",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Удалить расширение перед выполнением запросов",
+          "correct": false
+        }
+      ],
+      "explanation": "Именно такая последовательность составляет дополнительную практику занятия. Удаление расширения не входит в указанную последовательность практической работы.",
+      "source": {
+        "key": "dba1-12-pg-stat-statements-practice",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика+",
+        "locator": "Установка и проверка pg_stat_statements",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-007",
+      "type": "single_choice",
+      "text": "Какой параметр необходимо изменить перед использованием pg_stat_statements согласно практическому заданию?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "shared_preload_libraries",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "search_path",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "temp_buffers",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "log_rotation_age",
+          "correct": false
+        }
+      ],
+      "explanation": "Конспект прямо указывает на необходимость добавить расширение в shared_preload_libraries перед CREATE EXTENSION.",
+      "source": {
+        "key": "dba1-12-pg-stat-statements-practice-007",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика+",
+        "locator": "shared_preload_libraries",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-008",
+      "type": "multiple_choice",
+      "text": "Какие последствия изменения shared_preload_libraries для pg_stat_statements указаны в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "После изменения параметра требуется перезапуск сервера",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "После запуска сервера можно выполнить CREATE EXTENSION",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Одна только команда SET в текущем сеансе недостаточна для такой предварительной загрузки",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Изменение требует пересоздания всего кластера initdb",
+          "correct": false
+        }
+      ],
+      "explanation": "В практическом комментарии прямо сказано изменить shared_preload_libraries с последующей перезагрузкой сервера.",
+      "source": {
+        "key": "dba1-12-pg-stat-statements-practice-008",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика+",
+        "locator": "Предварительная загрузка pg_stat_statements",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-009",
+      "type": "single_choice",
+      "text": "Что представляет собой представление pg_stat_statements после выполнения запросов?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Источник агрегированной статистики по отслеживаемым SQL-операторам",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Список только текущих подключений",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Физический журнал WAL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Список файлов табличных пространств",
+          "correct": false
+        }
+      ],
+      "explanation": "Представление позволяет анализировать накопленные характеристики выполнения запросов, а не только текущую активность.",
+      "source": {
+        "key": "postgresql-16-pg-stat-statements-009",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_stat_statements",
+        "locator": "Представление pg_stat_statements",
+        "url": "https://postgrespro.ru/docs/postgresql/16/pgstatstatements"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-010",
+      "type": "multiple_choice",
+      "text": "Какие виды информации позволяют использовать pg_stat_statements для сравнения запросов? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Количество вызовов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Затраченное время выполнения",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Количество обработанных строк",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Физическое содержимое каждой строки таблицы",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_stat_statements собирает агрегированные показатели выполнения запросов, позволяющие искать часто выполняемые и дорогостоящие операции.",
+      "source": {
+        "key": "postgresql-16-pg-stat-statements-010",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_stat_statements",
+        "locator": "Столбцы статистики выполнения",
+        "url": "https://postgrespro.ru/docs/postgresql/16/pgstatstatements"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-011",
+      "type": "single_choice",
+      "text": "Чем внешний мониторинг отличается от просмотра состояния сервера вручную в отдельный момент времени по смыслу конспекта?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он позволяет постоянно собирать метрики и сохранять их историю",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он работает только во время остановки PostgreSQL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Он исключает необходимость любых метрик ОС",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Он хранит исключительно текст SQL-запросов",
+          "correct": false
+        }
+      ],
+      "explanation": "На слайде подчёркивается именно история метрик и их визуализация, что позволяет анализировать изменения во времени.",
+      "source": {
+        "key": "dba1-12-external-monitoring-011",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Внешний мониторинг",
+        "locator": "История и визуализация метрик",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-012",
+      "type": "multiple_choice",
+      "text": "Какие источники метрик должна охватывать полноценная система мониторинга согласно лекции? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "PostgreSQL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Операционная система",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "История ранее собранных показателей",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Только содержимое postgresql.conf",
+          "correct": false
+        }
+      ],
+      "explanation": "Лекция описывает практический мониторинг как сбор разных метрик с PostgreSQL и ОС с последующим хранением истории и визуализацией.",
+      "source": {
+        "key": "dba1-12-external-monitoring-012",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Внешний мониторинг",
+        "locator": "Требования к системе мониторинга",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-013",
+      "type": "single_choice",
+      "text": "Какой инструмент из списка занятия относится к PostgreSQL Enterprise и предназначен для анализа производительности рабочей нагрузки?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pgpro_pwr",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_ctl",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_checksums",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "logrotate",
+          "correct": false
+        }
+      ],
+      "explanation": "pgpro_pwr включён в конспект среди специализированных решений мониторинга и сопровождается ссылкой на документацию Postgres Pro Enterprise.",
+      "source": {
+        "key": "postgrespro-enterprise-pgpro-pwr",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Внешний мониторинг",
+        "locator": "pgpro_pwr",
+        "url": "https://postgrespro.ru/docs/enterprise/16/pgpro-pwr"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-014",
+      "type": "multiple_choice",
+      "text": "Какие категории решений представлены в материалах по внешнему мониторингу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Универсальные системы мониторинга",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Облачные сервисы мониторинга",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Специализированные решения для PostgreSQL",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Только встроенные метакоманды psql",
+          "correct": false
+        }
+      ],
+      "explanation": "Слайд разделяет универсальные, облачные и специализированные PostgreSQL-средства.",
+      "source": {
+        "key": "postgresql-wiki-monitoring",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Внешний мониторинг",
+        "locator": "Обзор средств мониторинга",
+        "url": "https://wiki.postgresql.org/wiki/Monitoring"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-015",
+      "type": "single_choice",
+      "text": "Какой подход лучше всего подходит для поиска запросов, которые накапливают значительную нагрузку за длительный период?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Анализ агрегированной статистики pg_stat_statements",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Однократный просмотр df",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Просмотр только pg_stat_progress_vacuum",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Проверка списка табличных пространств",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_stat_statements накапливает статистику по множеству выполнений запросов, поэтому подходит для анализа совокупной нагрузки, а не только текущего состояния.",
+      "source": {
+        "key": "postgresql-16-pg-stat-statements-015",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_stat_statements",
+        "locator": "Агрегированная статистика операторов",
+        "url": "https://postgrespro.ru/docs/postgresql/16/pgstatstatements"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-016",
+      "type": "multiple_choice",
+      "text": "Администратор строит постоянный мониторинг производительности. Какие действия соответствуют подходу занятия? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Собирать системные метрики ОС",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Собирать внутренние метрики PostgreSQL",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Хранить историю показателей для сравнения во времени",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Ограничиться только ручным просмотром процессов во время уже возникшей аварии",
+          "correct": false
+        }
+      ],
+      "explanation": "Финальный блок занятия подчёркивает систематический мониторинг: сбор разных классов показателей, историю и удобное представление информации.",
+      "source": {
+        "key": "dba1-12-external-monitoring-016",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Внешний мониторинг",
+        "locator": "Полноценная система мониторинга",
+        "url": null
+      }
+    }
+  ]
+}

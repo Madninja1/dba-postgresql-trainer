@@ -1,0 +1,582 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-backup-physical",
+  "questions": [
+    {
+      "key": "dba1-backup-physical-001",
+      "type": "single_choice",
+      "text": "Что является предметом физического резервного копирования PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Файлы кластера баз данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только SQL-команды CREATE",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только содержимое одной таблицы",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только определения ролей",
+          "correct": false
+        }
+      ],
+      "explanation": "Физическое копирование работает с файлами кластера, а не с логическим описанием отдельных SQL-объектов.",
+      "source": {
+        "key": "dba1-14-physical-overview",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Физическое копирование",
+        "locator": "Что такое физическое резервное копирование",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-physical-002",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о холодном физическом резервном копировании соответствуют материалу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Копирование выполняется при остановленном сервере",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Можно копировать файлы кластера обычными средствами файловой системы",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Согласованность обеспечивается тем, что сервер не изменяет файлы во время копирования",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Такой способ требует постоянно работающего wal sender",
+          "correct": false
+        }
+      ],
+      "explanation": "Смысл холодной копии состоит в копировании остановленного кластера, поэтому файлы в процессе не изменяются.",
+      "source": {
+        "key": "dba1-14-cold-backup",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Физическое копирование",
+        "locator": "Холодное резервное копирование",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-physical-003",
+      "type": "single_choice",
+      "text": "Какая утилита используется в занятии для создания горячей базовой резервной копии работающего кластера?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_basebackup",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_dumpall",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_restore",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_checksums",
+          "correct": false
+        }
+      ],
+      "explanation": "Для горячего физического резервирования в конспекте используется pg_basebackup.",
+      "source": {
+        "key": "postgresql-16-pg-basebackup",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Горячая резервная копия",
+        "locator": "pg_basebackup",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgbasebackup"
+      }
+    },
+    {
+      "key": "dba1-backup-physical-004",
+      "type": "multiple_choice",
+      "text": "Какие действия выполняет pg_basebackup в описанной в занятии схеме? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Подключается к серверу по протоколу репликации",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Копирует файлы кластера в указанный каталог",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Обеспечивает получение необходимых для копии WAL",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Преобразует каждую таблицу в SQL INSERT",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_basebackup создаёт физическую копию и использует инфраструктуру протокола репликации, а не логический экспорт строк.",
+      "source": {
+        "key": "postgresql-16-pg-basebackup-004",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Горячая резервная копия",
+        "locator": "Работа pg_basebackup",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgbasebackup"
+      }
+    },
+    {
+      "key": "dba1-backup-physical-005",
+      "type": "single_choice",
+      "text": "Какой протокол использует pg_basebackup для взаимодействия с сервером?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Протокол репликации PostgreSQL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Протокол COPY только для таблиц",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "HTTP",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Файловый протокол pg_dump",
+          "correct": false
+        }
+      ],
+      "explanation": "Физические инструменты pg_basebackup и pg_receivewal используют специальный режим протокола репликации.",
+      "source": {
+        "key": "postgresql-16-replication-protocol",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Протокол репликации",
+        "locator": "Подключение утилит резервного копирования",
+        "url": "https://postgrespro.ru/docs/postgresql/16/protocol-replication"
+      }
+    },
+    {
+      "key": "dba1-backup-physical-006",
+      "type": "multiple_choice",
+      "text": "Почему для горячей физической копии нужны записи WAL? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Файлы кластера могут изменяться во время их копирования",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "WAL позволяют привести скопированные данные к согласованному состоянию",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Нужен набор WAL, охватывающий период создания копии",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "WAL используются для преобразования физической копии в SQL-дамп",
+          "correct": false
+        }
+      ],
+      "explanation": "Горячая копия создаётся на работающем сервере, поэтому для её согласованности необходимы журнальные записи, относящиеся ко времени копирования.",
+      "source": {
+        "key": "dba1-14-hot-backup-wal",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Горячая резервная копия",
+        "locator": "WAL за время копирования",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-physical-007",
+      "type": "single_choice",
+      "text": "Что представляет собой базовая резервная копия в схеме непрерывного архивирования?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Физическую копию файлов кластера, служащую начальной точкой восстановления",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только один сегмент WAL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "SQL-дамп одной таблицы",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Копию только postgresql.conf",
+          "correct": false
+        }
+      ],
+      "explanation": "При архивировании WAL восстановление начинается с развёртывания базовой физической копии, после чего к ней применяются записи WAL.",
+      "source": {
+        "key": "dba1-14-base-backup",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Непрерывное архивирование",
+        "locator": "Базовая копия и архив WAL",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-physical-008",
+      "type": "multiple_choice",
+      "text": "Какие элементы составляют схему непрерывного архивирования, показанную в занятии? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Базовая резервная копия",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Архив сегментов WAL",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "archive_command для копирования завершённых сегментов",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Обязательный SQL-дамп pg_dumpall для каждого сегмента WAL",
+          "correct": false
+        }
+      ],
+      "explanation": "Непрерывное архивирование сочетает базовую копию с последовательно сохраняемыми сегментами WAL.",
+      "source": {
+        "key": "postgresql-16-continuous-archiving",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Непрерывное архивирование",
+        "locator": "Базовая копия, WAL и archive_command",
+        "url": "https://postgrespro.ru/docs/postgresql/16/continuous-archiving"
+      }
+    },
+    {
+      "key": "dba1-backup-physical-009",
+      "type": "single_choice",
+      "text": "Для чего служит archive_command в рассмотренной схеме?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для копирования завершённых сегментов WAL в архив",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для восстановления объектов из pg_dump",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Для создания ролей",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Для выполнения CHECKPOINT при каждом SELECT",
+          "correct": false
+        }
+      ],
+      "explanation": "В конспекте заполненные сегменты WAL отправляются в отдельный архив командой, заданной в archive_command.",
+      "source": {
+        "key": "postgresql-16-continuous-archiving-009",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Непрерывное архивирование",
+        "locator": "archive_command",
+        "url": "https://postgrespro.ru/docs/postgresql/16/continuous-archiving"
+      }
+    },
+    {
+      "key": "dba1-backup-physical-010",
+      "type": "multiple_choice",
+      "text": "Что требуется в показанной процедуре управляемого восстановления из базовой копии и архива WAL? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Развернуть базовую резервную копию",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Создать recovery.signal",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Настроить restore_command",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Обязательно создать новый SQL-дамп через pg_dump",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал описывает развёртывание базовой копии, recovery.signal и параметры восстановления как основу запуска recovery.",
+      "source": {
+        "key": "dba1-14-recovery-setup",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Восстановление",
+        "locator": "Базовая копия, recovery.signal и restore_command",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-physical-011",
+      "type": "single_choice",
+      "text": "Какова роль restore_command при восстановлении?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Копировать требуемые сегменты WAL из архива для их применения сервером",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Создавать логический дамп базы",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Останавливать сервер после каждого сегмента",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Создавать архивные таблицы",
+          "correct": false
+        }
+      ],
+      "explanation": "В конспекте restore_command назван обратной по смыслу archive_command: он доставляет нужные WAL из архива серверу восстановления.",
+      "source": {
+        "key": "postgresql-16-continuous-archiving-011",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Восстановление",
+        "locator": "restore_command",
+        "url": "https://postgrespro.ru/docs/postgresql/16/continuous-archiving"
+      }
+    },
+    {
+      "key": "dba1-backup-physical-012",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о процессе восстановления из архива WAL соответствуют материалу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Сервер применяет доступные записи WAL поверх базовой копии",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Сегменты сначала ищутся среди доступных серверу WAL",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "При отсутствии нужного сегмента может использоваться архив через restore_command",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Во время восстановления WAL преобразуются в команды pg_restore",
+          "correct": false
+        }
+      ],
+      "explanation": "Восстановление физического кластера состоит в воспроизведении записей WAL поверх исходной базовой копии.",
+      "source": {
+        "key": "dba1-14-wal-replay",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Восстановление",
+        "locator": "Применение доступных записей WAL",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-physical-013",
+      "type": "single_choice",
+      "text": "Какой недостаток архивирования только завершённых сегментов WAL отмечается в материале?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "При аварии может быть потеряна часть изменений из ещё не завершённого и не попавшего в архив сегмента",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Невозможно создать базовую резервную копию",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Невозможно использовать restore_command",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Каждый завершённый сегмент теряется сразу после архивации",
+          "correct": false
+        }
+      ],
+      "explanation": "При обычном archive_command в архив попадают завершённые сегменты, поэтому текущий незавершённый сегмент может ещё отсутствовать в архиве.",
+      "source": {
+        "key": "dba1-14-archive-loss-window",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Восстановление",
+        "locator": "Незаполненный сегмент WAL",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-physical-014",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о pg_receivewal соответствуют занятию? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Утилита подключается к серверу по протоколу репликации",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Подключение обслуживается процессом wal sender",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Данные записываются потоково, не дожидаясь получения полного сегмента",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Утилита создаёт SQL-дампы отдельных таблиц",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_receivewal устраняет ожидание завершения сегмента: принимает поток WAL через репликационное соединение.",
+      "source": {
+        "key": "postgresql-16-pg-receivewal",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Потоковый архив WAL",
+        "locator": "pg_receivewal и wal sender",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgreceivewal"
+      }
+    },
+    {
+      "key": "dba1-backup-physical-015",
+      "type": "single_choice",
+      "text": "Почему при использовании pg_receivewal нужно учитывать параметр max_wal_senders?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Подключение pg_receivewal обслуживается отдельным процессом wal sender",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Параметр задаёт число файлов pg_dump",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Параметр определяет размер каждого сегмента WAL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Без него нельзя создать роль для резервного копирования",
+          "correct": false
+        }
+      ],
+      "explanation": "Каждое соответствующее репликационное подключение занимает wal sender, поэтому число разрешённых процессов должно учитывать такие соединения.",
+      "source": {
+        "key": "dba1-14-max-wal-senders",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Потоковый архив WAL",
+        "locator": "wal sender и max_wal_senders",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-physical-016",
+      "type": "multiple_choice",
+      "text": "Какие действия входят в практическую работу по физическому резервированию и восстановлению? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Создать базовую копию кластера main с помощью pg_basebackup",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "После копирования создать в основном кластере новые объекты",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Восстановить кластер replica из базовой копии с использованием архива",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Восстановить replica исключительно выполнением SQL-дампа pg_dumpall",
+          "correct": false
+        }
+      ],
+      "explanation": "Практика проверяет связку базовой физической копии и последующего воспроизведения WAL: объекты, созданные после копии, должны появиться после восстановления.",
+      "source": {
+        "key": "dba1-14-physical-practice",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика",
+        "locator": "pg_basebackup, архив WAL и кластер replica",
+        "url": null
+      }
+    }
+  ]
+}

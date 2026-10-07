@@ -59,6 +59,8 @@ pub fn load_builtin_bundles_for_locale(
         selected.push(chosen.bundle.clone());
     }
 
+    validate_course_topic_numbers(&selected)?;
+
     Ok(selected)
 }
 
@@ -138,11 +140,47 @@ fn compare_topic_metadata(
         ));
     }
 
+    if reference.bundle.topic.notes_part != candidate.bundle.topic.notes_part {
+        errors.push(format!(
+            "localized topic '{topic_key}' has different notes_part values in '{}' and '{}'",
+            reference.locale, candidate.locale
+        ));
+    }
+
+    if reference.bundle.topic.topic_number != candidate.bundle.topic.topic_number {
+        errors.push(format!(
+            "localized topic '{topic_key}' has different topic_number values in '{}' and '{}'",
+            reference.locale, candidate.locale
+        ));
+    }
+
     if reference.bundle.topic.sort_order != candidate.bundle.topic.sort_order {
         errors.push(format!(
             "localized topic '{topic_key}' has different sort_order values in '{}' and '{}'",
             reference.locale, candidate.locale
         ));
+    }
+}
+
+fn validate_course_topic_numbers(bundles: &[ContentBundle]) -> Result<(), ContentError> {
+    let mut seen = BTreeMap::<(String, i64), String>::new();
+    let mut errors = Vec::new();
+
+    for bundle in bundles {
+        let key = (bundle.topic.course.clone(), bundle.topic.topic_number);
+
+        if let Some(existing_slug) = seen.insert(key.clone(), bundle.topic.slug.clone()) {
+            errors.push(format!(
+                "course '{}' uses topic_number {} for both '{}' and '{}'",
+                key.0, key.1, existing_slug, bundle.topic.slug
+            ));
+        }
+    }
+
+    if errors.is_empty() {
+        Ok(())
+    } else {
+        Err(ContentError::Validation(errors))
     }
 }
 

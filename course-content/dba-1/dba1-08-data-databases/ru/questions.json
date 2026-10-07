@@ -1,0 +1,870 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-data-databases",
+  "questions": [
+    {
+      "key": "dba1-data-databases-001",
+      "type": "single_choice",
+      "text": "Какие базы данных создаются при инициализации нового кластера PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "postgres, template0 и template1",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "postgres, public и template1",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "postgres, pg_catalog и template0",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только postgres",
+          "correct": false
+        }
+      ],
+      "explanation": "При инициализации кластера создаются три базы: postgres, template0 и template1. Остальные базы впоследствии создаются клонированием существующей базы.",
+      "source": {
+        "key": "dba1-08-database-cluster",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Кластер баз данных",
+        "locator": "Слайд 3, базы создаваемые при инициализации",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-002",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о стандартных базах кластера верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "template1 по умолчанию используется как шаблон для новых баз",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "template0 рекомендуется сохранять без пользовательских изменений",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "База postgres используется как база для подключений по умолчанию",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Каждая новая база обязательно создаётся как пустая и не использует шаблон",
+          "correct": false
+        }
+      ],
+      "explanation": "template1 является стандартным шаблоном CREATE DATABASE, template0 сохраняется как чистый исходный шаблон, а postgres предназначена в том числе для обычного подключения к кластеру.",
+      "source": {
+        "key": "dba1-08-database-templates",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Базы данных и шаблоны",
+        "locator": "Слайд 3, назначение postgres, template0 и template1",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-003",
+      "type": "single_choice",
+      "text": "Что фактически делает CREATE DATABASE, если явно не указывать базу-шаблон?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Копирует базу template1",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Копирует базу postgres",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Копирует template0",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Создаёт полностью пустую файловую структуру без системных объектов",
+          "correct": false
+        }
+      ],
+      "explanation": "CREATE DATABASE реализовано как копирование существующей базы. Стандартным шаблоном является template1.",
+      "source": {
+        "key": "postgresql-16-template-databases",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Шаблоны баз данных",
+        "locator": "Раздел 23.3, template1 как шаблон по умолчанию",
+        "url": "https://postgrespro.ru/docs/postgresql/16/manage-ag-templatedbs"
+      }
+    },
+    {
+      "key": "dba1-data-databases-004",
+      "type": "multiple_choice",
+      "text": "В каких случаях использование template0 особенно уместно? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "При восстановлении базы из дампа pg_dump в чистую базу",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "При создании базы с кодировкой или параметрами локали, отличающимися от template1",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Когда требуется база без пользовательских объектов, добавленных в template1",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Когда требуется автоматически скопировать все локальные дополнения из template1",
+          "correct": false
+        }
+      ],
+      "explanation": "template0 сохраняет первоначальное содержимое и позволяет получить чистую базу. Это полезно для восстановления дампа и для создания базы с отличающимися параметрами кодировки и локали.",
+      "source": {
+        "key": "postgresql-16-template-zero",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Шаблоны баз данных",
+        "locator": "Раздел 23.3, назначение template0",
+        "url": "https://postgrespro.ru/docs/postgresql/16/manage-ag-templatedbs"
+      }
+    },
+    {
+      "key": "dba1-data-databases-005",
+      "type": "single_choice",
+      "text": "Что произойдёт при попытке клонировать базу данных, если к исходной базе остаются активные подключения?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "CREATE DATABASE завершится ошибкой",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Активные подключения автоматически перейдут в новую базу",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Будут скопированы только системные объекты",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "PostgreSQL автоматически выполнит COMMIT во всех подключениях и продолжит копирование",
+          "correct": false
+        }
+      ],
+      "explanation": "Для копирования базы-шаблона существующие подключения к ней должны быть закрыты. При наличии других сеансов CREATE DATABASE сообщает об ошибке.",
+      "source": {
+        "key": "postgresql-16-template-copy",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Шаблоны баз данных",
+        "locator": "Раздел 23.3, ограничения при копировании базы",
+        "url": "https://postgrespro.ru/docs/postgresql/16/manage-ag-templatedbs"
+      }
+    },
+    {
+      "key": "dba1-data-databases-006",
+      "type": "multiple_choice",
+      "text": "Какие задачи решают схемы PostgreSQL? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Создают пространства имён для объектов внутри базы данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Позволяют логически группировать объекты",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Позволяют иметь одноимённые объекты в разных схемах",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Позволяют одному SQL-сеансу одновременно подключаться к нескольким базам кластера",
+          "correct": false
+        }
+      ],
+      "explanation": "Схема — пространство имён внутри одной базы. Она используется для логической организации объектов и предотвращения конфликтов имён.",
+      "source": {
+        "key": "dba1-08-schemas",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Схемы",
+        "locator": "Слайд 5 «Схемы»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-007",
+      "type": "single_choice",
+      "text": "К скольким базам данных кластера одновременно подключён обычный клиентский сеанс?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "К одной базе данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Ко всем базам кластера",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "К template1 и одной пользовательской базе одновременно",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "К одной базе на каждую используемую схему",
+          "correct": false
+        }
+      ],
+      "explanation": "Клиент подключается к одной базе данных, но внутри неё может обращаться к объектам различных схем.",
+      "source": {
+        "key": "dba1-08-databases-and-schemas",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Базы и схемы кластера",
+        "locator": "Слайд 6, подключение клиента к базе",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-008",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о search_path верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он задаёт порядок поиска объектов, указанных без имени схемы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Схемы просматриваются в порядке, определённом путём поиска",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Несуществующие или недоступные пользователю схемы могут быть исключены из фактического пути",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Он позволяет искать объект в другой базе данных кластера",
+          "correct": false
+        }
+      ],
+      "explanation": "search_path относится к схемам текущей базы. Для неквалифицированного имени PostgreSQL последовательно ищет объект в доступных схемах фактического пути.",
+      "source": {
+        "key": "dba1-08-search-path",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Путь поиска",
+        "locator": "Слайд 8 «Путь поиска»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-009",
+      "type": "single_choice",
+      "text": "В какой схеме будет создана таблица командой CREATE TABLE t(...), если схема явно не указана?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В первой пригодной схеме пути поиска",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Всегда в pg_catalog",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Всегда в template1",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "В случайно выбранной доступной схеме",
+          "correct": false
+        }
+      ],
+      "explanation": "Если команда создания не содержит квалифицированного имени, PostgreSQL использует первую пригодную для создания объектов схему из search_path.",
+      "source": {
+        "key": "postgresql-16-schema-path",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Путь поиска схем",
+        "locator": "Раздел 5.9.3, текущая схема и создание объектов",
+        "url": "https://postgrespro.ru/docs/postgresql/16/ddl-schemas#DDL-SCHEMAS-PATH"
+      }
+    },
+    {
+      "key": "dba1-data-databases-010",
+      "type": "multiple_choice",
+      "text": "Что означает стандартное значение search_path = \"$user\", public? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "$user означает схему с именем текущего пользователя, если такая схема существует и доступна",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "После пользовательской схемы рассматривается public",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Если схема с именем пользователя отсутствует, соответствующий элемент пути игнорируется",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "$user означает имя операционной системы, на которой работает сервер",
+          "correct": false
+        }
+      ],
+      "explanation": "Стандартный search_path равен \"$user\", public. Специальный компонент $user подставляет имя текущего пользователя при наличии соответствующей доступной схемы.",
+      "source": {
+        "key": "postgresql-16-search-path-default",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "search_path",
+        "locator": "Раздел 20.11.1, параметр search_path",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config-client#GUC-SEARCH-PATH"
+      }
+    },
+    {
+      "key": "dba1-data-databases-011",
+      "type": "single_choice",
+      "text": "Как PostgreSQL определяет схему для имени app.orders?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Использует явно указанную схему app и не ищет orders по остальным схемам search_path",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Сначала ищет orders в public",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Сначала ищет orders в pg_catalog",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Выбирает первую схему, в которой есть таблица orders, независимо от app",
+          "correct": false
+        }
+      ],
+      "explanation": "Имя вида схема.объект является квалифицированным: схема определяется непосредственно указанным квалификатором.",
+      "source": {
+        "key": "dba1-08-search-path-011",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Путь поиска",
+        "locator": "Слайд 8, квалифицированное имя",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-012",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о специальных схемах системного каталога верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_catalog содержит объекты системного каталога",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Системный каталог содержит метаинформацию об объектах PostgreSQL",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "information_schema предоставляет стандартизованное SQL-представление метаданных",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "public является физической копией pg_catalog",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_catalog содержит системные каталоги PostgreSQL, а information_schema предоставляет другое, стандартизованное SQL-представление метаданных.",
+      "source": {
+        "key": "dba1-08-special-schemas",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Специальные схемы",
+        "locator": "Слайд 9, pg_catalog и information_schema",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-013",
+      "type": "single_choice",
+      "text": "Что происходит с pg_catalog, если эта схема явно отсутствует в search_path?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Она неявно просматривается перед явно указанными обычными схемами",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Системные объекты становятся недоступны",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Она автоматически добавляется последней",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "PostgreSQL заменяет её схемой information_schema",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_catalog всегда участвует в поиске. Если она не указана явно, PostgreSQL просматривает её перед обычными элементами пути.",
+      "source": {
+        "key": "postgresql-16-search-path-catalog",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "search_path",
+        "locator": "Раздел 20.11.1, неявное включение pg_catalog",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config-client#GUC-SEARCH-PATH"
+      }
+    },
+    {
+      "key": "dba1-data-databases-014",
+      "type": "multiple_choice",
+      "text": "Какие свойства временных таблиц PostgreSQL указаны в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Они могут существовать только в рамках сеанса или транзакции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Их изменения не журналируются обычным образом в WAL",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Их страницы не помещаются в общий буферный кеш",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "После сбоя они восстанавливаются вместе с постоянными таблицами",
+          "correct": false
+        }
+      ],
+      "explanation": "Временные таблицы имеют сеансовое или транзакционное время жизни. Они не нуждаются в восстановлении после сбоя и используют локальные временные буферы процесса вместо общего буферного кеша.",
+      "source": {
+        "key": "dba1-08-temporary-tables",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Специальные схемы",
+        "locator": "Слайд 11, временные таблицы",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-015",
+      "type": "single_choice",
+      "text": "Что означает имя pg_temp в текущем сеансе?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Псевдоним конкретной временной схемы текущего сеанса pg_temp_N",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Псевдоним схемы public",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Название общей временной базы данных всего кластера",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Синоним каталога pg_wal",
+          "correct": false
+        }
+      ],
+      "explanation": "Фактическая временная схема имеет имя вида pg_temp_N. Универсальное имя pg_temp ссылается на временную схему именно текущего сеанса.",
+      "source": {
+        "key": "dba1-08-pg-temp",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Специальные схемы",
+        "locator": "Слайд 11, схема pg_temp_N",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-016",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о временной схеме текущего сеанса верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Если pg_temp не указана в search_path, она неявно рассматривается раньше остальных схем",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "После завершения сеанса объекты временной схемы удаляются",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Саму физическую схему PostgreSQL может оставить для повторного использования другими сеансами",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Все сеансы одновременно используют одни и те же временные таблицы через pg_temp",
+          "correct": false
+        }
+      ],
+      "explanation": "Каждый сеанс получает собственную временную схему. Псевдоним pg_temp разрешается в неё; объекты удаляются по окончании сеанса, а схема может использоваться повторно.",
+      "source": {
+        "key": "dba1-08-pg-temp-016",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Специальные схемы",
+        "locator": "Слайд 11, поиск и жизненный цикл pg_temp",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-017",
+      "type": "single_choice",
+      "text": "Как получить фактический путь поиска, включая неявно добавленные схемы?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "current_schemas(true)",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "current_database(true)",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_schema_path()",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "SHOW current_schema",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал отдельно отмечает, что значение параметра search_path и фактически используемый путь могут различаться. current_schemas(true) показывает путь с учётом неявных схем.",
+      "source": {
+        "key": "dba1-08-search-path-017",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Путь поиска",
+        "locator": "Слайд 8, функция current_schemas",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-018",
+      "type": "multiple_choice",
+      "text": "Какие права на схему имеют указанное назначение? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "USAGE позволяет обращаться к объектам, находящимся в схеме, при наличии необходимых прав на сами объекты",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "CREATE позволяет создавать новые объекты в схеме",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Одного USAGE недостаточно для автоматического получения всех прав на таблицы схемы",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "CREATE на схему автоматически даёт право изменять любые существующие таблицы этой схемы",
+          "correct": false
+        }
+      ],
+      "explanation": "Права схемы и права её объектов разделены. USAGE разрешает использование пространства имён, а CREATE — создание объектов; права на конкретные таблицы и другие объекты назначаются отдельно.",
+      "source": {
+        "key": "postgresql-16-schema-privileges",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Схемы и права",
+        "locator": "Раздел 5.9.4, права USAGE и CREATE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/ddl-schemas"
+      }
+    },
+    {
+      "key": "dba1-data-databases-019",
+      "type": "single_choice",
+      "text": "Как задать параметр конфигурации так, чтобы его значение по умолчанию применялось к новым сеансам конкретной базы данных?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "ALTER DATABASE имя SET параметр TO значение",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "ALTER SCHEMA имя SET параметр TO значение",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "CREATE DATABASE имя WITH SESSION параметр",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "SET DATABASE параметр TO значение",
+          "correct": false
+        }
+      ],
+      "explanation": "ALTER DATABASE ... SET задаёт сеансовое значение параметра по умолчанию на уровне конкретной базы. Оно начинает действовать для новых подключений.",
+      "source": {
+        "key": "postgresql-16-alter-database-set",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "ALTER DATABASE",
+        "locator": "Описание ALTER DATABASE ... SET",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-alterdatabase"
+      }
+    },
+    {
+      "key": "dba1-data-databases-020",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о параметре temp_buffers верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он задаёт максимальный объём памяти для временных буферов одного сеанса",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Эти буферы используются только для временных таблиц",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Значение по умолчанию в PostgreSQL 16 составляет 8 MB",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "temp_buffers является общим единым пулом памяти для всех сеансов сервера",
+          "correct": false
+        }
+      ],
+      "explanation": "temp_buffers задаётся для каждого сеанса отдельно и относится к буферам временных таблиц. В PostgreSQL 16 стандартное значение — 8 MB.",
+      "source": {
+        "key": "postgresql-16-temp-buffers",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Потребление ресурсов",
+        "locator": "Раздел 20.4, параметр temp_buffers",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config-resource#GUC-TEMP-BUFFERS"
+      }
+    },
+    {
+      "key": "dba1-data-databases-021",
+      "type": "single_choice",
+      "text": "В практике требуется установить temp_buffers в четыре раза выше стандартного значения PostgreSQL 16. Какое значение следует задать?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "32MB",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "16MB",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "64MB",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "4MB",
+          "correct": false
+        }
+      ],
+      "explanation": "Стандартное значение temp_buffers равно 8 MB. Четырёхкратное значение составляет 32 MB; его можно установить для базы через ALTER DATABASE ... SET.",
+      "source": {
+        "key": "dba1-08-practice-temp-buffers",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика+",
+        "locator": "Слайд 15, temp_buffers в четыре раза выше значения по умолчанию",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config-resource#GUC-TEMP-BUFFERS"
+      }
+    },
+    {
+      "key": "dba1-data-databases-022",
+      "type": "multiple_choice",
+      "text": "В базе существуют схемы app и схема с именем текущего пользователя. Требуется обращаться к таблицам обеих схем без квалификатора, причём пользовательская схема должна иметь приоритет. Какие действия соответствуют этой задаче? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Поместить пользовательскую схему перед app в search_path",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Включить обе схемы в search_path",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "При одинаковом имени таблицы будет найдена таблица из схемы, расположенной раньше в search_path",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Расположить app первой, чтобы пользовательская схема получила больший приоритет",
+          "correct": false
+        }
+      ],
+      "explanation": "При неквалифицированном имени схемы просматриваются слева направо. Поэтому для приоритета пользовательской схемы она должна предшествовать app.",
+      "source": {
+        "key": "dba1-08-practice-search-path",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика",
+        "locator": "Слайд 14, настройка пути поиска для двух схем",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-023",
+      "type": "single_choice",
+      "text": "Для чего при начальной загрузке PostgreSQL используется файл postgres.bki?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он содержит команды и исходные данные, используемые сервером для создания и первоначального заполнения системных каталогов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он хранит WAL-записи незавершённых транзакций",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Он содержит пользовательские настройки search_path",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Он является файлом паролей пользователей кластера",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация описывает postgres.bki как файл начальной загрузки, из которого сервер получает команды и исходные данные для формирования системных каталогов на этапе инициализации.",
+      "source": {
+        "key": "postgresql-16-bki-bootstrap",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Начальное содержимое системных каталогов",
+        "locator": "Глава 75, назначение postgres.bki",
+        "url": "https://postgrespro.ru/docs/postgresql/16/bki"
+      }
+    },
+    {
+      "key": "dba1-data-databases-024",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о базах-шаблонах и флагах pg_database верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "datistemplate указывает, может ли база выступать общедоступным шаблоном для пользователей с CREATEDB",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "datallowconn определяет возможность новых подключений к базе",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Для template0 обычно запрещены новые подключения, чтобы уменьшить риск её изменения",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "datallowconn = false автоматически удаляет все уже открытые сеансы",
+          "correct": false
+        }
+      ],
+      "explanation": "В pg_database для управления шаблонами используются datistemplate и datallowconn. Сброс datallowconn запрещает новые подключения, но сам по себе не завершает уже существующие.",
+      "source": {
+        "key": "postgresql-16-template-flags",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Шаблоны баз данных",
+        "locator": "Раздел 23.3, datistemplate и datallowconn",
+        "url": "https://postgrespro.ru/docs/postgresql/16/manage-ag-templatedbs"
+      }
+    }
+  ]
+}

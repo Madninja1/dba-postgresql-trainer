@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "dba-1",
+  "slug": "dba1-admin-monitoring",
+  "notes_part": 12,
+  "topic_number": 12,
+  "title": "Мониторинг PostgreSQL",
+  "description": "Контроль процессов и ресурсов средствами операционной системы, статистические представления PostgreSQL, накопительная статистика и наблюдение за выполнением длительных команд",
+  "sort_order": 120
+}

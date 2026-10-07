@@ -1,0 +1,1816 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-basic-language",
+  "questions": [
+    {
+      "key": "rust1-basic-language-001",
+      "type": "single_choice",
+      "text": "Что произойдёт с кодом?\n\n```rust\nlet x = 5;\nx = 6;\n```",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Код скомпилируется и `x` станет 6",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Будет ошибка компиляции из-за попытки изменить неизменяемую переменную",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`x` автоматически станет `mut`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Ошибка возникнет только в release-сборке",
+          "correct": false
+        }
+      ],
+      "explanation": "Переменные неизменяемы по умолчанию; повторное присваивание без `mut` приводит к ошибке компиляции.",
+      "source": {
+        "key": "rust1-basic-language-immutability",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Переменные и изменяемость",
+        "locator": "Глава 3 — раздел «Переменные и изменяемость», стр. 45–46",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-002",
+      "type": "single_choice",
+      "text": "Что нужно изменить в `let x = 5;`, чтобы затем разрешить `x = 6;`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Написать `let mut x = 5;`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Написать `const x = 5;`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Добавить `&` перед `x`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Добавить `pub`",
+          "correct": false
+        }
+      ],
+      "explanation": "Ключевое слово `mut` перед именем переменной делает её изменяемой.",
+      "source": {
+        "key": "rust1-basic-language-mut",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Переменные и изменяемость",
+        "locator": "Глава 3 — раздел «Переменные и изменяемость», стр. 46",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-003",
+      "type": "single_choice",
+      "text": "Какое ключевое слово используется для объявления константы?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "let",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "static",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "const",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "mut",
+          "correct": false
+        }
+      ],
+      "explanation": "Константы объявляются с `const`, а не с `let`.",
+      "source": {
+        "key": "rust1-basic-language-constants",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Переменные и изменяемость",
+        "locator": "Глава 3 — раздел «Константы», стр. 46–47",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-004",
+      "type": "single_choice",
+      "text": "Какой вариант правильно описывает затенение?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Повторный `let` с тем же именем создаёт новую переменную",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Изменение значения без нового `let`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Удаление переменной из области видимости",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Автоматическое преобразование всех переменных в `mut`",
+          "correct": false
+        }
+      ],
+      "explanation": "При затенении повторно используется `let` с тем же именем, и новая переменная затеняет предыдущую.",
+      "source": {
+        "key": "rust1-basic-language-shadowing",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Переменные и изменяемость",
+        "locator": "Глава 3 — раздел «Затенение (переменных)», стр. 47–49",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-005",
+      "type": "single_choice",
+      "text": "Почему код `let spaces = \"   \"; let spaces = spaces.len();` допустим?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Затенение позволяет новой переменной с тем же именем иметь другой тип",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`len()` возвращает строку",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Все переменные могут менять тип после присваивания",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Строковые литералы имеют тип `usize`",
+          "correct": false
+        }
+      ],
+      "explanation": "Повторный `let` создаёт новую переменную; поэтому затенение допускает смену типа при сохранении имени.",
+      "source": {
+        "key": "rust1-basic-language-shadow-type",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Переменные и изменяемость",
+        "locator": "Глава 3 — раздел «Затенение (переменных)», стр. 48–49",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-006",
+      "type": "single_choice",
+      "text": "Что означает статическая типизация Rust в формулировке материала?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Типы всех переменных должны быть известны во время компиляции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Типы определяются только во время выполнения",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Любая переменная может менять тип без нового `let`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Аннотации типа запрещены",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал определяет статическую типизацию как необходимость знать типы всех переменных во время компиляции.",
+      "source": {
+        "key": "rust1-basic-language-static-typing",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Типы Данных», стр. 50",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-007",
+      "type": "single_choice",
+      "text": "Какой тип целого числа используется по умолчанию, если контекст не требует другого?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "u8",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "i32",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "usize",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "i128",
+          "correct": false
+        }
+      ],
+      "explanation": "Для целых чисел типом по умолчанию указан `i32`.",
+      "source": {
+        "key": "rust1-basic-language-integer-default",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Целочисленные типы», стр. 52",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-008",
+      "type": "single_choice",
+      "text": "Какой диапазон значений указан для `u8`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "От -128 до 127",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "От 0 до 255",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "От 0 до 127",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "От -255 до 255",
+          "correct": false
+        }
+      ],
+      "explanation": "Для `u8` материал приводит диапазон от 0 до 255 включительно.",
+      "source": {
+        "key": "rust1-basic-language-u8-range",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Целочисленные типы», стр. 51",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-009",
+      "type": "single_choice",
+      "text": "Что произойдёт при целочисленном переполнении `u8` в отладочной сборке согласно материалу?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Проверка переполнения вызовет панику во время выполнения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Значение всегда молча обернётся",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Компилятор автоматически сменит тип на `u16`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Значение станет `None` без специальных методов",
+          "correct": false
+        }
+      ],
+      "explanation": "В debug-режиме Rust включает проверку целочисленного переполнения, которая приводит к панике.",
+      "source": {
+        "key": "rust1-basic-language-overflow-debug",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Целочисленное переполнение», стр. 52",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-010",
+      "type": "single_choice",
+      "text": "Какой метод из перечисленных возвращает `None` при целочисленном переполнении?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "wrapping_add",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "checked_add",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "saturating_add",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "overflowing_add",
+          "correct": false
+        }
+      ],
+      "explanation": "Семейство `checked_*` возвращает `None` при переполнении.",
+      "source": {
+        "key": "rust1-basic-language-checked-overflow",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Целочисленное переполнение», стр. 53",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-011",
+      "type": "single_choice",
+      "text": "Какой тип с плавающей точкой используется по умолчанию?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "f16",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "f32",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "f64",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "f128",
+          "correct": false
+        }
+      ],
+      "explanation": "По умолчанию используется `f64`.",
+      "source": {
+        "key": "rust1-basic-language-float-default",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Числа с плавающей запятой», стр. 53",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-012",
+      "type": "single_choice",
+      "text": "Как ведёт себя целочисленное деление согласно материалу?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Всегда округляет вверх",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Обрезает значение в направлении нуля",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Возвращает `f64`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Всегда вызывает панику при остатке",
+          "correct": false
+        }
+      ],
+      "explanation": "Целочисленное деление обрезает результат в направлении нуля до ближайшего целого.",
+      "source": {
+        "key": "rust1-basic-language-integer-division",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Числовые операции», стр. 53–54",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-013",
+      "type": "single_choice",
+      "text": "Какие значения может принимать тип `bool`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "0 и 1",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "true и false",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Some и None",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Ok и Err",
+          "correct": false
+        }
+      ],
+      "explanation": "Логический тип `bool` имеет два значения: `true` и `false`.",
+      "source": {
+        "key": "rust1-basic-language-bool",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Логический тип данных», стр. 54",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-014",
+      "type": "single_choice",
+      "text": "Какие кавычки используются для литералов `char`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Двойные",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Одинарные",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Обратные",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Кавычки не нужны",
+          "correct": false
+        }
+      ],
+      "explanation": "Литералы `char` записываются в одинарных кавычках, в отличие от строковых литералов.",
+      "source": {
+        "key": "rust1-basic-language-char",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Символьный тип данных», стр. 54–55",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-015",
+      "type": "single_choice",
+      "text": "Какой размер имеет `char` в описании главы 3?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "1 байт",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "2 байта",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "4 байта",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "8 байт",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал указывает размер `char` в четыре байта и связь со скалярными значениями Unicode.",
+      "source": {
+        "key": "rust1-basic-language-char-size",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Символьный тип данных», стр. 55",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-016",
+      "type": "single_choice",
+      "text": "Какое свойство кортежа отличает его от массива в приведённом материале?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Элементы кортежа могут иметь разные типы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Кортеж всегда изменяем",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Кортеж не имеет фиксированной длины",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Кортеж индексируется только строками",
+          "correct": false
+        }
+      ],
+      "explanation": "Позиции кортежа могут иметь разные типы, тогда как все элементы массива должны быть одного типа.",
+      "source": {
+        "key": "rust1-basic-language-tuple",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Кортежи», стр. 55–56",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-017",
+      "type": "single_choice",
+      "text": "Как обратиться к первому элементу кортежа `x`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "x[1]",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "x.0",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "x->0",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "x.first()",
+          "correct": false
+        }
+      ],
+      "explanation": "Доступ к элементу кортежа выполняется через точку и индекс; первый индекс равен 0.",
+      "source": {
+        "key": "rust1-basic-language-tuple-index",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Кортежи», стр. 56",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-018",
+      "type": "single_choice",
+      "text": "Как записывается единичный тип и его значение?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "[]",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "{}",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "()",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "<>",
+          "correct": false
+        }
+      ],
+      "explanation": "Кортеж без значений имеет единичный тип и значение `()`.",
+      "source": {
+        "key": "rust1-basic-language-unit",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Кортежи», стр. 56",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-019",
+      "type": "single_choice",
+      "text": "Какое свойство массива подчёркнуто в главе 3?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Все элементы должны иметь один тип и длина фиксирована",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Каждый элемент обязан иметь свой тип",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Длина всегда изменяется во время выполнения",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Массив всегда хранится только в куче",
+          "correct": false
+        }
+      ],
+      "explanation": "Массивы содержат элементы одного типа и имеют фиксированную длину.",
+      "source": {
+        "key": "rust1-basic-language-array",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Массивы», стр. 56–57",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-020",
+      "type": "single_choice",
+      "text": "Что произойдёт при индексировании массива индексом, большим или равным его длине во время выполнения?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Вернётся нулевой элемент",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Программа запаникует",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Массив расширится",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Вернётся `None` автоматически",
+          "correct": false
+        }
+      ],
+      "explanation": "Rust проверяет границы массива; неверный индекс приводит к панике.",
+      "source": {
+        "key": "rust1-basic-language-array-bounds",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Некорректный доступ к элементу массива», стр. 58–59",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-021",
+      "type": "single_choice",
+      "text": "Что обязательно указывать для каждого параметра в сигнатуре функции?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Его тип",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Его значение по умолчанию",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Ключевое слово `mut`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Время жизни во всех случаях",
+          "correct": false
+        }
+      ],
+      "explanation": "В сигнатурах функций тип каждого параметра обязателен.",
+      "source": {
+        "key": "rust1-basic-language-function-params",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Функции",
+        "locator": "Глава 3 — раздел «Параметры функции», стр. 61–62",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-022",
+      "type": "single_choice",
+      "text": "Чем инструкция отличается от выражения в объяснении главы 3?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Инструкция выполняет действие и не возвращает значение, выражение вычисляется в значение",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Инструкция всегда возвращает число, выражение ничего не возвращает",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Различий нет",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Выражения допустимы только в `if`",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал определяет инструкции как действия без возвращаемого значения, а выражения — как вычисляемые значения.",
+      "source": {
+        "key": "rust1-basic-language-statements-expressions",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Функции",
+        "locator": "Глава 3 — раздел «Инструкции и выражения», стр. 62–64",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-023",
+      "type": "single_choice",
+      "text": "Что произойдёт, если в функции `fn plus_one(x: i32) -> i32 { x + 1; }` оставить точку с запятой после `x + 1`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Функция вернёт `x + 1`",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Возникнет ошибка несовпадения типов: тело фактически возвращает `()`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Точка с запятой игнорируется",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Функция станет `async`",
+          "correct": false
+        }
+      ],
+      "explanation": "Точка с запятой превращает завершающее выражение в инструкцию; вместо `i32` функция неявно получает `()` и не компилируется.",
+      "source": {
+        "key": "rust1-basic-language-return-semicolon",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Функции",
+        "locator": "Глава 3 — раздел «Функции с возвращаемыми значениями», стр. 64–66",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-024",
+      "type": "single_choice",
+      "text": "Какого типа должно быть условие `if`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Любого числового",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "`bool`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Только `i32`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`String`",
+          "correct": false
+        }
+      ],
+      "explanation": "Rust требует, чтобы условие `if` имело тип `bool`; числа автоматически к bool не приводятся.",
+      "source": {
+        "key": "rust1-basic-language-if-bool",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Управляющие конструкции",
+        "locator": "Глава 3 — раздел «Выражения if», стр. 68–69",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-025",
+      "type": "single_choice",
+      "text": "Что выведет значение `result` в примере с `break counter * 2`, когда `counter == 10`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "10",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "20",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "0",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Цикл не может возвращать значение",
+          "correct": false
+        }
+      ],
+      "explanation": "`break counter * 2` возвращает из `loop` значение 20, которое связывается с `result`.",
+      "source": {
+        "key": "rust1-basic-language-loop-value",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Управляющие конструкции",
+        "locator": "Глава 3 — раздел «Возвращение значений из циклов», стр. 73–74",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-026",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о неизменяемости и `mut` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Переменные по умолчанию неизменяемы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`mut` позволяет изменить связанное с переменной значение",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`mut` также показывает читателю намерение менять значение",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Любая неизменяемая переменная автоматически становится константой `const`",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал различает обычные неизменяемые переменные и константы; `mut` явно разрешает изменение и выражает намерение.",
+      "source": {
+        "key": "rust1-basic-language-mutability-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Переменные и изменяемость",
+        "locator": "Глава 3 — раздел «Переменные и изменяемость», стр. 45–46",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-027",
+      "type": "multiple_choice",
+      "text": "Какие свойства констант перечислены в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Объявляются с `const`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Не могут использовать `mut`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Требуют аннотацию типа",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Могут быть заданы произвольным значением, вычисленным только во время выполнения",
+          "correct": false
+        }
+      ],
+      "explanation": "Константы всегда неизменяемы, объявляются с `const`, требуют типа и задаются константным выражением.",
+      "source": {
+        "key": "rust1-basic-language-constant-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Переменные и изменяемость",
+        "locator": "Глава 3 — раздел «Константы», стр. 46–47",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-028",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о соглашениях для констант верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Имена обычно пишутся заглавными буквами",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Слова в имени разделяются подчёркиваниями",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Константы можно объявлять в глобальной области",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Константы обязаны объявляться только внутри `main`",
+          "correct": false
+        }
+      ],
+      "explanation": "В материале используется стиль `THREE_HOURS_IN_SECONDS`, а также указана возможность объявления констант в любой области, включая глобальную.",
+      "source": {
+        "key": "rust1-basic-language-constant-style",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Переменные и изменяемость",
+        "locator": "Глава 3 — раздел «Константы», стр. 47",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-029",
+      "type": "multiple_choice",
+      "text": "Какие утверждения отличают затенение от `mut`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Затенение использует новый `let`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "При затенении создаётся новая переменная",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Затенение может изменить тип значения при сохранении имени",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`mut` всегда позволяет присвоить значение другого типа той же переменной",
+          "correct": false
+        }
+      ],
+      "explanation": "Повторный `let` создаёт новую переменную и может иметь другой тип; обычное присваивание `mut` сохраняет тип переменной.",
+      "source": {
+        "key": "rust1-basic-language-shadow-vs-mut",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Переменные и изменяемость",
+        "locator": "Глава 3 — раздел «Затенение (переменных)», стр. 48–49",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-030",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о выводе типов подтверждаются материалом? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Rust часто выводит тип из значения и использования",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Если возможны несколько типов, может понадобиться явная аннотация",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Пример с `parse` требует подсказать желаемый числовой тип",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Rust определяет типы переменных только после запуска программы",
+          "correct": false
+        }
+      ],
+      "explanation": "Типы должны быть известны при компиляции; компилятор часто выводит их, но неоднозначные случаи требуют аннотации.",
+      "source": {
+        "key": "rust1-basic-language-type-inference",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Типы Данных», стр. 50",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-031",
+      "type": "multiple_choice",
+      "text": "Какие типы названы четырьмя основными скалярными типами Rust? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Целочисленные",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Числа с плавающей точкой",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Логический тип",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Кортеж",
+          "correct": false
+        }
+      ],
+      "explanation": "Четыре группы: целые числа, числа с плавающей точкой, `bool` и `char`; кортеж относится к составным типам.",
+      "source": {
+        "key": "rust1-basic-language-scalar-types",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Скалярные типы данных», стр. 51–55",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-032",
+      "type": "multiple_choice",
+      "text": "Какие пары целочисленных типов и размера есть в таблице 3-1? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`i8` / `u8` — 8 бит",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`i32` / `u32` — 32 бита",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`i128` / `u128` — 128 бит",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`i16` / `u16` — 8 бит",
+          "correct": false
+        }
+      ],
+      "explanation": "Таблица перечисляет 8-, 16-, 32-, 64- и 128-битные знаковые и беззнаковые варианты; `i16/u16` имеют 16 бит.",
+      "source": {
+        "key": "rust1-basic-language-integer-widths",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — таблица 3-1 «целочисленные типы в Rust», стр. 51",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-033",
+      "type": "multiple_choice",
+      "text": "Какие формы целочисленных литералов показаны в таблице 3-2? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Шестнадцатеричная `0xff`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Восьмеричная `0o77`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Двоичная `0b1111_0000`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Десятичная может записываться только без подчёркиваний",
+          "correct": false
+        }
+      ],
+      "explanation": "Таблица показывает различные основания; подчёркивания разрешены как визуальные разделители.",
+      "source": {
+        "key": "rust1-basic-language-integer-literals",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — таблица 3-2 «Целочисленные литералы в Rust», стр. 52",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-034",
+      "type": "multiple_choice",
+      "text": "Какие утверждения об `isize` и `usize` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Их размер зависит от архитектуры",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "На 64-битной архитектуре они имеют 64 бита",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "На 32-битной архитектуре они имеют 32 бита",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Материал называет их основным выбором для хранения дробных чисел",
+          "correct": false
+        }
+      ],
+      "explanation": "`isize` и `usize` архитектурно-зависимы; материал отдельно отмечает `usize`/`isize` в контексте индексации коллекций.",
+      "source": {
+        "key": "rust1-basic-language-pointer-sized-int",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Целочисленные типы», стр. 52",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-035",
+      "type": "multiple_choice",
+      "text": "Какие семейства методов для явной обработки переполнения перечислены? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`wrapping_*`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`checked_*`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`overflowing_*`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`saturating_*`",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`panic_*`",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал перечисляет все четыре семейства как способы явно задать поведение при переполнении.",
+      "source": {
+        "key": "rust1-basic-language-overflow-methods",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Целочисленное переполнение», стр. 53",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-036",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `f32` и `f64` приведены в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`f32` имеет 32 бита",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`f64` имеет 64 бита",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "По умолчанию используется `f64`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`f64` описан как беззнаковый целочисленный тип",
+          "correct": false
+        }
+      ],
+      "explanation": "Оба являются знаковыми типами с плавающей точкой; `f64` — тип по умолчанию.",
+      "source": {
+        "key": "rust1-basic-language-floats",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Числа с плавающей запятой», стр. 53",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-037",
+      "type": "multiple_choice",
+      "text": "Какие числовые операции перечислены как базово поддерживаемые Rust? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Сложение",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Вычитание",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Умножение",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Остаток",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Возведение в степень оператором `**`",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел перечисляет сложение, вычитание, умножение, деление и остаток.",
+      "source": {
+        "key": "rust1-basic-language-numeric-ops",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Числовые операции», стр. 53–54",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-038",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `char` подтверждаются материалом? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Литералы используют одинарные кавычки",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`char` занимает четыре байта",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`char` представляет скалярное значение Unicode",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`char` ограничен только ASCII",
+          "correct": false
+        }
+      ],
+      "explanation": "`char` — четырёхбайтовое Unicode-скалярное значение и может представлять не только ASCII.",
+      "source": {
+        "key": "rust1-basic-language-char-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Символьный тип данных», стр. 55",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-039",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о кортежах верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Кортеж может объединять значения разных типов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Его длина фиксирована после объявления",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Его можно деструктурировать шаблоном `let`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Элементы кортежа обязаны иметь один тип",
+          "correct": false
+        }
+      ],
+      "explanation": "Кортеж имеет фиксированную длину, допускает разные типы и поддерживает деструктуризацию.",
+      "source": {
+        "key": "rust1-basic-language-tuple-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Кортежи», стр. 55–56",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-040",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о массивах верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Все элементы массива имеют один тип",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Длина массива фиксирована",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Тип `[i32; 5]` означает пять элементов `i32`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Запись `[3; 5]` означает массив из значений 3, 4, 5",
+          "correct": false
+        }
+      ],
+      "explanation": "Массив фиксирован и однороден; `[3; 5]` создаёт пять элементов, каждый равный 3.",
+      "source": {
+        "key": "rust1-basic-language-array-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Массивы», стр. 56–57",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-041",
+      "type": "multiple_choice",
+      "text": "Какие последствия проверки границ массива описаны в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Rust проверяет, что индекс меньше длины массива",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "При неверном динамическом индексе программа паникует",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Проверка предотвращает продолжение с некорректным доступом к памяти",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Любой выход за границы автоматически возвращает `None` через оператор `[]`",
+          "correct": false
+        }
+      ],
+      "explanation": "Для `[]` неверный индекс приводит к панике, что не даёт продолжить работу с некорректным доступом.",
+      "source": {
+        "key": "rust1-basic-language-array-safety",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типы Данных",
+        "locator": "Глава 3 — раздел «Некорректный доступ к элементу массива», стр. 58–59",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-042",
+      "type": "multiple_choice",
+      "text": "Какие правила определения и вызова функций показаны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Функция объявляется с `fn`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Типы параметров указываются в сигнатуре",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Несколько параметров разделяются запятыми",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Функция обязательно должна быть определена в исходнике раньше места вызова",
+          "correct": false
+        }
+      ],
+      "explanation": "Порядок определения не важен, если функция находится в видимой области; остальные пункты прямо показаны.",
+      "source": {
+        "key": "rust1-basic-language-function-definition",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Функции",
+        "locator": "Глава 3 — разделы «Функции» и «Параметры функции», стр. 60–62",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-043",
+      "type": "multiple_choice",
+      "text": "Какие элементы названы выражениями в разделе «Инструкции и выражения»? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Математическая операция `5 + 6`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Вызов функции",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Вызов макроса",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Инструкция `let y = 6;` целиком возвращает значение 6",
+          "correct": false
+        }
+      ],
+      "explanation": "Операции, вызовы функций/макросов и блоки могут быть выражениями; `let`-инструкция значения не возвращает.",
+      "source": {
+        "key": "rust1-basic-language-expression-examples",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Функции",
+        "locator": "Глава 3 — раздел «Инструкции и выражения», стр. 62–64",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-044",
+      "type": "multiple_choice",
+      "text": "Какие способы возврата значения из функции описаны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Значение последнего выражения тела",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Ранний `return` со значением",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Тип возврата указывается после `->`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Точка с запятой после последнего выражения обязательна для возврата его значения",
+          "correct": false
+        }
+      ],
+      "explanation": "Обычный возврат идёт через последнее выражение без `;`, а `return` позволяет выйти раньше.",
+      "source": {
+        "key": "rust1-basic-language-function-return",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Функции",
+        "locator": "Глава 3 — раздел «Функции с возвращаемыми значениями», стр. 64–66",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-045",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о комментариях `//` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Комментарий продолжается до конца строки",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Компилятор игнорирует комментарии",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Для нескольких строк можно поставить `//` на каждой строке",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`//` всегда создаёт документационный комментарий",
+          "correct": false
+        }
+      ],
+      "explanation": "Обычные комментарии `//` игнорируются компилятором; документационные комментарии рассматриваются отдельно.",
+      "source": {
+        "key": "rust1-basic-language-comments",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Комментарии",
+        "locator": "Глава 3 — раздел «Комментарии», стр. 67",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-046",
+      "type": "multiple_choice",
+      "text": "Какие утверждения об `if` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Условие должно быть `bool`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`else` необязателен",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Если условие ложно и `else` нет, блок `if` пропускается",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Rust автоматически трактует любое ненулевое целое как `true`",
+          "correct": false
+        }
+      ],
+      "explanation": "Rust требует `bool` и не выполняет автоматическое числовое приведение к логическому значению.",
+      "source": {
+        "key": "rust1-basic-language-if-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Управляющие конструкции",
+        "locator": "Глава 3 — раздел «Выражения if», стр. 68–70",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-047",
+      "type": "multiple_choice",
+      "text": "Какие утверждения об цепочке `if` / `else if` подтверждаются примером? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Условия проверяются по порядку",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Выполняется первый блок с истинным условием",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "После первого совпадения остальные условия уже не проверяются",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Все истинные ветви выполняются последовательно",
+          "correct": false
+        }
+      ],
+      "explanation": "В примере с делимостью выполняется только первая истинная ветвь.",
+      "source": {
+        "key": "rust1-basic-language-else-if",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Управляющие конструкции",
+        "locator": "Глава 3 — раздел «Обработка нескольких условий с помощью else if», стр. 70–71",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-048",
+      "type": "multiple_choice",
+      "text": "Какие утверждения об `if` как выражении верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Его результат можно присвоить через `let`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Результаты ветвей должны иметь совместимый тип",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Блок вычисляется последним выражением",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Можно без ошибки вернуть из `if` число, а из `else` строку в одной переменной",
+          "correct": false
+        }
+      ],
+      "explanation": "При присваивании результата `if` обе ветви должны дать единый тип.",
+      "source": {
+        "key": "rust1-basic-language-if-expression",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Управляющие конструкции",
+        "locator": "Глава 3 — раздел «Использование if в инструкции let», стр. 71–72",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-049",
+      "type": "multiple_choice",
+      "text": "Какие действия выполняют `break` и `continue`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`break` прекращает выполнение цикла",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`continue` пропускает оставшийся код текущей итерации",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`continue` переходит к следующей итерации",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`break` всегда завершает всю программу, а не только цикл",
+          "correct": false
+        }
+      ],
+      "explanation": "`break` выходит из цикла, а `continue` перескакивает к следующей итерации.",
+      "source": {
+        "key": "rust1-basic-language-break-continue",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Управляющие конструкции",
+        "locator": "Глава 3 — раздел «Повторение выполнения кода с помощью loop», стр. 73",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-050",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о метках циклов верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Метка начинается с одинарной кавычки",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Её можно использовать с `break`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Её можно использовать с `continue`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Без метки `break` во вложенных циклах всегда завершает самый внешний цикл",
+          "correct": false
+        }
+      ],
+      "explanation": "Без метки действие относится к самому внутреннему циклу; метка позволяет указать другой цикл.",
+      "source": {
+        "key": "rust1-basic-language-loop-labels",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Управляющие конструкции",
+        "locator": "Глава 3 — раздел «Метки циклов для устранения неоднозначности между несколькими циклами», стр. 74–75",
+        "url": null
+      }
+    }
+  ]
+}

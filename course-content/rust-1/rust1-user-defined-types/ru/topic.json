@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "rust-1",
+  "slug": "rust1-user-defined-types",
+  "notes_part": 5,
+  "topic_number": 5,
+  "title": "Пользовательские типы",
+  "description": "Структуры и их методы, ассоциированные функции, перечисления, Option, сопоставление с образцом, match и if let.",
+  "sort_order": 50
+}

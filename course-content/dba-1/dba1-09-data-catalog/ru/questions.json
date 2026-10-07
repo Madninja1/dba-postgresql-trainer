@@ -1,0 +1,870 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-data-catalog",
+  "questions": [
+    {
+      "key": "dba1-data-catalog-001",
+      "type": "single_choice",
+      "text": "Что представляет собой системный каталог PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Набор таблиц и представлений с метаинформацией об объектах СУБД",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Отдельный журнал изменений пользовательских таблиц",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Набор конфигурационных файлов сервера",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Каталог резервных копий баз данных",
+          "correct": false
+        }
+      ],
+      "explanation": "Системный каталог хранит метаинформацию: сведения о таблицах, столбцах и других объектах PostgreSQL.",
+      "source": {
+        "key": "dba1-09-system-catalog",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Системный каталог",
+        "locator": "Слайд 3, определение системного каталога",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-catalog-002",
+      "type": "multiple_choice",
+      "text": "Какими способами можно получать информацию из системного каталога? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Выполнять обычные запросы SELECT к таблицам и представлениям каталога",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Использовать специальные метакоманды psql",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Использовать клиентские программы, которые читают системный каталог",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Обязательно читать внутренние файлы каталога данных PostgreSQL напрямую",
+          "correct": false
+        }
+      ],
+      "explanation": "Каталог доступен через SQL. Клиенты, включая psql и графические инструменты, могут читать его и представлять полученные сведения в более удобной форме.",
+      "source": {
+        "key": "dba1-09-catalog-access",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Системный каталог",
+        "locator": "Слайд 3, SQL-доступ и доступ из psql",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-catalog-003",
+      "type": "single_choice",
+      "text": "В какой схеме находятся основные таблицы и представления системного каталога PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_catalog",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "public",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_temp",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "information_catalog",
+          "correct": false
+        }
+      ],
+      "explanation": "Основной системный каталог PostgreSQL располагается в схеме pg_catalog.",
+      "source": {
+        "key": "dba1-09-pg-catalog",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Системный каталог",
+        "locator": "Слайд 3, основная схема pg_catalog",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-catalog-004",
+      "type": "multiple_choice",
+      "text": "Какие утверждения об information_schema верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Она предоставляет альтернативное представление метаданных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Она определена стандартом SQL",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Она более переносима между СУБД, чем специфичные для PostgreSQL каталоги pg_catalog",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Она полностью отражает все специфические особенности PostgreSQL лучше pg_catalog",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал характеризует information_schema как стандартизованное и более переносимое представление, которое при этом не отражает всю специфику PostgreSQL.",
+      "source": {
+        "key": "dba1-09-information-schema",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Системный каталог",
+        "locator": "Слайд 3, pg_catalog и information_schema",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-catalog-005",
+      "type": "single_choice",
+      "text": "Как организован системный каталог относительно баз данных кластера?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В каждой базе есть собственная часть каталога, но некоторые каталоги являются общими для всего кластера",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Весь системный каталог существует только в базе postgres",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Для всего кластера существует только один набор всех таблиц pg_catalog",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Системный каталог создаётся отдельно для каждого пользовательского сеанса",
+          "correct": false
+        }
+      ],
+      "explanation": "Большая часть каталога относится к конкретной базе данных. Одновременно существуют общие для всего кластера объекты каталога, одинаково видимые из разных баз.",
+      "source": {
+        "key": "dba1-09-shared-catalogs",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Общие объекты кластера",
+        "locator": "Слайд 4, локальные и общие объекты каталога",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-catalog-006",
+      "type": "multiple_choice",
+      "text": "Какие утверждения об общих объектах системного каталога верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Некоторые объекты каталога относятся ко всему кластеру",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Список баз данных является примером информации уровня всего кластера",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Общие каталоги одинаково видны при подключении к разным базам кластера",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Каждая база содержит независимую копию списка баз данных, которая может отличаться от остальных",
+          "correct": false
+        }
+      ],
+      "explanation": "В презентации список баз данных приведён как очевидный пример метаданных, общих для всего кластера.",
+      "source": {
+        "key": "dba1-09-shared-catalogs-006",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Общие объекты кластера",
+        "locator": "Слайд 4, пример общих объектов",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-catalog-007",
+      "type": "single_choice",
+      "text": "Какой префикс используется в именах таблиц и представлений системного каталога PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "sys_",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "cat_",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "sql_",
+          "correct": false
+        }
+      ],
+      "explanation": "Имена таблиц и представлений системного каталога начинаются с pg_. По этой причине материал не рекомендует использовать такой префикс для собственных объектов.",
+      "source": {
+        "key": "dba1-09-naming",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Правила именования",
+        "locator": "Слайд 5, префикс pg_",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-catalog-008",
+      "type": "multiple_choice",
+      "text": "Какие правила именования объектов системного каталога указаны в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Таблицы и представления каталога используют общий префикс pg_",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Имена столбцов часто начинаются с короткого префикса, связанного с именем таблицы",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Между префиксом столбца и оставшейся частью имени обычно нет символа подчёркивания",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Каждый столбец системного каталога обязан начинаться с pg_",
+          "correct": false
+        }
+      ],
+      "explanation": "Для столбцов характерен трёхбуквенный префикс, обычно связанный с именем каталога. Материал отдельно отмечает наличие исключений, например oid.",
+      "source": {
+        "key": "dba1-09-naming-008",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Правила именования",
+        "locator": "Слайд 5, префиксы объектов и столбцов",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-catalog-009",
+      "type": "single_choice",
+      "text": "Как интерпретировать имя столбца datname в pg_database с точки зрения правил именования каталога?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "dat — префикс столбцов pg_database, name — смысловая часть имени",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "dat — имя схемы, name — имя таблицы",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "datname — специальный тип данных PostgreSQL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "datname — псевдоним системного столбца oid",
+          "correct": false
+        }
+      ],
+      "explanation": "Презентация использует pg_database.datname как пример соглашения: префикс столбца обычно соответствует имени системного каталога.",
+      "source": {
+        "key": "dba1-09-naming-example",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Правила именования",
+        "locator": "Слайд 5, пример pg_database.datname",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-catalog-010",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о типе oid верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "OID используется PostgreSQL как идентификатор объектов в различных системных таблицах",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Тип oid реализован как четырёхбайтное целое число без знака",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "OID часто используется как первичный ключ системных таблиц",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "OID является текстовым типом и всегда хранит имя объекта",
+          "correct": false
+        }
+      ],
+      "explanation": "OID — числовой идентификатор объекта. Документация PostgreSQL 16 описывает oid как четырёхбайтное целое без знака, применяемое в системных таблицах.",
+      "source": {
+        "key": "postgresql-16-oid",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Идентификаторы объектов",
+        "locator": "Раздел 8.19, тип oid",
+        "url": "https://postgrespro.ru/docs/postgresql/16/datatype-oid"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-011",
+      "type": "single_choice",
+      "text": "Гарантирует ли тип oid уникальность значения во всей большой базе данных?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Нет, диапазона 32-битного OID для такой гарантии недостаточно",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Да, OID гарантированно уникален во всех кластерах PostgreSQL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Да, но только если база использует UTF-8",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Да, поскольку OID имеет разрядность 128 бит",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация предупреждает, что четырёхбайтный oid недостаточно велик, чтобы гарантировать уникальность во всей крупной базе или даже в очень большой отдельной таблице.",
+      "source": {
+        "key": "postgresql-16-oid-size",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Идентификаторы объектов",
+        "locator": "Раздел 8.19, размер и уникальность oid",
+        "url": "https://postgrespro.ru/docs/postgresql/16/datatype-oid"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-012",
+      "type": "multiple_choice",
+      "text": "Какие специальные типы являются псевдонимами oid и с какими объектами они связаны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "regclass — с отношениями из pg_class",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "regtype — с типами данных из pg_type",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "regnamespace — с пространствами имён из pg_namespace",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "regdatabase — стандартный псевдоним oid для pg_database",
+          "correct": false
+        }
+      ],
+      "explanation": "PostgreSQL предоставляет несколько типов reg*, которые являются псевдонимами oid для определённых категорий системных объектов. Стандартного типа regdatabase в приведённом перечне нет.",
+      "source": {
+        "key": "postgresql-16-reg-types",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Идентификаторы объектов",
+        "locator": "Раздел 8.19, таблица типов-псевдонимов oid",
+        "url": "https://postgrespro.ru/docs/postgresql/16/datatype-oid"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-013",
+      "type": "single_choice",
+      "text": "Какой тип удобно использовать для преобразования имени таблицы в её OID?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "regclass",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "regtype",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "regrole",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "regnamespace",
+          "correct": false
+        }
+      ],
+      "explanation": "regclass связан с pg_class и позволяет использовать символическое имя отношения вместо самостоятельного поиска его числового OID.",
+      "source": {
+        "key": "postgresql-16-regclass",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Идентификаторы объектов",
+        "locator": "Раздел 8.19, regclass",
+        "url": "https://postgrespro.ru/docs/postgresql/16/datatype-oid"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-014",
+      "type": "multiple_choice",
+      "text": "Какие возможности дают типы reg* по сравнению с использованием необработанного числового oid? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Позволяют задавать объекты символическими именами",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Позволяют выводить символическое имя вместо числового OID",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Для объектов в пространствах имён могут учитывать путь поиска схем",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Превращают oid в глобально уникальный 128-битный идентификатор",
+          "correct": false
+        }
+      ],
+      "explanation": "Основное назначение типов reg* — удобное преобразование между числовыми идентификаторами и символическими именами системных объектов.",
+      "source": {
+        "key": "postgresql-16-reg-conversion",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Идентификаторы объектов",
+        "locator": "Раздел 8.19, ввод и вывод типов reg*",
+        "url": "https://postgrespro.ru/docs/postgresql/16/datatype-oid"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-015",
+      "type": "single_choice",
+      "text": "Что показывает метакоманда psql \\d имя_объекта для отношения?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Описание объекта: столбцы, типы и связанные свойства",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только строки, содержащиеся в таблице",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только размер всей базы данных",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Список активных подключений к объекту",
+          "correct": false
+        }
+      ],
+      "explanation": "Семейство команд \\d предназначено для описания объектов. Для отношения \\d показывает столбцы, их типы и дополнительные характеристики, включая связанные индексы и ограничения.",
+      "source": {
+        "key": "postgresql-16-psql-describe",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Метакоманды psql",
+        "locator": "Раздел psql, метакоманда \\d",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql#APP-PSQL-META-COMMANDS"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-016",
+      "type": "multiple_choice",
+      "text": "Что отличает \\d+ от обычной \\d? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Выводится дополнительная информация об объекте",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для представления может показываться его определение",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Для таблиц может отображаться дополнительная служебная информация, например метод доступа",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Знак + превращает команду описания в DROP объекта",
+          "correct": false
+        }
+      ],
+      "explanation": "Суффикс + используется многими метакомандами psql для расширенного вывода. Для \\d+ документация перечисляет дополнительные сведения о таблицах и представлениях.",
+      "source": {
+        "key": "postgresql-16-psql-describe-plus",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Метакоманды psql",
+        "locator": "Раздел psql, \\d+",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql#APP-PSQL-META-COMMANDS"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-017",
+      "type": "single_choice",
+      "text": "Как в командах семейства \\d включить системные объекты, которые по умолчанию могут быть скрыты?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Добавить модификатор S",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Добавить модификатор X",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Добавить модификатор A",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Запустить psql от пользователя root",
+          "correct": false
+        }
+      ],
+      "explanation": "Для ряда команд \\d модификатор S включает в вывод системные объекты.",
+      "source": {
+        "key": "postgresql-16-psql-system-objects",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Метакоманды psql",
+        "locator": "Раздел psql, модификатор S",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql#APP-PSQL-META-COMMANDS"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-018",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о шаблонах в метакомандах psql семейства \\d верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Символ * соответствует любому количеству символов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Символ ? соответствует одному символу",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Шаблон *.* позволяет увидеть объекты независимо от их видимости через текущий search_path",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Символ * в шаблоне всегда означает только системные объекты",
+          "correct": false
+        }
+      ],
+      "explanation": "psql использует собственные шаблоны поиска объектов. Без шаблона обычно показываются видимые объекты, тогда как *.* позволяет охватить объекты во всех схемах текущей базы.",
+      "source": {
+        "key": "postgresql-16-psql-patterns",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Шаблоны поиска psql",
+        "locator": "Раздел psql, шаблоны команд \\d",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql#APP-PSQL-META-COMMANDS"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-019",
+      "type": "single_choice",
+      "text": "Какая метакоманда psql предназначена для вывода списка схем?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\dn",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\dt",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "\\dv",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "\\di",
+          "correct": false
+        }
+      ],
+      "explanation": "Метакоманда \\dn выводит список схем. Она также поддерживает шаблон, S и расширенный вариант +.",
+      "source": {
+        "key": "postgresql-16-psql-dn",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Метакоманды psql",
+        "locator": "Раздел psql, \\dn",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql#APP-PSQL-META-COMMANDS"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-020",
+      "type": "multiple_choice",
+      "text": "Какие соответствия метакоманд psql и типов объектов верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\dt — таблицы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\dv — представления",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "\\di — индексы",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "\\dn — функции",
+          "correct": false
+        }
+      ],
+      "explanation": "Семейство команд \\d содержит специализированные варианты для разных типов объектов. \\dn относится к схемам, а не к функциям.",
+      "source": {
+        "key": "postgresql-16-psql-object-lists",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Метакоманды psql",
+        "locator": "Раздел psql, специализированные команды \\d",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql#APP-PSQL-META-COMMANDS"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-021",
+      "type": "single_choice",
+      "text": "Как узнать SQL-запрос, который psql выполняет внутри метакоманды вроде \\d+ pg_views?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Включить ECHO_HIDDEN или запустить psql с ключом -E",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Выполнить VACUUM VERBOSE",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Добавить к команде \\d модификатор S",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Установить search_path в pg_catalog",
+          "correct": false
+        }
+      ],
+      "explanation": "Ключ -E соответствует включению ECHO_HIDDEN. В таком режиме psql показывает запросы, которые генерируют его метакоманды. Это непосредственно позволяет выполнить практическое задание с \\d+ pg_views.",
+      "source": {
+        "key": "postgresql-16-psql-echo-hidden",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Метакоманды psql",
+        "locator": "Описание -E и ECHO_HIDDEN",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql#APP-PSQL-META-COMMANDS"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-022",
+      "type": "multiple_choice",
+      "text": "Какие задания из практики можно выполнить средствами метакоманд psql? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Получить описание pg_class",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Получить подробное описание представления pg_tables",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Получить список схем, включая системные",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Изменить физический формат системных файлов без SQL-команд",
+          "correct": false
+        }
+      ],
+      "explanation": "Практика занятия непосредственно предлагает исследовать pg_class, pg_tables и полный список схем, используя средства просмотра каталога.",
+      "source": {
+        "key": "dba1-09-practice",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика",
+        "locator": "Слайд 10, задания 1–4",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-catalog-023",
+      "type": "single_choice",
+      "text": "Следует ли обычно изменять строки системных каталогов PostgreSQL напрямую?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Нет, обычно следует использовать предназначенные для этого SQL-команды",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Да, это основной рекомендуемый способ создания объектов",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Да, но только через information_schema",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Да, прямое изменение обязательно перед каждой DDL-командой",
+          "correct": false
+        }
+      ],
+      "explanation": "Хотя системные каталоги являются таблицами, документация прямо предупреждает, что вручную изменять их обычно не следует. Для изменения объектов предназначены SQL-команды.",
+      "source": {
+        "key": "postgresql-16-catalog-modification",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Системные каталоги",
+        "locator": "Глава 53, обзор системных каталогов",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalogs"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-024",
+      "type": "multiple_choice",
+      "text": "Какие утверждения описывают связь SQL-команд и системного каталога? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "SELECT можно использовать для чтения метаданных из системного каталога",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "CREATE, ALTER и DROP изменяют описываемые каталогом объекты",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Например, CREATE DATABASE приводит к появлению соответствующей записи в pg_database",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "DDL-команды работают независимо от системного каталога и никогда его не изменяют",
+          "correct": false
+        }
+      ],
+      "explanation": "Системный каталог является рабочей частью PostgreSQL, а не просто отчётом. SQL-команды создания и изменения объектов приводят к соответствующим изменениям метаданных каталога.",
+      "source": {
+        "key": "postgresql-16-catalog-sql",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Системные каталоги",
+        "locator": "Глава 53, обзор и пример CREATE DATABASE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalogs"
+      }
+    }
+  ]
+}

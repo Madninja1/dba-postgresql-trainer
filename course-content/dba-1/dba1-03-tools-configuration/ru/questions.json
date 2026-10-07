@@ -1,0 +1,731 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-tools-configuration",
+  "questions": [
+    {
+      "key": "dba1-tools-configuration-001",
+      "type": "single_choice",
+      "text": "Какой файл является основным файлом конфигурации PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "postgresql.conf",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "postgresql.auto.conf",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "postmaster.pid",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_service.conf",
+          "correct": false
+        }
+      ],
+      "explanation": "Основным файлом конфигурации является postgresql.conf. Он содержит значения параметров сервера и считывается при запуске PostgreSQL.",
+      "source": {
+        "key": "dba1-tools-configuration-postgresql-conf",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "postgresql.conf",
+        "locator": "Слайд 4 «postgresql.conf»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-002",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о postgresql.conf верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он является основным файлом конфигурации",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он может подключать дополнительные файлы конфигурации",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "После изменения части параметров достаточно перечитать конфигурацию, но для некоторых требуется перезапуск сервера",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Он предназначен только для параметров конкретного клиентского сеанса",
+          "correct": false
+        }
+      ],
+      "explanation": "postgresql.conf является основным серверным конфигурационным файлом и допускает подключение дополнительных файлов. Для применения изменений конфигурацию перечитывают, однако часть параметров воспринимается только при запуске сервера.",
+      "source": {
+        "key": "dba1-tools-configuration-postgresql-conf-002",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "postgresql.conf",
+        "locator": "Слайд 4 «postgresql.conf»; документация PostgreSQL 16, раздел 20.1.2 «Определение параметров в файле конфигурации»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-003",
+      "type": "single_choice",
+      "text": "Как узнать расположение используемого сервером файла postgresql.conf средствами PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Посмотреть значение параметра config_file",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Посмотреть значение параметра data_directory и всегда считать его равным пути к postgresql.conf",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Выполнить ALTER SYSTEM RESET config_file",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Посмотреть переменную PSQL_PAGER",
+          "correct": false
+        }
+      ],
+      "explanation": "Расположение основного файла конфигурации отражается параметром config_file. Конспект отдельно предлагает использовать его значение для определения фактического пути к postgresql.conf.",
+      "source": {
+        "key": "dba1-tools-configuration-config-file",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика",
+        "locator": "Слайд 11 «Практика», пояснение к расположению postgresql.conf",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-004",
+      "type": "multiple_choice",
+      "text": "Какими способами из материалов можно заставить работающий сервер перечитать конфигурационные файлы? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_ctl reload",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "SELECT pg_reload_conf();",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Передать главному серверному процессу сигнал SIGHUP",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Выполнить SHOW ALL",
+          "correct": false
+        }
+      ],
+      "explanation": "Перечитывание конфигурации может быть инициировано через pg_ctl reload, SQL-функцию pg_reload_conf() или сигнал SIGHUP главному серверному процессу. Это не означает, что параметры, действующие только после старта, применятся без перезапуска.",
+      "source": {
+        "key": "dba1-tools-configuration-reload",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "postgresql.conf",
+        "locator": "Слайд 4 «postgresql.conf»; документация PostgreSQL 16, раздел 20.1.2",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-005",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о подключении дополнительных файлов конфигурации верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Директива include подключает указанный файл",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Директива include_if_exists позволяет продолжить обработку, если подключаемый файл отсутствует или недоступен для чтения",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Директива include_dir подключает подходящие конфигурационные файлы из каталога",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "include_dir применяет файлы только в случайном порядке",
+          "correct": false
+        }
+      ],
+      "explanation": "PostgreSQL поддерживает include, include_if_exists и include_dir. include_dir позволяет разбивать конфигурацию на несколько .conf-файлов, которые обрабатываются в определённом порядке имён.",
+      "source": {
+        "key": "dba1-tools-configuration-includes",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "postgresql.conf",
+        "locator": "Практика — директива include_dir; документация PostgreSQL 16, раздел 20.1.5 «Упорядочение содержимого файлов конфигурации»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-006",
+      "type": "single_choice",
+      "text": "Один параметр несколько раз задан в последовательно читаемых конфигурационных файлах. Какое значение будет использовать PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Значение, прочитанное последним",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Значение из первого определения",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Среднее значение всех определений",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "PostgreSQL всегда завершит запуск с ошибкой из-за повторного параметра",
+          "correct": false
+        }
+      ],
+      "explanation": "Если параметр определён несколько раз, действует последнее прочитанное определение. Поэтому порядок подключаемых конфигурационных файлов имеет значение.",
+      "source": {
+        "key": "dba1-tools-configuration-precedence",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "postgresql.conf",
+        "locator": "Раздел о порядке чтения параметров; документация PostgreSQL 16, разделы 20.1.2 и 20.1.5",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-007",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о postgresql.auto.conf верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он используется для параметров, задаваемых через ALTER SYSTEM",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он считывается после postgresql.conf",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Он всегда находится в каталоге данных PGDATA",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Материал рекомендует редактировать его вручную вместо ALTER SYSTEM",
+          "correct": false
+        }
+      ],
+      "explanation": "postgresql.auto.conf предназначен для настроек ALTER SYSTEM, располагается в PGDATA и считывается после postgresql.conf. Конспект подчёркивает, что вручную его редактировать не следует.",
+      "source": {
+        "key": "dba1-tools-configuration-auto-conf",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "postgresql.auto.conf",
+        "locator": "Слайд 6 «postgresql.auto.conf»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-008",
+      "type": "single_choice",
+      "text": "Что делает команда ALTER SYSTEM RESET work_mem; с записью параметра work_mem в postgresql.auto.conf?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Удаляет соответствующую настройку из postgresql.auto.conf",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Записывает в postgresql.auto.conf значение 0",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Удаляет весь файл postgresql.auto.conf",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Меняет параметр только до конца текущей транзакции",
+          "correct": false
+        }
+      ],
+      "explanation": "ALTER SYSTEM RESET удаляет настройку указанного параметра из postgresql.auto.conf. Для удаления всех параметров, заданных таким способом, существует ALTER SYSTEM RESET ALL.",
+      "source": {
+        "key": "dba1-tools-configuration-alter-system",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "postgresql.auto.conf",
+        "locator": "Слайд 6 «postgresql.auto.conf»; документация PostgreSQL 16 — ALTER SYSTEM",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-altersystem"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-009",
+      "type": "multiple_choice",
+      "text": "Какие утверждения об ALTER SYSTEM верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Команда изменяет параметры, распространяющиеся на весь кластер",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Она записывает настройки в postgresql.auto.conf",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Её нельзя выполнять внутри блока транзакции",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Любое изменение через ALTER SYSTEM немедленно действует без перечитывания конфигурации или перезапуска",
+          "correct": false
+        }
+      ],
+      "explanation": "ALTER SYSTEM является SQL-интерфейсом для глобальных параметров и изменяет postgresql.auto.conf. Команда работает с файловой системой и не может быть помещена в блок транзакции. Новое значение применяется после перечитывания конфигурации либо после перезапуска для параметров, воспринимаемых только при старте.",
+      "source": {
+        "key": "dba1-tools-configuration-alter-system-009",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "postgresql.auto.conf",
+        "locator": "Слайд 6 «postgresql.auto.conf»; документация PostgreSQL 16 — ALTER SYSTEM, раздел «Описание»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-altersystem"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-010",
+      "type": "single_choice",
+      "text": "В каком представлении нужно смотреть действующие значения параметров PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_settings",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_file_settings",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_stat_database",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_database",
+          "correct": false
+        }
+      ],
+      "explanation": "Конспект различает два представления: pg_file_settings показывает содержимое файлов конфигурации, а pg_settings — действующие значения параметров.",
+      "source": {
+        "key": "dba1-tools-configuration-settings-views",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "postgresql.auto.conf",
+        "locator": "Слайд 6 — pg_file_settings и pg_settings",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-011",
+      "type": "multiple_choice",
+      "text": "Какие способы работы с параметрами текущего сеанса указаны в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "SET изменяет допустимый параметр текущего сеанса",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "set_config позволяет изменить параметр программно через SQL-функцию",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "SHOW и current_setting позволяют получить текущее значение параметра",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "SET текущего сеанса автоматически изменяет postgresql.conf",
+          "correct": false
+        }
+      ],
+      "explanation": "В текущем сеансе значения можно менять командой SET или функцией set_config, а читать командой SHOW или функцией current_setting. Такие изменения не означают редактирование серверного файла postgresql.conf.",
+      "source": {
+        "key": "dba1-tools-configuration-session",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "В текущем сеансе",
+        "locator": "Слайд 7 «В текущем сеансе»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-012",
+      "type": "single_choice",
+      "text": "До какого момента действует значение, установленное командой SET LOCAL внутри транзакции?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "До конца текущей транзакции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "До перезапуска операционной системы",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "До удаления postgresql.auto.conf",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Для всех последующих подключений к кластеру",
+          "correct": false
+        }
+      ],
+      "explanation": "В материале различаются настройки до конца сеанса и до конца транзакции. SET LOCAL ограничивает изменение текущей транзакцией.",
+      "source": {
+        "key": "dba1-tools-configuration-session-012",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "В текущем сеансе",
+        "locator": "Слайд 7 «В текущем сеансе», SET LOCAL",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-013",
+      "type": "multiple_choice",
+      "text": "Какие типы значений параметров конфигурации перечислены в документации PostgreSQL? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Логический",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Строка",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Целое или число с плавающей точкой",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Перечисление",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "SQL-таблица как самостоятельный тип параметра конфигурации",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация перечисляет пять типов параметров: логический, строковый, целое число, число с плавающей точкой и перечисление.",
+      "source": {
+        "key": "dba1-tools-configuration-parameter-values",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Изменение параметров",
+        "locator": "Документация PostgreSQL 16, раздел 20.1.1 «Имена и значения параметров»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-014",
+      "type": "single_choice",
+      "text": "Когда начинают применяться значения, заданные для базы данных или роли командами ALTER DATABASE и ALTER ROLE?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "При новом подключении к базе данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Немедленно во всех уже открытых сеансах",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только после удаления postgresql.conf",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только после выполнения ALTER SYSTEM RESET ALL",
+          "correct": false
+        }
+      ],
+      "explanation": "Значения, настроенные через ALTER DATABASE и ALTER ROLE, применяются при новом подключении. Они не изменяют автоматически уже работающие сеансы.",
+      "source": {
+        "key": "dba1-tools-configuration-sql-levels",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Управление параметрами через SQL",
+        "locator": "Документация PostgreSQL 16, раздел 20.1.3 «Управление параметрами через SQL»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-015",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о задании параметров через командную строку и клиентское подключение верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Серверу postgres можно передавать параметры с помощью аргумента -c",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Параметры сервера, переданные через -c при запуске, имеют приоритет над postgresql.conf и ALTER SYSTEM",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Для клиентского сеанса libpq параметры можно передать через PGOPTIONS",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "PGOPTIONS изменяет значения параметров сразу во всех существующих сеансах сервера",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация позволяет передавать серверу параметры через postgres -c; такие значения имеют более высокий приоритет, чем настройки из файлов и ALTER SYSTEM. Для отдельного сеанса libpq можно использовать PGOPTIONS, что не влияет на другие сеансы.",
+      "source": {
+        "key": "dba1-tools-configuration-command-line",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Управление параметрами в командной строке",
+        "locator": "Документация PostgreSQL 16, раздел 20.1.4 «Управление параметрами в командной строке»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-016",
+      "type": "single_choice",
+      "text": "Какие два основных формата строк параметров подключения принимает libpq согласно документации?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Формат ключ=значение и URI",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только JSON и XML",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только YAML и URI",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Формат CSV и файл postgresql.conf",
+          "correct": false
+        }
+      ],
+      "explanation": "Для строки параметров подключения libpq предусмотрены два формата: последовательность пар ключ=значение и URI подключения.",
+      "source": {
+        "key": "dba1-tools-configuration-connstring",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Строки параметров подключения",
+        "locator": "Документация PostgreSQL 16, раздел 34.1.1 «Строки параметров подключения»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/libpq-connect#LIBPQ-CONNSTRING"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-017",
+      "type": "multiple_choice",
+      "text": "Какие строки соответствуют правилам формата подключения libpq «ключ=значение»? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "host=localhost port=5432 dbname=mydb",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "host = localhost dbname = mydb",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "application_name='my app' dbname=mydb",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "host:localhost;port:5432;dbname:mydb",
+          "correct": false
+        }
+      ],
+      "explanation": "В формате key/value каждый параметр задаётся как ключ=значение. Пробелы вокруг знака равенства необязательны, а значение с пробелом можно заключить в одинарные кавычки.",
+      "source": {
+        "key": "dba1-tools-configuration-connstring-key-value",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Строки параметров подключения",
+        "locator": "Документация PostgreSQL 16, раздел 34.1.1.1 «Строки параметров подключения вида ключ/значение»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/libpq-connect#LIBPQ-CONNSTRING"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-018",
+      "type": "single_choice",
+      "text": "Какая строка имеет корректную основную форму URI подключения PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "postgresql://user@dbhost:5432/mydb",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "postgresql::user::dbhost::5432::mydb",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "postgresql=user@dbhost;5432;mydb",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "dbhost://postgresql/user/mydb/5432",
+          "correct": false
+        }
+      ],
+      "explanation": "Основная форма URI имеет вид postgresql://[пользователь@][сервер][/база_данных][?параметры]. В качестве схемы также допускается postgres://.",
+      "source": {
+        "key": "dba1-tools-configuration-connstring-uri",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "URI для подключения",
+        "locator": "Документация PostgreSQL 16, раздел 34.1.1.2 «URI для подключения»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/libpq-connect#LIBPQ-CONNSTRING"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-019",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о нескольких узлах в строке подключения libpq верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В URI можно перечислить несколько пар host:port через запятую",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "В формате ключ=значение параметры host и port могут содержать списки через запятую",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Узлы и адреса перебираются по порядку, пока не будет установлено подключение",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "При успешном соединении и ошибке аутентификации libpq обязательно продолжает перебирать все остальные узлы",
+          "correct": false
+        }
+      ],
+      "explanation": "libpq поддерживает несколько узлов как в URI, так и в формате ключ=значение. Адреса перебираются последовательно до успешного подключения. Если соединение установлено, но аутентификация завершилась ошибкой, остальные узлы уже не перебираются.",
+      "source": {
+        "key": "dba1-tools-configuration-connstring-multihost",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Указание нескольких узлов",
+        "locator": "Документация PostgreSQL 16, раздел 34.1.1.3 «Указание нескольких узлов»",
+        "url": "https://postgrespro.ru/docs/postgresql/16/libpq-connect#LIBPQ-CONNSTRING"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-020",
+      "type": "single_choice",
+      "text": "В практическом задании в дополнительный конфигурационный файл внесено ошибочное значение max_connections, после чего сервер не стартует. Какое действие предлагается материалом для диагностики?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Проверить журнал сообщений сервера",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Удалить весь каталог PGDATA",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Выполнить ALTER SYSTEM RESET ALL на неработающем сервере",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Игнорировать ошибку и несколько раз повторить подключение psql",
+          "correct": false
+        }
+      ],
+      "explanation": "Практика предлагает намеренно сделать ошибку в подключаемом файле с max_connections, убедиться, что сервер не запускается, проверить журнал сообщений, затем исправить ошибку и снова запустить сервер.",
+      "source": {
+        "key": "dba1-tools-configuration-practice-invalid",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика",
+        "locator": "Слайд 11 «Практика», задание 2",
+        "url": null
+      }
+    }
+  ]
+}

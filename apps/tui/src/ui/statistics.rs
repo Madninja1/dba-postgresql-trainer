@@ -9,6 +9,8 @@ use ratatui::{
 
 use crate::app::{App, StatisticsView};
 
+use super::common::topic_display_number;
+
 pub fn render(frame: &mut Frame, app: &App) {
     let strings = app.strings();
 
@@ -48,15 +50,14 @@ pub fn render(frame: &mut Frame, app: &App) {
             let course_accuracy = accuracy_label(app.statistics_for_course(course_code));
             let mut labels = vec![format!("{}    {course_accuracy}", strings.all_topics)];
 
-            labels.extend(
-                app.statistics_topics_for_course(course_code)
-                    .into_iter()
-                    .enumerate()
-                    .map(|(index, topic)| {
-                        let accuracy = accuracy_label(app.statistics_for_topic(topic.id));
-                        format!("{:02}. {}    {}", index + 1, topic.title, accuracy)
-                    }),
-            );
+            let topics = app.statistics_topics_for_course(course_code);
+
+            labels.extend(topics.iter().enumerate().map(|(index, topic)| {
+                let accuracy = accuracy_label(app.statistics_for_topic(topic.id));
+                let display_number = topic_display_number(&topics, index);
+
+                format!("{display_number}. {}    {}", topic.title, accuracy)
+            }));
 
             render_menu(
                 frame,

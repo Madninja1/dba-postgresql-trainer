@@ -10,6 +10,9 @@ pub struct TopicDocument {
     pub course: String,
     pub slug: String,
 
+    pub notes_part: i64,
+    pub topic_number: i64,
+
     pub title: String,
     pub description: Option<String>,
 

@@ -1,0 +1,1831 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-smart-pointers-concurrency",
+  "questions": [
+    {
+      "key": "rust1-smart-pointers-concurrency-001",
+      "type": "single_choice",
+      "text": "Что является основной моделью `Box<T>` в материале?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Один владелец, а значение размещается в куче",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Несколько владельцев с атомарным счётчиком",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Runtime-проверка заимствований",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Канал между потоками",
+          "correct": false
+        }
+      ],
+      "explanation": "`Box<T>` владеет значением, размещённым в heap. Сам указатель имеет известный размер и освобождает данные вместе с собой.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-box",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — `Box<T>` и данные в куче, PDF стр. 409–420",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-002",
+      "type": "single_choice",
+      "text": "Почему `Box<List>` позволяет определить рекурсивный тип списка, где прямое поле `List` не подходит?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Размер `Box` известен независимо от размера вложенного `List`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`Box` запрещает рекурсию во время выполнения",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`Box` автоматически превращает `List` в enum без данных",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`Box` хранит только `Copy`-типы",
+          "correct": false
+        }
+      ],
+      "explanation": "Прямая рекурсия не даёт вычислить конечный размер типа. `Box` разрывает эту цепочку указателем фиксированного размера на следующий элемент.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-box-recursive",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — рекурсивные типы с `Box<T>`, PDF стр. 411–420",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-003",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о traits `Deref` и `Drop` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`Deref` позволяет умному указателю вести себя подобно ссылке",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`Drop` запускает код очистки при выходе значения из области видимости",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Эти traits являются характерной частью поведения умных указателей",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`Drop` вызывается только вручную оператором `*`",
+          "correct": false
+        }
+      ],
+      "explanation": "В главе `Deref` связывается с разыменованием и автоматическими преобразованиями ссылок, а `Drop` — с автоматической очисткой ресурсов.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-deref-drop",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — traits `Deref` и `Drop`, PDF стр. 421–433",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-004",
+      "type": "single_choice",
+      "text": "Что демонстрирует цепочка `&Box<String> -> &String -> &str`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Deref coercion",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Reference counting",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Channel ownership transfer",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Mutex poisoning",
+          "correct": false
+        }
+      ],
+      "explanation": "Rust может автоматически применить `Deref`, чтобы привести ссылку на умный указатель к ожидаемой ссылке на внутренний тип.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-deref",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — неявные deref coercions, PDF стр. 424–429",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-005",
+      "type": "single_choice",
+      "text": "Когда вызывается пользовательская реализация `Drop::drop`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Автоматически при выходе значения из области видимости",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только при `cargo clean`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только после `Rc::clone`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "При каждом разыменовании `*value`",
+          "correct": false
+        }
+      ],
+      "explanation": "`Drop` является частью RAII-модели: код очистки запускается автоматически при уничтожении значения.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-drop",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — trait `Drop`, PDF стр. 430–433",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-006",
+      "type": "multiple_choice",
+      "text": "Какие свойства `Rc<T>` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Поддерживает несколько владельцев одних данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Использует счётчик сильных ссылок",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`Rc::clone` увеличивает счётчик, а не глубоко копирует данные",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Предназначен прежде всего для передачи между потоками",
+          "correct": false
+        }
+      ],
+      "explanation": "`Rc<T>` — reference-counted shared ownership для однопоточного кода. Клонирование `Rc` создаёт ещё одного владельца общих данных.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-rc",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — `Rc<T>` и множественное владение, PDF стр. 434–440",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-007",
+      "type": "single_choice",
+      "text": "Когда данные внутри `Rc<T>` могут быть освобождены по модели главы?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Когда `strong_count` становится равен нулю",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "После первого `Rc::clone`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Сразу после создания `Weak<T>`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только при завершении всего процесса",
+          "correct": false
+        }
+      ],
+      "explanation": "Сильные `Rc`-ссылки выражают владение. Когда владельцев больше не остаётся, счётчик сильных ссылок достигает нуля и данные могут быть уничтожены.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-rc-q007",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — счётчик ссылок `Rc<T>`, PDF стр. 434–440",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-008",
+      "type": "multiple_choice",
+      "text": "Что меняется при использовании `RefCell<T>` по сравнению с обычными `&` и `&mut`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Правила заимствования остаются теми же",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Проверка правил переносится со времени компиляции на runtime",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Нарушение правил может привести к panic во время выполнения",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`RefCell<T>` делает любое число `&mut` одновременно безопасным",
+          "correct": false
+        }
+      ],
+      "explanation": "`RefCell<T>` сохраняет правило «много читателей или один писатель», но проверяет его во время выполнения через `borrow` и `borrow_mut`.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-refcell",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — `RefCell<T>` и внутренняя изменяемость, PDF стр. 441–447",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-009",
+      "type": "single_choice",
+      "text": "Что обычно выражает комбинация `Rc<RefCell<T>>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Несколько владельцев и изменяемое внутреннее значение в однопоточном коде",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Атомарное владение между потоками",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только неизменяемое владение одним объектом",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Неблокирующий канал сообщений",
+          "correct": false
+        }
+      ],
+      "explanation": "`Rc` даёт shared ownership, а `RefCell` — interior mutability с runtime-проверкой заимствований. Эта комбинация рассматривается для одного потока.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-rc-refcell",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — сочетание `Rc<T>` и `RefCell<T>`, PDF стр. 444–447",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-010",
+      "type": "multiple_choice",
+      "text": "Какие последствия может иметь сильный цикл `Rc<T>`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Сильные счётчики могут никогда не стать нулевыми",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Данные могут остаться неосвобождёнными",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Такой цикл может привести к утечке памяти",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Borrow checker гарантированно удаляет любой цикл автоматически",
+          "correct": false
+        }
+      ],
+      "explanation": "Взаимные сильные `Rc`-ссылки способны удерживать друг друга живыми. Без внешних владельцев счётчики всё равно остаются ненулевыми, что создаёт утечку.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-rc-cycle",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — ссылочные зацикливания и утечки памяти, PDF стр. 447–452",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-011",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `Weak<T>` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Создаётся из `Rc` через `Rc::downgrade`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Не увеличивает `strong_count`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`upgrade()` возвращает `Option<Rc<T>>`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Гарантирует, что объект никогда не будет уничтожен",
+          "correct": false
+        }
+      ],
+      "explanation": "`Weak<T>` представляет невладеющую связь. Объект может уже быть уничтожен, поэтому `upgrade()` должен выразить оба случая через `Option`.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-weak",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — предотвращение циклов с `Weak<T>`, PDF стр. 452–457",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-012",
+      "type": "single_choice",
+      "text": "Почему для ссылки ребёнка на родителя в дереве удобно использовать `Weak<T>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Ребёнок может знать о родителе, не удерживая его как владельца и не создавая сильный цикл",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`Weak` автоматически делает родителя `Copy`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`Weak` разрешает менять данные без правил borrowing",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`Weak` предназначен только для сетевых соединений",
+          "correct": false
+        }
+      ],
+      "explanation": "Связь от родителя к ребёнку может быть сильной, а обратная связь — `Weak`, потому что она не должна определять время жизни родителя.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-weak-q012",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — пример дерева с `Rc<T>` и `Weak<T>`, PDF стр. 452–457",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-013",
+      "type": "multiple_choice",
+      "text": "Что верно о `thread::spawn` и `JoinHandle`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`thread::spawn` создаёт новый поток выполнения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Возвращаемый `JoinHandle` можно использовать с `join()`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`join()` ждёт завершения соответствующего потока",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Порядок выполнения потоков после `spawn` гарантирован заранее",
+          "correct": false
+        }
+      ],
+      "explanation": "Потоки могут выполняться в разном порядке. `JoinHandle::join` даёт явный механизм ожидания завершения.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-threads",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 16 — создание потоков и `join`, PDF стр. 459–465",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-014",
+      "type": "single_choice",
+      "text": "Зачем часто нужен `move` в замыкании, передаваемом `thread::spawn`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы передать нужные значения во владение замыканию нового потока",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы заставить новый поток выполняться первым",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы отключить `Send`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы автоматически создать `Mutex`",
+          "correct": false
+        }
+      ],
+      "explanation": "Новый поток может пережить исходную область видимости, поэтому `move` передаёт значения в замыкание и устраняет зависимость от заимствований локальных переменных.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-threads-q014",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 16 — `move`-замыкания в потоках, PDF стр. 462–465",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-015",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о канале `mpsc` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`tx` используется для отправки",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`rx` используется для получения",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Отправка non-`Copy` значения передаёт его ownership",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Можно клонировать передатчик для нескольких производителей",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`rx` клонируют для создания нескольких независимых получателей",
+          "correct": false
+        }
+      ],
+      "explanation": "Модель канала — передача сообщений и владения от производителей к получателю. `mpsc` допускает несколько передатчиков и одного получателя.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-channels",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 16 — передача сообщений между потоками через каналы, PDF стр. 466–474",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-016",
+      "type": "single_choice",
+      "text": "Чем `recv()` отличается от `try_recv()`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`recv()` блокируется в ожидании сообщения, а `try_recv()` сразу возвращает результат",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`try_recv()` удаляет канал",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`recv()` работает только в главном потоке",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`try_recv()` всегда возвращает сообщение",
+          "correct": false
+        }
+      ],
+      "explanation": "`recv()` ждёт сообщение или закрытие канала, а `try_recv()` позволяет проверить канал без блокировки текущего потока.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-channels-q016",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 16 — `recv` и `try_recv`, PDF стр. 468–472",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-017",
+      "type": "multiple_choice",
+      "text": "Что происходит при работе с `Mutex<T>`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`lock()` пытается получить эксклюзивную блокировку",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "При занятой блокировке поток может ждать",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`MutexGuard` предоставляет доступ к защищённому значению",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Выход `MutexGuard` из области видимости снимает блокировку через `Drop`",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`lock()` возвращает прямую `&mut T` без guard-объекта",
+          "correct": false
+        }
+      ],
+      "explanation": "`Mutex` сериализует изменяемый доступ, а `MutexGuard` связывает время удержания блокировки с областью видимости благодаря `Drop`.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-mutex",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 16 — общий доступ к состоянию с `Mutex<T>`, PDF стр. 475–481",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-018",
+      "type": "single_choice",
+      "text": "Почему `Rc<Mutex<T>>` не является заменой `Arc<Mutex<T>>` для нескольких потоков?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`Rc<T>` не предназначен для потокобезопасного обновления счётчика и не реализует `Send`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`Mutex<T>` нельзя помещать внутрь `Rc` даже в одном потоке",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`Arc<T>` всегда хранит данные только на стеке",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`Rc<T>` не поддерживает `clone`",
+          "correct": false
+        }
+      ],
+      "explanation": "Счётчик `Rc` не потокобезопасен. Для reference-counted владения между потоками книга использует атомарный `Arc<T>`.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-arc",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 16 — совместное использование `Mutex<T>` между потоками, PDF стр. 480–484",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-019",
+      "type": "multiple_choice",
+      "text": "Как лучше всего читать комбинацию `Arc<Mutex<T>>` по материалу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`Arc` даёт нескольким потокам совместное владение",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`Mutex` разрешает одному потоку за раз изменяемый доступ",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Комбинация является многопоточным аналогом идеи `Rc<RefCell<T>>`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Она гарантирует отсутствие любых deadlock",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга прямо сопоставляет `Rc<RefCell<T>>` в однопоточном коде и `Arc<Mutex<T>>` в многопоточном. Логические взаимные блокировки при этом всё ещё возможны.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-arc-mutex",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 16 — `Arc<Mutex<T>>` и риски deadlock, PDF стр. 480–484",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-020",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о marker traits `Send` и `Sync` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`Send` означает, что владение значением можно безопасно передать между потоками",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`Sync` означает, что ссылки на значение можно безопасно использовать из нескольких потоков",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`Rc<T>` приведён как пример типа, который не является `Send`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Тип, полностью состоящий из `Send`-типов, обычно автоматически становится `Send`",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`Rc<T>` безопасно передавать между потоками, потому что его счётчик ссылок атомарный",
+          "correct": false
+        }
+      ],
+      "explanation": "В конце главы 16 `Send` и `Sync` представлены как встроенные в язык маркерные гарантии для передачи владения и совместного доступа между потоками.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-send-sync",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 16 — «Расширенная многопоточность с помощью типажей Sync и Send», PDF стр. 484–486",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-021",
+      "type": "single_choice",
+      "text": "В каком случае `Box<T>` особенно полезен помимо простого размещения в куче?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Когда нужен рекурсивный тип с известным размером указателя",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Когда требуется несколько потокобезопасных владельцев",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Когда нужны runtime-проверки borrowing",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Когда нужно отправить сообщение через канал",
+          "correct": false
+        }
+      ],
+      "explanation": "`Box<T>` разрывает рекурсивное вычисление размера типом указателя фиксированного размера.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-box-use",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — рекурсивные типы с Box, PDF стр. 411–420",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-022",
+      "type": "multiple_choice",
+      "text": "Какие характеристики обычной ссылки и `Box<T>` сопоставляются в главе? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Оба позволяют обращаться к данным через разыменование",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`Box<T>` владеет данными, на которые указывает",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Обычная ссылка заимствует значение",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`Box<T>` автоматически даёт множественное владение как `Rc<T>`",
+          "correct": false
+        }
+      ],
+      "explanation": "Box — владеющий умный указатель, обычная ссылка — заимствующий указатель.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-box-reference",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — введение в умные указатели и Box, PDF стр. 408–412",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-023",
+      "type": "single_choice",
+      "text": "Что должен возвращать `Deref::deref` в реализации `MyBox<T>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Ссылку `&Self::Target` на внутреннее значение",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Сам `T` по владению",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Всегда `Box<T>`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`Option<&T>`",
+          "correct": false
+        }
+      ],
+      "explanation": "Trait `Deref` определяет `Target`, а `deref(&self)` возвращает ссылку на целевое значение.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-deref-impl",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — реализация Deref для MyBox, PDF стр. 422–425",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-024",
+      "type": "multiple_choice",
+      "text": "Почему `Deref::deref` возвращает ссылку, а не значение по владению? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Иначе разыменование могло бы переместить значение из `self`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Ссылка позволяет получить доступ без передачи ownership",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Это соответствует семантике разыменования ссылок",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`Deref` предназначен только для `Copy`-типов",
+          "correct": false
+        }
+      ],
+      "explanation": "Возвращение ссылки сохраняет правила владения и не перемещает внутреннее значение.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-deref-impl-q024",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — почему deref возвращает ссылку, PDF стр. 424–425",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-025",
+      "type": "single_choice",
+      "text": "Где Rust применяет deref coercion по описанию главы?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для аргументов функций и методов, когда тип ссылки можно привести через `Deref`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только в арифметике",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только внутри unsafe",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только при создании Rc",
+          "correct": false
+        }
+      ],
+      "explanation": "Deref coercion работает для ссылочных аргументов функций и методов.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-deref-coercion",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — deref coercions, PDF стр. 425–429",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-026",
+      "type": "multiple_choice",
+      "text": "Какие преобразования deref coercion разрешены? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`&T` в `&U`, если `T: Deref<Target=U>`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`&mut T` в `&mut U`, если `T: DerefMut<Target=U>`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`&mut T` в `&U`, если `T: Deref<Target=U>`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`&T` в `&mut U` без условий",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал перечисляет эти три допустимых направления.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-deref-mutability",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — deref coercion и изменяемость, PDF стр. 428–429",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-027",
+      "type": "single_choice",
+      "text": "В каком порядке автоматически вызывается `drop` для двух локальных значений, созданных последовательно?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В обратном порядке создания",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Всегда в порядке создания",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "В случайном порядке",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "По алфавиту имён",
+          "correct": false
+        }
+      ],
+      "explanation": "В примере значения уничтожаются в обратном порядке при выходе из scope.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-drop-order",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — автоматический Drop, PDF стр. 430–432",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-028",
+      "type": "multiple_choice",
+      "text": "Что верно о досрочном освобождении значения с `Drop`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Нельзя напрямую вызывать `c.drop()`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для досрочного уничтожения используют `std::mem::drop(c)`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Функция доступна как `drop(c)`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "После `drop(c)` значение больше нельзя использовать",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Рекомендуемый способ досрочного уничтожения — прямой вызов `c.drop()`",
+          "correct": false
+        }
+      ],
+      "explanation": "Rust запрещает ручной вызов метода Drop и предлагает функцию `drop`, которая забирает владение.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-early-drop",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — `std::mem::drop`, PDF стр. 432–434",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-029",
+      "type": "single_choice",
+      "text": "Почему с `Rc<T>` часто пишут `Rc::clone(&a)`, а не `a.clone()`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы подчеркнуть увеличение счётчика, а не глубокое копирование данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Потому что у Rc нет Clone",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Потому что `Rc::clone` делает глубокую копию",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Это единственный допустимый синтаксис",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга отмечает эту конвенцию для визуального отличия дешёвого клонирования Rc.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-rc-clone",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — Rc::clone, PDF стр. 435–438",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-030",
+      "type": "multiple_choice",
+      "text": "Как меняется `Rc::strong_count`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "После создания первого Rc счётчик равен 1",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Каждый `Rc::clone` увеличивает счётчик",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Когда клон выходит из scope, счётчик уменьшается",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Создание Weak увеличивает strong count",
+          "correct": false
+        }
+      ],
+      "explanation": "Strong count учитывает владеющие Rc-ссылки, но не Weak.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-rc-counts",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — Rc::strong_count, PDF стр. 437–440",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-031",
+      "type": "single_choice",
+      "text": "Какой риск переносит `RefCell<T>` со времени компиляции во время выполнения?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Нарушение borrowing-правил может вызвать panic во время выполнения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Тип перестаёт иметь владельца",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Значение автоматически становится Send",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Все ошибки типов становятся runtime-ошибками",
+          "correct": false
+        }
+      ],
+      "explanation": "RefCell проверяет заимствования динамически.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-refcell-runtime",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — RefCell и runtime borrowing, PDF стр. 440–445",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-032",
+      "type": "multiple_choice",
+      "text": "Какие методы `RefCell<T>` соответствуют видам заимствования? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`borrow()` возвращает `Ref<T>`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`borrow_mut()` возвращает `RefMut<T>`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Разрешено много immutable borrow или один mutable borrow",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`borrow_mut()` можно одновременно вызывать неограниченно",
+          "correct": false
+        }
+      ],
+      "explanation": "RefCell поддерживает те же правила, но проверяет их во время выполнения.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-refcell-api",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — borrow и borrow_mut, PDF стр. 441–445",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-033",
+      "type": "single_choice",
+      "text": "Что иллюстрирует mock-объект с `RefCell<Vec<String>>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Interior mutability: метод с `&self` может менять внутреннее состояние через RefCell",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Многопоточную очередь без блокировок",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Ссылочный цикл Rc",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Использование unsafe для тестов",
+          "correct": false
+        }
+      ],
+      "explanation": "Mock сохраняет сообщения через RefCell при trait-методе с `&self`.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-interior-mutability",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — паттерн внутренней изменяемости, PDF стр. 442–446",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-034",
+      "type": "multiple_choice",
+      "text": "Что верно о ссылочных циклах с `Rc<RefCell<T>>`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Можно создать цикл владения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Strong count может не достичь нуля",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Rust допускает memory-safe утечки",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "RefCell гарантированно разрывает цикл",
+          "correct": false
+        }
+      ],
+      "explanation": "Сильные циклы Rc могут удерживать память, и это не нарушает memory safety.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-reference-cycle",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — ссылочные циклы, PDF стр. 447–452",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-035",
+      "type": "single_choice",
+      "text": "Что возвращает `Weak::upgrade()` после уничтожения всех сильных владельцев?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`None`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Новый Rc с восстановленными данными",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Dangling reference",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Всегда `Some`",
+          "correct": false
+        }
+      ],
+      "explanation": "Weak не удерживает объект живым, поэтому upgrade может вернуть None.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-weak-upgrade",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — Weak и upgrade, PDF стр. 452–456",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-036",
+      "type": "multiple_choice",
+      "text": "Как устроены связи в дереве `Node`, чтобы избежать цикла владения? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`children` хранит сильные `Rc<Node>`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`parent` хранит `Weak<Node>` внутри RefCell",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Родитель владеет детьми",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Ребёнок не владеет родителем сильной ссылкой",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`parent` хранит сильный `Rc<Node>`, поэтому ребёнок владеет родителем",
+          "correct": false
+        }
+      ],
+      "explanation": "Направление владения идёт от parent к children, обратная связь слабая.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-tree-weak",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 15 — дерево с Rc, RefCell и Weak, PDF стр. 452–457",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-037",
+      "type": "single_choice",
+      "text": "Что происходит, если `main` завершится раньше spawned-потока и его не ожидать?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Порождённый поток может не успеть завершить работу",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Поток гарантированно продолжит процесс после main",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Rust автоматически вставит join",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Это compile-time ошибка",
+          "correct": false
+        }
+      ],
+      "explanation": "Завершение главного потока завершает программу, поэтому spawned-поток может оборваться.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-spawn-lifetime",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 16 — thread::spawn, PDF стр. 459–462",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-038",
+      "type": "multiple_choice",
+      "text": "Как положение `handle.join().unwrap()` влияет на пример? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "После цикла main потоки могут чередоваться до ожидания",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Перед циклом main заставляет дождаться spawned-потока",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`join` блокирует текущий поток до завершения связанного",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`join` гарантирует один и тот же порядок всех строк при любом расположении",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга показывает, что место join влияет на порядок и степень одновременности.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-join-order",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 16 — JoinHandle::join, PDF стр. 461–463",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-039",
+      "type": "single_choice",
+      "text": "Что означает `mpsc` в `std::sync::mpsc`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Multiple producer, single consumer",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Mutable pointer, shared clone",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Message process synchronization channel",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Multiple process, shared consumer",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал расшифровывает mpsc как multiple producer, single consumer.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-mpsc",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 16 — каналы, PDF стр. 466–468",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-040",
+      "type": "multiple_choice",
+      "text": "Какие свойства `mpsc::channel()` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Возвращает sender и receiver",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Sender обычно называют `tx`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Receiver обычно называют `rx`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Receiver клонируют для каждого producer",
+          "correct": false
+        }
+      ],
+      "explanation": "Несколько producers создаются клонированием sender, consumer остаётся один.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-mpsc-q040",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 16 — создание канала, PDF стр. 466–469",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-041",
+      "type": "single_choice",
+      "text": "Почему после `tx.send(val).unwrap()` нельзя использовать отправленный `String val`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`send` получает значение во владение и передаёт ownership",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Канал удаляет строку без передачи",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "String становится `&str`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Это ограничение только debug",
+          "correct": false
+        }
+      ],
+      "explanation": "Отправка non-Copy значения перемещает ownership через канал.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-channel-ownership",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 16 — каналы и ownership, PDF стр. 469–471",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-042",
+      "type": "multiple_choice",
+      "text": "Что происходит при `for received in rx`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Receiver выдаёт сообщения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Цикл может ждать сообщения, пока канал открыт",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "После уничтожения всех sender итерация заканчивается",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Число сообщений нужно знать заранее",
+          "correct": false
+        }
+      ],
+      "explanation": "Receiver может использоваться как итератор до закрытия канала.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-rx-iterator",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 16 — итерация по receiver, PDF стр. 471–474",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-043",
+      "type": "single_choice",
+      "text": "Как создать второго producer для того же канала?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Клонировать `tx`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Клонировать `rx`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Создать независимый канал",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Обязательно обернуть tx в Mutex",
+          "correct": false
+        }
+      ],
+      "explanation": "В примере второй producer получает clone sender.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-multiple-producers",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 16 — несколько producers, PDF стр. 473–475",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-044",
+      "type": "multiple_choice",
+      "text": "Какие правила работы с `Mutex<T>` подчёркиваются? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Перед доступом нужно получить lock",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "После работы lock должен быть освобождён",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "MutexGuard освобождает lock через Drop",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Можно менять данные без `lock()` из любого потока",
+          "correct": false
+        }
+      ],
+      "explanation": "Mutex требует получить блокировку, а guard снимает её автоматически.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-mutex-rules",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 16 — Mutex API, PDF стр. 475–478",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-045",
+      "type": "single_choice",
+      "text": "Почему `counter.lock().unwrap()` возвращает guard?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Guard даёт доступ к данным и освобождает блокировку при Drop",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Guard нужен только для Debug",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Mutex не содержит значения",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы автоматически клонировать значение",
+          "correct": false
+        }
+      ],
+      "explanation": "MutexGuard реализует доступ к данным и автоматическое снятие lock.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-mutex-guard",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 16 — MutexGuard, PDF стр. 476–479",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-046",
+      "type": "multiple_choice",
+      "text": "Почему при нескольких потоках используют `Arc<Mutex<T>>`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Каждый поток получает владеющую ссылку на один Mutex",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Arc даёт shared ownership",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Mutex сериализует mutable access",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Arc сам по себе заменяет Mutex для изменения данных",
+          "correct": false
+        }
+      ],
+      "explanation": "Arc решает множественное владение между потоками, Mutex — синхронизацию доступа.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-arc-mutex-q046",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 16 — Arc<Mutex<T>>, PDF стр. 479–483",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-047",
+      "type": "single_choice",
+      "text": "Почему `Arc<T>` дороже `Rc<T>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Счётчик ссылок обновляется атомарно",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он хранит две копии T",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Он использует файловый lock",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Он не реализует Clone",
+          "correct": false
+        }
+      ],
+      "explanation": "Атомарный счётчик обеспечивает thread safety ценой дополнительных затрат.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-arc-cost",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 16 — Arc<T>, PDF стр. 481–483",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-048",
+      "type": "multiple_choice",
+      "text": "Что остаётся возможной логической проблемой при `Mutex<T>`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Deadlock",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Два потока могут держать разные lock и ждать друг друга",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Компилятор не предотвращает все deadlock",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Safe Rust всегда выявляет deadlock при компиляции",
+          "correct": false
+        }
+      ],
+      "explanation": "Mutex защищает память, но не устраняет все логические взаимные блокировки.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-deadlock",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 16 — риски deadlock, PDF стр. 483–484",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-049",
+      "type": "single_choice",
+      "text": "Как формулируется смысл trait `Sync`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`T` является Sync, если `&T` можно безопасно использовать между потоками",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "T можно только перемещать по владению",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "T всегда имеет атомарный счётчик",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "T содержит только immutable поля",
+          "correct": false
+        }
+      ],
+      "explanation": "Sync относится к безопасному совместному доступу через ссылки.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-sync",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 16 — Sync и Send, PDF стр. 484–486",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-050",
+      "type": "multiple_choice",
+      "text": "Какие выводы о `Send` и `Sync` делает глава? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Многие типы автоматически получают traits из составляющих",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Ручная реализация этих гарантий является unsafe",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`Rc<T>` не подходит для shared ownership между потоками",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Любой тип автоматически Sync даже с не-Sync полями",
+          "correct": false
+        }
+      ],
+      "explanation": "Автоматическая реализация зависит от внутренних типов; ручная реализация требует unsafe-ответственности.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-send-sync-q050",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Указатели и многопоточность",
+        "locator": "Глава 16 — Sync и Send, PDF стр. 484–486",
+        "url": null
+      }
+    }
+  ]
+}

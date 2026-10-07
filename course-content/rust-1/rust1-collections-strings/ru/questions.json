@@ -1,0 +1,1806 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-collections-strings",
+  "questions": [
+    {
+      "key": "rust1-collections-strings-001",
+      "type": "single_choice",
+      "text": "Что отличает коллекции от многих других типов данных в описании главы 8?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Они хранят множество значений и могут изменять размер во время выполнения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Они всегда имеют фиксированный размер, известный при компиляции",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Они хранят только значения разных типов",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Они существуют только на стеке",
+          "correct": false
+        }
+      ],
+      "explanation": "Коллекции хранят набор значений, размещаются в куче и могут иметь размер, неизвестный при компиляции и меняющийся во время работы программы.",
+      "source": {
+        "key": "rust1-collections-strings-overview",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Общие коллекции",
+        "locator": "Глава 8 — введение «Общие коллекции», стр. 186",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-002",
+      "type": "multiple_choice",
+      "text": "Какие коллекции подробно рассматриваются в главе 8? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Vec<T>",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "String",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "HashMap<K, V>",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "BTreeSet<T> как основная тема главы",
+          "correct": false
+        }
+      ],
+      "explanation": "Введение главы выделяет векторы, строки и хеш-карты как три рассматриваемые коллекции.",
+      "source": {
+        "key": "rust1-collections-strings-overview",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Общие коллекции",
+        "locator": "Глава 8 — введение «Общие коллекции», стр. 186",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-003",
+      "type": "single_choice",
+      "text": "Какое свойство `Vec<T>` подчёркивается в материале?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Элементы хранятся в памяти последовательно и имеют один тип T",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Каждый элемент обязан иметь отдельный тип",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Вектор не может менять длину",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Вектор хранит только строки",
+          "correct": false
+        }
+      ],
+      "explanation": "Vec<T> хранит последовательность значений одного типа, расположенных в памяти друг за другом.",
+      "source": {
+        "key": "rust1-collections-strings-vec-create",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Хранение списков значений в векторах",
+        "locator": "Глава 8 — создание и изменение Vec<T>, стр. 187–188",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-004",
+      "type": "multiple_choice",
+      "text": "Какие способы создания `Vec<i32>` показаны в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`let v: Vec<i32> = Vec::new();`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`let v = vec![1, 2, 3];`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Создать mutable Vec и добавлять элементы методом push",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Обязательно вручную выделять память через malloc",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга показывает Vec::new, макрос vec! и заполнение изменяемого вектора через push.",
+      "source": {
+        "key": "rust1-collections-strings-vec-create",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Хранение списков значений в векторах",
+        "locator": "Глава 8 — создание и изменение Vec<T>, стр. 187–188",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-005",
+      "type": "single_choice",
+      "text": "Почему в `let v = vec![1, 2, 3];` обычно не нужна явная аннотация `Vec<i32>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Rust выводит тип элементов по начальным значениям",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "vec! всегда создаёт только Vec<i32>",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Тип вектора определяется именем переменной",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Аннотации типов запрещены вместе с vec!",
+          "correct": false
+        }
+      ],
+      "explanation": "По значениям 1, 2 и 3 компилятор выводит конкретный тип элементов и тем самым тип Vec.",
+      "source": {
+        "key": "rust1-collections-strings-vec-create",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Хранение списков значений в векторах",
+        "locator": "Глава 8 — создание и изменение Vec<T>, стр. 187–188",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-006",
+      "type": "multiple_choice",
+      "text": "Что требуется для добавления элементов методом `push`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Сам вектор должен быть изменяемым",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Используется метод push",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Добавляемые элементы должны соответствовать типу элементов вектора",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "После первого push длина вектора становится фиксированной",
+          "correct": false
+        }
+      ],
+      "explanation": "Чтобы изменять вектор, переменная объявляется mut; push добавляет значения того же типа T.",
+      "source": {
+        "key": "rust1-collections-strings-vec-create",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Хранение списков значений в векторах",
+        "locator": "Глава 8 — создание и изменение Vec<T>, стр. 187–188",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-007",
+      "type": "single_choice",
+      "text": "Какой элемент возвращает выражение `&v[2]` для `v = vec![1,2,3,4,5]`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Ссылку на третий элемент",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Ссылку на второй элемент",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Копию всего вектора",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Option<&i32>",
+          "correct": false
+        }
+      ],
+      "explanation": "Индексация начинается с нуля, поэтому индекс 2 соответствует третьему элементу; `&` даёт ссылку.",
+      "source": {
+        "key": "rust1-collections-strings-vec-access",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Чтение данных вектора",
+        "locator": "Глава 8 — доступ к элементам Vec<T>, стр. 188–190",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-008",
+      "type": "multiple_choice",
+      "text": "Какие различия между `&v[index]` и `v.get(index)` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Индексирование возвращает ссылку на элемент",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "get возвращает Option<&T>",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Индексирование за границами вызывает panic",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "get за границами обязательно вызывает panic",
+          "correct": false
+        }
+      ],
+      "explanation": "Главное различие проявляется при неверном индексе: [] паникует, а get возвращает None.",
+      "source": {
+        "key": "rust1-collections-strings-vec-access",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Чтение данных вектора",
+        "locator": "Глава 8 — доступ к элементам Vec<T>, стр. 188–190",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-009",
+      "type": "single_choice",
+      "text": "Когда в материале рекомендуется предпочесть `get` вместо прямой индексации?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Когда выход за границы может быть нормальной ситуацией и его нужно обработать без panic",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Когда нужен гарантированный panic при любой ошибке индекса",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только для первого элемента вектора",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только если вектор immutable",
+          "correct": false
+        }
+      ],
+      "explanation": "get позволяет обработать Some/None, что удобно, например, если индекс пришёл от пользователя.",
+      "source": {
+        "key": "rust1-collections-strings-vec-access",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Чтение данных вектора",
+        "locator": "Глава 8 — доступ к элементам Vec<T>, стр. 188–190",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-010",
+      "type": "multiple_choice",
+      "text": "Что обеспечивает borrow checker для ссылок на содержимое вектора? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Следит за правилами владения и заимствования",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Не допускает использования ссылки после того, как она могла стать недействительной",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Не позволяет одновременно нарушать ограничения mutable/immutable ссылок",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Гарантирует, что любой индекс существует",
+          "correct": false
+        }
+      ],
+      "explanation": "Проверка заимствований отвечает за действительность ссылок, но существование индекса зависит от способа доступа и значения индекса.",
+      "source": {
+        "key": "rust1-collections-strings-vec-access",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Чтение данных вектора",
+        "locator": "Глава 8 — доступ к элементам Vec<T>, стр. 188–190",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-011",
+      "type": "single_choice",
+      "text": "Почему код с `let first = &v[0]; v.push(6); println!(\"{first}\");` не компилируется?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "push может переразместить буфер вектора и сделать first висячей ссылкой",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "println! запрещён после push",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Вектор разрешает только четыре элемента",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Ссылки на i32 всегда mutable",
+          "correct": false
+        }
+      ],
+      "explanation": "При нехватке места push может выделить новую память и перенести элементы; сохранённая ссылка на старый буфер стала бы недействительной.",
+      "source": {
+        "key": "rust1-collections-strings-vec-access",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Чтение данных вектора",
+        "locator": "Глава 8 — доступ к элементам Vec<T>, стр. 188–190",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-012",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о перераспределении памяти Vec<T> поддерживаются материалом? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Значения вектора хранятся последовательно",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "При нехватке места добавление может потребовать нового участка памяти",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Старые элементы могут быть скопированы/перемещены в новый участок",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Адрес первого элемента гарантированно никогда не меняется",
+          "correct": false
+        }
+      ],
+      "explanation": "Именно возможность переразмещения объясняет запрет изменять вектор, пока используется ссылка на его элемент.",
+      "source": {
+        "key": "rust1-collections-strings-vec-access",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Чтение данных вектора",
+        "locator": "Глава 8 — доступ к элементам Vec<T>, стр. 188–190",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-013",
+      "type": "single_choice",
+      "text": "Как получить неизменяемые ссылки на все элементы `v` в цикле?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`for i in &v { ... }`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`for i in &mut v { ... }`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`for i in v.get_all() { ... }`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`for i in *v { ... }`",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга использует `for i in &v` для итерации по неизменяемым ссылкам на элементы.",
+      "source": {
+        "key": "rust1-collections-strings-vec-iter",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Перебор значений в векторе",
+        "locator": "Глава 8 — перебор и изменение элементов Vec<T>, стр. 190–193",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-014",
+      "type": "multiple_choice",
+      "text": "Что верно для кода `for i in &mut v { *i += 50; }`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Итерация идёт по изменяемым ссылкам на элементы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для изменения значения через ссылку используется разыменование `*i`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Сам вектор должен быть mutable",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`i += 50` без учёта ссылки в примере эквивалентно показанному коду",
+          "correct": false
+        }
+      ],
+      "explanation": "&mut v даёт mutable-ссылки, а `*i` обращается к значению по ссылке перед `+=`.",
+      "source": {
+        "key": "rust1-collections-strings-vec-iter",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Перебор значений в векторе",
+        "locator": "Глава 8 — перебор и изменение элементов Vec<T>, стр. 190–193",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-015",
+      "type": "single_choice",
+      "text": "Почему нельзя свободно добавлять или удалять элементы самого вектора внутри цикла, который уже заимствует вектор?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Заимствование вектора циклом предотвращает одновременную структурную модификацию",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Цикл for в Rust работает только с массивами",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "push разрешён только вне функций",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Элементы Vec нельзя изменять вообще",
+          "correct": false
+        }
+      ],
+      "explanation": "Ссылка на вектор, используемая циклом, конфликтовала бы с операцией, способной изменить внутреннее размещение коллекции.",
+      "source": {
+        "key": "rust1-collections-strings-vec-iter",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Перебор значений в векторе",
+        "locator": "Глава 8 — перебор и изменение элементов Vec<T>, стр. 190–193",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-016",
+      "type": "multiple_choice",
+      "text": "Как enum помогает хранить в одном Vec данные разных форм? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Каждый вариант enum может содержать данные своего типа",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Все варианты всё равно имеют общий тип самого enum",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Vec хранит один тип — этот enum",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Vec перестаёт быть типизированным",
+          "correct": false
+        }
+      ],
+      "explanation": "В примере SpreadsheetCell разные внутренние данные упакованы в варианты одного enum, поэтому для Vec сохраняется требование единого типа.",
+      "source": {
+        "key": "rust1-collections-strings-vec-iter",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Перебор значений в векторе",
+        "locator": "Глава 8 — перебор и изменение элементов Vec<T>, стр. 190–193",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-017",
+      "type": "single_choice",
+      "text": "Что происходит с элементами, когда вектор выходит из области видимости?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Вектор и его содержимое освобождаются",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Освобождается только оболочка Vec, элементы всегда протекают",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Элементы становятся static",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Rust сохраняет их до завершения процесса",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал указывает, что при удалении Vec удаляются и содержащиеся в нём значения.",
+      "source": {
+        "key": "rust1-collections-strings-vec-iter",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Перебор значений в векторе",
+        "locator": "Глава 8 — перебор и изменение элементов Vec<T>, стр. 190–193",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-018",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о методе `pop` для Vec<T> указаны в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он удаляет последний элемент",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он возвращает удалённый последний элемент",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Он относится к операциям изменения вектора",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Он удаляет первый элемент",
+          "correct": false
+        }
+      ],
+      "explanation": "В тексте pop приводится как метод, который удаляет и возвращает последний элемент вектора.",
+      "source": {
+        "key": "rust1-collections-strings-vec-iter",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Перебор значений в векторе",
+        "locator": "Глава 8 — перебор и изменение элементов Vec<T>, стр. 190–193",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-019",
+      "type": "single_choice",
+      "text": "Какой строковый тип является частью ядра языка Rust по описанию главы 8?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "str, обычно используемый как &str",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "String",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "CString",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Vec<char>",
+          "correct": false
+        }
+      ],
+      "explanation": "В книге указано, что в ядре языка строковым типом является str, обычно встречающийся в заимствованной форме &str.",
+      "source": {
+        "key": "rust1-collections-strings-string-type",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Хранение закодированного текста UTF-8 в строках",
+        "locator": "Глава 8 — String, &str и создание строк, стр. 194–196",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-020",
+      "type": "multiple_choice",
+      "text": "Какие свойства `String` перечислены в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Это владеющий строковый тип",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он изменяемый и может расти",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Он хранит текст в UTF-8",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Он встроен в ядро языка как единственный строковый тип",
+          "correct": false
+        }
+      ],
+      "explanation": "String предоставляется стандартной библиотекой и описывается как growable, mutable, owned UTF-8 string.",
+      "source": {
+        "key": "rust1-collections-strings-string-type",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Хранение закодированного текста UTF-8 в строках",
+        "locator": "Глава 8 — String, &str и создание строк, стр. 194–196",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-021",
+      "type": "single_choice",
+      "text": "Как создать пустой `String`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`String::new()`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`str::empty()`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`String::zero()`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`new String()`",
+          "correct": false
+        }
+      ],
+      "explanation": "Для пустой строки материал показывает `let mut s = String::new();`.",
+      "source": {
+        "key": "rust1-collections-strings-string-type",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Хранение закодированного текста UTF-8 в строках",
+        "locator": "Глава 8 — String, &str и создание строк, стр. 194–196",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-022",
+      "type": "multiple_choice",
+      "text": "Какие способы создать `String` из строкового литерала показаны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`\"initial contents\".to_string()`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`String::from(\"initial contents\")`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`data.to_string()` для переменной &str",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Индексировать литерал и присвоить результат String без преобразования",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга показывает to_string и String::from как эквивалентные способы получить String из строковых данных.",
+      "source": {
+        "key": "rust1-collections-strings-string-type",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Хранение закодированного текста UTF-8 в строках",
+        "locator": "Глава 8 — String, &str и создание строк, стр. 194–196",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-023",
+      "type": "single_choice",
+      "text": "Почему `push_str` принимает строковый срез, а не обязательно владеющий String?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы добавление содержимого не требовало забирать владение переданной строкой",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Потому что String нельзя передавать в функции",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Потому что push_str добавляет только один char",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Потому что &str всегда изменяемый",
+          "correct": false
+        }
+      ],
+      "explanation": "В примере s2 остаётся доступной после `s1.push_str(s2)`, поскольку метод принимает строковый срез и не забирает его владение.",
+      "source": {
+        "key": "rust1-collections-strings-string-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Обновление строковых данных",
+        "locator": "Глава 8 — push_str, push, + и format!, стр. 196–198",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-024",
+      "type": "multiple_choice",
+      "text": "Какие методы изменения String различаются по принимаемому значению? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "push_str добавляет строковый срез",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "push добавляет один символ char",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Оба могут увеличивать String",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "push удаляет последний символ",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава противопоставляет push_str для строкового среза и push для одного char.",
+      "source": {
+        "key": "rust1-collections-strings-string-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Обновление строковых данных",
+        "locator": "Глава 8 — push_str, push, + и format!, стр. 196–198",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-025",
+      "type": "single_choice",
+      "text": "Что произойдёт с `s1` в `let s3 = s1 + &s2;`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Владение s1 перемещается в операцию сложения, после чего s1 больше нельзя использовать",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "s1 и s2 обе копируются и остаются без изменений",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "s1 превращается в &str, но остаётся доступной",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "s1 автоматически клонируется",
+          "correct": false
+        }
+      ],
+      "explanation": "Сигнатура add принимает self по значению, поэтому первый String перемещается.",
+      "source": {
+        "key": "rust1-collections-strings-string-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Обновление строковых данных",
+        "locator": "Глава 8 — push_str, push, + и format!, стр. 196–198",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-026",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о выражении `s1 + &s2` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "s1 перемещается",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "s2 не перемещается, потому что используется ссылка",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Компилятор может привести &String к &str",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Оператор + требует владения обоими String",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал объясняет deref coercion &String -> &str для второго аргумента и передачу первого аргумента по значению.",
+      "source": {
+        "key": "rust1-collections-strings-string-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Обновление строковых данных",
+        "locator": "Глава 8 — push_str, push, + и format!, стр. 196–198",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-027",
+      "type": "single_choice",
+      "text": "Какой способ материал рекомендует как более читаемый для объединения нескольких строк?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Макрос `format!`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Многоуровневую цепочку индексаций",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только push для каждого байта",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Ручное преобразование в Vec<u8>",
+          "correct": false
+        }
+      ],
+      "explanation": "Для сложного комбинирования строк книга показывает format! как более читаемую альтернативу длинной цепочке +.",
+      "source": {
+        "key": "rust1-collections-strings-string-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Обновление строковых данных",
+        "locator": "Глава 8 — push_str, push, + и format!, стр. 196–198",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-028",
+      "type": "multiple_choice",
+      "text": "Что верно о `format!` в приведённом сравнении? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он возвращает String",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Работает сходно с println!, но не печатает результат",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Использует ссылки и не забирает владение переданными аргументами",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Всегда изменяет первый аргумент на месте",
+          "correct": false
+        }
+      ],
+      "explanation": "format! формирует новый String, а его аргументы используются по ссылкам.",
+      "source": {
+        "key": "rust1-collections-strings-string-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Обновление строковых данных",
+        "locator": "Глава 8 — push_str, push, + и format!, стр. 196–198",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-029",
+      "type": "single_choice",
+      "text": "Что произойдёт при попытке `let h = s1[0];` для `String`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Код не скомпилируется: String не поддерживает такую индексацию целым числом",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Вернётся первый Unicode-символ",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Вернётся первый байт u8",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Всегда вернётся char",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава специально показывает ошибку индексирования String целым числом.",
+      "source": {
+        "key": "rust1-collections-strings-string-index",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Индексирование в строках",
+        "locator": "Глава 8 — внутреннее представление String и индексирование, стр. 199–203",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-030",
+      "type": "multiple_choice",
+      "text": "Какие причины сложности индексирования String связаны с UTF-8? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Разные Unicode-скалярные значения могут занимать разное число байтов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Понятие «символ» можно рассматривать как байт, Unicode scalar value или grapheme cluster",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Получение N-го символа не обязательно соответствует прямому O(1) доступу по байту",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Каждая буква во всех языках кодируется одним байтом",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал объясняет отказ от `s[0]` через переменную длину UTF-8, разные уровни интерпретации и ожидание постоянного времени индексирования.",
+      "source": {
+        "key": "rust1-collections-strings-string-index",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Индексирование в строках",
+        "locator": "Глава 8 — внутреннее представление String и индексирование, стр. 199–203",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-031",
+      "type": "single_choice",
+      "text": "Как внутренне описывается `String` в главе 8?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Как оболочка над Vec<u8>",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Как Vec<char>",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Как массив фиксированной длины Unicode scalar values",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Как HashMap индексов в символы",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел внутреннего представления прямо называет String оболочкой над Vec<u8>.",
+      "source": {
+        "key": "rust1-collections-strings-string-index",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Индексирование в строках",
+        "locator": "Глава 8 — внутреннее представление String и индексирование, стр. 199–203",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-032",
+      "type": "multiple_choice",
+      "text": "Для строки `\"Здравствуйте\"` какие утверждения поддерживаются материалом? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Некоторые символы UTF-8 занимают более одного байта",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Длина в байтах может отличаться от привычного числа букв",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Нельзя считать, что байтовый индекс 0..1 обязательно образует полный символ",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Все кириллические буквы занимают один байт",
+          "correct": false
+        }
+      ],
+      "explanation": "Примеры с кириллицей показывают многобайтовое UTF-8-представление и необходимость учитывать границы символов.",
+      "source": {
+        "key": "rust1-collections-strings-string-index",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Индексирование в строках",
+        "locator": "Глава 8 — внутреннее представление String и индексирование, стр. 199–203",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-033",
+      "type": "single_choice",
+      "text": "Что верно для среза `&hello[0..4]` в примере с `\"Здравствуйте\"`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он может дать первые два кириллических символа, потому что каждый из них занимает по два байта",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Диапазон всегда задаётся количеством Unicode-букв",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Он возвращает четыре Unicode-символа",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Диапазон в String задаётся индексами grapheme clusters",
+          "correct": false
+        }
+      ],
+      "explanation": "Диапазоны строковых срезов задаются байтовыми индексами; в приведённом примере 4 байта охватывают два двухбайтовых символа.",
+      "source": {
+        "key": "rust1-collections-strings-string-index",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Индексирование в строках",
+        "locator": "Глава 8 — внутреннее представление String и индексирование, стр. 199–203",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-034",
+      "type": "multiple_choice",
+      "text": "Что может произойти при создании строкового среза по диапазону? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Корректный диапазон должен попадать на границы UTF-8-символов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Диапазон вроде 0..1 внутри многобайтового символа может вызвать panic во время выполнения",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Срезы строк требуют осторожности",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Любые два байтовых индекса всегда образуют корректный &str",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал показывает runtime-panic, если граница диапазона попадает внутрь UTF-8-кодировки символа.",
+      "source": {
+        "key": "rust1-collections-strings-string-index",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Индексирование в строках",
+        "locator": "Глава 8 — внутреннее представление String и индексирование, стр. 199–203",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-035",
+      "type": "single_choice",
+      "text": "Какой метод следует использовать для перебора Unicode scalar values строки?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "chars()",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "bytes() только",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "indices()",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "graphemes() из стандартной библиотеки главы",
+          "correct": false
+        }
+      ],
+      "explanation": "Для скалярных Unicode-значений книга предлагает chars().",
+      "source": {
+        "key": "rust1-collections-strings-string-index",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Индексирование в строках",
+        "locator": "Глава 8 — внутреннее представление String и индексирование, стр. 199–203",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-036",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о методах `chars()` и `bytes()` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "chars() итерирует Unicode scalar values типа char",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "bytes() итерирует байты",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Один char может быть представлен несколькими байтами UTF-8",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "bytes() всегда выдаёт столько же элементов, сколько chars()",
+          "correct": false
+        }
+      ],
+      "explanation": "Разница демонстрируется на строке с кириллицей: два char представлены четырьмя байтами.",
+      "source": {
+        "key": "rust1-collections-strings-string-index",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Индексирование в строках",
+        "locator": "Глава 8 — внутреннее представление String и индексирование, стр. 199–203",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-037",
+      "type": "single_choice",
+      "text": "Предоставляет ли стандартная библиотека в рассматриваемом разделе готовое извлечение grapheme clusters?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Нет; материал указывает, что для этого можно использовать сторонние библиотеки с crates.io",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Да, это метод String::graphemes без зависимостей",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Да, это делает bytes()",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Да, каждый char и есть grapheme cluster",
+          "correct": false
+        }
+      ],
+      "explanation": "Извлечение grapheme clusters названо сложным и не включённым в стандартную библиотеку; упомянуты внешние библиотеки.",
+      "source": {
+        "key": "rust1-collections-strings-string-index",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Индексирование в строках",
+        "locator": "Глава 8 — внутреннее представление String и индексирование, стр. 199–203",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-038",
+      "type": "multiple_choice",
+      "text": "Какие уровни представления строки перечислены на примере Devanagari? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Байты",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Unicode scalar values",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Grapheme clusters",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Только ASCII-коды",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал показывает, что одна строка может рассматриваться как байтовая последовательность, char-значения или пользовательские «буквы» — grapheme clusters.",
+      "source": {
+        "key": "rust1-collections-strings-string-index",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Индексирование в строках",
+        "locator": "Глава 8 — внутреннее представление String и индексирование, стр. 199–203",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-039",
+      "type": "single_choice",
+      "text": "Почему для `HashMap` в примере требуется `use std::collections::HashMap;`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "HashMap не входит в prelude и его имя нужно явно ввести в область видимости",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "HashMap находится во внешнем crate, не связанном со std",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "HashMap доступен только после cargo add hashmap",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Без use HashMap вообще отсутствует в стандартной библиотеке",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава отмечает, что HashMap используется реже и не подключается prelude, поэтому тип импортируют из std::collections.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-basic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Хранение ключей со связанными значениями в HashMap",
+        "locator": "Глава 8 — создание и доступ к HashMap<K, V>, стр. 203–205",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-040",
+      "type": "multiple_choice",
+      "text": "Какие свойства конкретной `HashMap<K, V>` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Все ключи имеют один тип K",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Все значения имеют один тип V",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Данные размещаются в куче",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Каждая пара может иметь произвольные несвязанные типы ключа и значения",
+          "correct": false
+        }
+      ],
+      "explanation": "HashMap типизирована однородно по ключам и значениям и, как Vec, хранит данные в куче.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-basic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Хранение ключей со связанными значениями в HashMap",
+        "locator": "Глава 8 — создание и доступ к HashMap<K, V>, стр. 203–205",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-041",
+      "type": "single_choice",
+      "text": "Что возвращает `scores.get(&team_name)`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Option<&V>",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Всегда V по значению",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Result<V, Error>",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Индекс элемента в HashMap",
+          "correct": false
+        }
+      ],
+      "explanation": "Метод get возвращает Option<&V>: Some со ссылкой при наличии ключа или None при отсутствии.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-basic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Хранение ключей со связанными значениями в HashMap",
+        "locator": "Глава 8 — создание и доступ к HashMap<K, V>, стр. 203–205",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-042",
+      "type": "multiple_choice",
+      "text": "Какие шаги использует пример `scores.get(&team_name).copied().unwrap_or(0)`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "get возвращает Option<&i32>",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "copied преобразует его в Option<i32>",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "unwrap_or(0) даёт 0, если ключа нет",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "unwrap_or удаляет ключ из HashMap",
+          "correct": false
+        }
+      ],
+      "explanation": "Цепочка сначала получает ссылку, затем копирует i32 из Option и задаёт значение по умолчанию для None.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-basic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Хранение ключей со связанными значениями в HashMap",
+        "locator": "Глава 8 — создание и доступ к HashMap<K, V>, стр. 203–205",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-043",
+      "type": "single_choice",
+      "text": "Каков порядок пар при обходе HashMap в показанном примере?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Произвольный; книга не обещает порядок вставки",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Всегда порядок вставки",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Всегда сортировка по ключу",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Всегда обратный порядок вставки",
+          "correct": false
+        }
+      ],
+      "explanation": "В главе прямо сказано, что пары HashMap при итерации печатаются в произвольном порядке.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-basic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Хранение ключей со связанными значениями в HashMap",
+        "locator": "Глава 8 — создание и доступ к HashMap<K, V>, стр. 203–205",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-044",
+      "type": "multiple_choice",
+      "text": "Что происходит при вставке в HashMap значений разных категорий владения? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Copy-значения вроде i32 копируются",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Владеющие значения вроде String перемещаются в HashMap",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "После move исходные String-переменные больше нельзя использовать как владельцев этих значений",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "insert всегда клонирует String автоматически",
+          "correct": false
+        }
+      ],
+      "explanation": "HashMap становится владельцем переданных String, тогда как Copy-типы копируются.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-ownership",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Хеш-карты и владение",
+        "locator": "Глава 8 — HashMap и владение, стр. 205–206",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-045",
+      "type": "single_choice",
+      "text": "Что изменится, если в HashMap вставлять ссылки вместо владеющих String?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Сами значения не переместятся в HashMap, но должны оставаться действительными достаточно долго",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "HashMap автоматически продлит жизнь исходных значений до static",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Ссылки превратятся в String",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Правила времени жизни перестанут применяться",
+          "correct": false
+        }
+      ],
+      "explanation": "При хранении ссылок исходные данные сохраняют владельцев, а действительность ссылок должна покрывать время использования HashMap.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-ownership",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Хеш-карты и владение",
+        "locator": "Глава 8 — HashMap и владение, стр. 205–206",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-046",
+      "type": "multiple_choice",
+      "text": "Какие стратегии обновления существующего ключа перечисляет материал? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Заменить старое значение новым",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Сохранить старое и игнорировать новое",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Обновить новое значение на основе старого",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Хранить одновременно неограниченное число значений под тем же ключом без изменения типа",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава обсуждает перезапись, вставку только при отсутствии и вычисление нового значения из старого.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Обновление данных в HashMap",
+        "locator": "Глава 8 — обновление значений, entry и or_insert, стр. 206–208",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-047",
+      "type": "single_choice",
+      "text": "Что будет после двух `insert` одного ключа `\"Blue\"` со значениями 10 и 25?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Под ключом Blue останется 25",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Останутся две пары Blue:10 и Blue:25",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "insert проигнорирует второе значение",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "HashMap вызовет panic из-за повторного ключа",
+          "correct": false
+        }
+      ],
+      "explanation": "Повторная вставка того же ключа заменяет связанное с ним старое значение.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Обновление данных в HashMap",
+        "locator": "Глава 8 — обновление значений, entry и or_insert, стр. 206–208",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-048",
+      "type": "multiple_choice",
+      "text": "Что делает API `entry(...).or_insert(50)`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Проверяет наличие значения для ключа",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Если ключ отсутствует, вставляет указанное значение",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Возвращает изменяемую ссылку на существующее или вставленное значение",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Если ключ есть, всегда заменяет его значение на 50",
+          "correct": false
+        }
+      ],
+      "explanation": "or_insert сохраняет существующее значение, а default вставляет только при отсутствии ключа; результат — &mut V.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Обновление данных в HashMap",
+        "locator": "Глава 8 — обновление значений, entry и or_insert, стр. 206–208",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-049",
+      "type": "single_choice",
+      "text": "Зачем в примере подсчёта слов используется `*count += 1`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "count имеет тип изменяемой ссылки на значение, поэтому его нужно разыменовать для изменения числа",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "count является индексом HashMap",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Оператор * создаёт новый ключ",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Без * изменяется весь HashMap",
+          "correct": false
+        }
+      ],
+      "explanation": "`or_insert` возвращает `&mut V`; `*count` обращается к самому счётчику по этой ссылке.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Обновление данных в HashMap",
+        "locator": "Глава 8 — обновление значений, entry и or_insert, стр. 206–208",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-050",
+      "type": "multiple_choice",
+      "text": "Что верно о примере подсчёта слов через HashMap? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "split_whitespace даёт элементы слов для обхода",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "entry(word).or_insert(0) создаёт начальный 0 при первом слове",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Счётчик увеличивается через mutable-ссылку",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Порядок вывода пар гарантированно совпадает с порядком слов в исходном тексте",
+          "correct": false
+        }
+      ],
+      "explanation": "Пример создаёт или находит счётчик каждого слова и увеличивает его, а порядок печати HashMap остаётся произвольным.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Обновление данных в HashMap",
+        "locator": "Глава 8 — обновление значений, entry и or_insert, стр. 206–208",
+        "url": null
+      }
+    }
+  ]
+}

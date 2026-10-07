@@ -43,6 +43,7 @@ pub struct UiStrings {
     pub topics_title: &'static str,
     pub topics_empty: &'static str,
     pub courses_empty: &'static str,
+    pub choose_topic_course: &'static str,
     pub choose_course: &'static str,
     pub topic: &'static str,
 
@@ -159,9 +160,10 @@ static ENGLISH: UiStrings = UiStrings {
     english: "English",
     russian: "Russian",
 
-    topics_title: "DBA topics",
+    topics_title: "Topics",
     topics_empty: "No topics are loaded yet.",
     courses_empty: "No course blocks are loaded yet.",
+    choose_topic_course: "Quiz by topic: choose a course",
     choose_course: "General quiz: choose a course block",
     topic: "Topic",
 
@@ -245,9 +247,10 @@ static RUSSIAN: UiStrings = UiStrings {
     english: "English",
     russian: "Русский",
 
-    topics_title: "Темы DBA",
+    topics_title: "Темы",
     topics_empty: "Темы пока не загружены.",
     courses_empty: "Курсы пока не загружены.",
+    choose_topic_course: "Тест по теме: выберите курс",
     choose_course: "Общий тест: выберите курс",
     topic: "Тема",
 

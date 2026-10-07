@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "dba-1",
+  "slug": "dba1-arch-general",
+  "notes_part": 4,
+  "topic_number": 4,
+  "title": "Общая архитектура PostgreSQL",
+  "description": "Клиент-серверная архитектура PostgreSQL, транзакции, обработка запросов, подготовленные операторы, процессы, память, пул соединений и базовая организация хранения данных",
+  "sort_order": 40
+}

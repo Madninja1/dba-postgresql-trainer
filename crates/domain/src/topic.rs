@@ -7,6 +7,8 @@ pub struct Topic {
     pub course_code: String,
 
     pub slug: String,
+    pub notes_part: i64,
+    pub topic_number: i64,
     pub title: String,
     pub description: Option<String>,
 }

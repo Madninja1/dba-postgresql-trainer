@@ -18,6 +18,46 @@ course-content/
 
 A locale directory may be empty. Empty directories can be reserved in Git with `.gitkeep` and are ignored by the content registry until both `topic.json` and `questions.json` are present.
 
+## Course codes
+
+Course codes are not limited to DBA courses. They use the form:
+
+```text
+<track>-<positive-number>
+```
+
+The track starts with a lowercase ASCII letter and may contain lowercase ASCII letters, digits and single hyphens. Examples:
+
+```text
+dba-1
+rust-1
+sql-1
+python-1
+postgresql-dba-2
+```
+
+The final numeric component must be greater than zero. This keeps course identity generic so new learning tracks can be added without changing the content schema or application code.
+
+## Topic order and source notes
+
+Each `topic.json` contains two numeric metadata fields in addition to `sort_order`:
+
+```json
+{
+  "notes_part": 3,
+  "topic_number": 3,
+  "sort_order": 30
+}
+```
+
+- `notes_part` identifies the source notes/conspect part the topic belongs to;
+- `topic_number` is the human-facing topic number inside the course;
+- `sort_order` remains the technical sorting value.
+
+Both `notes_part` and `topic_number` must be positive. `topic_number` must be unique inside one course. They are logical metadata and therefore must stay identical across locale variants of the same topic.
+
+For the current `rust-1` course, the 15 source note files map one-to-one to topic numbers `1` through `15`.
+
 ## Runtime locale selection
 
 Locale-aware content selection is implemented for both Android and TUI.
@@ -43,6 +83,8 @@ Across locales for the same `<course>/<topic>`, keep these values identical:
 
 - `topic.course`;
 - `topic.slug`;
+- `topic.notes_part`;
+- `topic.topic_number`;
 - `topic.sort_order`;
 - question keys;
 - question types;

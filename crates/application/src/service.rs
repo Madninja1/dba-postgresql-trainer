@@ -93,6 +93,8 @@ mod tests {
                 id: TopicId(1),
                 course_code: String::from("dba-1"),
                 slug: String::from("architecture"),
+                notes_part: 1,
+                topic_number: 1,
                 title: String::from("Architecture"),
                 description: None,
             }])

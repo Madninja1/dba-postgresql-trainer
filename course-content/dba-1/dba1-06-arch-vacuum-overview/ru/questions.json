@@ -1,0 +1,880 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-arch-vacuum-overview",
+  "questions": [
+    {
+      "key": "dba1-arch-vacuum-overview-001",
+      "type": "single_choice",
+      "text": "Каково основное назначение команды VACUUM?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Освободить пространство, занимаемое мёртвыми кортежами",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Перестроить все индексы базы данных",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Создать резервную копию таблицы",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Изменить уровень изоляции текущей транзакции",
+          "correct": false
+        }
+      ],
+      "explanation": "VACUUM обрабатывает мёртвые версии строк и освобождает занимаемое ими пространство для дальнейшего использования.",
+      "source": {
+        "key": "postgresql-16-vacuum",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "VACUUM",
+        "locator": "Описание команды VACUUM",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-vacuum"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-002",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о выборе объектов командой VACUUM верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Без списка таблиц VACUUM обрабатывает доступные текущему пользователю таблицы текущей базы данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Можно явно указать одну или несколько таблиц для очистки",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "VACUUM без имени таблицы автоматически обрабатывает все базы данных кластера",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "При указании таблицы VACUUM обязан очищать все остальные таблицы той же схемы",
+          "correct": false
+        }
+      ],
+      "explanation": "Без списка объектов VACUUM работает с подходящими объектами текущей базы данных, а при указании таблиц ограничивается ими.",
+      "source": {
+        "key": "postgresql-16-vacuum-002",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "VACUUM",
+        "locator": "Описание, выбор таблиц",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-vacuum"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-003",
+      "type": "single_choice",
+      "text": "Что выполняет команда VACUUM ANALYZE?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Сначала очистку, затем сбор статистики",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только сбор статистики",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только перестроение индексов",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Полное физическое перестроение таблицы",
+          "correct": false
+        }
+      ],
+      "explanation": "VACUUM ANALYZE объединяет две операции: очистку и последующий анализ.",
+      "source": {
+        "key": "postgresql-16-vacuum-003",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "VACUUM",
+        "locator": "Описание VACUUM ANALYZE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-vacuum"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-004",
+      "type": "multiple_choice",
+      "text": "Что происходит после обычного VACUUM без FULL? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Освободившееся место становится доступно для повторного использования этой таблицей",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Физический размер файла обычно не уменьшается",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Операция обычно может выполняться параллельно с обычным чтением и записью",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Вся таблица обязательно переписывается в новый файл",
+          "correct": false
+        }
+      ],
+      "explanation": "Обычный VACUUM освобождает пространство внутри отношения для повторного использования, но в большинстве случаев не возвращает его операционной системе.",
+      "source": {
+        "key": "postgresql-16-vacuum-004",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "VACUUM",
+        "locator": "Описание обычного VACUUM",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-vacuum"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-005",
+      "type": "single_choice",
+      "text": "Что принципиально отличает VACUUM FULL от обычного VACUUM?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "VACUUM FULL переписывает таблицу и может вернуть неиспользуемое пространство операционной системе",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "VACUUM FULL только обновляет статистику планировщика",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "VACUUM FULL не работает с содержимым таблицы",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "VACUUM FULL выполняет только перестроение отдельных индексов",
+          "correct": false
+        }
+      ],
+      "explanation": "VACUUM FULL физически переписывает содержимое таблицы, устраняя лишнее свободное пространство.",
+      "source": {
+        "key": "postgresql-16-vacuum-full",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "VACUUM",
+        "locator": "Параметр FULL",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-vacuum"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-006",
+      "type": "multiple_choice",
+      "text": "Какие особенности VACUUM FULL необходимо учитывать? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он запрашивает исключительную блокировку таблицы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он выполняется существенно тяжелее обычного VACUUM",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Для переписывания таблицы требуется дополнительное дисковое пространство",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Он предназначен для обязательного запуска после каждого UPDATE",
+          "correct": false
+        }
+      ],
+      "explanation": "Полная очистка требует переписывания объекта, дополнительного места и сильной блокировки, поэтому не предназначена для обычного регулярного обслуживания.",
+      "source": {
+        "key": "postgresql-16-vacuum-full-006",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "VACUUM",
+        "locator": "Параметр FULL и примечания",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-vacuum"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-007",
+      "type": "single_choice",
+      "text": "Можно ли выполнять VACUUM внутри блока транзакции?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Нет",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Да, всегда",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только после SAVEPOINT",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только на уровне Serializable",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация VACUUM прямо указывает, что команду нельзя выполнять внутри блока транзакции.",
+      "source": {
+        "key": "postgresql-16-vacuum-007",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "VACUUM",
+        "locator": "Примечания",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-vacuum"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-008",
+      "type": "multiple_choice",
+      "text": "Какие команды из материала позволяют вручную выполнить обслуживание? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "VACUUM — выполнить очистку",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "ANALYZE — выполнить анализ",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "VACUUM ANALYZE — выполнить очистку и анализ",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "CHECKPOINT ANALYZE — выполнить очистку и анализ",
+          "correct": false
+        }
+      ],
+      "explanation": "В лекции отдельно сопоставлены VACUUM, ANALYZE и VACUUM ANALYZE.",
+      "source": {
+        "key": "dba1-06-manual-maintenance",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Запуск вручную",
+        "locator": "Слайд 9 «Запуск вручную»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-009",
+      "type": "single_choice",
+      "text": "Для чего выполняется ANALYZE?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для сбора статистики о содержимом таблиц, используемой планировщиком запросов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для физического уменьшения файлов таблиц",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Для восстановления повреждённых индексов",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Для удаления базы данных",
+          "correct": false
+        }
+      ],
+      "explanation": "ANALYZE собирает статистику, на основании которой планировщик оценивает возможные планы запросов.",
+      "source": {
+        "key": "postgresql-16-analyze",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "ANALYZE",
+        "locator": "Описание",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-analyze"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-010",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о команде ANALYZE верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Результаты статистики сохраняются в системном каталоге pg_statistic",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Можно анализировать только явно указанные таблицы",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Можно ограничить сбор статистики указанными столбцами",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "ANALYZE всегда полностью переписывает таблицу",
+          "correct": false
+        }
+      ],
+      "explanation": "ANALYZE может работать со всей доступной базой, с выбранными таблицами или даже с выбранными столбцами и сохраняет статистику для планировщика.",
+      "source": {
+        "key": "postgresql-16-analyze",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "ANALYZE",
+        "locator": "Описание",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-analyze"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-011",
+      "type": "single_choice",
+      "text": "Что в контексте этой темы называют разрастанием, или bloat?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Избыточный физический размер таблиц или индексов по сравнению с полезно занятым пространством",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Увеличение количества подключений к серверу",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Рост количества баз данных в кластере",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Увеличение значения work_mem",
+          "correct": false
+        }
+      ],
+      "explanation": "В разделе о разрастании рассматривается ситуация, когда таблицы и индексы занимают больше физического места, чем требуется актуальным данным.",
+      "source": {
+        "key": "dba1-06-bloat",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Проблема разрастания",
+        "locator": "Слайд 11 «Проблема разрастания»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-012",
+      "type": "multiple_choice",
+      "text": "Какие факторы названы в лекции среди причин разрастания? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Неподходящая настройка автоочистки",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Массовое изменение данных",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Долгие транзакции",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Наличие первичного ключа само по себе",
+          "correct": false
+        }
+      ],
+      "explanation": "На слайде о разрастании отдельно перечислены настройка автоочистки, массовые изменения данных и долгие транзакции.",
+      "source": {
+        "key": "dba1-06-bloat-012",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Проблема разрастания",
+        "locator": "Слайд 11, «Причины разрастания»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-013",
+      "type": "single_choice",
+      "text": "Что показывает запрос со страницы PostgreSQL Wiki Show database bloat?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Оценочный объём разрастания таблиц и индексов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Точный список активных транзакций",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Историю изменений postgresql.conf",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Содержимое WAL",
+          "correct": false
+        }
+      ],
+      "explanation": "Приведённый на странице запрос предназначен для оценки bloat таблиц и индексов.",
+      "source": {
+        "key": "postgresql-wiki-bloat",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Show database bloat",
+        "locator": "Bloat queries и Query from check_postgres",
+        "url": "https://wiki.postgresql.org/wiki/Show_database_bloat"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-014",
+      "type": "multiple_choice",
+      "text": "Какие последствия разрастания указаны в учебном материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Перерасход дискового пространства",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Увеличение объёма резервных копий",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Замедление последовательного просмотра больших таблиц",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Снижение эффективности индексного доступа",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Автоматическое удаление всех индексов",
+          "correct": false
+        }
+      ],
+      "explanation": "Разросшиеся файлы расходуют больше места и увеличивают объём данных, который приходится обрабатывать и хранить.",
+      "source": {
+        "key": "dba1-06-bloat-014",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Проблема разрастания",
+        "locator": "Слайд 11, «Негативное влияние»",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-015",
+      "type": "single_choice",
+      "text": "Какая функция расширения pgstattuple позволяет получить физическую длину отношения, число живых и мёртвых кортежей и объём свободного пространства?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pgstattuple",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_relation_filepath",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_reload_conf",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_backend_pid",
+          "correct": false
+        }
+      ],
+      "explanation": "pgstattuple возвращает детальную статистику отношения, включая размеры живых и мёртвых кортежей и свободного пространства.",
+      "source": {
+        "key": "postgresql-16-pgstattuple",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pgstattuple",
+        "locator": "Функция pgstattuple(regclass)",
+        "url": "https://postgrespro.ru/docs/postgresql/16/pgstattuple"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-016",
+      "type": "multiple_choice",
+      "text": "Какие показатели присутствуют в результате pgstattuple? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "dead_tuple_count",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "dead_tuple_percent",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "free_space",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "free_percent",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "active_session_count",
+          "correct": false
+        }
+      ],
+      "explanation": "pgstattuple предоставляет показатели по живым и мёртвым кортежам, а также по свободному пространству отношения.",
+      "source": {
+        "key": "postgresql-16-pgstattuple-016",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pgstattuple",
+        "locator": "Столбцы результата pgstattuple",
+        "url": "https://postgrespro.ru/docs/postgresql/16/pgstattuple"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-017",
+      "type": "single_choice",
+      "text": "Чем pgstattuple_approx отличается от pgstattuple?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он старается избежать полного сканирования и часть показателей оценивает приблизительно",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он всегда перестраивает таблицу перед измерением",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Он работает только с системными каталогами",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Он предназначен исключительно для изменения fillfactor",
+          "correct": false
+        }
+      ],
+      "explanation": "pgstattuple выполняет полное сканирование, тогда как pgstattuple_approx использует более дешёвый подход и часть характеристик оценивает приближённо.",
+      "source": {
+        "key": "postgresql-16-pgstattuple-017",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pgstattuple",
+        "locator": "Функция pgstattuple_approx",
+        "url": "https://postgrespro.ru/docs/postgresql/16/pgstattuple"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-018",
+      "type": "multiple_choice",
+      "text": "В каких случаях документация приводит REINDEX как подходящую операцию? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Индекс повреждён",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Индекс сильно раздут",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Изменён параметр хранения индекса и требуется полностью применить новое значение",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Нужно собрать статистику по столбцам таблицы",
+          "correct": false
+        }
+      ],
+      "explanation": "REINDEX пересоздаёт содержимое индекса и применяется, в частности, при повреждении, bloat и необходимости полностью применить изменённые параметры хранения.",
+      "source": {
+        "key": "postgresql-16-reindex",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "REINDEX",
+        "locator": "Описание, случаи применения",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-reindex"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-019",
+      "type": "single_choice",
+      "text": "Какая форма REINDEX перестраивает все индексы указанной таблицы?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "REINDEX TABLE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "REINDEX COLUMN",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "REINDEX VACUUM",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "ANALYZE INDEX",
+          "correct": false
+        }
+      ],
+      "explanation": "REINDEX TABLE перестраивает все индексы указанной таблицы.",
+      "source": {
+        "key": "postgresql-16-reindex-019",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "REINDEX",
+        "locator": "Параметр TABLE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-reindex"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-020",
+      "type": "multiple_choice",
+      "text": "Что верно для обычного REINDEX и REINDEX CONCURRENTLY? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Обычный REINDEX блокирует запись в таблицу на время перестроения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "REINDEX CONCURRENTLY позволяет продолжать обычные операции записи",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Неблокирующее перестроение выполняет больше работы и обычно занимает больше времени",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "REINDEX CONCURRENTLY гарантированно быстрее обычного REINDEX",
+          "correct": false
+        }
+      ],
+      "explanation": "CONCURRENTLY уменьшает влияние блокировок на рабочую нагрузку ценой дополнительных проходов и большей продолжительности операции.",
+      "source": {
+        "key": "postgresql-16-reindex-concurrently",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "REINDEX",
+        "locator": "Неблокирующее перестроение индексов",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-reindex"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-021",
+      "type": "single_choice",
+      "text": "Какой инструмент из материалов предназначен для устранения bloat таблиц и индексов с минимизацией длительных исключительных блокировок?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_repack",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "initdb",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_ctl",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_checksums",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_repack предназначен для реорганизации таблиц и индексов и выполняет основную работу без длительного удержания исключительной блокировки обрабатываемой таблицы.",
+      "source": {
+        "key": "pg-repack",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_repack",
+        "locator": "README, назначение pg_repack",
+        "url": "https://github.com/reorg/pg_repack"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-022",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о pg_repack соответствуют материалам? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он является сторонним расширением PostgreSQL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он может устранять разрастание таблиц и индексов",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Он позволяет выполнять реорганизацию в рабочей системе с минимальными блокировками",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Он является обязательной частью ядра PostgreSQL",
+          "correct": false
+        }
+      ],
+      "explanation": "В лекции pg_repack предлагается как сторонняя альтернатива при нежелательности долгой исключительной блокировки; проект описывает себя как расширение для онлайн-реорганизации таблиц и индексов.",
+      "source": {
+        "key": "pg-repack-022",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_repack",
+        "locator": "README и раздел «Перестроение объектов»",
+        "url": "https://github.com/reorg/pg_repack"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-023",
+      "type": "single_choice",
+      "text": "После массового удаления строк обычный VACUUM выполнился успешно, но файл таблицы почти не уменьшился. Как это объясняется в лекции?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Освободившееся пространство остаётся внутри файла и может использоваться для новых данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "VACUUM не работает с удалёнными версиями строк",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "После VACUUM всегда необходимо перезапускать сервер",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Физический размер таблицы может уменьшаться только после ANALYZE",
+          "correct": false
+        }
+      ],
+      "explanation": "Обычная очистка создаёт свободное место внутри страниц для повторного использования, но это не означает уменьшение размера файла с точки зрения ОС.",
+      "source": {
+        "key": "dba1-06-bloat-023",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Проблема разрастания",
+        "locator": "Слайд 11, действие обычной очистки",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-024",
+      "type": "multiple_choice",
+      "text": "Какие средства из практической части темы позволяют сравнить физические размеры таблицы и её индексов до и после операций обслуживания? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_table_size(имя_таблицы)",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_indexes_size(имя_таблицы)",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_backend_pid()",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "current_user",
+          "correct": false
+        }
+      ],
+      "explanation": "В практической части предлагается измерять размер таблицы функцией pg_table_size и суммарный размер её индексов функцией pg_indexes_size.",
+      "source": {
+        "key": "dba1-06-practice-size",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика",
+        "locator": "Измерение размеров таблицы и индексов",
+        "url": null
+      }
+    }
+  ]
+}

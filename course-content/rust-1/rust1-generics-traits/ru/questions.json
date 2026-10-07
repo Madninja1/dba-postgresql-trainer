@@ -1,0 +1,1806 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-generics-traits",
+  "questions": [
+    {
+      "key": "rust1-generics-traits-001",
+      "type": "single_choice",
+      "text": "Какую проблему generics помогают решать в главе 10?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Уменьшать дублирование кода, заменяя конкретные типы параметрами",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Отключать проверку типов",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Заменять модули",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Автоматически обрабатывать все ошибки",
+          "correct": false
+        }
+      ],
+      "explanation": "Generics используются как абстрактные заполнители для типов, чтобы одна реализация работала в нескольких конкретных случаях.",
+      "source": {
+        "key": "rust1-generics-traits-intro",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Обобщённые типы, типажи и время жизни",
+        "locator": "Глава 10 — введение в generics, traits и lifetimes, стр. 235",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-002",
+      "type": "multiple_choice",
+      "text": "Какие три связанные темы выделены в начале главы 10? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Обобщённые типы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Traits и trait bounds",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Lifetimes",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Макросы procedural derive как основная тема главы",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава объединяет generics, traits и lifetimes как средства писать переиспользуемый и проверяемый код.",
+      "source": {
+        "key": "rust1-generics-traits-intro",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Обобщённые типы, типажи и время жизни",
+        "locator": "Глава 10 — введение в generics, traits и lifetimes, стр. 235",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-003",
+      "type": "single_choice",
+      "text": "Зачем перед введением generic-функции материал сначала выносит поиск максимума в обычную функцию?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы показать устранение дублирования через выделение общей функциональности",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы доказать, что функции не могут принимать срезы",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы заменить Vec на HashMap",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы избежать сравнений",
+          "correct": false
+        }
+      ],
+      "explanation": "Сначала общий алгоритм выносится из двух мест в одну функцию, а затем обобщается по типу.",
+      "source": {
+        "key": "rust1-generics-traits-dry",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Удаление дублирования кода с помощью выделения общей функциональности",
+        "locator": "Глава 10 — устранение дублирования перед введением generics, стр. 236–239",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-004",
+      "type": "multiple_choice",
+      "text": "Какие шаги уменьшения дублирования показаны на примере поиска максимального элемента? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Выделить повторяющийся алгоритм в функцию",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Передавать список в эту функцию",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Затем заменить конкретный тип элемента generic-параметром",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Дублировать функцию отдельно для каждого нового значения списка",
+          "correct": false
+        }
+      ],
+      "explanation": "Пример показывает последовательный переход от копипаста к общей функции и затем к обобщённой функции.",
+      "source": {
+        "key": "rust1-generics-traits-dry",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Удаление дублирования кода с помощью выделения общей функциональности",
+        "locator": "Глава 10 — устранение дублирования перед введением generics, стр. 236–239",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-005",
+      "type": "single_choice",
+      "text": "Где объявляется generic-параметр `T` в сигнатуре функции?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В угловых скобках после имени функции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "После тела функции",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Перед ключевым словом fn",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "В Cargo.toml",
+          "correct": false
+        }
+      ],
+      "explanation": "Имя generic-типа объявляется до использования в параметрах и возвращаемом типе, например `fn largest<T>(...)`.",
+      "source": {
+        "key": "rust1-generics-traits-functions",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "В определении функций",
+        "locator": "Глава 10 — обобщённые функции и largest<T>, стр. 239–242",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-006",
+      "type": "multiple_choice",
+      "text": "Какие элементы сигнатуры могут использовать объявленный generic-параметр T? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Типы параметров функции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Возвращаемый тип",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Тип элементов среза вроде &[T]",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Только имя локальной переменной, но не типы",
+          "correct": false
+        }
+      ],
+      "explanation": "После объявления T его можно использовать в местах типов внутри сигнатуры.",
+      "source": {
+        "key": "rust1-generics-traits-functions",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "В определении функций",
+        "locator": "Глава 10 — обобщённые функции и largest<T>, стр. 239–242",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-007",
+      "type": "single_choice",
+      "text": "Почему простая версия `largest<T>` с оператором `>` не компилируется для произвольного T?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Компилятор не знает, что любой T поддерживает сравнение оператором >",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Generic-функции не могут содержать циклы",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Срезы [T] нельзя перебирать",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "T всегда означает String",
+          "correct": false
+        }
+      ],
+      "explanation": "Ошибка показывает необходимость ограничить T поведением, поддерживающим сравнение; позже это выражается trait bound.",
+      "source": {
+        "key": "rust1-generics-traits-functions",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "В определении функций",
+        "locator": "Глава 10 — обобщённые функции и largest<T>, стр. 239–242",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-008",
+      "type": "multiple_choice",
+      "text": "Что показывает ошибка компиляции generic `largest<T>`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Не каждую операцию можно применять к произвольному T",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Нужны дополнительные сведения о требуемом поведении типа",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Trait bounds позволяют выразить такие требования",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Generics автоматически предоставляют все операторы любому типу",
+          "correct": false
+        }
+      ],
+      "explanation": "Компилятор требует доказательства, что T поддерживает используемые операции; именно это дают ограничения traits.",
+      "source": {
+        "key": "rust1-generics-traits-functions",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "В определении функций",
+        "locator": "Глава 10 — обобщённые функции и largest<T>, стр. 239–242",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-009",
+      "type": "single_choice",
+      "text": "Что означает структура `Point<T> { x: T, y: T }` для одного экземпляра?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Поля x и y имеют один и тот же конкретный тип T",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "x и y могут быть любыми несвязанными типами без дополнительных параметров",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Оба поля всегда i32",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "T выбирается заново отдельно для каждого поля",
+          "correct": false
+        }
+      ],
+      "explanation": "Один параметр T в одном экземпляре подставляется одним конкретным типом для обоих полей.",
+      "source": {
+        "key": "rust1-generics-traits-structs",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "В определении структур",
+        "locator": "Глава 10 — обобщённые структуры Point<T> и Point<T, U>, стр. 243–244",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-010",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `Point<T, U>` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "x может иметь тип T",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "y может иметь другой тип U",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "T и U могут оказаться одинаковыми конкретными типами",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Наличие двух generic-параметров требует, чтобы типы были обязательно разными",
+          "correct": false
+        }
+      ],
+      "explanation": "Разные generic-параметры разрешают независимые типы, но не требуют их различия.",
+      "source": {
+        "key": "rust1-generics-traits-structs",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "В определении структур",
+        "locator": "Глава 10 — обобщённые структуры Point<T> и Point<T, U>, стр. 243–244",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-011",
+      "type": "single_choice",
+      "text": "Почему создание `Point { x: 5, y: 4.0 }` не подходит для определения `Point<T>` с одним T?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Поля требуют одного конкретного T, а здесь типы значений различаются",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Потому что Point не может содержать числа",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Потому что f64 нельзя хранить в struct",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Потому что x обязан быть строкой",
+          "correct": false
+        }
+      ],
+      "explanation": "Для Point<T> оба поля имеют одинаковый T; разные типы полей требуют определения вроде Point<T, U>.",
+      "source": {
+        "key": "rust1-generics-traits-structs",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "В определении структур",
+        "locator": "Глава 10 — обобщённые структуры Point<T> и Point<T, U>, стр. 243–244",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-012",
+      "type": "multiple_choice",
+      "text": "Какие стандартные enum используются как примеры generics? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Option<T>",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Result<T, E>",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Ok(T) и Err(E) являются вариантами Result",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "bool<T> как generic enum стандартной библиотеки",
+          "correct": false
+        }
+      ],
+      "explanation": "Option и Result демонстрируют применение generic-параметров в enum.",
+      "source": {
+        "key": "rust1-generics-traits-enums",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "В определении перечислений",
+        "locator": "Глава 10 — Option<T> и Result<T, E>, стр. 244–245",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-013",
+      "type": "single_choice",
+      "text": "Какую роль играют T и E в `Result<T, E>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "T задаёт тип успешного значения, E — тип ошибки",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Оба задают только два имени одного типа",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "T — индекс, E — размер",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Они используются только во время выполнения и не участвуют в типизации",
+          "correct": false
+        }
+      ],
+      "explanation": "Обобщение позволяет одному enum Result описывать различные пары успешных значений и ошибок.",
+      "source": {
+        "key": "rust1-generics-traits-enums",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "В определении перечислений",
+        "locator": "Глава 10 — Option<T> и Result<T, E>, стр. 244–245",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-014",
+      "type": "multiple_choice",
+      "text": "Когда generics в enum особенно полезны по объяснению материала? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Когда одна и та же форма enum нужна для разных типов содержащихся значений",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Когда Result должен представлять разные типы успеха и ошибки",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Когда Option должен оборачивать разные типы T",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Только когда enum не содержит данных",
+          "correct": false
+        }
+      ],
+      "explanation": "Generic-параметры позволяют повторно использовать одно определение перечисления с разными типами полезной нагрузки.",
+      "source": {
+        "key": "rust1-generics-traits-enums",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "В определении перечислений",
+        "locator": "Глава 10 — Option<T> и Result<T, E>, стр. 244–245",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-015",
+      "type": "single_choice",
+      "text": "Почему в `impl<T> Point<T>` параметр T нужно объявить после `impl`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы компилятор понимал, что T — generic-параметр, а не конкретный тип",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы метод стал асинхронным",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы Point превратился в enum",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Потому что без этого x становится public",
+          "correct": false
+        }
+      ],
+      "explanation": "Объявление T в impl вводит параметр для всего блока методов.",
+      "source": {
+        "key": "rust1-generics-traits-methods",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "В определении методов",
+        "locator": "Глава 10 — impl<T>, конкретные impl и generic-методы, стр. 245–247",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-016",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о методах в `impl<T> Point<T>` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Они доступны экземплярам Point с любым конкретным T, если нет дополнительных ограничений",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Метод может возвращать ссылку &T на поле",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "T можно использовать в сигнатурах методов блока",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Такой impl автоматически ограничивает Point только типом f32",
+          "correct": false
+        }
+      ],
+      "explanation": "Обобщённый impl действует для всех конкретизаций Point<T>, подходящих под указанные bounds.",
+      "source": {
+        "key": "rust1-generics-traits-methods",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "В определении методов",
+        "locator": "Глава 10 — impl<T>, конкретные impl и generic-методы, стр. 245–247",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-017",
+      "type": "single_choice",
+      "text": "Что означает отдельный блок `impl Point<f32> { ... }`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Методы этого блока доступны только Point<f32>",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он делает f32 generic-параметром",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Он добавляет метод всем Point<T>",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Он запрещает Point<f32> иметь другие методы",
+          "correct": false
+        }
+      ],
+      "explanation": "Конкретный impl без `<T>` специализирует методы для Point с T=f32.",
+      "source": {
+        "key": "rust1-generics-traits-methods",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "В определении методов",
+        "locator": "Глава 10 — impl<T>, конкретные impl и generic-методы, стр. 245–247",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-018",
+      "type": "multiple_choice",
+      "text": "Зачем в примере отдельный метод `distance_from_origin` реализован только для `Point<f32>`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Вычисление использует операции, доступные для чисел с плавающей точкой в показанном коде",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Материал демонстрирует возможность специализированного impl для конкретного типа",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Другие Point<T> не получают этот метод из данного блока",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Потому что generic impl вообще запрещён для Point",
+          "correct": false
+        }
+      ],
+      "explanation": "Пример показывает сочетание общего impl<T> и специального impl Point<f32>.",
+      "source": {
+        "key": "rust1-generics-traits-methods",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "В определении методов",
+        "locator": "Глава 10 — impl<T>, конкретные impl и generic-методы, стр. 245–247",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-019",
+      "type": "single_choice",
+      "text": "Что демонстрирует метод `mixup<X2, Y2>` у `Point<X1, Y1>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Метод может иметь собственные generic-параметры, отличные от параметров impl",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Метод обязан использовать только X1 и Y1",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Generic-параметры метода объявляются только в Cargo.toml",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Метод не может принимать другой Point",
+          "correct": false
+        }
+      ],
+      "explanation": "X1/Y1 относятся к типу self, а X2/Y2 объявляются только для конкретного метода mixup.",
+      "source": {
+        "key": "rust1-generics-traits-methods",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "В определении методов",
+        "locator": "Глава 10 — impl<T>, конкретные impl и generic-методы, стр. 245–247",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-020",
+      "type": "multiple_choice",
+      "text": "В примере `mixup` какие источники полей результата указаны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "x результата берётся из self",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "y результата берётся из другого Point",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Тип результата сочетает X1 и Y2",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Оба поля результата обязательно имеют тип второго Point",
+          "correct": false
+        }
+      ],
+      "explanation": "Именно смешение параметров двух Point демонстрирует локальные generic-параметры метода.",
+      "source": {
+        "key": "rust1-generics-traits-methods",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "В определении методов",
+        "locator": "Глава 10 — impl<T>, конкретные impl и generic-методы, стр. 245–247",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-021",
+      "type": "single_choice",
+      "text": "Какой результат выводит пример `p1.mixup(p2)` с `p1.x = 5` и `p2.y = 'c'`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "p3.x = 5, p3.y = c",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "p3.x = Hello, p3.y = 10.4",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "p3.x = c, p3.y = 5",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Код всегда не компилируется",
+          "correct": false
+        }
+      ],
+      "explanation": "В результате x берётся из p1, а y — из p2.",
+      "source": {
+        "key": "rust1-generics-traits-methods",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "В определении методов",
+        "locator": "Глава 10 — impl<T>, конкретные impl и generic-методы, стр. 245–247",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-022",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о производительности generics приводит материал? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Само использование generics не должно делать программу медленнее эквивалентного кода с конкретными типами",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Rust применяет мономорфизацию во время компиляции",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Компилятор создаёт конкретные варианты generic-кода для реально используемых типов",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Каждый generic-вызов требует runtime-поиска нужного типа",
+          "correct": false
+        }
+      ],
+      "explanation": "Мономорфизация переносит специализацию generic-кода на этап компиляции.",
+      "source": {
+        "key": "rust1-generics-traits-monomorphization",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Производительность кода, использующего обобщённые типы",
+        "locator": "Глава 10 — мономорфизация, стр. 247–248",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-023",
+      "type": "single_choice",
+      "text": "Что такое мономорфизация по определению в материале?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Преобразование generic-кода в конкретный код путём подстановки реально используемых типов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Удаление всех generic-функций из программы",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Динамическая диспетчеризация каждого вызова",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Преобразование trait в macro",
+          "correct": false
+        }
+      ],
+      "explanation": "Компилятор анализирует места использования и генерирует специализированные версии для конкретных типов.",
+      "source": {
+        "key": "rust1-generics-traits-monomorphization",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Производительность кода, использующего обобщённые типы",
+        "locator": "Глава 10 — мономорфизация, стр. 247–248",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-024",
+      "type": "multiple_choice",
+      "text": "Что происходит при мономорфизации примеров `Option<i32>` и `Option<f64>`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Компилятор определяет использованные конкретизации Option<T>",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Создаются специализированные варианты для i32 и f64",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Generic-определение подставляется конкретными типами для этих случаев",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Во время каждого чтения Option тип выбирается случайно",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал иллюстрирует мономорфизацию как создание конкретных Option для реально использованных T.",
+      "source": {
+        "key": "rust1-generics-traits-monomorphization",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Производительность кода, использующего обобщённые типы",
+        "locator": "Глава 10 — мономорфизация, стр. 247–248",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-025",
+      "type": "single_choice",
+      "text": "Что сообщает trait компилятору?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Какое общее поведение может иметь тип и разделять с другими типами",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Точный размер любого типа в байтах",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Где хранится модуль в файловой системе",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Какой crate нужно скачать",
+          "correct": false
+        }
+      ],
+      "explanation": "Trait описывает набор поведения абстрактно, чтобы разные типы могли его реализовать.",
+      "source": {
+        "key": "rust1-generics-traits-trait",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типажи: определение общего поведения",
+        "locator": "Глава 10 — определение и реализация trait, стр. 249–254",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-026",
+      "type": "multiple_choice",
+      "text": "Из чего может состоять определение trait в показанных примерах? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Из сигнатур требуемых методов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Из методов с реализацией по умолчанию",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Методы могут использовать &self",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Trait обязан содержать поля данных как struct",
+          "correct": false
+        }
+      ],
+      "explanation": "Trait задаёт методы и может включать их default-тела; поля структуры trait не объявляет.",
+      "source": {
+        "key": "rust1-generics-traits-trait",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типажи: определение общего поведения",
+        "locator": "Глава 10 — определение и реализация trait, стр. 249–254",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-027",
+      "type": "single_choice",
+      "text": "Что должен сделать тип, чтобы реализовать trait `Summary` без default-реализации нужного метода?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Написать `impl Summary for Type` и предоставить реализацию требуемого метода",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только импортировать Summary через use",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Добавить поле summary в структуру",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Унаследоваться от Summary через двоеточие у struct",
+          "correct": false
+        }
+      ],
+      "explanation": "Реализация trait для типа задаётся отдельным impl и содержит требуемые методы.",
+      "source": {
+        "key": "rust1-generics-traits-trait",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типажи: определение общего поведения",
+        "locator": "Глава 10 — определение и реализация trait, стр. 249–254",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-028",
+      "type": "multiple_choice",
+      "text": "Какие преимущества traits как общего поведения следуют из примеров? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Разные типы могут предоставлять один и тот же интерфейс поведения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Функции могут принимать значения разных типов, если они реализуют нужный trait",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Trait bounds позволяют требовать конкретное поведение generic-типа",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Trait отменяет необходимость статической проверки типов",
+          "correct": false
+        }
+      ],
+      "explanation": "Traits объединяют типы по поведению, сохраняя compile-time ограничения.",
+      "source": {
+        "key": "rust1-generics-traits-trait",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типажи: определение общего поведения",
+        "locator": "Глава 10 — определение и реализация trait, стр. 249–254",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-029",
+      "type": "single_choice",
+      "text": "Что запрещает orphan rule в приведённом примере?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Реализовать внешний trait Display для внешнего типа Vec<T> в своём crate",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Реализовать свой trait для своего типа",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Реализовать внешний trait для своего локального типа",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Реализовать свой trait для внешнего типа",
+          "correct": false
+        }
+      ],
+      "explanation": "Если и trait, и тип определены вне текущего crate, такая реализация запрещена.",
+      "source": {
+        "key": "rust1-generics-traits-orphan",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Реализация типажа для типа",
+        "locator": "Глава 10 — согласованность и orphan rule, стр. 251–252",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-030",
+      "type": "multiple_choice",
+      "text": "Какие реализации согласуются с описанным правилом локальности? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Свой trait для внешнего типа",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Внешний trait для своего локального типа",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Свой trait для своего типа",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Внешний trait для внешнего типа, когда оба определены вне crate",
+          "correct": false
+        }
+      ],
+      "explanation": "Для допустимости в упрощённой формулировке хотя бы trait или тип должен быть локальным текущему crate.",
+      "source": {
+        "key": "rust1-generics-traits-orphan",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Реализация типажа для типа",
+        "locator": "Глава 10 — согласованность и orphan rule, стр. 251–252",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-031",
+      "type": "single_choice",
+      "text": "Зачем существует orphan rule по объяснению материала?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы разные crates не могли создать конфликтующие реализации одного trait для одного типа",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы запретить все внешние библиотеки",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы уменьшить размер бинарника",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы traits работали только со struct",
+          "correct": false
+        }
+      ],
+      "explanation": "Правило поддерживает coherence: иначе компилятор мог бы столкнуться с двумя конкурирующими реализациями.",
+      "source": {
+        "key": "rust1-generics-traits-orphan",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Реализация типажа для типа",
+        "locator": "Глава 10 — согласованность и orphan rule, стр. 251–252",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-032",
+      "type": "multiple_choice",
+      "text": "Что верно о default-реализации метода trait? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Trait может предоставить тело метода по умолчанию",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Тип может использовать default, не переписывая этот метод",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Тип может переопределить default своей реализацией",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Default-метод запрещено вызывать у реализующего тип экземпляра",
+          "correct": false
+        }
+      ],
+      "explanation": "Default уменьшает обязательный код реализации, сохраняя возможность переопределения.",
+      "source": {
+        "key": "rust1-generics-traits-default",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Реализация поведения по умолчанию",
+        "locator": "Глава 10 — методы trait по умолчанию, стр. 252–254",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-033",
+      "type": "single_choice",
+      "text": "Что означает `impl Summary for NewsArticle {}` при наличии default-реализации `summarize`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "NewsArticle получает default-поведение summarize",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Summary для NewsArticle не реализован",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Пустой impl удаляет default-метод",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Код обязательно не компилируется",
+          "correct": false
+        }
+      ],
+      "explanation": "Пустой блок достаточен, если все требуемые методы имеют подходящие default-реализации.",
+      "source": {
+        "key": "rust1-generics-traits-default",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Реализация поведения по умолчанию",
+        "locator": "Глава 10 — методы trait по умолчанию, стр. 252–254",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-034",
+      "type": "multiple_choice",
+      "text": "Какие возможности default-методов показаны в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Default-метод может вызывать другой метод того же trait",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Другой вызываемый метод может требовать реализации типом",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Типу достаточно реализовать требуемую часть, а остальное получить из default",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Переопределённый метод может напрямую вызвать default-реализацию самого себя специальным синтаксисом из материала",
+          "correct": false
+        }
+      ],
+      "explanation": "Пример summarize вызывает обязательный summarize_author; отдельно отмечено, что вызвать default-версию из override того же метода нельзя.",
+      "source": {
+        "key": "rust1-generics-traits-default",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Реализация поведения по умолчанию",
+        "locator": "Глава 10 — методы trait по умолчанию, стр. 252–254",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-035",
+      "type": "single_choice",
+      "text": "Что означает параметр `item: &impl Summary`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Функция принимает ссылку на значение любого типа, реализующего Summary",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Функция принимает только конкретный тип с именем impl",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Summary становится полем item",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Тип item определяется только во время выполнения без compile-time проверки",
+          "correct": false
+        }
+      ],
+      "explanation": "`impl Trait` в параметре — краткий способ потребовать реализацию указанного trait.",
+      "source": {
+        "key": "rust1-generics-traits-params",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типажи как параметры",
+        "locator": "Глава 10 — impl Trait и trait bounds, стр. 254–256",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-036",
+      "type": "multiple_choice",
+      "text": "Какие записи считаются эквивалентными для простого одного параметра? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`fn notify(item: &impl Summary)`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`fn notify<T: Summary>(item: &T)`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Обе ограничивают допустимый тип trait Summary",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`fn notify<T>(item: &T)` без bound даёт ту же гарантию Summary",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал называет impl Trait синтаксическим сахаром для простого trait bound.",
+      "source": {
+        "key": "rust1-generics-traits-params",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типажи как параметры",
+        "locator": "Глава 10 — impl Trait и trait bounds, стр. 254–256",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-037",
+      "type": "single_choice",
+      "text": "Чем отличаются два параметра `&impl Summary` от двух параметров `&T` при `T: Summary`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Первый вариант допускает разные конкретные типы, второй требует один и тот же T",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Первый требует одинаковый тип, второй разные",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Они всегда полностью идентичны",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Второй не проверяет Summary",
+          "correct": false
+        }
+      ],
+      "explanation": "Общий generic T связывает типы обоих аргументов, тогда как отдельные impl Trait могут быть разными.",
+      "source": {
+        "key": "rust1-generics-traits-params",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типажи как параметры",
+        "locator": "Глава 10 — impl Trait и trait bounds, стр. 254–256",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-038",
+      "type": "multiple_choice",
+      "text": "Что позволяет синтаксис `T: Summary + Display`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Требовать реализацию Summary",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Требовать одновременно реализацию Display",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Использовать в теле функции возможности обоих traits",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Означает, что T должен быть либо Summary, либо Display, но не оба",
+          "correct": false
+        }
+      ],
+      "explanation": "Оператор + объединяет несколько trait bounds для одного типа.",
+      "source": {
+        "key": "rust1-generics-traits-params",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типажи как параметры",
+        "locator": "Глава 10 — impl Trait и trait bounds, стр. 254–256",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-039",
+      "type": "single_choice",
+      "text": "Зачем используется предложение `where`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы вынести сложные trait bounds из основной части сигнатуры и сделать её читабельнее",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы сделать проверку traits динамической",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы объявить новый модуль",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы отключить generic-параметры",
+          "correct": false
+        }
+      ],
+      "explanation": "where — альтернативный синтаксис размещения тех же ограничений после сигнатуры.",
+      "source": {
+        "key": "rust1-generics-traits-params",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типажи как параметры",
+        "locator": "Глава 10 — impl Trait и trait bounds, стр. 254–256",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-040",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `where` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он может задавать bounds для нескольких generic-параметров",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Не меняет смысл ограничений по сравнению с записью после двоеточия",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Помогает уменьшить визуальную перегруженность сигнатуры",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Переносит проверку bounds с compile-time на runtime",
+          "correct": false
+        }
+      ],
+      "explanation": "where влияет на читаемость записи, а не на момент проверки типов.",
+      "source": {
+        "key": "rust1-generics-traits-params",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типажи как параметры",
+        "locator": "Глава 10 — impl Trait и trait bounds, стр. 254–256",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-041",
+      "type": "single_choice",
+      "text": "Что означает возвращаемый тип `-> impl Summary`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Функция возвращает некоторый конкретный тип, реализующий Summary, не называя этот тип в API",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Функция может каждый раз возвращать любой несвязанный тип",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Функция возвращает объект trait только через Box",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Функция ничего не возвращает",
+          "correct": false
+        }
+      ],
+      "explanation": "impl Trait скрывает конкретный тип от вызывающего кода, сохраняя требование Summary.",
+      "source": {
+        "key": "rust1-generics-traits-return",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Возврат значений типа реализующего определённый типаж",
+        "locator": "Глава 10 — impl Trait в возвращаемой позиции, стр. 256–258",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-042",
+      "type": "multiple_choice",
+      "text": "Какие утверждения об `impl Trait` в возвращаемой позиции верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Конкретный возвращаемый тип должен быть единым для всех веток такого определения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Вызывающий код знает гарантируемый trait, но не обязан знать конкретный тип",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Это удобно для типов, которые сложно явно записать",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Можно в одной функции возвращать NewsArticle в одной ветке и SocialPost в другой только потому, что оба реализуют Summary",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал подчёркивает ограничение «один конкретный тип» для return-position impl Trait.",
+      "source": {
+        "key": "rust1-generics-traits-return",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Возврат значений типа реализующего определённый типаж",
+        "locator": "Глава 10 — impl Trait в возвращаемой позиции, стр. 256–258",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-043",
+      "type": "single_choice",
+      "text": "Почему пример, возвращающий в одной ветке NewsArticle, а в другой SocialPost при `-> impl Summary`, не работает?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Потому что impl Trait требует один конкретный возвращаемый тип, а ветки дают разные",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Потому что Summary нельзя использовать в возвращаемом типе",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Потому что if запрещён в generic-коде",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Потому что структуры не могут реализовывать traits",
+          "correct": false
+        }
+      ],
+      "explanation": "Одинаковый trait недостаточен: скрытый concrete type должен быть единственным.",
+      "source": {
+        "key": "rust1-generics-traits-return",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Возврат значений типа реализующего определённый типаж",
+        "locator": "Глава 10 — impl Trait в возвращаемой позиции, стр. 256–258",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-044",
+      "type": "multiple_choice",
+      "text": "Что показывает условный `impl<T: Display + PartialOrd> Pair<T>`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Методы блока доступны только тем Pair<T>, где T реализует оба trait",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Можно иметь другой общий impl<T> с методами без этих дополнительных требований",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Bounds определяют, какие операции допустимы внутри метода",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Все Pair<T> автоматически получают PartialOrd и Display",
+          "correct": false
+        }
+      ],
+      "explanation": "Условный impl добавляет методы только для подходящих T, не изменяя сами свойства T.",
+      "source": {
+        "key": "rust1-generics-traits-conditional",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Использование ограничений типажа для условной реализации методов",
+        "locator": "Глава 10 — условные и blanket implementations, стр. 258–259",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-045",
+      "type": "single_choice",
+      "text": "Почему `cmp_display` требует `Display + PartialOrd` в примере Pair<T>?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Метод сравнивает значения и выводит их форматированием",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Потому что каждый generic-тип обязан реализовывать эти два trait",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только из-за требования Cargo",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы Pair стал enum",
+          "correct": false
+        }
+      ],
+      "explanation": "PartialOrd нужен для сравнения, Display — для печати через `{}`.",
+      "source": {
+        "key": "rust1-generics-traits-conditional",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Использование ограничений типажа для условной реализации методов",
+        "locator": "Глава 10 — условные и blanket implementations, стр. 258–259",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-046",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о blanket implementation верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Trait можно реализовать для любого типа, удовлетворяющего заданному bound",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Такие общие реализации широко используются в стандартной библиотеке",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Примером служит ToString для типов, реализующих Display",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Blanket implementation означает реализацию только для одного заранее выбранного типа",
+          "correct": false
+        }
+      ],
+      "explanation": "Blanket impl распространяет реализацию на целое множество типов, удовлетворяющих условию.",
+      "source": {
+        "key": "rust1-generics-traits-conditional",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Использование ограничений типажа для условной реализации методов",
+        "locator": "Глава 10 — условные и blanket implementations, стр. 258–259",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-047",
+      "type": "single_choice",
+      "text": "Какой пример blanket implementation приводит материал?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Реализацию ToString для любого T, реализующего Display",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Реализацию Display только для i32",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Реализацию Iterator для любого String без условий",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Реализацию Clone для всех типов без bounds",
+          "correct": false
+        }
+      ],
+      "explanation": "В тексте приведена схема `impl<T: Display> ToString for T`.",
+      "source": {
+        "key": "rust1-generics-traits-conditional",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Использование ограничений типажа для условной реализации методов",
+        "locator": "Глава 10 — условные и blanket implementations, стр. 258–259",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-048",
+      "type": "multiple_choice",
+      "text": "Какие роли generics и trait bounds совместно подчёркиваются в итогах этой части главы? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Generics позволяют одному коду работать с разными типами",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Trait bounds ограничивают generic-типы нужным поведением",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Компилятор проверяет эти требования статически",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Чтобы использовать generic-код, всегда нужна динамическая проверка типа",
+          "correct": false
+        }
+      ],
+      "explanation": "Generics дают повторное использование, а traits формулируют безопасные ограничения на допустимые типы.",
+      "source": {
+        "key": "rust1-generics-traits-intro",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Обобщённые типы, типажи и время жизни",
+        "locator": "Глава 10 — введение в generics, traits и lifetimes, стр. 235",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-049",
+      "type": "single_choice",
+      "text": "Что произойдёт, если передать в функцию `notify(item: &impl Summary)` тип, который не реализует Summary?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Код не скомпилируется",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Функция выполнится и пропустит вызов summarize",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Summary добавится типу автоматически",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Будет только runtime warning",
+          "correct": false
+        }
+      ],
+      "explanation": "Ограничение impl Summary проверяется компилятором для конкретного типа аргумента.",
+      "source": {
+        "key": "rust1-generics-traits-params",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типажи как параметры",
+        "locator": "Глава 10 — impl Trait и trait bounds, стр. 254–256",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-050",
+      "type": "multiple_choice",
+      "text": "Какие методы можно безопасно вызывать внутри функции с параметром `&impl Summary` на этом параметре? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Методы, предоставляемые trait Summary",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Методы, доступность которых следует из дополнительных bounds",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "summarize, если он входит в Summary",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Любой произвольный метод любого Rust-типа без bounds",
+          "correct": false
+        }
+      ],
+      "explanation": "Тело generic-функции может опираться только на гарантированное bounds поведение.",
+      "source": {
+        "key": "rust1-generics-traits-params",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Типажи как параметры",
+        "locator": "Глава 10 — impl Trait и trait bounds, стр. 254–256",
+        "url": null
+      }
+    }
+  ]
+}

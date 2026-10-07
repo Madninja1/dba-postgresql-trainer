@@ -186,11 +186,13 @@ impl TopicRepository for SqliteRepository {
                         id,
                         course_code,
                         slug,
+                        notes_part,
+                        topic_number,
                         title,
                         description
                     FROM topics
                     WHERE is_active = 1
-                    ORDER BY sort_order, title
+                    ORDER BY course_code, topic_number, sort_order, title
                 ",
             )
             .map_err(repository_error)?;
@@ -201,8 +203,10 @@ impl TopicRepository for SqliteRepository {
                     id: TopicId(row.get(0)?),
                     course_code: row.get(1)?,
                     slug: row.get(2)?,
-                    title: row.get(3)?,
-                    description: row.get(4)?,
+                    notes_part: row.get(3)?,
+                    topic_number: row.get(4)?,
+                    title: row.get(5)?,
+                    description: row.get(6)?,
                 })
             })
             .map_err(repository_error)?;

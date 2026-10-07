@@ -16,6 +16,7 @@ pub enum Screen {
 
     ResumeSession,
 
+    TopicCourses,
     Topics,
     Courses,
     QuizSetup,
@@ -97,6 +98,7 @@ pub struct App {
     pub language: UiLanguage,
 
     pub home_selected: usize,
+    pub topic_course_selected: usize,
     pub topic_selected: usize,
     pub course_selected: usize,
     pub limit_selected: usize,
@@ -104,6 +106,7 @@ pub struct App {
     pub option_selected: usize,
 
     pub topics: Vec<Topic>,
+    pub selected_topic_course: Option<String>,
 
     pub quiz_scope: QuizScope,
 
@@ -175,6 +178,8 @@ impl App {
 
             home_selected: 0,
 
+            topic_course_selected: 0,
+
             topic_selected: 0,
 
             course_selected: 0,
@@ -184,6 +189,8 @@ impl App {
             option_selected: 0,
 
             topics,
+
+            selected_topic_course: None,
 
             quiz_scope: QuizScope::AllTopics,
 
@@ -251,6 +258,8 @@ impl App {
         let result = match self.screen {
             Screen::Home => self.handle_home_action(action),
 
+            Screen::TopicCourses => self.handle_topic_courses_action(action),
+
             Screen::Topics => self.handle_topics_action(action),
 
             Screen::Courses => self.handle_courses_action(action),
@@ -287,7 +296,10 @@ impl App {
 
             Action::Confirm => match HOME_ITEMS[self.home_selected] {
                 HomeItem::Topics => {
-                    self.screen = Screen::Topics;
+                    self.topic_course_selected = 0;
+                    self.topic_selected = 0;
+                    self.selected_topic_course = None;
+                    self.screen = Screen::TopicCourses;
                 }
 
                 HomeItem::GeneralQuiz => {
@@ -308,8 +320,12 @@ impl App {
 
                     self.service.set_content_locale(language.code())?;
                     self.topics = self.service.topics()?;
-                    self.topic_selected =
-                        self.topic_selected.min(self.topics.len().saturating_sub(1));
+                    self.topic_course_selected = self
+                        .topic_course_selected
+                        .min(self.course_codes().len().saturating_sub(1));
+                    self.topic_selected = self
+                        .topic_selected
+                        .min(self.topics_for_selected_course().len().saturating_sub(1));
                     self.language = language;
                 }
 
@@ -324,30 +340,66 @@ impl App {
         Ok(())
     }
 
-    fn handle_topics_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+    fn handle_topic_courses_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        let courses = self.course_codes();
+
         match action {
             Action::Up => {
-                self.topic_selected = previous_index(self.topic_selected, self.topics.len());
+                self.topic_course_selected =
+                    previous_index(self.topic_course_selected, courses.len());
             }
 
             Action::Down => {
-                self.topic_selected = next_index(self.topic_selected, self.topics.len());
+                self.topic_course_selected = next_index(self.topic_course_selected, courses.len());
             }
 
             Action::Confirm => {
-                let topic_id = self.topics.get(self.topic_selected).map(|topic| topic.id);
+                if let Some(course_code) = courses.get(self.topic_course_selected) {
+                    self.selected_topic_course = Some(course_code.clone());
+                    self.topic_selected = 0;
+                    self.screen = Screen::Topics;
+                }
+            }
+
+            Action::Back => {
+                self.selected_topic_course = None;
+                self.screen = Screen::Home;
+            }
+
+            Action::Toggle | Action::Quit | Action::ClearStatistics => {}
+        }
+
+        Ok(())
+    }
+
+    fn handle_topics_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        let topic_count = self.topics_for_selected_course().len();
+
+        match action {
+            Action::Up => {
+                self.topic_selected = previous_index(self.topic_selected, topic_count);
+            }
+
+            Action::Down => {
+                self.topic_selected = next_index(self.topic_selected, topic_count);
+            }
+
+            Action::Confirm => {
+                let topic_id = self
+                    .topics_for_selected_course()
+                    .get(self.topic_selected)
+                    .map(|topic| topic.id);
 
                 if let Some(topic_id) = topic_id {
                     self.quiz_scope = QuizScope::Topic(topic_id);
-
                     self.limit_selected = 0;
-
                     self.screen = Screen::QuizSetup;
                 }
             }
 
             Action::Back => {
-                self.screen = Screen::Home;
+                self.selected_topic_course = None;
+                self.screen = Screen::TopicCourses;
             }
 
             Action::Toggle | Action::Quit | Action::ClearStatistics => {}
@@ -377,7 +429,8 @@ impl App {
             }
 
             Action::Back => {
-                self.screen = Screen::Home;
+                self.topic_selected = 0;
+                self.screen = Screen::TopicCourses;
             }
 
             Action::Toggle | Action::Quit | Action::ClearStatistics => {}
@@ -752,6 +805,17 @@ impl App {
         course_codes.sort();
         course_codes.dedup();
         course_codes
+    }
+
+    pub fn topics_for_selected_course(&self) -> Vec<&Topic> {
+        let Some(course_code) = self.selected_topic_course.as_deref() else {
+            return Vec::new();
+        };
+
+        self.topics
+            .iter()
+            .filter(|topic| topic.course_code == course_code)
+            .collect()
     }
 
     pub fn statistics_course_codes(&self) -> Vec<String> {

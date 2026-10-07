@@ -1,0 +1,1826 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-cargo-tooling",
+  "questions": [
+    {
+      "key": "rust1-cargo-tooling-001",
+      "type": "single_choice",
+      "text": "Какой основной профиль Cargo используется обычной командой `cargo build`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`dev`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`release`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`test-only`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`publish`",
+          "correct": false
+        }
+      ],
+      "explanation": "Обычная сборка использует профиль `dev`; `cargo build --release` переключается на профиль `release`.",
+      "source": {
+        "key": "rust1-cargo-tooling-profiles",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — «Настройка сборок с профилями релизов», PDF стр. 384–386",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-002",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о профилях `dev` и `release` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`dev` ориентирован на более быстрые частые сборки",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`release` использует больше оптимизаций",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`cargo build --release` создаёт релизную сборку",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Профили нельзя настраивать в `Cargo.toml`",
+          "correct": false
+        }
+      ],
+      "explanation": "Cargo разделяет профиль разработки и релизный профиль, а их параметры можно переопределять в `Cargo.toml`.",
+      "source": {
+        "key": "rust1-cargo-tooling-profiles-q002",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — профили Cargo, PDF стр. 384–386",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-003",
+      "type": "single_choice",
+      "text": "Какой параметр профиля в материале управляет уровнем оптимизаций компилятора?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`opt-level`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`edition`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`resolver`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`license`",
+          "correct": false
+        }
+      ],
+      "explanation": "`opt-level` задаёт уровень оптимизации профиля; книга показывает разные значения по умолчанию для `dev` и `release`.",
+      "source": {
+        "key": "rust1-cargo-tooling-profiles-q003",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — настройка `opt-level`, PDF стр. 384–386",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-004",
+      "type": "multiple_choice",
+      "text": "Что верно о документационных комментариях Rust? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`///` документирует следующий элемент",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`//!` документирует текущий контейнер, например crate или модуль",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Документация поддерживает Markdown",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Документационные комментарии всегда игнорируются `cargo doc`",
+          "correct": false
+        }
+      ],
+      "explanation": "`///` относится к следующему элементу, а `//!` — к содержащему модулю или crate. Cargo использует такие комментарии при генерации документации.",
+      "source": {
+        "key": "rust1-cargo-tooling-docs",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — документирование API, PDF стр. 387–391",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-005",
+      "type": "single_choice",
+      "text": "Что делает команда `cargo doc --open`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Генерирует документацию и открывает её в браузере",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Публикует документацию на crates.io",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Запускает только doc-tests",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Открывает `Cargo.toml` в редакторе",
+          "correct": false
+        }
+      ],
+      "explanation": "`cargo doc` создаёт HTML-документацию, а `--open` дополнительно открывает сгенерированные страницы.",
+      "source": {
+        "key": "rust1-cargo-tooling-docs-q005",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — генерация документации, PDF стр. 387–391",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-006",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о примерах кода в документации верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Их можно писать в документационных комментариях",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`cargo test` проверяет такие примеры как doc-tests",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Они помогают обнаружить примеры, устаревшие после изменения API",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Они выполняются только после `cargo publish`",
+          "correct": false
+        }
+      ],
+      "explanation": "Примеры из документации участвуют в тестировании, поэтому изменение API может выявить неработающий пример ещё до публикации.",
+      "source": {
+        "key": "rust1-cargo-tooling-doc-tests",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — «Документационные комментарии как тесты», PDF стр. 389–391",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-007",
+      "type": "single_choice",
+      "text": "Для чего используется `pub use` при проектировании библиотечного API?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для реэкспорта элементов по более удобному публичному пути",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для включения release-профиля",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Для автоматического создания dependency",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Для скрытого запуска unit tests",
+          "correct": false
+        }
+      ],
+      "explanation": "`pub use` позволяет отделить внутреннюю структуру модулей от пути, который библиотека предоставляет пользователям.",
+      "source": {
+        "key": "rust1-cargo-tooling-pub-use",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — реэкспорт удобного публичного API через `pub use`, PDF стр. 392–394",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-008",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о публикации версии на crates.io верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Публикация выполняется командой `cargo publish`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Опубликованную версию нельзя просто перезаписать новым содержимым",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Для новой версии меняют `version` и публикуют снова",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Опубликованный код версии можно полностью удалить обычным `cargo yank`",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга подчёркивает постоянный характер опубликованной версии. Новая редакция выпускается как новая версия, а `yank` не удаляет существующий код.",
+      "source": {
+        "key": "rust1-cargo-tooling-publish",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — «Публикация на Crates.io», PDF стр. 395–398",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-009",
+      "type": "single_choice",
+      "text": "Какие поля метаданных в примере нужны для публикации помимо имени и версии?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Описание и лицензия",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только `opt-level`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только `resolver`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Обязательный путь к `src/main.rs`",
+          "correct": false
+        }
+      ],
+      "explanation": "В материале Cargo отклоняет публикацию при отсутствующих `description` и `license`; вместо `license` может использоваться `license-file`.",
+      "source": {
+        "key": "rust1-cargo-tooling-publish-metadata",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — метаданные `Cargo.toml` для публикации, PDF стр. 394–396",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-010",
+      "type": "multiple_choice",
+      "text": "Что делает `cargo yank` для опубликованной версии? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Не позволяет новым проектам выбирать эту версию как новую зависимость",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Не ломает существующие проекты, уже зафиксировавшие версию в `Cargo.lock`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Не удаляет исходный код опубликованной версии",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Может быть отменён с `--undo`",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`cargo yank` удаляет опубликованный архив версии из crates.io",
+          "correct": false
+        }
+      ],
+      "explanation": "`yank` исключает версию из нового разрешения зависимостей, но сохраняет существующие сборки и сам архив версии. Вычёркивание можно отменить.",
+      "source": {
+        "key": "rust1-cargo-tooling-yank",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — `cargo yank`, PDF стр. 396–398",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-011",
+      "type": "single_choice",
+      "text": "Что такое Cargo workspace в материале?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Группа взаимосвязанных пакетов, разрабатываемых вместе",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только каталог `target/release`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Отдельный registry для приватных crates",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Способ заменить все `Cargo.toml` одним файлом без пакетов",
+          "correct": false
+        }
+      ],
+      "explanation": "Workspace объединяет несколько Cargo-пакетов, которые развиваются совместно, сохраняя при этом их отдельные package manifests.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — «Рабочие пространства Cargo», PDF стр. 399–405",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-012",
+      "type": "multiple_choice",
+      "text": "Что обычно является общим для пакетов одного workspace? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Один `Cargo.lock`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Общий каталог `target/`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Каждый пакет всё равно имеет собственный `Cargo.toml`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Все пакеты автоматически получают все зависимости соседей",
+          "correct": false
+        }
+      ],
+      "explanation": "Workspace совместно использует lock-файл и каталог сборки, но каждый пакет сохраняет собственный manifest и собственный список зависимостей.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace-q012",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — структура workspace, PDF стр. 399–405",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-013",
+      "type": "single_choice",
+      "text": "Пакеты `adder` и `add_one` находятся в одном workspace. Что нужно, чтобы `adder` использовал `add_one`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Явно объявить `add_one` зависимостью, например через `path`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Ничего: членство в workspace автоматически импортирует crate",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Вызвать только `cargo install add_one`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Добавить `pub use` в корневой `Cargo.toml`",
+          "correct": false
+        }
+      ],
+      "explanation": "Совместное workspace не создаёт зависимость автоматически. Пакет должен явно перечислить другой пакет в `[dependencies]`.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace-deps",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — зависимости между пакетами workspace, PDF стр. 400–403",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-014",
+      "type": "multiple_choice",
+      "text": "Что верно о внешних зависимостях внутри workspace? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Общий `Cargo.lock` фиксирует согласованные выбранные версии",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Пакет должен сам объявить внешнюю зависимость, чтобы использовать её",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Наличие зависимости в соседнем пакете не делает её автоматически доступной",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Достаточно добавить зависимость только в корневой `[workspace]`, и она всегда доступна всем без объявления",
+          "correct": false
+        }
+      ],
+      "explanation": "Общий lock-файл не заменяет `[dependencies]` каждого package: доступ к crate определяется manifest конкретного пакета.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace-deps-q014",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — внешние зависимости workspace, PDF стр. 402–404",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-015",
+      "type": "multiple_choice",
+      "text": "Какие команды из материала позволяют работать с конкретным пакетом workspace? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`cargo run -p adder`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`cargo test -p add_one`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`cargo test` для всего workspace",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`cargo use -p adder`",
+          "correct": false
+        }
+      ],
+      "explanation": "Флаг `-p` выбирает конкретный пакет для соответствующей Cargo-команды, а `cargo test` из корня может запускать тесты всего workspace.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace-commands",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — команды workspace, PDF стр. 403–405",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-016",
+      "type": "single_choice",
+      "text": "Для чего в этой главе предназначена команда `cargo install`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для установки исполняемых Rust-программ из crates.io",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для добавления библиотечной зависимости в `[dependencies]` текущего проекта",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Для создания workspace",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Для генерации документации",
+          "correct": false
+        }
+      ],
+      "explanation": "`cargo install` используется для установки пакетов, содержащих binary target, то есть готовые программы командной строки.",
+      "source": {
+        "key": "rust1-cargo-tooling-cargo-install",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — установка бинарных программ через `cargo install`, PDF стр. 406",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-017",
+      "type": "single_choice",
+      "text": "Куда при типичной установке через rustup помещаются бинарные файлы, установленные `cargo install`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`$HOME/.cargo/bin`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`src/bin` текущего проекта",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`target/debug` текущего проекта",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`/tmp/cargo`",
+          "correct": false
+        }
+      ],
+      "explanation": "В материале типичным каталогом установки указано `$HOME/.cargo/bin`; он должен находиться в `$PATH` для запуска программ по имени.",
+      "source": {
+        "key": "rust1-cargo-tooling-cargo-install-q017",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — `cargo install`, PDF стр. 406",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-018",
+      "type": "multiple_choice",
+      "text": "Что нужно для пользовательской подкоманды Cargo? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Исполняемый файл должен быть доступен через `$PATH`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Имя файла должно соответствовать шаблону `cargo-something`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Тогда его можно вызвать как `cargo something`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Нужно перекомпилировать исходный код самого Cargo",
+          "correct": false
+        }
+      ],
+      "explanation": "Cargo обнаруживает внешние исполняемые файлы `cargo-*` в `$PATH` и предоставляет их как подкоманды без изменения самого Cargo.",
+      "source": {
+        "key": "rust1-cargo-tooling-cargo-subcommands",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — «Расширение Cargo пользовательскими командами», PDF стр. 406–407",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-019",
+      "type": "single_choice",
+      "text": "Какая команда показывает в том числе доступные пользовательские подкоманды Cargo?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`cargo --list`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`cargo publish --list`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`cargo install --all`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`cargo doc --commands`",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга указывает `cargo --list` как способ увидеть доступные встроенные и пользовательские подкоманды.",
+      "source": {
+        "key": "rust1-cargo-tooling-cargo-subcommands-q019",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — пользовательские подкоманды, PDF стр. 406–407",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-020",
+      "type": "multiple_choice",
+      "text": "Какие задачи Cargo охватывает в этой теме? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Выбор и настройка профилей компиляции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Генерация и тестирование документации",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Организация нескольких пакетов через workspaces",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Публикация и установка crates/CLI-инструментов",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Управление системными пакетами операционной системы вне экосистемы Rust",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава рассматривает Cargo как инструмент всего жизненного цикла проекта: профили, документацию, crates.io, workspaces, установку программ и расширения.",
+      "source": {
+        "key": "rust1-cargo-tooling-overview",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — темы главы, PDF стр. 383–407",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-021",
+      "type": "single_choice",
+      "text": "Какое значение `opt-level` по умолчанию показано для профиля `dev`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`0`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`1`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`2`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`3`",
+          "correct": false
+        }
+      ],
+      "explanation": "В примере профилей Cargo для `dev` указан `opt-level = 0`.",
+      "source": {
+        "key": "rust1-cargo-tooling-opt-level",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — профили релизов и `opt-level`, PDF стр. 384–386",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-022",
+      "type": "multiple_choice",
+      "text": "Почему настройки оптимизации различаются между `dev` и `release`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Во время разработки важна быстрая повторная компиляция",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для финальной программы важнее скорость выполнения",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Большая оптимизация может увеличить время компиляции",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`release` должен компилироваться быстрее `dev` любой ценой",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал объясняет компромисс между временем компиляции и скоростью готовой программы.",
+      "source": {
+        "key": "rust1-cargo-tooling-profiles-q002",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — профили Cargo, PDF стр. 384–386",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-023",
+      "type": "single_choice",
+      "text": "Где в `Cargo.toml` настраивается профиль разработки?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В секции `[profile.dev]`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "В `[dependencies]`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "В `[workspace]`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "В `[features.release]`",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга показывает переопределение параметров dev-профиля в `[profile.dev]`.",
+      "source": {
+        "key": "rust1-cargo-tooling-profile-config",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — настройка профилей, PDF стр. 384–386",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-024",
+      "type": "multiple_choice",
+      "text": "Какие разделы документации API названы распространёнными? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Examples",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Panics",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Errors",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Safety",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Database Schema",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава перечисляет эти Markdown-разделы как часто используемые.",
+      "source": {
+        "key": "rust1-cargo-tooling-doc-sections",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — «Часто используемые разделы», PDF стр. 388–390",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-025",
+      "type": "single_choice",
+      "text": "К какому элементу относится комментарий `///`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "К следующему объявленному элементу",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Всегда ко всему crate",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только к модулю `tests`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только к `Cargo.toml`",
+          "correct": false
+        }
+      ],
+      "explanation": "`///` документирует следующий элемент.",
+      "source": {
+        "key": "rust1-cargo-tooling-doc-comments",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — комментарии документации, PDF стр. 387–390",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-026",
+      "type": "multiple_choice",
+      "text": "Что происходит с Rust-кодом в `/// # Examples`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он отображается в HTML-документации",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`cargo test` может выполнить его как doc-test",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Изменение API может привести к провалу примера",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Он автоматически публикует crate",
+          "correct": false
+        }
+      ],
+      "explanation": "Документационные примеры одновременно служат документацией и тестами.",
+      "source": {
+        "key": "rust1-cargo-tooling-doc-tests-q026",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — doc-tests, PDF стр. 389–391",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-027",
+      "type": "single_choice",
+      "text": "Почему `//!` удобно размещать в начале `src/lib.rs`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Так документируется содержащий элемент — библиотечный crate в целом",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Так объявляется private-модуль",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Так отключается `cargo doc`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Так задаётся лицензия",
+          "correct": false
+        }
+      ],
+      "explanation": "`//!` относится к содержащему элементу, поэтому подходит для crate-level документации.",
+      "source": {
+        "key": "rust1-cargo-tooling-inner-doc",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — документация содержащихся элементов, PDF стр. 390–392",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-028",
+      "type": "multiple_choice",
+      "text": "Какие преимущества `pub use` показаны на примере `art`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Пользователь получает более короткие публичные пути",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Внутренняя структура может отличаться от публичного API",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Можно реэкспортировать важные типы и функции наверх",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`pub use` физически перемещает исходные файлы",
+          "correct": false
+        }
+      ],
+      "explanation": "`pub use` отделяет внутреннюю организацию модулей от пользовательского API.",
+      "source": {
+        "key": "rust1-cargo-tooling-pub-use-q028",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — реэкспорт через `pub use`, PDF стр. 392–394",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-029",
+      "type": "single_choice",
+      "text": "Что нужно сделать до первой публикации crate на crates.io?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Создать учётную запись, получить API token и выполнить `cargo login`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только `cargo build --release`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Удалить `Cargo.lock`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Добавить crate в workspace",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал начинает публикацию с учётной записи и API token.",
+      "source": {
+        "key": "rust1-cargo-tooling-crates-account",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — настройка учётной записи Crates.io, PDF стр. 394–395",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-030",
+      "type": "multiple_choice",
+      "text": "Какие утверждения об API token crates.io верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`cargo login` сохраняет его локально",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Токен является секретом",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "При раскрытии его следует отозвать и создать новый",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Его рекомендуется публиковать в README",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга прямо предупреждает не делиться токеном.",
+      "source": {
+        "key": "rust1-cargo-tooling-crates-token",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — `cargo login`, PDF стр. 394–395",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-031",
+      "type": "single_choice",
+      "text": "Почему имя crate на crates.io должно быть уникальным?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Потому что имя является глобальным именем пакета в реестре",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Потому что Cargo не поддерживает одинаковые версии",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Локальные crates тоже нельзя компилировать с повторяющимися именами вообще",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Имя должно совпадать с GitHub-логином",
+          "correct": false
+        }
+      ],
+      "explanation": "При публикации нужно выбрать доступное имя в общем реестре.",
+      "source": {
+        "key": "rust1-cargo-tooling-crate-name",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — подготовка к публикации, PDF стр. 394–396",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-032",
+      "type": "multiple_choice",
+      "text": "Какие варианты лицензии обсуждаются в `Cargo.toml`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Поле `license` с идентификатором",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Поле `license-file` для собственного файла",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Несколько лицензий можно выразить через `OR`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Лицензию заменяет `opt-level`",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал показывает `license`, `license-file` и `MIT OR Apache-2.0`.",
+      "source": {
+        "key": "rust1-cargo-tooling-license",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — метаданные лицензии, PDF стр. 395–396",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-033",
+      "type": "single_choice",
+      "text": "Что делает `cargo publish` перед загрузкой в примере вывода?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Упаковывает и проверяет crate, затем загружает его",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только меняет `Cargo.lock`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Устанавливает бинарник",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Делает yank старой версии",
+          "correct": false
+        }
+      ],
+      "explanation": "В выводе видны Packaging, Verifying, Compiling и Uploading.",
+      "source": {
+        "key": "rust1-cargo-tooling-publish-process",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — публикация на Crates.io, PDF стр. 396",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-034",
+      "type": "multiple_choice",
+      "text": "Почему опубликованную версию нельзя просто удалить? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Crates.io служит постоянным архивом",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Существующие сборки должны оставаться воспроизводимыми",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Удаление могло бы ломать зависимые проекты",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Crates.io хранит только одну версию каждого crate",
+          "correct": false
+        }
+      ],
+      "explanation": "Постоянство версий защищает существующие зависимости.",
+      "source": {
+        "key": "rust1-cargo-tooling-permanent-publish",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — постоянный характер публикации, PDF стр. 396–397",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-035",
+      "type": "single_choice",
+      "text": "Как выпустить исправленную версию уже опубликованной библиотеки?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Изменить `version` с учётом SemVer и снова выполнить `cargo publish`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Перезаписать прежнюю версию через `--force`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Удалить старую версию",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Изменить только `Cargo.lock`",
+          "correct": false
+        }
+      ],
+      "explanation": "Изменения публикуются новой версией, а не перезаписью старой.",
+      "source": {
+        "key": "rust1-cargo-tooling-new-version",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — публикация новой версии, PDF стр. 397",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-036",
+      "type": "multiple_choice",
+      "text": "Как влияет `cargo yank --vers 1.0.1`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Новые проекты не будут выбирать эту версию",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Существующие lock-файлы смогут продолжать её использовать",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Файлы версии остаются в crates.io",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Операцию можно отменить с `--undo`",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Удаляет исходный архив версии из crates.io",
+          "correct": false
+        }
+      ],
+      "explanation": "Yank исключает версию из новых разрешений зависимостей, не удаляя её.",
+      "source": {
+        "key": "rust1-cargo-tooling-yank-q036",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — `cargo yank`, PDF стр. 397–398",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-037",
+      "type": "single_choice",
+      "text": "Как начинается корневой `Cargo.toml` workspace, который сам не является package?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "С секции `[workspace]`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "С `[package]`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "С `[profile.workspace]`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "С `[dependencies]`",
+          "correct": false
+        }
+      ],
+      "explanation": "Корневой manifest примера содержит `[workspace]`.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace-root",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — создание workspace, PDF стр. 399–401",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-038",
+      "type": "multiple_choice",
+      "text": "Какие элементы находятся на верхнем уровне workspace из примера? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Общий `Cargo.lock`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Общий `target/`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Корневой `Cargo.toml`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Обязательный единый `src/main.rs` для всех members",
+          "correct": false
+        }
+      ],
+      "explanation": "Workspace имеет общий lock-файл и target, но packages сохраняют собственные src.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace-layout",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — структура workspace, PDF стр. 400–402",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-039",
+      "type": "single_choice",
+      "text": "Зачем workspace использует общий каталог `target`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы пакеты переиспользовали артефакты и избегали лишней перекомпиляции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы у всех был один исходник",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы не создавать lock-файл",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы автоматически публиковать все crates",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга объясняет общий target как средство повторного использования результатов сборки.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace-target",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — общий `target`, PDF стр. 400–402",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-040",
+      "type": "multiple_choice",
+      "text": "Что нужно сделать при добавлении crate `add_one` в workspace? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Создать package `add_one`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Добавить путь в `members`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Если `adder` использует его, добавить path-зависимость",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Удалить `Cargo.toml` у `add_one`",
+          "correct": false
+        }
+      ],
+      "explanation": "Членство в workspace и зависимость между packages задаются отдельно.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace-member",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — добавление второго crate, PDF стр. 401–404",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-041",
+      "type": "single_choice",
+      "text": "Что означает `add_one = { path = \"../add_one\" }`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Использовать локальный package `add_one` по указанному пути",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Скачать только с crates.io",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Сделать `add_one` корнем workspace",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Установить бинарник в PATH",
+          "correct": false
+        }
+      ],
+      "explanation": "Это path-зависимость на соседний package.",
+      "source": {
+        "key": "rust1-cargo-tooling-path-dependency",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — path-зависимости workspace, PDF стр. 402–403",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-042",
+      "type": "multiple_choice",
+      "text": "Как общий `Cargo.lock` помогает при общей внешней зависимости вроде `rand`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Фиксирует выбранную версию для workspace",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Помогает членам использовать согласованную версию",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Не отменяет необходимость объявить зависимость в package manifest",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Автоматически делает `rand` доступным всем без `[dependencies]`",
+          "correct": false
+        }
+      ],
+      "explanation": "Lock-файл общий, но каждая зависимость всё равно объявляется в нужном package.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace-lock",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — внешний crate и единый `Cargo.lock`, PDF стр. 403–404",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-043",
+      "type": "single_choice",
+      "text": "Что делает `cargo test` из корня workspace?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Запускает тесты всех packages рабочего пространства",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Тестирует только первый member",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Публикует packages",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Запускает только doc-tests корня",
+          "correct": false
+        }
+      ],
+      "explanation": "Пример показывает тесты нескольких членов при одном запуске.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace-test",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — тесты workspace, PDF стр. 404–405",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-044",
+      "type": "multiple_choice",
+      "text": "Какие команды адресуют конкретный package workspace? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`cargo run -p adder`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`cargo test -p add_one`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Флаг `-p` выбирает package",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`cargo publish -p all` публикует весь workspace одной версией",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал использует `-p` для выбора конкретного члена.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace-p",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — команды `-p`, PDF стр. 403–405",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-045",
+      "type": "single_choice",
+      "text": "Как публикуются crates из одного workspace?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Каждый crate публикуется отдельно",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Всегда одной атомарной командой",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Публикуется только корневой workspace",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Workspace crates нельзя публиковать",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга отмечает отдельную публикацию каждого crate.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace-publish",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — публикация crates workspace, PDF стр. 405",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-046",
+      "type": "multiple_choice",
+      "text": "Какие пакеты можно устанавливать через `cargo install` по описанию главы? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Пакеты с binary targets",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "CLI-инструменты с crates.io",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Например `ripgrep`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Любую библиотеку только ради добавления API в `[dependencies]`",
+          "correct": false
+        }
+      ],
+      "explanation": "`cargo install` предназначен для исполняемых программ.",
+      "source": {
+        "key": "rust1-cargo-tooling-install",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — `cargo install`, PDF стр. 405–406",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-047",
+      "type": "single_choice",
+      "text": "Как называется установленный исполняемый файл `ripgrep` в примере?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`rg`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`ripgrep` во всех системах",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`cargo-ripgrep`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`grep-rs`",
+          "correct": false
+        }
+      ],
+      "explanation": "Вывод установки показывает бинарник `rg`.",
+      "source": {
+        "key": "rust1-cargo-tooling-ripgrep",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — пример `cargo install ripgrep`, PDF стр. 406",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-048",
+      "type": "multiple_choice",
+      "text": "Что нужно, чтобы установленную Cargo-программу запускать просто по имени? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Бинарник должен быть в Cargo `bin`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Каталог должен быть в `$PATH`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "При типичной rustup-установке это `$HOME/.cargo/bin`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Нужно каждый раз `cargo run`",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга связывает удобный запуск с bin-каталогом и PATH.",
+      "source": {
+        "key": "rust1-cargo-tooling-install-path",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — расположение бинарников, PDF стр. 406",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-049",
+      "type": "single_choice",
+      "text": "Как Cargo использует внешний исполняемый файл `cargo-something`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Его можно вызвать как `cargo something`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только полным путём",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Как `cargo run something`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Cargo всегда переименовывает его",
+          "correct": false
+        }
+      ],
+      "explanation": "Cargo распознаёт бинарники с префиксом `cargo-` в PATH как подкоманды.",
+      "source": {
+        "key": "rust1-cargo-tooling-subcommands",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — пользовательские команды, PDF стр. 406–407",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-050",
+      "type": "multiple_choice",
+      "text": "Какие свойства расширяемости Cargo подчёркиваются в конце главы? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Подкоманду можно добавить без изменения Cargo",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Расширение можно установить через `cargo install`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Пользовательские команды видны в `cargo --list`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Расширения обязаны быть частью стандартной библиотеки",
+          "correct": false
+        }
+      ],
+      "explanation": "Cargo специально спроектирован для внешних подкоманд.",
+      "source": {
+        "key": "rust1-cargo-tooling-subcommands-q050",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo как рабочий инструмент",
+        "locator": "Глава 14 — пользовательские команды и итоги, PDF стр. 406–407",
+        "url": null
+      }
+    }
+  ]
+}

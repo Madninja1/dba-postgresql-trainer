@@ -1,0 +1,582 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-access-privileges",
+  "questions": [
+    {
+      "key": "dba1-access-privileges-001",
+      "type": "single_choice",
+      "text": "Что определяют объектные привилегии PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Какие действия роль может выполнять с конкретным объектом",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только способ хранения пароля роли",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только сетевой адрес клиента",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Физический путь к файлам таблицы",
+          "correct": false
+        }
+      ],
+      "explanation": "В лекции привилегии описаны как связь между субъектом — ролью — и объектом, определяющая доступные действия.",
+      "source": {
+        "key": "dba1-13-privilege-model",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Привилегии",
+        "locator": "Роли, объекты и действия",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-privileges-002",
+      "type": "multiple_choice",
+      "text": "Какие привилегии для таблиц перечислены в занятии? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "SELECT",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "INSERT",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "UPDATE",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "LOGIN",
+          "correct": false
+        }
+      ],
+      "explanation": "SELECT, INSERT и UPDATE относятся к объектным привилегиям таблиц. LOGIN является атрибутом роли.",
+      "source": {
+        "key": "postgresql-16-ddl-privileges",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Привилегии",
+        "locator": "Привилегии таблиц",
+        "url": "https://postgrespro.ru/docs/postgresql/16/ddl-priv"
+      }
+    },
+    {
+      "key": "dba1-access-privileges-003",
+      "type": "single_choice",
+      "text": "Какая привилегия разрешает читать данные таблицы или представления?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "SELECT",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "REFERENCES",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "TRIGGER",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "TRUNCATE",
+          "correct": false
+        }
+      ],
+      "explanation": "На слайде SELECT непосредственно сопоставлен чтению данных.",
+      "source": {
+        "key": "dba1-13-table-privileges",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Привилегии",
+        "locator": "SELECT — чтение данных",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-privileges-004",
+      "type": "multiple_choice",
+      "text": "Какие соответствия табличных привилегий и действий верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "DELETE — удаление строк",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "TRUNCATE — опустошение таблицы",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "TRIGGER — создание триггеров",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "REFERENCES — изменение пароля владельца",
+          "correct": false
+        }
+      ],
+      "explanation": "Конспект перечисляет DELETE, TRUNCATE, TRIGGER и REFERENCES среди прав на таблицы.",
+      "source": {
+        "key": "dba1-13-table-privileges-004",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Привилегии",
+        "locator": "DELETE, TRUNCATE, TRIGGER, REFERENCES",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-privileges-005",
+      "type": "single_choice",
+      "text": "Какая команда выдаёт привилегию роли?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "GRANT",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "REVOKE",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "VACUUM",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "ANALYZE",
+          "correct": false
+        }
+      ],
+      "explanation": "GRANT используется для предоставления объектных привилегий и членства в ролях.",
+      "source": {
+        "key": "postgresql-16-grant",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Управление привилегиями",
+        "locator": "GRANT",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-grant"
+      }
+    },
+    {
+      "key": "dba1-access-privileges-006",
+      "type": "multiple_choice",
+      "text": "Что можно делать командами GRANT и REVOKE в контексте занятия? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Выдавать привилегии на объекты",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Отзывать ранее выданные привилегии",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Управлять членством ролей",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Изменять физический формат хранения таблицы",
+          "correct": false
+        }
+      ],
+      "explanation": "В PostgreSQL GRANT и REVOKE применяются как к объектным правам, так и к членству ролей.",
+      "source": {
+        "key": "postgresql-16-grant-revoke",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Управление привилегиями",
+        "locator": "GRANT и REVOKE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-revoke"
+      }
+    },
+    {
+      "key": "dba1-access-privileges-007",
+      "type": "single_choice",
+      "text": "Какая категория ролей в модели занятия обходит обычные проверки разграничения доступа?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Роли с атрибутом SUPERUSER",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Все роли с LOGIN",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Все роли с CREATEDB",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Все члены роли public",
+          "correct": false
+        }
+      ],
+      "explanation": "В лекции суперпользователи выделены как отдельная категория: обычные проверки разграничения доступа для них не выполняются.",
+      "source": {
+        "key": "dba1-13-role-categories",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Категории ролей",
+        "locator": "Суперпользователи",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-privileges-008",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о владельце объекта соответствуют материалу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Изначально владелец получает все привилегии для своего объекта",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Владелец может выдавать и отзывать привилегии на свой объект",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Некоторые действия владельца не выражаются обычными объектными привилегиями",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Владелец всегда автоматически становится суперпользователем",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал отдельно подчёркивает особое положение владельца: например, возможность удалить объект и управлять его привилегиями.",
+      "source": {
+        "key": "dba1-13-object-owner",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Категории ролей",
+        "locator": "Владельцы объектов",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-privileges-009",
+      "type": "single_choice",
+      "text": "Чем определяется доступ обычной роли, которая не является суперпользователем или владельцем объекта?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Выданными ей привилегиями",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только наличием атрибута LOGIN",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только порядком строк pg_hba.conf",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Физическим расположением объекта",
+          "correct": false
+        }
+      ],
+      "explanation": "Третья категория в лекции — остальные роли, доступ которых к объекту ограничен выданными правами.",
+      "source": {
+        "key": "dba1-13-role-categories-009",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Категории ролей",
+        "locator": "Остальные роли",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-privileges-010",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о групповых ролях верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Они используются для объединения наборов привилегий",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Обычно такие роли создаются с NOLOGIN",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Обычную роль можно включить в групповую роль",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Групповая роль обязательно должна иметь SUPERUSER",
+          "correct": false
+        }
+      ],
+      "explanation": "Конспект определяет групповую роль как удобный именованный набор привилегий, который можно выдать пользователям посредством членства.",
+      "source": {
+        "key": "postgresql-16-role-membership",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Групповые роли",
+        "locator": "Членство ролей",
+        "url": "https://postgrespro.ru/docs/postgresql/16/role-membership"
+      }
+    },
+    {
+      "key": "dba1-access-privileges-011",
+      "type": "single_choice",
+      "text": "Что представляет собой псевдороль public согласно конспекту?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Неявную группу, включающую все роли",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Имя обязательного суперпользователя",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Роль только для владельцев баз данных",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Системную роль для запуска autovacuum",
+          "correct": false
+        }
+      ],
+      "explanation": "Если привилегия выдана public, она фактически становится доступна всем ролям, поскольку public неявно включает их.",
+      "source": {
+        "key": "dba1-13-public-role",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Групповые роли",
+        "locator": "Псевдороль public",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-privileges-012",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о членстве и атрибутах ролей соответствуют материалу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Роли можно включать друг в друга",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Такое членство удобно для управления привилегиями",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Атрибуты включающей роли сами по себе не наследуются так же, как объектные привилегии",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Членство автоматически делает все роли суперпользователями",
+          "correct": false
+        }
+      ],
+      "explanation": "Лекция отдельно отмечает, что атрибуты ролей не наследуются как обычные права; при необходимости можно переключиться на включающую роль.",
+      "source": {
+        "key": "dba1-13-role-membership",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Групповые роли",
+        "locator": "Наследование и переключение роли",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-privileges-013",
+      "type": "single_choice",
+      "text": "Как в psql согласно материалу вывести роли, включая предопределённые системные роли?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\duS",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\dtS",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "\\dnS",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "\\dbS",
+          "correct": false
+        }
+      ],
+      "explanation": "В конспекте для просмотра полного списка ролей, включая предопределённые, приведена команда \\duS.",
+      "source": {
+        "key": "postgresql-16-predefined-roles",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Предопределённые роли",
+        "locator": "\\duS",
+        "url": "https://postgrespro.ru/docs/postgresql/16/predefined-roles"
+      }
+    },
+    {
+      "key": "dba1-access-privileges-014",
+      "type": "multiple_choice",
+      "text": "Какие возможности даёт механизм привилегий по умолчанию? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Автоматически выдавать права при создании новых объектов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Автоматически отзывать определённые права для новых объектов",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Настраивать будущие привилегии для объектов, создаваемых определённой ролью",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Задним числом автоматически изменить права всех уже существующих объектов",
+          "correct": false
+        }
+      ],
+      "explanation": "ALTER DEFAULT PRIVILEGES действует на привилегии объектов, которые будут созданы в дальнейшем, а не является массовой заменой прав уже существующих объектов.",
+      "source": {
+        "key": "postgresql-16-default-privileges",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Привилегии по умолчанию",
+        "locator": "ALTER DEFAULT PRIVILEGES",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-alterdefaultprivileges"
+      }
+    },
+    {
+      "key": "dba1-access-privileges-015",
+      "type": "single_choice",
+      "text": "Какая единственная объектная привилегия для функций и процедур выделена в занятии?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "EXECUTE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "SELECT",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "TRIGGER",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "CONNECT",
+          "correct": false
+        }
+      ],
+      "explanation": "Для функций и процедур материал указывает одну объектную привилегию — EXECUTE.",
+      "source": {
+        "key": "dba1-13-routine-execute",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Подпрограммы",
+        "locator": "EXECUTE",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-privileges-016",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о SECURITY INVOKER и SECURITY DEFINER верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "SECURITY INVOKER выполняет подпрограмму с правами вызывающей роли",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "SECURITY DEFINER выполняет подпрограмму с правами её владельца",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "SECURITY INVOKER является вариантом по умолчанию в показанном материале",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "SECURITY DEFINER автоматически превращает вызывающую роль в суперпользователя",
+          "correct": false
+        }
+      ],
+      "explanation": "Различие состоит в контексте прав, с которыми выполняется код: вызывающего пользователя либо владельца подпрограммы.",
+      "source": {
+        "key": "dba1-13-routine-security",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Подпрограммы",
+        "locator": "SECURITY INVOKER и SECURITY DEFINER",
+        "url": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "rust-1",
+  "slug": "rust1-lifetimes",
+  "notes_part": 10,
+  "topic_number": 10,
+  "title": "Lifetimes",
+  "description": "Времена жизни ссылок, аннотации, связи входных и выходных ссылок, структуры со ссылками, lifetime elision и 'static.",
+  "sort_order": 100
+}

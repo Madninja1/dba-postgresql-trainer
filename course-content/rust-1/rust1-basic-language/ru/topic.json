@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "rust-1",
+  "slug": "rust1-basic-language",
+  "notes_part": 2,
+  "topic_number": 2,
+  "title": "Базовый язык Rust",
+  "description": "Переменные и изменяемость, типы данных, функции, выражения, комментарии, ветвления и циклы.",
+  "sort_order": 20
+}

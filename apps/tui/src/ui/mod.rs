@@ -8,6 +8,7 @@ mod quiz_setup;
 mod results;
 mod resume;
 mod statistics;
+mod topic_courses;
 mod topics;
 
 use ratatui::{
@@ -26,6 +27,10 @@ pub fn render(frame: &mut Frame, app: &App) {
 
         Screen::ResumeSession => {
             resume::render(frame, app);
+        }
+
+        Screen::TopicCourses => {
+            topic_courses::render(frame, app);
         }
 
         Screen::Topics => {

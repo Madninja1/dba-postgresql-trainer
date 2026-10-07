@@ -1,0 +1,1816 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-user-defined-types",
+  "questions": [
+    {
+      "key": "rust1-user-defined-types-001",
+      "type": "single_choice",
+      "text": "Что такое структура (`struct`) в определении главы 5?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Пользовательский тип, объединяющий несколько связанных значений в логическую группу",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Цикл с именованными ветвями",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Синоним массива одного типа",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только функция-конструктор",
+          "correct": false
+        }
+      ],
+      "explanation": "Структура описана как пользовательский тип для именования и группировки связанных значений.",
+      "source": {
+        "key": "rust1-user-defined-types-struct-definition",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Использование структур для структурирования связанных данных",
+        "locator": "Глава 5 — введение, стр. 112",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-002",
+      "type": "single_choice",
+      "text": "Чем обычная структура отличается от кортежа в способе описания частей данных?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "У полей структуры есть имена",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Структура не может хранить разные типы",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Кортеж всегда имеет имена полей",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Структура не является типом",
+          "correct": false
+        }
+      ],
+      "explanation": "В структуре каждая часть данных именуется, поэтому не нужно полагаться только на порядок значений.",
+      "source": {
+        "key": "rust1-user-defined-types-struct-vs-tuple",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение и инициализация структур",
+        "locator": "Глава 5 — раздел «Определение и инициализация структур», стр. 113",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-003",
+      "type": "single_choice",
+      "text": "Как называется пара `имя: тип` внутри определения структуры?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Поле",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Ветка",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Вариант",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Срез",
+          "correct": false
+        }
+      ],
+      "explanation": "Каждая пара имени и типа в структуре называется полем.",
+      "source": {
+        "key": "rust1-user-defined-types-field",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение и инициализация структур",
+        "locator": "Глава 5 — раздел «Определение и инициализация структур», стр. 113",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-004",
+      "type": "single_choice",
+      "text": "Нужно ли при создании экземпляра структуры соблюдать порядок полей из определения?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Нет, значения связываются с именами полей",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Да, иначе код всегда не компилируется",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только для полей `String`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только в release-сборке",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал указывает, что порядок полей при создании экземпляра соблюдать не обязательно.",
+      "source": {
+        "key": "rust1-user-defined-types-field-order",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение и инициализация структур",
+        "locator": "Глава 5 — раздел «Определение и инициализация структур», стр. 113",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-005",
+      "type": "single_choice",
+      "text": "Как получить поле `email` у экземпляра `user1`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "user1.email",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "user1[email]",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "User::email(user1) обязательно",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "user1->email",
+          "correct": false
+        }
+      ],
+      "explanation": "Для доступа к полям используется точечная нотация.",
+      "source": {
+        "key": "rust1-user-defined-types-field-access",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение и инициализация структур",
+        "locator": "Глава 5 — раздел «Определение и инициализация структур», стр. 114",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-006",
+      "type": "single_choice",
+      "text": "Что требуется, чтобы изменить `user1.email` присваиванием?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Весь экземпляр `user1` должен быть объявлен изменяемым",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Достаточно пометить поле `email` как `mut` в определении структуры",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Нужно использовать `clone` структуры",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Поля структур никогда нельзя менять",
+          "correct": false
+        }
+      ],
+      "explanation": "Rust не позволяет помечать отдельные поля изменяемыми; изменяемым должен быть весь экземпляр.",
+      "source": {
+        "key": "rust1-user-defined-types-struct-mutability",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение и инициализация структур",
+        "locator": "Глава 5 — раздел «Определение и инициализация структур», стр. 114",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-007",
+      "type": "single_choice",
+      "text": "Когда можно использовать сокращённую инициализацию поля?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Когда имя переменной/параметра совпадает с именем поля",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только когда поле имеет тип `bool`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только для первого поля",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только в кортежной структуре",
+          "correct": false
+        }
+      ],
+      "explanation": "При одинаковых именах можно писать `email` вместо `email: email`.",
+      "source": {
+        "key": "rust1-user-defined-types-field-init-shorthand",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение и инициализация структур",
+        "locator": "Глава 5 — раздел «Использование сокращённой инициализации поля», стр. 115",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-008",
+      "type": "single_choice",
+      "text": "Что означает `..user1` в выражении создания новой структуры?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Оставшиеся поля взять из `user1`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Удалить все поля `user1`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Сделать все поля публичными",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Создать пустой диапазон",
+          "correct": false
+        }
+      ],
+      "explanation": "Синтаксис обновления структуры `..user1` заполняет неуказанные поля значениями из `user1`.",
+      "source": {
+        "key": "rust1-user-defined-types-struct-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение и инициализация структур",
+        "locator": "Глава 5 — раздел «Создание экземпляра структуры из экземпляра другой структуры...», стр. 116–117",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-009",
+      "type": "single_choice",
+      "text": "Где должен находиться `..user1` в выражении обновления структуры?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Последним",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Первым",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только между двумя полями",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Порядок запрещён синтаксисом",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал прямо указывает, что `..user1` должен стоять последним.",
+      "source": {
+        "key": "rust1-user-defined-types-struct-update-position",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение и инициализация структур",
+        "locator": "Глава 5 — раздел о синтаксисе обновления структуры, стр. 116",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-010",
+      "type": "single_choice",
+      "text": "Почему после создания `user2` через `..user1` исходный `user1` в примере больше нельзя использовать?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Поле `username: String` было перемещено в `user2`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Любой синтаксис `..` всегда удаляет исходный объект целиком",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Поле `active: bool` не реализует Copy",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Структуры никогда нельзя использовать дважды",
+          "correct": false
+        }
+      ],
+      "explanation": "Обновление использует обычное присваивание; `String`-поле `username` перемещается.",
+      "source": {
+        "key": "rust1-user-defined-types-struct-update-move",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение и инициализация структур",
+        "locator": "Глава 5 — раздел о синтаксисе обновления структуры, стр. 117",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-011",
+      "type": "single_choice",
+      "text": "Что такое кортежная структура?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Структура с именем типа, но без имён отдельных полей",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Обычный кортеж без собственного типа",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Структура только с одним полем",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Структура, все поля которой публичны автоматически",
+          "correct": false
+        }
+      ],
+      "explanation": "Кортежная структура имеет имя типа и типы полей, но сами поля не именованы.",
+      "source": {
+        "key": "rust1-user-defined-types-tuple-struct",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение и инициализация структур",
+        "locator": "Глава 5 — раздел «Кортежные структуры», стр. 117–118",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-012",
+      "type": "single_choice",
+      "text": "Почему `Color(0,0,0)` и `Point(0,0,0)` считаются разными типами?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Каждая объявленная структура образует собственный тип",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Потому что значения внутри разные",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Потому что `Color` всегда содержит строки",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "На самом деле это один тип",
+          "correct": false
+        }
+      ],
+      "explanation": "Даже при одинаковых типах полей разные кортежные структуры являются разными типами.",
+      "source": {
+        "key": "rust1-user-defined-types-tuple-struct-types",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение и инициализация структур",
+        "locator": "Глава 5 — раздел «Кортежные структуры», стр. 117",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-013",
+      "type": "single_choice",
+      "text": "Как объявляется единично-подобная структура `AlwaysEqual` в примере?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "struct AlwaysEqual;",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "struct AlwaysEqual {}",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "enum AlwaysEqual;",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "type AlwaysEqual = ();",
+          "correct": false
+        }
+      ],
+      "explanation": "Для структуры без полей показан синтаксис `struct AlwaysEqual;`.",
+      "source": {
+        "key": "rust1-user-defined-types-unit-struct",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение и инициализация структур",
+        "locator": "Глава 5 — раздел «Единично-подобные структуры», стр. 118",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-014",
+      "type": "single_choice",
+      "text": "Почему в `User` из главы 5 выбраны владеющие поля `String`, а не `&str`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы экземпляр структуры владел своими данными и они жили столько же, сколько структура",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Потому что структуры вообще не могут содержать ссылки",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Потому что `&str` всегда изменяем",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Потому что `String` реализует Copy",
+          "correct": false
+        }
+      ],
+      "explanation": "Авторы хотят, чтобы `User` владел данными; ссылки в структурах требуют работы со временами жизни.",
+      "source": {
+        "key": "rust1-user-defined-types-struct-ownership",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение и инициализация структур",
+        "locator": "Глава 5 — раздел «Владение данными структуры», стр. 118–120",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-015",
+      "type": "single_choice",
+      "text": "Что произойдёт при попытке определить поля `username: &str` и `email: &str` без времён жизни в показанном примере?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Компилятор потребует спецификатор времени жизни",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Код автоматически преобразует их в String",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Поля будут иметь время жизни `static` без условий",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Структура перестанет быть пользовательским типом",
+          "correct": false
+        }
+      ],
+      "explanation": "Пример приводит ошибку `missing lifetime specifier` и откладывает исправление до главы 10.",
+      "source": {
+        "key": "rust1-user-defined-types-struct-references",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение и инициализация структур",
+        "locator": "Глава 5 — раздел «Владение данными структуры», стр. 119–120",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-016",
+      "type": "single_choice",
+      "text": "Почему функция `area` в версии со структурой принимает `&Rectangle`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы заимствовать прямоугольник и оставить владение у `main`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Потому что структуры можно передавать только по ссылке",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы изменить поля ширины и высоты",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы создать копию Rectangle",
+          "correct": false
+        }
+      ],
+      "explanation": "Функции достаточно чтения полей; заимствование позволяет использовать `rect1` дальше.",
+      "source": {
+        "key": "rust1-user-defined-types-rectangle-borrow",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Пример использования структур",
+        "locator": "Глава 5 — раздел «Рефакторинг при помощи структур», стр. 123",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-017",
+      "type": "single_choice",
+      "text": "Почему `println!(\"{rect1}\")` не работает для `Rectangle` без дополнительных реализаций?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "У структуры нет встроенной реализации `Display` для `{}`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`println!` не умеет печатать значения вообще",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Структуры нельзя передавать макросам",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`Rectangle` обязан быть mutable",
+          "correct": false
+        }
+      ],
+      "explanation": "Обычный `{}` использует `Display`, а для структуры способ отображения неоднозначен и не выводится автоматически.",
+      "source": {
+        "key": "rust1-user-defined-types-display-debug",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Пример использования структур",
+        "locator": "Глава 5 — раздел «Добавление полезной функциональности при помощи выводимых типажей», стр. 124–125",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-018",
+      "type": "single_choice",
+      "text": "Что нужно добавить к `Rectangle`, чтобы использовать формат `{:?}` в примере?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "#[derive(Debug)]",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "#[derive(Display)]",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pub struct",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "impl Clone обязательно",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал добавляет `#[derive(Debug)]`, после чего отладочное форматирование работает.",
+      "source": {
+        "key": "rust1-user-defined-types-derive-debug",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Пример использования структур",
+        "locator": "Глава 5 — раздел о Debug, стр. 125",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-019",
+      "type": "single_choice",
+      "text": "Куда выводит `dbg!` согласно материалу?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В stderr",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только в stdout",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "В Cargo.toml",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "В файл без указания пути",
+          "correct": false
+        }
+      ],
+      "explanation": "`dbg!` печатает в стандартный поток ошибок `stderr`, в отличие от `println!` и stdout.",
+      "source": {
+        "key": "rust1-user-defined-types-dbg",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Пример использования структур",
+        "locator": "Глава 5 — раздел о `dbg!`, стр. 126–127",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-020",
+      "type": "single_choice",
+      "text": "Где определяются методы структуры?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В блоке `impl` для соответствующего типа",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только внутри `main`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "В `[dependencies]`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "В объявлении `let` экземпляра",
+          "correct": false
+        }
+      ],
+      "explanation": "Методы помещаются в блок `impl Type`.",
+      "source": {
+        "key": "rust1-user-defined-types-impl",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Синтаксис метода",
+        "locator": "Глава 5 — раздел «Определение методов», стр. 128–129",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-021",
+      "type": "single_choice",
+      "text": "Что представляет первый параметр метода `self`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Экземпляр типа, на котором вызывается метод",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Имя модуля",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Случайное значение",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только статический тип без экземпляра",
+          "correct": false
+        }
+      ],
+      "explanation": "Методы имеют первым параметром `self`, представляющий экземпляр соответствующего типа.",
+      "source": {
+        "key": "rust1-user-defined-types-self",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Синтаксис метода",
+        "locator": "Глава 5 — раздел «Синтаксис метода», стр. 128–129",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-022",
+      "type": "single_choice",
+      "text": "Чему эквивалентно `&self` по объяснению?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "self: &Self",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "self: Self",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "self: &mut Self всегда",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Self::self()",
+          "correct": false
+        }
+      ],
+      "explanation": "Внутри `impl` запись `&self` является сокращением `self: &Self`.",
+      "source": {
+        "key": "rust1-user-defined-types-self-shorthand",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Синтаксис метода",
+        "locator": "Глава 5 — раздел «Определение методов», стр. 129",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-023",
+      "type": "single_choice",
+      "text": "Как вызвать ассоциированную функцию `square` для `Rectangle`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Rectangle::square(3)",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Rectangle.square(3) без экземпляра",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "square->Rectangle(3)",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "rect1::square(3) обязательно",
+          "correct": false
+        }
+      ],
+      "explanation": "Ассоциированная функция без `self` вызывается через `::` с именем типа.",
+      "source": {
+        "key": "rust1-user-defined-types-associated-function",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Синтаксис метода",
+        "locator": "Глава 5 — раздел «Ассоциированные функции», стр. 132–133",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-024",
+      "type": "single_choice",
+      "text": "Что выражает `enum` по сравнению со структурой?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Значение может быть одним из перечисленных вариантов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Все варианты существуют одновременно",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только набор полей без вариантов",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только числовую константу",
+          "correct": false
+        }
+      ],
+      "explanation": "Перечисление задаёт тип как один из возможных вариантов.",
+      "source": {
+        "key": "rust1-user-defined-types-enum-definition",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение перечисления",
+        "locator": "Глава 6 — раздел «Определение перечисления», стр. 136",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-025",
+      "type": "single_choice",
+      "text": "Почему `Option<T>` нельзя напрямую использовать как `T`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`Option<T>` и `T` — разные типы, и нужно обработать отсутствие значения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Потому что `Option<T>` всегда равно `None`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Потому что `Some` хранит только строки",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Потому что `T` запрещён в Rust",
+          "correct": false
+        }
+      ],
+      "explanation": "Различие типов заставляет явно обработать `Some`/`None` прежде чем работать с внутренним `T`.",
+      "source": {
+        "key": "rust1-user-defined-types-option-types",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение перечисления",
+        "locator": "Глава 6 — раздел «Перечисление Option и его преимущества перед Null-значениями», стр. 141–144",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-026",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о сокращённой инициализации полей верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Работает, когда имя переменной совпадает с именем поля",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Позволяет писать `email` вместо `email: email`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Уменьшает повторение имён",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Автоматически заполняет любое поле независимо от имени",
+          "correct": false
+        }
+      ],
+      "explanation": "Сокращение основано именно на совпадении имён поля и переменной.",
+      "source": {
+        "key": "rust1-user-defined-types-field-shorthand-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение и инициализация структур",
+        "locator": "Глава 5 — раздел «Использование сокращённой инициализации поля», стр. 115",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-027",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о синтаксисе обновления структуры верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Можно явно задать изменённые поля",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Неуказанные поля берутся из другого экземпляра через `..`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`..user1` ставится последним",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Он всегда клонирует все неуказанные значения",
+          "correct": false
+        }
+      ],
+      "explanation": "Обновление использует обычные правила присваивания: часть полей может копироваться, а часть перемещаться.",
+      "source": {
+        "key": "rust1-user-defined-types-struct-update-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение и инициализация структур",
+        "locator": "Глава 5 — раздел о синтаксисе обновления структуры, стр. 116–117",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-028",
+      "type": "multiple_choice",
+      "text": "Какие поля `User` из примера с обновлением могут копироваться без перемещения благодаря `Copy`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`active: bool`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`sign_in_count: u64`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Поле типа `String` автоматически всегда `Copy`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Оба первых варианта не реализуют Copy",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал отдельно отмечает `active` и `sign_in_count` как `Copy`, в отличие от `String`-поля `username`.",
+      "source": {
+        "key": "rust1-user-defined-types-update-copy-fields",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение и инициализация структур",
+        "locator": "Глава 5 — раздел о синтаксисе обновления структуры, стр. 117",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-029",
+      "type": "multiple_choice",
+      "text": "Какие свойства кортежных структур подтверждаются материалом? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Имеют имя собственного типа",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Не имеют имён полей",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Могут деструктурироваться как кортежи",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Две кортежные структуры с одинаковыми типами полей являются одним типом",
+          "correct": false
+        }
+      ],
+      "explanation": "Имя структуры делает её отдельным типом; поля доступны позиционно.",
+      "source": {
+        "key": "rust1-user-defined-types-tuple-struct-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение и инициализация структур",
+        "locator": "Глава 5 — раздел «Кортежные структуры», стр. 117–118",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-030",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о единично-подобных структурах верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "У них нет полей",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Они похожи на единичный тип `()`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Могут быть полезны для реализации типажа без хранимых данных",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Для объявления обязательно нужны фигурные скобки",
+          "correct": false
+        }
+      ],
+      "explanation": "Единично-подобная структура объявляется без полей и без скобок, например `struct AlwaysEqual;`.",
+      "source": {
+        "key": "rust1-user-defined-types-unit-struct-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение и инициализация структур",
+        "locator": "Глава 5 — раздел «Единично-подобные структуры», стр. 118",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-031",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о владении данными структуры `User` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Использование `String` позволяет структуре владеть текстовыми данными",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Хранимые ссылки требуют учёта времён жизни",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Времена жизни должны гарантировать действительность данных на время структуры",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Любая структура с `String` автоматически реализует Copy",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал использует владеющие `String` и объясняет, что ссылки в структурах связаны с временами жизни.",
+      "source": {
+        "key": "rust1-user-defined-types-struct-data-ownership",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение и инициализация структур",
+        "locator": "Глава 5 — раздел «Владение данными структуры», стр. 118–120",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-032",
+      "type": "multiple_choice",
+      "text": "Какие улучшения даёт структура `Rectangle` по сравнению с кортежем размеров? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Поля получают осмысленные имена `width` и `height`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Сигнатура `area` явно говорит о `Rectangle`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Не нужно помнить, что ширина — индекс 0, а высота — индекс 1",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Структура делает ширину и высоту типами `String`",
+          "correct": false
+        }
+      ],
+      "explanation": "Рефакторинг подчёркивает ясность и связь значений через именованные поля.",
+      "source": {
+        "key": "rust1-user-defined-types-rectangle-meaning",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Пример использования структур",
+        "locator": "Глава 5 — разделы «Рефакторинг при помощи кортежей» и «Рефакторинг при помощи структур», стр. 122–123",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-033",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о форматировании структуры `Rectangle` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`{}` использует `Display`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для структуры `Display` не выводится автоматически",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`{:?}` использует `Debug`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`#[derive(Debug)]` включает отладочное форматирование",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`#[derive(Display)]` автоматически реализует `Display` для любой структуры",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел поэтапно показывает ошибку `Display`, переход к `Debug` и `derive(Debug)`.",
+      "source": {
+        "key": "rust1-user-defined-types-debug-format",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Пример использования структур",
+        "locator": "Глава 5 — раздел о выводимых типажах, стр. 124–126",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-034",
+      "type": "multiple_choice",
+      "text": "Какие свойства `dbg!` описаны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Печатает файл и строку вызова",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Печатает результирующее значение выражения",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Возвращает владение значением выражения",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Всегда печатает только в stdout",
+          "correct": false
+        }
+      ],
+      "explanation": "`dbg!` пишет в stderr, показывает место вызова и значение и возвращает значение обратно.",
+      "source": {
+        "key": "rust1-user-defined-types-dbg-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Пример использования структур",
+        "locator": "Глава 5 — раздел о `dbg!`, стр. 126–127",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-035",
+      "type": "multiple_choice",
+      "text": "Какие формы получателя метода обсуждаются? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`&self` — неизменяемое заимствование",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`&mut self` — изменяемое заимствование",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`self` — получение владения экземпляром",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`clone self` — обязательная форма получателя",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава прямо перечисляет три способа отношения метода к экземпляру.",
+      "source": {
+        "key": "rust1-user-defined-types-method-receivers",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Синтаксис метода",
+        "locator": "Глава 5 — раздел «Определение методов», стр. 129",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-036",
+      "type": "multiple_choice",
+      "text": "Какие преимущества организации кода через методы отмечены? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Поведение размещается рядом с типом",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Доступный функционал типа собирается в `impl`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Не приходится повторять тип `self` в полной форме в каждой сигнатуре",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Методы отменяют правила владения",
+          "correct": false
+        }
+      ],
+      "explanation": "Методы улучшают организацию, но продолжают подчиняться владению и заимствованию.",
+      "source": {
+        "key": "rust1-user-defined-types-method-organization",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Синтаксис метода",
+        "locator": "Глава 5 — раздел «Определение методов», стр. 129",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-037",
+      "type": "multiple_choice",
+      "text": "Что верно о методе и поле с одинаковым именем `width`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`rect1.width` означает поле",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`rect1.width()` означает метод",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Скобки позволяют различить метод и поле",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Rust запрещает методу называться как поле",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал показывает допустимость одинакового имени и различение по круглым скобкам.",
+      "source": {
+        "key": "rust1-user-defined-types-getter",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Синтаксис метода",
+        "locator": "Глава 5 — пример метода `width`, стр. 129–130",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-038",
+      "type": "multiple_choice",
+      "text": "Какие утверждения об автоматическом заимствовании при вызове методов верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Rust может автоматически добавить `&`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Rust может автоматически добавить `&mut`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Rust может автоматически разыменовать `*` для соответствия получателю",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Для вызова метода всегда нужно вручную писать `(&value).method()`",
+          "correct": false
+        }
+      ],
+      "explanation": "При вызове методов Rust выполняет автоматическое обращение по ссылке/разыменование, чтобы согласовать получателя.",
+      "source": {
+        "key": "rust1-user-defined-types-auto-ref-deref",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Синтаксис метода",
+        "locator": "Глава 5 — раздел «Где используется оператор ->?», стр. 130–131",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-039",
+      "type": "multiple_choice",
+      "text": "Какие утверждения об ассоциированных функциях верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Все функции внутри `impl` являются ассоциированными с типом",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Ассоциированная функция без `self` не является методом",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Такие функции часто используются как конструкторы",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Имя `new` является специальным обязательным ключевым словом Rust",
+          "correct": false
+        }
+      ],
+      "explanation": "`new` — распространённое, но не специальное имя; ассоциированные функции вызываются через пространство имён типа.",
+      "source": {
+        "key": "rust1-user-defined-types-associated-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Синтаксис метода",
+        "locator": "Глава 5 — раздел «Ассоциированные функции», стр. 132–133",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-040",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о блоках `impl` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Один тип может иметь несколько блоков `impl`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Методы можно распределить по нескольким `impl`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Несколько `impl` в показанном простом случае эквивалентны одному блоку с методами",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Rust разрешает строго один `impl` на структуру",
+          "correct": false
+        }
+      ],
+      "explanation": "Листинг 5-16 показывает несколько допустимых блоков `impl` для `Rectangle`.",
+      "source": {
+        "key": "rust1-user-defined-types-multiple-impl",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Синтаксис метода",
+        "locator": "Глава 5 — раздел «Несколько блоков impl», стр. 133–134",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-041",
+      "type": "multiple_choice",
+      "text": "Какие свойства перечислений показаны на примере IP-адресов? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Значение enum представляет один из вариантов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`V4` и `V6` принадлежат одному типу enum",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Вариант может хранить связанные данные",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Одно значение enum одновременно обязано быть и V4, и V6",
+          "correct": false
+        }
+      ],
+      "explanation": "Enum кодирует взаимоисключающие варианты одного типа и может хранить данные внутри вариантов.",
+      "source": {
+        "key": "rust1-user-defined-types-enum-ip",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение перечисления",
+        "locator": "Глава 6 — раздел «Определение перечисления» и «Значения перечислений», стр. 136–138",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-042",
+      "type": "multiple_choice",
+      "text": "Какие формы вариантов демонстрирует `enum Message`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Вариант без данных `Quit`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Вариант с именованными полями `Move`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Вариант с одним `String` — `Write`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Вариант-кортеж из трёх `i32` — `ChangeColor`",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Вариант `Quit` содержит значение `String`",
+          "correct": false
+        }
+      ],
+      "explanation": "`Message` специально показывает разные формы данных внутри вариантов одного перечисления.",
+      "source": {
+        "key": "rust1-user-defined-types-message",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение перечисления",
+        "locator": "Глава 6 — листинг 6-2, стр. 139–140",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-043",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `Option<T>` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Имеет варианты `Some(T)` и `None`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Включён в прелюдию",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`Some` и `None` можно использовать без префикса `Option::`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`Option<T>` является тем же типом, что и `T`",
+          "correct": false
+        }
+      ],
+      "explanation": "`Option<T>` — отдельный enum; его варианты находятся в прелюдии.",
+      "source": {
+        "key": "rust1-user-defined-types-option-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение перечисления",
+        "locator": "Глава 6 — раздел «Перечисление Option и его преимущества перед Null-значениями», стр. 141–143",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-044",
+      "type": "multiple_choice",
+      "text": "Какие выводы делает материал из различия `Option<T>` и `T`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Компилятор не позволяет использовать `Option<T>` как обычный `T` без обработки",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Случай `None` приходится учитывать явно",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Это помогает не предполагать ошибочно наличие значения",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`None` автоматически преобразуется в нулевое значение `T`",
+          "correct": false
+        }
+      ],
+      "explanation": "Система типов заставляет обработать отсутствие значения до работы с внутренним `T`.",
+      "source": {
+        "key": "rust1-user-defined-types-option-safety",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Определение перечисления",
+        "locator": "Глава 6 — раздел об Option, стр. 142–144",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-045",
+      "type": "multiple_choice",
+      "text": "Какие свойства `match` описаны в главе 6? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Сравнивает значение с шаблонами",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Выполняет код первого совпавшего шаблона",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Компилятор проверяет обработку всех возможных случаев",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Выражение после `match` обязано иметь тип `bool`",
+          "correct": false
+        }
+      ],
+      "explanation": "В отличие от `if`, сопоставляемое значение может иметь любой подходящий тип; `match` использует шаблоны и исчерпывающую проверку.",
+      "source": {
+        "key": "rust1-user-defined-types-match-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Управляющая конструкция match",
+        "locator": "Глава 6 — раздел «Управляющая конструкция match», стр. 145–146",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-046",
+      "type": "multiple_choice",
+      "text": "Какие возможности шаблона `Coin::Quarter(state)` показаны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Сопоставить конкретный вариант enum",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Привязать внутреннее значение к переменной `state`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Использовать `state` в коде ветки",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Автоматически изменить вариант `Quarter` на `Penny`",
+          "correct": false
+        }
+      ],
+      "explanation": "Шаблон одновременно проверяет вариант и извлекает связанные данные.",
+      "source": {
+        "key": "rust1-user-defined-types-match-binding",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Управляющая конструкция match",
+        "locator": "Глава 6 — раздел «Образцы, привязывающие значения», стр. 146–147",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-047",
+      "type": "multiple_choice",
+      "text": "Какие результаты даёт функция `plus_one` из примера `Option<i32>`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для `Some(5)` возвращает `Some(6)`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для `None` возвращает `None`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Шаблон `Some(i)` извлекает внутреннее число",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`None` трактуется как число 0 и превращается в `Some(1)`",
+          "correct": false
+        }
+      ],
+      "explanation": "`match` обрабатывает `None` отдельно и увеличивает только значение внутри `Some`.",
+      "source": {
+        "key": "rust1-user-defined-types-option-match",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Управляющая конструкция match",
+        "locator": "Глава 6 — раздел «Сопоставление шаблона для Option<T>», стр. 148–149",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-048",
+      "type": "multiple_choice",
+      "text": "Какие утверждения об исчерпывающем `match` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Все возможные варианты должны быть покрыты",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Пропущенный `None` для `Option` вызывает ошибку компиляции",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Универсальный шаблон может покрыть остальные значения",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Можно всегда без ошибки оставить только ветвь `Some` для Option",
+          "correct": false
+        }
+      ],
+      "explanation": "Исчерпывающая проверка заставляет явно учесть все случаи либо использовать подходящий универсальный шаблон.",
+      "source": {
+        "key": "rust1-user-defined-types-match-exhaustive",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Управляющая конструкция match",
+        "locator": "Глава 6 — раздел «Match объемлет все варианты значения», стр. 149–151",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-049",
+      "type": "multiple_choice",
+      "text": "Какие универсальные шаблоны показаны в `match`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Переменная вроде `other`, которая привязывает оставшееся значение",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`_`, который совпадает с любым значением без привязки",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Оба должны располагаться после более конкретных ветвей, чтобы те были достижимы",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`_` совпадает только с нулём",
+          "correct": false
+        }
+      ],
+      "explanation": "`other` связывает значение, а `_` игнорирует его; универсальные ветви обычно ставятся последними.",
+      "source": {
+        "key": "rust1-user-defined-types-wildcard",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Управляющая конструкция match",
+        "locator": "Глава 6 — раздел «Универсальные шаблоны и заполнитель _», стр. 150–152",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-050",
+      "type": "multiple_choice",
+      "text": "Какие утверждения об `if let` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Удобен для обработки одного интересующего шаблона",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Может игнорировать остальные варианты без явной ветви `_ => ()`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Короче эквивалентного `match` в таких случаях",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Сохраняет ту же обязательную исчерпывающую проверку, что и `match`",
+          "correct": false
+        }
+      ],
+      "explanation": "`if let` уменьшает шаблонный код, но жертвует исчерпывающей проверкой `match`.",
+      "source": {
+        "key": "rust1-user-defined-types-if-let",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Компактное управление потоком выполнения с if let",
+        "locator": "Глава 6 — раздел «Компактное управление потоком выполнения с if let», стр. 153–154",
+        "url": null
+      }
+    }
+  ]
+}

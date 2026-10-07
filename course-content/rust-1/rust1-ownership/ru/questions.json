@@ -1,0 +1,1806 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-ownership",
+  "questions": [
+    {
+      "key": "rust1-ownership-001",
+      "type": "single_choice",
+      "text": "Что такое владение в определении главы 4?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Набор правил, определяющих управление памятью программой Rust",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Сборщик мусора стандартной библиотеки",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Формат хранения только строковых литералов",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Инструмент Cargo для зависимостей",
+          "correct": false
+        }
+      ],
+      "explanation": "Владение определяется как набор правил, определяющих, как программа Rust управляет памятью.",
+      "source": {
+        "key": "rust1-ownership-definition",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Что такое владение?», стр. 80",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-002",
+      "type": "single_choice",
+      "text": "Когда проверяются правила системы владения?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Только после запуска",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Компилятором во время компиляции",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Сборщиком мусора раз в минуту",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только командой cargo test",
+          "correct": false
+        }
+      ],
+      "explanation": "Правила владения проверяются компилятором; при их нарушении программа не компилируется.",
+      "source": {
+        "key": "rust1-ownership-compile-check",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Что такое владение?», стр. 80",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-003",
+      "type": "single_choice",
+      "text": "Какое из трёх правил владения сформулировано в материале?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "У значения может быть только один владелец в один момент времени",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "У каждого значения должно быть минимум два владельца",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Владелец существует только для чисел",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Значение никогда не удаляется автоматически",
+          "correct": false
+        }
+      ],
+      "explanation": "Одно из правил: у значения может быть только один владелец в один момент времени.",
+      "source": {
+        "key": "rust1-ownership-rules",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Правила владения», стр. 82",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-004",
+      "type": "single_choice",
+      "text": "Когда значение удаляется по третьему правилу владения?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Когда владелец покидает область видимости",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только при завершении операционной системы",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только после `clone`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Сразу после объявления",
+          "correct": false
+        }
+      ],
+      "explanation": "Когда владелец покидает область видимости, связанное значение удаляется.",
+      "source": {
+        "key": "rust1-ownership-rules",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Правила владения», стр. 82",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-005",
+      "type": "single_choice",
+      "text": "Какой принцип порядка хранения и удаления значений используется стеком?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Первым пришёл — первым ушёл",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Последним пришёл — первым ушёл",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Случайный порядок",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "По размеру значения",
+          "correct": false
+        }
+      ],
+      "explanation": "Стек работает по принципу «последним пришёл — первым ушёл».",
+      "source": {
+        "key": "rust1-ownership-stack",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Стек и куча», стр. 80",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-006",
+      "type": "single_choice",
+      "text": "Какие данные должны храниться в куче согласно объяснению стека и кучи?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Данные, размер которых неизвестен при компиляции или может изменяться",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только значения `bool`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Любые целые числа без исключения",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только указатели фиксированного размера",
+          "correct": false
+        }
+      ],
+      "explanation": "Данные неизвестного или изменяемого размера не помещаются напрямую в стек и должны храниться в куче.",
+      "source": {
+        "key": "rust1-ownership-heap",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Стек и куча», стр. 80–81",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-007",
+      "type": "single_choice",
+      "text": "Что возвращается после выделения подходящего участка в куче?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Указатель — адрес участка памяти",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Копия всей кучи",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Номер потока",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Значение `bool`",
+          "correct": false
+        }
+      ],
+      "explanation": "Операционная система находит участок в куче и возвращает указатель на него.",
+      "source": {
+        "key": "rust1-ownership-heap-allocation",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Стек и куча», стр. 81",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-008",
+      "type": "single_choice",
+      "text": "Что материал говорит о скорости помещения данных в стек по сравнению с выделением в куче?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Помещение в стек быстрее",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Выделение в куче всегда быстрее",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Скорость всегда одинакова",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Сравнение не приводится",
+          "correct": false
+        }
+      ],
+      "explanation": "Помещение в стек быстрее, так как не требуется искать свободный участок памяти.",
+      "source": {
+        "key": "rust1-ownership-stack-heap-speed",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Стек и куча», стр. 81",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-009",
+      "type": "single_choice",
+      "text": "С какого момента переменная `s` действительна в своей области видимости?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "С момента объявления",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "С начала файла",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только после первого `println!`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только после выхода из блока",
+          "correct": false
+        }
+      ],
+      "explanation": "Переменная становится действительной с момента объявления и остаётся такой до конца области видимости.",
+      "source": {
+        "key": "rust1-ownership-scope",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Область видимости переменной», стр. 82",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-010",
+      "type": "single_choice",
+      "text": "Почему `String` выбран как основной пример для объяснения владения?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он управляет данными, выделенными в куче",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он всегда полностью хранится только в стеке",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Он является единственным типом Rust",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Он не имеет владельца",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава использует `String`, чтобы показать управление данными в куче и момент их очистки.",
+      "source": {
+        "key": "rust1-ownership-string",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Тип данных String», стр. 83",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-011",
+      "type": "single_choice",
+      "text": "Как создаётся `String` из строкового литерала в приведённом примере?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "String::from(\"hello\")",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "str::new(\"hello\")",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "String(\"hello\")",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "new String(\"hello\")",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал показывает `String::from(\"hello\")`.",
+      "source": {
+        "key": "rust1-ownership-string-from",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Тип данных String», стр. 83",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-012",
+      "type": "single_choice",
+      "text": "Почему для изменяемого и растущего `String` нужна память в куче?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Объём содержимого может быть неизвестен во время компиляции и меняться во время выполнения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Потому что куча доступна только строкам",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Потому что стек запрещает хранить указатели",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Потому что `String` всегда имеет нулевой размер",
+          "correct": false
+        }
+      ],
+      "explanation": "Для текста неизвестного/изменяемого размера память запрашивается в куче во время выполнения.",
+      "source": {
+        "key": "rust1-ownership-string-allocation",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Память и способы её выделения», стр. 84",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-013",
+      "type": "single_choice",
+      "text": "Когда Rust автоматически возвращает память `String` распределителю?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Когда владеющая переменная выходит из области видимости",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Сразу после `String::from`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только при ручном `free`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "После каждого чтения строки",
+          "correct": false
+        }
+      ],
+      "explanation": "Память освобождается при выходе владельца из области видимости.",
+      "source": {
+        "key": "rust1-ownership-drop",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Память и способы её выделения», стр. 84–85",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-014",
+      "type": "single_choice",
+      "text": "Как называется функция, которую Rust автоматически вызывает при выходе владельца из области видимости?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "clone",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "drop",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "move",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "free_all",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал называет специальную функцию `drop`.",
+      "source": {
+        "key": "rust1-ownership-drop-q014",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Память и способы её выделения», стр. 85",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-015",
+      "type": "single_choice",
+      "text": "Что произойдёт после `let x = 5; let y = x;`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Оба значения `x` и `y` доступны и равны 5",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`x` всегда становится недействительной",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Будет двойное освобождение",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Код требует `clone()`",
+          "correct": false
+        }
+      ],
+      "explanation": "Целые числа имеют фиксированный размер и тривиально копируются; обе переменные остаются действительными.",
+      "source": {
+        "key": "rust1-ownership-copy-int",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Взаимодействие переменных и данных с помощью перемещения», стр. 85",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-016",
+      "type": "single_choice",
+      "text": "Что происходит после `let s1 = String::from(\"hello\"); let s2 = s1;`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Владение перемещается в `s2`, а `s1` больше нельзя использовать",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Данные кучи автоматически глубоко копируются",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`s2` становится `&String`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Обе переменные получают независимые данные без дополнительных операций",
+          "correct": false
+        }
+      ],
+      "explanation": "Для `String` это перемещение: `s1` признаётся недействительной, а действительной остаётся `s2`.",
+      "source": {
+        "key": "rust1-ownership-move",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Взаимодействие переменных и данных с помощью перемещения», стр. 85–89",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-017",
+      "type": "single_choice",
+      "text": "Какие три поля представления `String` показаны в стеке?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Указатель, длина, ёмкость",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только символы строки",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Индекс, хэш, bool",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Владелец, тип, поток",
+          "correct": false
+        }
+      ],
+      "explanation": "Диаграмма показывает указатель, длину и ёмкость в стеке; содержимое находится в куче.",
+      "source": {
+        "key": "rust1-ownership-string-layout",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — рис. 4-1, стр. 86",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-018",
+      "type": "single_choice",
+      "text": "Что копируется при присваивании `s2 = s1` для `String`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Указатель, длина и ёмкость, но не данные кучи",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только данные кучи",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Ничего вообще",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Каждый символ в отдельный стековый слот",
+          "correct": false
+        }
+      ],
+      "explanation": "При перемещении копируется стековое представление `String`; данные в куче не копируются.",
+      "source": {
+        "key": "rust1-ownership-move-layout",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел о перемещении, стр. 86–88",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-019",
+      "type": "single_choice",
+      "text": "Какую проблему предотвращает признание `s1` недействительной после перемещения в `s2`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Двойное освобождение одной и той же памяти",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Целочисленное переполнение",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Выход за границы массива",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Отсутствие `main`",
+          "correct": false
+        }
+      ],
+      "explanation": "Если бы обе переменные считались владельцами одной области кучи, обе могли бы попытаться освободить её; Rust предотвращает double free.",
+      "source": {
+        "key": "rust1-ownership-double-free",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел о перемещении, стр. 88–89",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-020",
+      "type": "single_choice",
+      "text": "Как явно создать глубокую копию данных `String`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Вызвать `clone()`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Использовать обычное присваивание",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Добавить `mut`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Вызвать `drop()`",
+          "correct": false
+        }
+      ],
+      "explanation": "`clone()` используется для явного глубокого копирования данных кучи.",
+      "source": {
+        "key": "rust1-ownership-clone",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Взаимодействие переменных и данных с помощью клонирования», стр. 90",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-021",
+      "type": "single_choice",
+      "text": "Что означает реализация типажа `Copy` для переменных при присваивании?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Значение тривиально копируется, исходная переменная остаётся действительной",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Значение всегда перемещается",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Обязательно вызывается `clone()`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Данные обязательно размещаются в куче",
+          "correct": false
+        }
+      ],
+      "explanation": "Для `Copy`-типов присваивание не делает исходную переменную недействительной.",
+      "source": {
+        "key": "rust1-ownership-copy",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Стековые данные: копирование», стр. 90–91",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-022",
+      "type": "single_choice",
+      "text": "Какое ограничение связано с `Copy` и `Drop`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Rust не позволяет реализовать `Copy`, если тип или его часть реализует `Drop`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Любой `Drop` автоматически означает `Copy`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`Copy` допустим только для `String`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Между ними нет ограничений",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал прямо указывает, что тип с `Drop` не может быть аннотирован `Copy`.",
+      "source": {
+        "key": "rust1-ownership-copy-drop",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Стековые данные: копирование», стр. 91",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-023",
+      "type": "single_choice",
+      "text": "Что происходит при передаче `String` в функцию, принимающую параметр типа `String`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Владение перемещается в параметр функции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Всегда создаётся глубокая копия",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Передаётся только неизменяемая ссылка",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Функция не может принимать `String`",
+          "correct": false
+        }
+      ],
+      "explanation": "Передача переменной функции подчиняется тем же правилам, что и присваивание: `String` перемещается.",
+      "source": {
+        "key": "rust1-ownership-functions",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Владение и функции», стр. 91–92",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-024",
+      "type": "single_choice",
+      "text": "Почему `x: i32` можно использовать после `makes_copy(x)` в листинге 4-3?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`i32` реализует `Copy`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Функция автоматически возвращает `x`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`i32` является ссылкой",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Владение не применяется к функциям",
+          "correct": false
+        }
+      ],
+      "explanation": "`i32` реализует `Copy`, поэтому передача в функцию копирует значение.",
+      "source": {
+        "key": "rust1-ownership-functions-copy",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — листинг 4-3, стр. 92",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-025",
+      "type": "single_choice",
+      "text": "Как возвращаемое значение функции влияет на владение?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Может передавать владение вызывающему коду",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Никогда не влияет на владение",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Всегда возвращает только ссылку",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Автоматически клонируется независимо от типа",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава показывает, что возвращаемые значения также могут перемещать право владения.",
+      "source": {
+        "key": "rust1-ownership-return-ownership",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Возвращение значений и область видимости», стр. 92–94",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-026",
+      "type": "multiple_choice",
+      "text": "Какие три правила владения перечислены в главе? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "У каждого значения есть владелец",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "В один момент времени у значения только один владелец",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "При выходе владельца из области видимости значение удаляется",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Каждое значение обязано иметь два владельца",
+          "correct": false
+        }
+      ],
+      "explanation": "Это три базовых правила владения, сформулированные в начале главы 4.",
+      "source": {
+        "key": "rust1-ownership-rules-all",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Правила владения», стр. 82",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-027",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о стеке верны по материалу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Работает по принципу LIFO",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Данные должны иметь известный фиксированный размер",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Помещение и извлечение происходят на верхушке стека",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Стек требует поиска произвольного свободного участка операционной системой",
+          "correct": false
+        }
+      ],
+      "explanation": "Стек организован последовательно, работает LIFO и не требует поиска свободного участка как куча.",
+      "source": {
+        "key": "rust1-ownership-stack-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Стек и куча», стр. 80–81",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-028",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о куче верны по материалу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для выделения запрашивается объём пространства",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "ОС ищет свободный участок достаточного размера",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Возвращается указатель на выделенный участок",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Все данные кучи обязательно имеют размер, известный при компиляции",
+          "correct": false
+        }
+      ],
+      "explanation": "Куча используется для динамически размещаемых данных; выделение возвращает указатель.",
+      "source": {
+        "key": "rust1-ownership-heap-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Стек и куча», стр. 80–81",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-029",
+      "type": "multiple_choice",
+      "text": "Какие сравнительные утверждения о стеке и куче приводит материал? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Помещение в стек обычно быстрее выделения в куче",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Доступ к данным кучи требует следования по указателю",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Доступ к данным кучи описан как более медленный, чем к данным стека",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Выделение в куче не требует поиска места",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал объясняет дополнительные издержки выделения и доступа к куче.",
+      "source": {
+        "key": "rust1-ownership-stack-heap-compare",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Стек и куча», стр. 81",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-030",
+      "type": "multiple_choice",
+      "text": "Что помещается в стек при вызове функции согласно объяснению? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Значения, переданные функции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Локальные переменные функции",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Возможные указатели на данные в куче",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Вся операционная система",
+          "correct": false
+        }
+      ],
+      "explanation": "При вызове функции её значения и локальные переменные помещаются в стек; после завершения извлекаются.",
+      "source": {
+        "key": "rust1-ownership-function-stack",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Стек и куча», стр. 81",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-031",
+      "type": "multiple_choice",
+      "text": "Какие задачи связываются с владением в объяснении стека и кучи? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Отслеживание, какие части кода используют какие данные",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Минимизация дублирования данных",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Очистка неиспользуемых данных в куче",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Автоматическая генерация интерфейса пользователя",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал связывает владение с использованием и очисткой данных, а не с UI.",
+      "source": {
+        "key": "rust1-ownership-ownership-purpose",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Стек и куча», стр. 81–82",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-032",
+      "type": "multiple_choice",
+      "text": "Какие утверждения об области видимости переменной `s` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "До объявления `s` недействительна",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "После объявления `s` действительна",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "После закрытия области `s` недействительна",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`s` всегда доступна во всём файле независимо от блока",
+          "correct": false
+        }
+      ],
+      "explanation": "Листинг 4-1 показывает период действительности переменной внутри области.",
+      "source": {
+        "key": "rust1-ownership-scope-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Область видимости переменной», стр. 82",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-033",
+      "type": "multiple_choice",
+      "text": "Какие различия между строковым литералом и `String` подчёркиваются? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Строковые литералы имеют содержимое, известное при компиляции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Строковые литералы неизменяемы",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`String` может хранить текст неизвестного при компиляции объёма",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`String` никогда не использует кучу",
+          "correct": false
+        }
+      ],
+      "explanation": "`String` служит примером данных кучи и изменяемого размера, в отличие от литералов.",
+      "source": {
+        "key": "rust1-ownership-literal-string",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — разделы «Тип данных String» и «Память и способы её выделения», стр. 83–84",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-034",
+      "type": "multiple_choice",
+      "text": "Какие операции показаны для изменяемого `String`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Создать через `String::from`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Добавить текст через `push_str`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Объявить переменную с `mut` для изменения",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Изменить строковый литерал напрямую без `String`",
+          "correct": false
+        }
+      ],
+      "explanation": "Пример использует `let mut s = String::from(...)` и `s.push_str(...)`.",
+      "source": {
+        "key": "rust1-ownership-mutable-string",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Тип данных String», стр. 83",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-035",
+      "type": "multiple_choice",
+      "text": "Какие требования к управлению памятью `String` описаны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Запросить память во время выполнения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Вернуть память, когда `String` больше не нужен",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Связать выделение и освобождение корректно",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Обязательно использовать сборщик мусора",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава объясняет необходимость выделения и возврата памяти и то, как Rust автоматизирует вторую часть через владение.",
+      "source": {
+        "key": "rust1-ownership-string-memory",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Память и способы её выделения», стр. 84",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-036",
+      "type": "multiple_choice",
+      "text": "Какие проблемы ручного освобождения памяти перечислены? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Если забыть освободить память, она будет потеряна",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Если освободить слишком рано, переменная станет недопустимой",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Двойное освобождение является ошибкой",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Ручное освобождение всегда безопасно независимо от момента",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал перечисляет утечку, слишком раннее освобождение и двойное освобождение как проблемы.",
+      "source": {
+        "key": "rust1-ownership-manual-free",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Память и способы её выделения», стр. 84",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-037",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `drop` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Rust вызывает его автоматически при выходе владельца из области",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Реализация типа может использовать его для возврата памяти",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "В примере он связан с закрывающей фигурной скобкой области",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Для каждого `String` пользователь обязан вручную писать `drop` в конце блока",
+          "correct": false
+        }
+      ],
+      "explanation": "`drop` вызывается автоматически; ручной вызов в каждом месте не требуется.",
+      "source": {
+        "key": "rust1-ownership-drop-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Память и способы её выделения», стр. 85",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-038",
+      "type": "multiple_choice",
+      "text": "Какие части `String` показаны на стеке на рис. 4-1? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Указатель",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Длина",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Ёмкость",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Байты содержимого `hello`",
+          "correct": false
+        }
+      ],
+      "explanation": "Байты строки находятся в куче, а указатель, длина и ёмкость — в стековом представлении.",
+      "source": {
+        "key": "rust1-ownership-string-layout-all",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — рис. 4-1, стр. 86",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-039",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о длине и ёмкости `String` даны в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Длина — объём памяти в байтах, используемый содержимым",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Ёмкость — общий объём памяти, полученный от распределителя",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Обе величины входят в стековое представление `String`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Ёмкость всегда равна нулю для непустой строки",
+          "correct": false
+        }
+      ],
+      "explanation": "Рисунок и текст определяют `len` и `capacity` именно так.",
+      "source": {
+        "key": "rust1-ownership-len-capacity",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел о представлении String, стр. 86",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-040",
+      "type": "multiple_choice",
+      "text": "Какие действия происходят при `let s2 = s1;` для `String`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Копируется указатель",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Копируется длина",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Копируется ёмкость",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Данные кучи обязательно глубоко копируются автоматически",
+          "correct": false
+        }
+      ],
+      "explanation": "Стековые поля копируются, а данные кучи не дублируются автоматически.",
+      "source": {
+        "key": "rust1-ownership-move-details",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Взаимодействие переменных и данных с помощью перемещения», стр. 86–89",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-041",
+      "type": "multiple_choice",
+      "text": "Почему Rust делает `s1` недействительной после перемещения? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы не было двух владельцев одной памяти кучи",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы избежать двойного освобождения",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Чтобы сохранить безопасность памяти",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Чтобы заставить любой `String` всегда находиться только в стеке",
+          "correct": false
+        }
+      ],
+      "explanation": "Аннулирование старой переменной предотвращает double free и поддерживает правило единственного владельца.",
+      "source": {
+        "key": "rust1-ownership-move-safety",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел о перемещении, стр. 88–89",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-042",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `clone()` подтверждаются материалом? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Создаёт глубокую копию данных кучи `String`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Явно показывает потенциально дорогую операцию",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "После клонирования обе строки можно использовать",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Это то же самое, что обычное перемещение без копирования кучи",
+          "correct": false
+        }
+      ],
+      "explanation": "`clone` — явная глубокая копия; это заметный в коде потенциально дорогой шаг.",
+      "source": {
+        "key": "rust1-ownership-clone-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Взаимодействие переменных и данных с помощью клонирования», стр. 90",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-043",
+      "type": "multiple_choice",
+      "text": "Какие типы перечислены как обычно реализующие `Copy`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Целочисленные типы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`bool`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Типы с плавающей точкой",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`String`",
+          "correct": false
+        }
+      ],
+      "explanation": "В списке также есть `char` и кортежи из `Copy`-типов; `String` в список не входит.",
+      "source": {
+        "key": "rust1-ownership-copy-types",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Стековые данные: копирование», стр. 91",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-044",
+      "type": "multiple_choice",
+      "text": "Какие из этих примеров кортежей соответствуют правилу `Copy` из материала? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`(i32, i32)`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Кортеж из одних `Copy`-типов",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`(bool, char)`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`(i32, String)`",
+          "correct": false
+        }
+      ],
+      "explanation": "Кортеж реализует `Copy`, только если все его элементы также `Copy`; `String` этому условию не соответствует.",
+      "source": {
+        "key": "rust1-ownership-copy-tuples",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Стековые данные: копирование», стр. 91",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-045",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о передаче значений функциям верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Механика аналогична присваиванию",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`String` может переместиться в параметр",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`i32` может быть скопирован при передаче",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Передача функции всегда создаёт глубокий clone для любого типа",
+          "correct": false
+        }
+      ],
+      "explanation": "Функции следуют тем же правилам move/copy, что и присваивание.",
+      "source": {
+        "key": "rust1-ownership-function-transfer",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — раздел «Владение и функции», стр. 91–92",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-046",
+      "type": "multiple_choice",
+      "text": "Что верно для `takes_ownership(s)` из листинга 4-3? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Значение `s` перемещается в функцию",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "После вызова исходная `s` больше недействительна",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Память освобождается, когда параметр функции выходит из области видимости",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`s` автоматически клонируется до вызова",
+          "correct": false
+        }
+      ],
+      "explanation": "Функция становится владельцем `String`; при завершении её параметр выходит из области и память освобождается.",
+      "source": {
+        "key": "rust1-ownership-takes-ownership",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — листинг 4-3, стр. 92",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-047",
+      "type": "multiple_choice",
+      "text": "Что верно для `makes_copy(x)` при `x: i32`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`i32` реализует `Copy`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "В функцию передаётся копия значения",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Исходный `x` остаётся пригоден для использования",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Владение `x` безвозвратно перемещается",
+          "correct": false
+        }
+      ],
+      "explanation": "Листинг отдельно поясняет, что `x` не перемещается из-за `Copy`.",
+      "source": {
+        "key": "rust1-ownership-makes-copy",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — листинг 4-3, стр. 92",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-048",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о возврате владения в листинге 4-4 верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`gives_ownership` перемещает возвращаемое значение вызывающей стороне",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`takes_and_gives_back` принимает `String` и возвращает `String`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Возврат значения может переместить владение наружу из функции",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Возвращаемое значение всегда является ссылкой",
+          "correct": false
+        }
+      ],
+      "explanation": "Листинг демонстрирует перемещение владения через возвращаемые значения.",
+      "source": {
+        "key": "rust1-ownership-return-transfer",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — листинг 4-4, стр. 93",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-049",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о шаблоне очистки данных кучи при выходе из области верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Очищает действительный владелец",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Если данные перемещены, старой переменной нечего освобождать",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`drop` вызывается для владельца при выходе из области",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "После перемещения обе переменные должны освободить одну и ту же память",
+          "correct": false
+        }
+      ],
+      "explanation": "После перемещения действительным остаётся новый владелец; только он отвечает за освобождение данных.",
+      "source": {
+        "key": "rust1-ownership-scope-drop",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — разделы о перемещении и возвращении значений, стр. 89, 93",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-050",
+      "type": "multiple_choice",
+      "text": "Почему вариант `calculate_length`, принимающий `String` и возвращающий `(String, usize)`, назван многословным? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Функция должна получить владение `String`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы продолжить использовать строку, владение приходится возвращать",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Для возврата строки и длины используется кортеж",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Он уже использует ссылку и потому не принимает владение",
+          "correct": false
+        }
+      ],
+      "explanation": "Этот пример мотивирует переход к ссылкам: владение приходится передавать внутрь и возвращать наружу вместе с результатом.",
+      "source": {
+        "key": "rust1-ownership-tuple-workaround",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Что такое владение?",
+        "locator": "Глава 4 — листинг 4-5 и переход к ссылкам, стр. 93–94",
+        "url": null
+      }
+    }
+  ]
+}

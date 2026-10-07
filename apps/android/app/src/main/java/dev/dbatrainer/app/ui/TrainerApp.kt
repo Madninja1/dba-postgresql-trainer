@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -82,6 +84,7 @@ fun TrainerApp(controller: TrainerController) {
         ) {
             when (controller.screen) {
                 AppScreen.Home -> HomeScreen(controller)
+                AppScreen.TopicCourses -> TopicCoursesScreen(controller)
                 AppScreen.Topics -> TopicsScreen(controller)
                 AppScreen.Courses -> CoursesScreen(controller)
                 AppScreen.Limit -> LimitScreen(controller)
@@ -273,14 +276,33 @@ private fun LanguageButton(
 }
 
 @Composable
-private fun TopicsScreen(controller: TrainerController) {
+private fun TopicCoursesScreen(controller: TrainerController) {
     val strings = LocalUiStrings.current
 
+    CourseSelectionScreen(
+        controller = controller,
+        title = strings.topicQuiz,
+        prompt = strings.chooseTopicCourse,
+        onChoose = controller::chooseTopicCourse,
+    )
+}
+
+@Composable
+private fun TopicsScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
+    val courseCode = controller.selectedTopicCourse
+
     TrainerScaffold(
-        title = strings.topics,
+        title = if (courseCode == null) {
+            strings.topics
+        } else {
+            "${strings.topics} → ${courseCode.uppercase()}"
+        },
         onBack = controller::back,
     ) { modifier ->
-        if (controller.topics.isEmpty()) {
+        val topics = controller.topicsForSelectedCourse
+
+        if (topics.isEmpty()) {
             EmptyMessage(
                 text = strings.topicsEmpty,
                 modifier = modifier,
@@ -290,18 +312,26 @@ private fun TopicsScreen(controller: TrainerController) {
 
         LazyColumn(
             modifier = modifier,
+            contentPadding = PaddingValues(vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            items(
-                items = controller.topics,
-                key = { topic -> topic.id },
-            ) { topic ->
-                TopicCard(
-                    topic = topic,
-                    onClick = {
-                        controller.chooseTopic(topic)
-                    },
-                )
+            itemsIndexed(
+                items = topics,
+                key = { _, topic -> topic.id },
+            ) { index, topic ->
+                Column {
+                    if (startsNewTopicBlock(topics, index)) {
+                        Spacer(Modifier.height(12.dp))
+                    }
+
+                    TopicCard(
+                        topic = topic,
+                        displayNumber = topicDisplayNumber(topics, index),
+                        onClick = {
+                            controller.chooseTopic(topic)
+                        },
+                    )
+                }
             }
         }
     }
@@ -311,8 +341,25 @@ private fun TopicsScreen(controller: TrainerController) {
 private fun CoursesScreen(controller: TrainerController) {
     val strings = LocalUiStrings.current
 
-    TrainerScaffold(
+    CourseSelectionScreen(
+        controller = controller,
         title = strings.generalQuiz,
+        prompt = strings.chooseCourse,
+        onChoose = controller::chooseCourse,
+    )
+}
+
+@Composable
+private fun CourseSelectionScreen(
+    controller: TrainerController,
+    title: String,
+    prompt: String,
+    onChoose: (String) -> Unit,
+) {
+    val strings = LocalUiStrings.current
+
+    TrainerScaffold(
+        title = title,
         onBack = controller::back,
     ) { modifier ->
         if (controller.courseCodes.isEmpty()) {
@@ -329,7 +376,7 @@ private fun CoursesScreen(controller: TrainerController) {
         ) {
             item {
                 Text(
-                    text = strings.chooseCourse,
+                    text = prompt,
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
@@ -341,7 +388,7 @@ private fun CoursesScreen(controller: TrainerController) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { controller.chooseCourse(courseCode) },
+                        .clickable { onChoose(courseCode) },
                 ) {
                     Column(
                         modifier = Modifier.padding(20.dp),
@@ -372,6 +419,7 @@ private fun CoursesScreen(controller: TrainerController) {
 @Composable
 private fun TopicCard(
     topic: MobileTopic,
+    displayNumber: String,
     onClick: () -> Unit,
 ) {
     Card(
@@ -391,7 +439,7 @@ private fun TopicCard(
             Spacer(Modifier.height(4.dp))
 
             Text(
-                text = topic.title,
+                text = "$displayNumber. ${topic.title}",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
             )
@@ -411,8 +459,9 @@ private fun TopicCard(
 @Composable
 private fun LimitScreen(controller: TrainerController) {
     val strings = LocalUiStrings.current
-    val title = controller.pendingTopic?.title
-        ?: controller.pendingCourse?.uppercase()
+    val title = controller.pendingTopic?.let { topic ->
+        "${topic.topicNumber}. ${topic.title}"
+    } ?: controller.pendingCourse?.uppercase()
         ?: strings.generalQuiz
 
     TrainerScaffold(
@@ -919,8 +968,12 @@ private fun StatisticsTopicsScreen(controller: TrainerController) {
         title = "${strings.statistics} → ${courseCode.uppercase()}",
         onBack = controller::back,
     ) { modifier ->
+        val rows = controller.topicStatistics
+        val topics = rows.map { row -> row.topic }
+
         LazyColumn(
             modifier = modifier,
+            contentPadding = PaddingValues(vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             item {
@@ -932,16 +985,23 @@ private fun StatisticsTopicsScreen(controller: TrainerController) {
                 )
             }
 
-            items(
-                items = controller.topicStatistics,
-                key = { row -> row.topic.id },
-            ) { row ->
-                TopicStatisticsCard(
-                    row = row,
-                    onClick = {
-                        controller.openTopicModes(row.topic)
-                    },
-                )
+            itemsIndexed(
+                items = rows,
+                key = { _, row -> row.topic.id },
+            ) { index, row ->
+                Column {
+                    if (startsNewTopicBlock(topics, index)) {
+                        Spacer(Modifier.height(12.dp))
+                    }
+
+                    TopicStatisticsCard(
+                        row = row,
+                        displayNumber = topicDisplayNumber(topics, index),
+                        onClick = {
+                            controller.openTopicModes(row.topic)
+                        },
+                    )
+                }
             }
         }
     }
@@ -950,10 +1010,11 @@ private fun StatisticsTopicsScreen(controller: TrainerController) {
 @Composable
 private fun TopicStatisticsCard(
     row: TopicStatisticsRow,
+    displayNumber: String,
     onClick: () -> Unit,
 ) {
     StatisticsNavigationCard(
-        title = row.topic.title,
+        title = "$displayNumber. ${row.topic.title}",
         stats = row.stats,
         subtitle = row.topic.courseCode.uppercase(),
         onClick = onClick,
@@ -1209,6 +1270,35 @@ private fun EmptyMessage(
         )
     }
 }
+
+private fun topicDisplayNumber(
+    topics: List<MobileTopic>,
+    index: Int,
+): String {
+    val topic = topics[index]
+    val groupSize = topics.count { candidate ->
+        candidate.notesPart == topic.notesPart
+    }
+
+    if (groupSize == 1) {
+        return topic.notesPart.toString()
+    }
+
+    val subtopicNumber = topics
+        .take(index + 1)
+        .count { candidate ->
+            candidate.notesPart == topic.notesPart
+        }
+
+    return "${topic.notesPart}.$subtopicNumber"
+}
+
+private fun startsNewTopicBlock(
+    topics: List<MobileTopic>,
+    index: Int,
+): Boolean =
+    index > 0 &&
+        topics[index - 1].notesPart != topics[index].notesPart
 
 private fun statsPercent(stats: MobileTrainingStats?): String =
     if (stats == null || stats.answeredQuestions == 0UL) {

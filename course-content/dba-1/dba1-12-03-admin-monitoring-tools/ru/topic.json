@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "dba-1",
+  "slug": "dba1-admin-monitoring-tools",
+  "notes_part": 12,
+  "topic_number": 14,
+  "title": "Средства мониторинга и статистика запросов",
+  "description": "Внешние системы мониторинга PostgreSQL, специализированные инструменты анализа производительности и расширение pg_stat_statements для накопления статистики SQL-запросов",
+  "sort_order": 122
+}

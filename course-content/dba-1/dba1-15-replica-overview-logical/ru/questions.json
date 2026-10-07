@@ -1,0 +1,726 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-replica-physical",
+  "questions": [
+    {
+      "key": "dba1-replica-physical-001",
+      "type": "single_choice",
+      "text": "На каком механизме основана физическая репликация PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "На передаче журнальных записей WAL на реплику и их применении",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "На периодическом выполнении pg_dump каждой таблицы",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "На передаче только SQL-команд INSERT",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "На копировании только системного каталога",
+          "correct": false
+        }
+      ],
+      "explanation": "Физическая репликация передаёт изменения через WAL, а резервный сервер применяет полученные журнальные записи.",
+      "source": {
+        "key": "dba1-15-physical-replication",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Физическая репликация",
+        "locator": "Слайд 5, основной механизм",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-002",
+      "type": "multiple_choice",
+      "text": "Какие свойства физической репликации указаны в итогах занятия? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Она создаёт точную копию всего кластера",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Она является однонаправленной",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Она требует двоичной совместимости серверов",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Она позволяет независимо выбирать отдельные таблицы для репликации",
+          "correct": false
+        }
+      ],
+      "explanation": "В итогах физическая репликация описана как однонаправленный механизм создания точной копии всего кластера с требованием двоичной совместимости.",
+      "source": {
+        "key": "dba1-15-summary",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Итоги",
+        "locator": "Слайд 17",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-003",
+      "type": "single_choice",
+      "text": "Из чего первоначально создаётся резервный сервер для физической репликации согласно занятию?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Из физической резервной копии основного сервера",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Из пустого кластера initdb без копирования данных",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только из SQL-скрипта pg_dumpall",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только из архива конфигурационных файлов",
+          "correct": false
+        }
+      ],
+      "explanation": "Занятие начинает построение реплики с физической копии основного сервера; затем сервер продолжает получать и применять новые WAL.",
+      "source": {
+        "key": "dba1-15-replica-base",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Физическая репликация",
+        "locator": "Создание реплики из физической резервной копии",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-004",
+      "type": "multiple_choice",
+      "text": "Какие процессы участвуют в показанной схеме потоковой физической репликации? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "wal sender на основном сервере",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "wal receiver на реплике",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "startup на реплике",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "autovacuum launcher как передатчик WAL",
+          "correct": false
+        }
+      ],
+      "explanation": "В схеме занятия поток WAL передаёт wal sender, принимает wal receiver, а полученные изменения применяются на резервном сервере в процессе восстановления.",
+      "source": {
+        "key": "dba1-15-processes",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Физическая репликация",
+        "locator": "Схема master, wal sender, wal receiver, startup",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-005",
+      "type": "single_choice",
+      "text": "Какой процесс резервного сервера подключается к wal sender основного сервера при потоковой репликации?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "wal receiver",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "checkpointer",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "autovacuum worker",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "logger",
+          "correct": false
+        }
+      ],
+      "explanation": "В потоковом режиме wal receiver реплики подключается к wal sender основного сервера по протоколу репликации.",
+      "source": {
+        "key": "dba1-15-streaming-processes",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Потоковая репликация",
+        "locator": "wal receiver и wal sender",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-006",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о потоковой репликации соответствуют материалу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Реплика получает поток записей WAL по протоколу репликации",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Она позволяет свести задержку реплики к минимуму",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "При соответствующей синхронной настройке фиксация может ждать подтверждения от реплики",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Передача начинается только после полного заполнения каждого WAL-сегмента",
+          "correct": false
+        }
+      ],
+      "explanation": "В отличие от файлового архива, потоковая репликация передаёт журнальные записи непосредственно по репликационному соединению.",
+      "source": {
+        "key": "postgresql-16-high-availability-streaming",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Потоковая репликация",
+        "locator": "Потоковая репликация и резервные серверы",
+        "url": "https://postgrespro.ru/docs/postgresql/16/high-availability"
+      }
+    },
+    {
+      "key": "dba1-replica-physical-007",
+      "type": "single_choice",
+      "text": "Почему файловая репликация обычно сильнее отстаёт от основного сервера, чем потоковая?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Архив пополняется только после переключения WAL-сегмента",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Файловая репликация не использует WAL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Реплика применяет только каждый второй сегмент",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Архив передаёт только DDL-команды",
+          "correct": false
+        }
+      ],
+      "explanation": "Файловый архив получает завершённые сегменты WAL, поэтому между поступлениями сегментов возникает дополнительная задержка.",
+      "source": {
+        "key": "dba1-15-file-replication",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Физическая репликация",
+        "locator": "Файловая и потоковая репликация",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-008",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о файловой и потоковой репликации верны согласно занятию? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Файловая репликация возможна при наличии непрерывного архивирования WAL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Файловая репликация обычно имеет большую задержку",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "На практике файловый архив можно использовать как дополнение к потоковой репликации",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Потоковая и файловая репликация принципиально не могут использоваться совместно",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал рекомендует рассматривать архив WAL как дополнительный источник журналов для потоковой реплики.",
+      "source": {
+        "key": "dba1-15-replication-sources",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Физическая репликация",
+        "locator": "Потоковая и файловая передача WAL",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-009",
+      "type": "single_choice",
+      "text": "Какой параметр определяет объём информации, записываемой в WAL, в контексте возможности физической репликации?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "wal_level",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "hot_standby_feedback",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "max_connections",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "work_mem",
+          "correct": false
+        }
+      ],
+      "explanation": "wal_level регулирует состав информации в WAL. Для репликации журнал должен содержать все необходимые сведения об изменениях.",
+      "source": {
+        "key": "dba1-15-wal-level",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Уровень WAL",
+        "locator": "wal_level",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-010",
+      "type": "multiple_choice",
+      "text": "Что верно для wal_level = replica в изложении занятия? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Уровень содержит информацию, необходимую для физической репликации",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он позволяет использовать горячие физические резервные копии",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "В PostgreSQL 10 и новее он используется как уровень по умолчанию согласно материалу",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Он предназначен только для восстановления после аварийного завершения и не поддерживает репликацию",
+          "correct": false
+        }
+      ],
+      "explanation": "Конспект противопоставляет старый minimal уровню replica: replica содержит данные, необходимые для горячего резервирования и физической репликации.",
+      "source": {
+        "key": "dba1-15-wal-level-replica",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Уровень WAL",
+        "locator": "minimal и replica",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-011",
+      "type": "single_choice",
+      "text": "Что добавляет синхронная физическая репликация к ожиданиям при фиксации транзакции в рассмотренной схеме?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Ожидание подтверждения приёма журнальных записей синхронной репликой",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Ожидание выполнения SELECT на реплике",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Ожидание полного логического дампа базы",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Ожидание автоматического переключения ролей master и replica",
+          "correct": false
+        }
+      ],
+      "explanation": "Синхронный режим повышает надёжность ценой дополнительного ожидания при COMMIT.",
+      "source": {
+        "key": "dba1-15-synchronous-replication",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Использование реплики",
+        "locator": "Надёжность хранения данных",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-012",
+      "type": "multiple_choice",
+      "text": "Какие последствия синхронного режима репликации подчёркиваются в занятии? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Повышается надёжность хранения зафиксированных данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "COMMIT может выполняться дольше из-за ожидания реплики",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Для выбора синхронной реплики используется synchronous_standby_names",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Любые чтения с разных серверов автоматически получают единый согласованный снимок",
+          "correct": false
+        }
+      ],
+      "explanation": "Синхронность касается подтверждения фиксации, но не создаёт общего согласованного снимка для произвольного чтения одновременно с разных серверов.",
+      "source": {
+        "key": "postgresql-16-high-availability-sync",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Синхронная репликация",
+        "locator": "Синхронный и асинхронный режимы",
+        "url": "https://postgrespro.ru/docs/postgresql/16/high-availability"
+      }
+    },
+    {
+      "key": "dba1-replica-physical-013",
+      "type": "single_choice",
+      "text": "Что разрешено клиенту на реплике в режиме hot standby согласно занятию?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Подключаться и выполнять запросы только для чтения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Выполнять любые INSERT, UPDATE и DELETE",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Создавать постоянные и временные таблицы",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Выполнять VACUUM и REINDEX",
+          "correct": false
+        }
+      ],
+      "explanation": "Горячий резерв позволяет выполнять читающие запросы во время применения WAL, но операции, изменяющие данные, запрещены.",
+      "source": {
+        "key": "postgresql-16-hot-standby",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Горячий резерв",
+        "locator": "Разрешённые подключения и запросы",
+        "url": "https://postgrespro.ru/docs/postgresql/16/hot-standby"
+      }
+    },
+    {
+      "key": "dba1-replica-physical-014",
+      "type": "multiple_choice",
+      "text": "Какие действия недоступны на реплике в режиме горячего резерва по материалу занятия? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Команды DDL, изменяющие структуру объектов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "SELECT FOR UPDATE и другие блокировки, предполагающие изменение",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "VACUUM, ANALYZE и REINDEX",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Обычный SELECT без изменения данных",
+          "correct": false
+        }
+      ],
+      "explanation": "На hot standby разрешается чтение, но запрещаются действия, которые непосредственно или косвенно изменяют состояние базы.",
+      "source": {
+        "key": "postgresql-16-hot-standby-restrictions",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Горячий резерв",
+        "locator": "Ограничения запросов на реплике",
+        "url": "https://postgrespro.ru/docs/postgresql/16/hot-standby"
+      }
+    },
+    {
+      "key": "dba1-replica-physical-015",
+      "type": "single_choice",
+      "text": "Что произойдёт с клиентскими подключениями к резервному серверу, если установить hot_standby = off?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Подключения во время восстановления будут недоступны",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Разрешатся операции записи",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Реплика автоматически станет основным сервером",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Отключится применение WAL",
+          "correct": false
+        }
+      ],
+      "explanation": "Конспект называет этот вариант тёплым резервом: реплика продолжает восстановление, но клиентские подключения к ней не разрешаются.",
+      "source": {
+        "key": "dba1-15-warm-standby",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Горячий резерв",
+        "locator": "hot_standby = off",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-016",
+      "type": "multiple_choice",
+      "text": "Какие ситуации могут вызвать конфликт между читающим запросом на hot standby и применением WAL? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Реплике требуется применить изменение, несовместимое с продолжающимся запросом",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "На основном сервере удаляются версии строк, ещё необходимые запросу на реплике",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Применение WAL не может бесконечно ожидать любой читающий запрос",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Любой SELECT всегда автоматически блокирует применение WAL навсегда",
+          "correct": false
+        }
+      ],
+      "explanation": "Hot standby одновременно обслуживает читающие запросы и применяет изменения основного сервера, поэтому между этими действиями возможны конфликты.",
+      "source": {
+        "key": "postgresql-16-hot-standby-conflicts",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Конфликты на реплике",
+        "locator": "Handling Query Conflicts",
+        "url": "https://postgrespro.ru/docs/postgresql/16/hot-standby"
+      }
+    },
+    {
+      "key": "dba1-replica-physical-017",
+      "type": "single_choice",
+      "text": "Какой параметр в практическом задании управляет допустимой задержкой применения конфликтующих потоковых WAL на реплике?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "max_standby_streaming_delay",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "synchronous_standby_names",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "wal_level",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "archive_command",
+          "correct": false
+        }
+      ],
+      "explanation": "Практика прямо связывает max_standby_streaming_delay с откладыванием применения конфликтующих записей на резервном сервере.",
+      "source": {
+        "key": "dba1-15-max-standby-delay",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика+",
+        "locator": "max_standby_streaming_delay",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-018",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о hot_standby_feedback соответствуют практической части занятия? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Параметр включает обратную связь от реплики к основному серверу",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он помогает не удалять на основном сервере версии строк, ещё необходимые запросам реплики",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Его использование может позволить длительному запросу на реплике не прерываться из-за очистки на основном сервере",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Он переводит реплику в режим записи",
+          "correct": false
+        }
+      ],
+      "explanation": "Практика демонстрирует обратную связь: при её включении очистка на основном сервере может откладываться ради запросов, выполняющихся на реплике.",
+      "source": {
+        "key": "dba1-15-hot-standby-feedback",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика+",
+        "locator": "hot_standby_feedback",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-019",
+      "type": "single_choice",
+      "text": "Зачем в занятии предлагается соединять несколько реплик каскадом?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы уменьшить нагрузку на основной сервер и перераспределить сетевой трафик",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы разрешить запись на всех репликах одновременно",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы отказаться от WAL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы каждая реплика содержала только одну базу данных",
+          "correct": false
+        }
+      ],
+      "explanation": "При каскадировании часть реплик получает WAL не непосредственно от основного сервера, а от другой реплики, снижая нагрузку на исходный узел и сеть рядом с ним.",
+      "source": {
+        "key": "dba1-15-cascade",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Использование реплики",
+        "locator": "Каскадные реплики",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-020",
+      "type": "multiple_choice",
+      "text": "Какие задачи физической репликации рассматриваются в занятии? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Повышение надёжности хранения данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Использование резервного сервера для читающей нагрузки",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Уменьшение нагрузки на основной сервер с помощью нескольких или каскадных реплик",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Независимое двустороннее изменение разных строк одного кластера на всех серверах",
+          "correct": false
+        }
+      ],
+      "explanation": "Репликация представлена как базовый механизм для повышения надёжности и распределения читающей и сетевой нагрузки, но остаётся однонаправленной физической репликацией.",
+      "source": {
+        "key": "postgresql-16-high-availability",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Использование реплики",
+        "locator": "High Availability, Load Balancing, and Replication",
+        "url": "https://postgrespro.ru/docs/postgresql/16/high-availability"
+      }
+    }
+  ]
+}

@@ -1,0 +1,1821 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-closures-iterators",
+  "questions": [
+    {
+      "key": "rust1-closures-iterators-001",
+      "type": "single_choice",
+      "text": "Как записывается простое замыкание, увеличивающее аргумент `x` на 1?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`|x| x + 1`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`fn(x) => x + 1`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`{x} -> x + 1`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`closure x { x + 1 }`",
+          "correct": false
+        }
+      ],
+      "explanation": "Параметры замыкания записываются между вертикальными чертами, после чего идёт его тело: `|x| x + 1`.",
+      "source": {
+        "key": "rust1-closures-iterators-closure-syntax",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — замыкания и вывод типов, PDF стр. 352–356",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-002",
+      "type": "single_choice",
+      "text": "Что произойдёт, если замыкание `let identity = |x| x;` сначала вызвать со `String`, а затем с `i32`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Второй вызов не подойдёт: типы параметра и результата замыкания уже выведены из первого использования",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Замыкание автоматически станет generic и примет оба типа",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Оба вызова всегда возвращают `String`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Компилятор выберет тип только во время выполнения",
+          "correct": false
+        }
+      ],
+      "explanation": "У замыкания типы могут выводиться, но после вывода они фиксируются для этого замыкания. Это не generic-функция.",
+      "source": {
+        "key": "rust1-closures-iterators-closure-types",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — вывод типов параметров и возвращаемых значений замыканий, PDF стр. 354–356",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-003",
+      "type": "multiple_choice",
+      "text": "Какими способами замыкание может захватывать значения окружения? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Неизменяемой ссылкой",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Изменяемой ссылкой",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Получением владения",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Только через глобальные переменные",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга связывает захват окружения с уже знакомыми формами доступа: `&T`, `&mut T` и перемещением владения `T`.",
+      "source": {
+        "key": "rust1-closures-iterators-capture",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — «Захват ссылок или передача владения», PDF стр. 356–361",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-004",
+      "type": "single_choice",
+      "text": "Какой захват нужен замыканию `|| list.push(7)`, если `list` изменяемый?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Изменяемое заимствование `&mut list`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только неизменяемое `&list`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Копирование всего `Vec`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Никакого захвата",
+          "correct": false
+        }
+      ],
+      "explanation": "Так как тело изменяет `list`, замыкание должно получить изменяемый доступ к окружению, что подчиняется обычным правилам `&mut`.",
+      "source": {
+        "key": "rust1-closures-iterators-capture-q004",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — захват окружения изменяемой ссылкой, PDF стр. 357–360",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-005",
+      "type": "multiple_choice",
+      "text": "Что верно о ключевом слове `move` перед замыканием? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Оно заставляет замыкание получить владение захватываемыми значениями",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Оно особенно полезно при передаче замыкания в другой поток",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Само наличие `move` не означает, что тело обязательно переместит значение из замыкания при вызове",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Оно отключает правила ownership внутри замыкания",
+          "correct": false
+        }
+      ],
+      "explanation": "`move` определяет способ захвата: значения переходят во владение замыкания. Но дальнейшая классификация по `Fn`-traits зависит от того, что тело делает с захваченными значениями.",
+      "source": {
+        "key": "rust1-closures-iterators-move",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — `move` и захват владения, PDF стр. 358–361",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-006",
+      "type": "single_choice",
+      "text": "Какой trait реализует как минимум каждое замыкание?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`FnOnce`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`Iterator`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`Drop`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`Deref`",
+          "correct": false
+        }
+      ],
+      "explanation": "Все замыкания реализуют `FnOnce`, потому что любое замыкание можно рассматривать как вызываемое хотя бы один раз.",
+      "source": {
+        "key": "rust1-closures-iterators-fn-traits",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — перемещение захваченных значений и traits `Fn`, `FnMut`, `FnOnce`, PDF стр. 360–364",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-007",
+      "type": "single_choice",
+      "text": "Какой trait подходит замыканию, которое может многократно вызываться и изменяет захваченное состояние?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`FnMut`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`Fn` только",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`DerefMut`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`Copy`",
+          "correct": false
+        }
+      ],
+      "explanation": "`FnMut` описывает замыкание, которое не перемещает захваченные данные наружу, но может изменять своё окружение и вызываться многократно.",
+      "source": {
+        "key": "rust1-closures-iterators-fn-traits-q007",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — traits `Fn`, `FnMut`, `FnOnce`, PDF стр. 360–364",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-008",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `Fn`, `FnMut` и `FnOnce` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`FnOnce` допускает замыкания, которые могут переместить захваченное значение из себя",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`FnMut` допускает изменение захваченного состояния",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`Fn` подходит замыканиям, которые не изменяют и не перемещают захваченное состояние",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`Fn` означает, что замыкание обязано вызываться ровно один раз",
+          "correct": false
+        }
+      ],
+      "explanation": "Три traits описывают ограничения на повторный вызов и обращение с окружением. `Fn` — наиболее ограниченное по изменениям поведение, а не требование одного вызова.",
+      "source": {
+        "key": "rust1-closures-iterators-fn-traits-q008",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — traits замыканий, PDF стр. 360–364",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-009",
+      "type": "single_choice",
+      "text": "Почему bound `F: FnOnce() -> T` подходит для логики наподобие `unwrap_or_else`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Замыкание требуется вызвать не более одного раза и оно возвращает `T`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Потому что `FnOnce` запрещает возвращаемые значения",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Потому что `FnOnce` является trait итератора",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Потому что такое замыкание обязано менять окружение",
+          "correct": false
+        }
+      ],
+      "explanation": "`unwrap_or_else` вызывает переданное замыкание только при необходимости получить запасное значение, поэтому гарантии одного вызова достаточно.",
+      "source": {
+        "key": "rust1-closures-iterators-fn-traits-q009",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — использование traits замыканий в сигнатурах, PDF стр. 361–364",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-010",
+      "type": "single_choice",
+      "text": "Что происходит сразу после `let iter = v.iter();`, если итератор больше никак не используется?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Элементы ещё не обрабатываются: итераторы ленивы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Вектор немедленно удаляется",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Все элементы автоматически клонируются",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`iter()` сразу вызывает `collect()`",
+          "correct": false
+        }
+      ],
+      "explanation": "Создание итератора само по себе не выполняет обработку элементов. Работа происходит, когда итератор потребляется.",
+      "source": {
+        "key": "rust1-closures-iterators-iterator-lazy",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — trait `Iterator` и ленивость, PDF стр. 365–371",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-011",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `Iterator::next` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Возвращает `Some(item)`, пока элементы есть",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Возвращает `None`, когда элементы закончились",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "При вызове изменяет внутреннее состояние итератора, поэтому нужен `&mut self`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Всегда возвращает ссылку `&T`, независимо от типа итератора",
+          "correct": false
+        }
+      ],
+      "explanation": "Ключевой метод `Iterator` — `next(&mut self) -> Option<Self::Item>`. Тип элемента зависит от конкретного итератора.",
+      "source": {
+        "key": "rust1-closures-iterators-iterator-next",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — trait `Iterator` и метод `next`, PDF стр. 365–369",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-012",
+      "type": "multiple_choice",
+      "text": "Как соотносятся `iter()`, `iter_mut()` и `into_iter()`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`iter()` перебирает заимствованные `&T`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`iter_mut()` даёт изменяемые `&mut T`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`into_iter()` передаёт коллекцию итератору во владение и выдаёт принадлежащие элементы",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Все три варианта всегда оставляют исходную коллекцию полностью доступной без ограничений",
+          "correct": false
+        }
+      ],
+      "explanation": "Выбор способа итерации определяет отношение к ownership: чтение по ссылке, изменяемое заимствование или передача владения.",
+      "source": {
+        "key": "rust1-closures-iterators-iterator-ownership",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — методы создания итераторов и владение, PDF стр. 366–369",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-013",
+      "type": "single_choice",
+      "text": "Что делает `sum()` при вызове на итераторе?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Потребляет итератор и вычисляет итоговую сумму",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Возвращает новый ленивый итератор без вычислений",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Изменяет каждый элемент исходной коллекции на сумму",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Всегда возвращает `Option`",
+          "correct": false
+        }
+      ],
+      "explanation": "`sum` относится к потребляющим адаптерам: он проходит последовательность и получает готовый результат.",
+      "source": {
+        "key": "rust1-closures-iterators-consumers",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — методы, потребляющие итератор, PDF стр. 368–370",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-014",
+      "type": "single_choice",
+      "text": "Почему выражение `v.iter().map(|x| x + 1);` само по себе не выполняет преобразование всех элементов?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`map` создаёт ленивый новый итератор, который нужно потребить",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`map` работает только с `String`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Замыкание обязано быть `FnOnce`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`iter()` всегда пустой",
+          "correct": false
+        }
+      ],
+      "explanation": "`map` — адаптер итератора. Он описывает преобразование, но вычисление выполняется при потреблении нового итератора.",
+      "source": {
+        "key": "rust1-closures-iterators-map",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — `map` и ленивые адаптеры, PDF стр. 370–371",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-015",
+      "type": "single_choice",
+      "text": "Что получится после выполнения `let v2: Vec<_> = vec![1,2,3].iter().map(|x| x + 1).collect();`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Вектор `[2, 3, 4]`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Вектор `[1, 2, 3]`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Число `6`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Ошибка только потому, что используется `collect`",
+          "correct": false
+        }
+      ],
+      "explanation": "`map` формирует элементы, увеличенные на 1, а `collect` потребляет итератор и собирает их в указанный `Vec`.",
+      "source": {
+        "key": "rust1-closures-iterators-map-collect",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — листинг с `map` и `collect`, PDF стр. 370–371",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-016",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `filter` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Принимает замыкание, возвращающее `bool`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Оставляет элементы, для которых замыкание вернуло `true`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Может использовать переменные, захваченные из окружения",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Всегда потребляет исходную коллекцию независимо от того, как был создан итератор",
+          "correct": false
+        }
+      ],
+      "explanation": "`filter` создаёт новый итератор и использует предикат-замыкание. Способ владения зависит от того, начинается цепочка с `iter`, `iter_mut` или `into_iter`.",
+      "source": {
+        "key": "rust1-closures-iterators-filter",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — `filter` и захват окружения, PDF стр. 372–373",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-017",
+      "type": "multiple_choice",
+      "text": "Что верно для цепочки `shoes.into_iter().filter(|s| s.size == shoe_size).collect()`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`into_iter()` получает владение исходным `Vec<Shoe>`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`filter` использует `shoe_size` из окружения",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`collect` собирает прошедшие фильтр элементы в новую коллекцию",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Исходный `shoes` после передачи в `into_iter()` продолжает владеть элементами",
+          "correct": false
+        }
+      ],
+      "explanation": "В примере книги `into_iter` забирает вектор, `filter` оставляет подходящую обувь с использованием захваченного размера, а `collect` собирает результат.",
+      "source": {
+        "key": "rust1-closures-iterators-filter-q017",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — пример `shoes_in_size`, PDF стр. 372–373",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-018",
+      "type": "multiple_choice",
+      "text": "Какие операции из списка являются адаптерами, а какие потребляют итератор? Выберите все верные утверждения.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`map` создаёт новый итератор",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`filter` создаёт новый итератор",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`collect` потребляет итератор",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`sum` потребляет итератор",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`map` немедленно потребляет весь итератор и возвращает готовый `Vec`",
+          "correct": false
+        }
+      ],
+      "explanation": "В материале `map` и `filter` показаны как ленивые адаптеры, а `collect` и `sum` — как операции, которые проходят итератор и получают результат.",
+      "source": {
+        "key": "rust1-closures-iterators-adapters-consumers",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — адаптеры и потребляющие методы, PDF стр. 369–373",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-019",
+      "type": "single_choice",
+      "text": "Почему переработанный `Config::build(env::args())` может обойтись без предварительного `Vec<String>` и клонирования его элементов?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он принимает итератор строк и может получать значения через `next()`, перемещая `String` в `Config`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`env::args()` возвращает `&'static str`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`Config` больше не хранит строки",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`next()` всегда возвращает копию `String`",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга использует `impl Iterator<Item = String>`: аргументы приходят как принадлежащие `String`, поэтому их можно переместить в `Config` без промежуточного вектора и `clone`.",
+      "source": {
+        "key": "rust1-closures-iterators-iterator-cli",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — улучшение проекта ввода-вывода с итераторами, PDF стр. 374–377",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-020",
+      "type": "multiple_choice",
+      "text": "Какие выводы о производительности итераторов делает материал? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Итераторный стиль может компилироваться в эффективный низкоуровневый код",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Итераторы рассматриваются как пример абстракций с нулевой стоимостью",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Высокоуровневая цепочка итераторов не означает обязательную отдельную runtime-плату за абстракцию",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Любой `map` всегда медленнее ручного цикла ровно в два раза",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава сравнивает цикл и итераторный стиль и связывает итераторы с идеей zero-cost abstractions: высокоуровневое описание не требует обязательной дополнительной runtime-стоимости.",
+      "source": {
+        "key": "rust1-closures-iterators-performance",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — производительность циклов и итераторов, PDF стр. 378–382",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-021",
+      "type": "single_choice",
+      "text": "Почему в примере с раздачей рубашек используется `unwrap_or_else(|| self.most_stocked())`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Дополнительный расчёт выполняется только если `Option` не содержит предпочтение пользователя",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Замыкание выполняется всегда до проверки Option",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`unwrap_or_else` преобразует `Option` в `Result`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы метод `most_stocked` стал асинхронным",
+          "correct": false
+        }
+      ],
+      "explanation": "Замыкание передаёт вычисление, которое будет выполнено только при отсутствии значения в `Option`.",
+      "source": {
+        "key": "rust1-closures-iterators-lazy-closure",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — пример раздачи рубашек и `unwrap_or_else`, PDF стр. 352–354",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-022",
+      "type": "multiple_choice",
+      "text": "Чем синтаксис замыкания отличается от обычной функции в примерах главы? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Параметры заключаются между `| |`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Часто типы параметров и результата можно не писать явно",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Для однострочного тела фигурные скобки могут быть не нужны",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Замыкание обязательно имеет имя после `fn`",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга показывает компактный синтаксис замыканий и вывод типов компилятором.",
+      "source": {
+        "key": "rust1-closures-iterators-closure-syntax-q022",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — «Выведение и аннотация типов замыкания», PDF стр. 354–356",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-023",
+      "type": "single_choice",
+      "text": "Что произойдёт, если замыкание заимствует `list` неизменяемо, а после последнего использования замыкания код снова печатает `list`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Это допустимо: заимствование замыканием уже больше не используется",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Это запрещено до конца функции",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`list` автоматически перемещается в замыкание",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Нужно обязательно добавить `move`",
+          "correct": false
+        }
+      ],
+      "explanation": "Пример показывает, что borrow, созданный захватом, может закончиться после последнего использования замыкания.",
+      "source": {
+        "key": "rust1-closures-iterators-capture-scope",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — захват неизменяемой ссылки, PDF стр. 356–358",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-024",
+      "type": "multiple_choice",
+      "text": "Что верно, если замыкание захватило `list` изменяемой ссылкой? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Замыкание может изменять `list`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Другие обращения к `list` ограничены правилами borrowing, пока borrow активен",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "После последнего использования замыкания borrow может закончиться",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`move` обязателен для любого изменяющего замыкания",
+          "correct": false
+        }
+      ],
+      "explanation": "Захват окружения подчиняется обычным правилам `&mut`; `move` отвечает за владение, а не за сам факт изменения.",
+      "source": {
+        "key": "rust1-closures-iterators-mutable-capture",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — захват изменяемой ссылки, PDF стр. 357–359",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-025",
+      "type": "single_choice",
+      "text": "Почему компилятор может потребовать `move` у замыкания, передаваемого в новый поток?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Поток может жить дольше текущей функции, поэтому ссылка на локальное значение могла бы стать недействительной",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`move` делает поток синхронным",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Без `move` замыкания не могут вызываться",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`move` автоматически клонирует все значения",
+          "correct": false
+        }
+      ],
+      "explanation": "`move` передаёт окружение во владение замыканию, что полезно для выполнения в другом потоке.",
+      "source": {
+        "key": "rust1-closures-iterators-move-thread",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — `move` и новый поток, PDF стр. 358–360",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-026",
+      "type": "multiple_choice",
+      "text": "Как поведение тела замыкания влияет на реализуемые `Fn`-traits? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Перемещение захваченного значения наружу ограничивает замыкание до `FnOnce`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Изменение захваченного значения требует как минимум `FnMut`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Только чтение окружения совместимо с `Fn`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Само ключевое слово `move` всегда означает только `FnOnce` независимо от тела",
+          "correct": false
+        }
+      ],
+      "explanation": "Traits определяются тем, что тело делает с захваченными значениями; `move` только меняет способ захвата.",
+      "source": {
+        "key": "rust1-closures-iterators-fn-traits-q026",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — `Fn`, `FnMut`, `FnOnce`, PDF стр. 360–364",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-027",
+      "type": "single_choice",
+      "text": "Почему замыкание для `sort_by_key` не должно перемещать захваченную строку наружу?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`sort_by_key` вызывает замыкание многократно, а перенос значения сделал бы его пригодным лишь для одного вызова",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`sort_by_key` принимает только указатели функций",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Строки нельзя захватывать",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`sort_by_key` не вызывает замыкание",
+          "correct": false
+        }
+      ],
+      "explanation": "В книге перемещение захваченного значения делает замыкание `FnOnce`, несовместимым с многократными вызовами сортировки.",
+      "source": {
+        "key": "rust1-closures-iterators-sort-by-key",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — пример `sort_by_key`, PDF стр. 361–364",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-028",
+      "type": "multiple_choice",
+      "text": "Что можно делать внутри замыкания для `sort_by_key`, если нужно считать число вызовов? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Захватить изменяемый счётчик",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Увеличивать счётчик при каждом вызове",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Не перемещать захваченные данные наружу",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Переместить счётчик из замыкания при первом вызове и продолжить сортировку",
+          "correct": false
+        }
+      ],
+      "explanation": "Такое замыкание реализует `FnMut` и может вызываться многократно.",
+      "source": {
+        "key": "rust1-closures-iterators-sort-by-key-q028",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — счётчик операций в `sort_by_key`, PDF стр. 362–364",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-029",
+      "type": "single_choice",
+      "text": "Почему переменная итератора при явных вызовах `next()` объявляется `mut`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`next()` изменяет внутреннее состояние итератора, продвигая его",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Потому что элементы обязательно изменяются",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы вектор стал изменяемым",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только из-за `assert_eq!`",
+          "correct": false
+        }
+      ],
+      "explanation": "`Iterator::next` принимает `&mut self`, поскольку отслеживает позицию.",
+      "source": {
+        "key": "rust1-closures-iterators-next-mut",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — trait `Iterator` и `next`, PDF стр. 365–368",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-030",
+      "type": "multiple_choice",
+      "text": "Что возвращают последовательные вызовы `next()` для `vec![1,2,3].iter()`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Сначала `Some(&1)`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Затем `Some(&2)` и `Some(&3)`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "После исчерпания — `None`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "После `None` итератор автоматически начинается заново",
+          "correct": false
+        }
+      ],
+      "explanation": "Пример показывает последовательные `Some` и `None` после окончания.",
+      "source": {
+        "key": "rust1-closures-iterators-next-sequence",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — ручные вызовы `next`, PDF стр. 366–368",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-031",
+      "type": "single_choice",
+      "text": "Что происходит с итератором после вызова потребляющего метода `sum()`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Метод забирает итератор во владение, и его больше нельзя использовать",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он автоматически возвращается в начало",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`sum` только неизменяемо заимствует итератор",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Итератор превращается в `Vec`",
+          "correct": false
+        }
+      ],
+      "explanation": "Потребляющие методы принимают `self` и получают итоговое значение.",
+      "source": {
+        "key": "rust1-closures-iterators-consumer-ownership",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — методы, потребляющие итератор, PDF стр. 368–370",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-032",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о ленивости адаптеров итератора верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`map` сам по себе не обрабатывает все элементы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Цепочку адаптеров нужно в итоге потребить",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`collect` может запустить вычисления цепочки",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Ленивые адаптеры никогда не выполняются даже после потребления",
+          "correct": false
+        }
+      ],
+      "explanation": "`map` создаёт ленивый итератор; работа выполняется при потреблении.",
+      "source": {
+        "key": "rust1-closures-iterators-lazy-adapters",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — `map`, ленивость и `collect`, PDF стр. 370–371",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-033",
+      "type": "single_choice",
+      "text": "Почему результат `collect()` часто аннотируют как `Vec<_>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы указать целевой тип коллекции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Потому что `collect` работает только с `Vec`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы изменить тип элементов на `String`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы итератор стал `Copy`",
+          "correct": false
+        }
+      ],
+      "explanation": "`collect` может собирать разные типы коллекций, поэтому компилятору нужен целевой тип.",
+      "source": {
+        "key": "rust1-closures-iterators-collect-type",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — `map(...).collect()` в `Vec`, PDF стр. 371",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-034",
+      "type": "multiple_choice",
+      "text": "Какие шаги выполняет `shoes_in_size`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Получает владение `Vec<Shoe>`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Создаёт owning-итератор через `into_iter()`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Фильтрует по захваченному `shoe_size`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Собирает подходящие элементы в новый `Vec`",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Изменяет исходный `Vec<Shoe>` на месте",
+          "correct": false
+        }
+      ],
+      "explanation": "Цепочка использует `into_iter`, `filter` и `collect`.",
+      "source": {
+        "key": "rust1-closures-iterators-shoes",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — `filter` и захват окружения, PDF стр. 372–373",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-035",
+      "type": "single_choice",
+      "text": "Почему параметр новой `Config::build` объявлен `mut args: impl Iterator<Item = String>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Потому что `next()` изменяет состояние итератора",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Потому что строки внутри Iterator всегда mutable",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы разрешить `clone()`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы сделать Iterator `Send`",
+          "correct": false
+        }
+      ],
+      "explanation": "Итератор последовательно потребляется вызовами `next()`.",
+      "source": {
+        "key": "rust1-closures-iterators-config-iterator",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — «Удаляем clone, используем итератор», PDF стр. 374–376",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-036",
+      "type": "multiple_choice",
+      "text": "Какие преимущества даёт передача `env::args()` напрямую в `Config::build`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Не нужно заранее собирать `Vec<String>`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Можно брать только нужные аргументы через `next()`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Можно переместить `String` прямо в `Config` без `clone`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Все аргументы становятся `&str` с `'static` lifetime",
+          "correct": false
+        }
+      ],
+      "explanation": "Итератор возвращает принадлежащие строки по одной и убирает промежуточную коллекцию и clone.",
+      "source": {
+        "key": "rust1-closures-iterators-config-iterator-q036",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — улучшение `Config::build`, PDF стр. 374–377",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-037",
+      "type": "single_choice",
+      "text": "Зачем новая `Config::build` сначала вызывает `args.next()` и игнорирует результат?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы пропустить имя или путь программы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы проверить, что Iterator пуст",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы удалить последний аргумент",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы включить `IGNORE_CASE`",
+          "correct": false
+        }
+      ],
+      "explanation": "Первое значение `env::args()` — имя исполняемой программы.",
+      "source": {
+        "key": "rust1-closures-iterators-config-iterator-q037",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — разбор аргументов через `next`, PDF стр. 375–377",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-038",
+      "type": "multiple_choice",
+      "text": "Как выражается отсутствие следующего аргумента в итераторной версии? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`next()` возвращает `Option<String>`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`None` означает отсутствие аргумента",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Через `match` можно вернуть понятный `Err`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Индексирование `args[1]` остаётся обязательным",
+          "correct": false
+        }
+      ],
+      "explanation": "Вместо индексирования новая версия обрабатывает `Option`, возвращаемый `next`.",
+      "source": {
+        "key": "rust1-closures-iterators-config-iterator-q038",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — `Config::build` и `next`, PDF стр. 375–377",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-039",
+      "type": "single_choice",
+      "text": "Как выглядит итераторная идея функции `search` после рефакторинга?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`contents.lines().filter(...).collect()`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Индексирование каждой строки вручную",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Преобразование файла в `HashMap`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Отдельный поток на каждую строку",
+          "correct": false
+        }
+      ],
+      "explanation": "Явный цикл заменён на `lines`, `filter` и `collect`.",
+      "source": {
+        "key": "rust1-closures-iterators-search-iterator",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — листинг 13-22, PDF стр. 377–378",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-040",
+      "type": "multiple_choice",
+      "text": "Какие преимущества итераторного `search` подчёркивает текст? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Код сосредоточен на высокоуровневой цели фильтрации",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Не нужно вручную создавать и заполнять результирующий вектор",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Boilerplate цикла скрыт за адаптерами",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Итераторы гарантированно всегда быстрее во всех задачах",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга подчёркивает читаемость и высокий уровень, а не безусловное превосходство скорости.",
+      "source": {
+        "key": "rust1-closures-iterators-iterator-style",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — «Выбор между циклами или итераторами», PDF стр. 378–379",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-041",
+      "type": "single_choice",
+      "text": "Что показал приведённый benchmark `search`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В конкретном тесте итераторная версия была немного быстрее, а результаты близки",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Итераторы были в десять раз медленнее",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Цикл всегда в два раза быстрее",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Сравнения не было",
+          "correct": false
+        }
+      ],
+      "explanation": "Приведённые времена близки; итераторная версия в этом измерении немного быстрее.",
+      "source": {
+        "key": "rust1-closures-iterators-benchmark",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — сравнение производительности, PDF стр. 379–380",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-042",
+      "type": "multiple_choice",
+      "text": "Что означает zero-cost abstraction применительно к итераторам? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Абстракция не должна добавлять обязательные runtime-накладные расходы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Компилятор может получить код, сопоставимый с ручным низкоуровневым вариантом",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "За неиспользуемую возможность не приходится платить во время выполнения",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Машинный код обязательно всегда короче",
+          "correct": false
+        }
+      ],
+      "explanation": "Итераторы приводятся как пример абстракции без обязательной дополнительной стоимости исполнения.",
+      "source": {
+        "key": "rust1-closures-iterators-zero-cost",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — zero-cost abstractions, PDF стр. 379–381",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-043",
+      "type": "single_choice",
+      "text": "Что делает `zip` в примере аудиодекодера?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Объединяет коэффициенты с предыдущими значениями `buffer` в пары",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Создаёт ZIP-архив",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Сортирует коэффициенты",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Создаёт поток ОС",
+          "correct": false
+        }
+      ],
+      "explanation": "`zip` попарно объединяет две последовательности для дальнейших вычислений.",
+      "source": {
+        "key": "rust1-closures-iterators-audio-zip",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — пример аудиодекодера, PDF стр. 380–381",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-044",
+      "type": "multiple_choice",
+      "text": "Какие операции входят в вычисление `prediction` аудиодекодера? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Итерация по 12 коэффициентам",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`zip` с предыдущими 12 значениями буфера",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`map` с перемножением пар",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`sum` и битовый сдвиг",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Сортировка коэффициентов перед вызовом `zip`",
+          "correct": false
+        }
+      ],
+      "explanation": "Код связывает `iter`, `zip`, `map`, `sum::<i64>()` и сдвиг.",
+      "source": {
+        "key": "rust1-closures-iterators-audio-pipeline",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — пример аудиодекодера, PDF стр. 380–381",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-045",
+      "type": "single_choice",
+      "text": "Что означает разворачивание цикла в объяснении оптимизации?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Генерацию повторяющегося кода для известного числа итераций вместо управления циклом",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Выполнение цикла один раз",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Преобразование в рекурсию",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Перенос цикла в другой поток",
+          "correct": false
+        }
+      ],
+      "explanation": "Компилятор знает о 12 итерациях и может устранить часть управления циклом.",
+      "source": {
+        "key": "rust1-closures-iterators-loop-unroll",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — оптимизация аудиодекодера, PDF стр. 380–381",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-046",
+      "type": "multiple_choice",
+      "text": "Какие оптимизации перечислены для аудиодекодера? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Разворачивание цикла",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Хранение коэффициентов в регистрах",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Отсутствие runtime-проверок границ в полученном коде",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Обязательный `Vec` после каждого адаптера",
+          "correct": false
+        }
+      ],
+      "explanation": "Текст отмечает unrolling, регистры и отсутствие проверок границ.",
+      "source": {
+        "key": "rust1-closures-iterators-audio-optimizations",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — оптимизация цепочки итераторов, PDF стр. 380–381",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-047",
+      "type": "single_choice",
+      "text": "Что является `Item` у итератора `v.iter()` для `Vec<i32>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Ссылка на элемент, например `&i32`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Всегда принадлежащий `i32`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Сам `Vec<i32>`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`Option<Vec<i32>>`",
+          "correct": false
+        }
+      ],
+      "explanation": "`iter` перебирает неизменяемые ссылки.",
+      "source": {
+        "key": "rust1-closures-iterators-iter-item",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — `iter`, `next` и владение, PDF стр. 365–369",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-048",
+      "type": "multiple_choice",
+      "text": "Какой метод создания итератора соответствует разным требованиям владения? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Только читать — `iter()`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Изменять через ссылки — `iter_mut()`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Получить элементы во владение — `into_iter()`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Во всех случаях Item обязательно одинаков",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал сопоставляет три метода с разными формами доступа к элементам.",
+      "source": {
+        "key": "rust1-closures-iterators-iterator-ownership-q048",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — способы создания итераторов, PDF стр. 368–369",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-049",
+      "type": "single_choice",
+      "text": "Почему `for` может использовать итератор без явного `mut` в пользовательском коде?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Цикл получает итератор и сам управляет его изменяемым состоянием для `next()`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`next()` в `for` не требует `&mut self`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`for` клонирует коллекцию",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Итератор в `for` не имеет состояния",
+          "correct": false
+        }
+      ],
+      "explanation": "Книга сравнивает ручной `next`, где нужен mutable iterator, с `for`, который управляет этим внутри.",
+      "source": {
+        "key": "rust1-closures-iterators-for-iterator",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — `for` и `next`, PDF стр. 366–368",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-050",
+      "type": "multiple_choice",
+      "text": "Какие свойства closures и iterators подводятся в итогах главы? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Они вдохновлены функциональными языками",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Выражают высокоуровневые идеи",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Могут сохранять производительность низкоуровневого кода",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Требуют runtime-интерпретатора",
+          "correct": false
+        }
+      ],
+      "explanation": "Итоги связывают closures и iterators с выразительностью и zero-cost подходом.",
+      "source": {
+        "key": "rust1-closures-iterators-summary",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Замыкания и итераторы",
+        "locator": "Глава 13 — «Итоги», PDF стр. 381–383",
+        "url": null
+      }
+    }
+  ]
+}

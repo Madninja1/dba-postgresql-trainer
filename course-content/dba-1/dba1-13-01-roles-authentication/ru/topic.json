@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "dba-1",
+  "slug": "dba1-access-roles-authentication",
+  "notes_part": 13,
+  "topic_number": 15,
+  "title": "Роли и аутентификация",
+  "description": "Роли и их атрибуты, возможность подключения, правила pg_hba.conf, порядок выбора правил и методы аутентификации PostgreSQL",
+  "sort_order": 130
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "rust-1",
+  "slug": "rust1-borrowing-slices",
+  "notes_part": 4,
+  "topic_number": 4,
+  "title": "Заимствование, ссылки и срезы",
+  "description": "Неизменяемые и изменяемые ссылки, правила заимствования, гонки данных, висячие ссылки, строковые и массивные срезы.",
+  "sort_order": 40
+}

@@ -1,0 +1,592 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-admin-logging",
+  "questions": [
+    {
+      "key": "dba1-admin-logging-001",
+      "type": "single_choice",
+      "text": "Какой параметр определяет один или несколько приёмников сообщений сервера PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "log_destination",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "log_directory",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "log_filename",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "cluster_name",
+          "correct": false
+        }
+      ],
+      "explanation": "log_destination задаёт список направлений, куда PostgreSQL отправляет серверные сообщения.",
+      "source": {
+        "key": "postgresql-16-logging-where",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Журнал сообщений",
+        "locator": "log_destination",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config-logging#RUNTIME-CONFIG-LOGGING-WHERE"
+      }
+    },
+    {
+      "key": "dba1-admin-logging-002",
+      "type": "multiple_choice",
+      "text": "Какие значения log_destination перечислены в материале? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "stderr",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "csvlog",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "jsonlog",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "syslog",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "filelog",
+          "correct": false
+        }
+      ],
+      "explanation": "В конспекте перечислены stderr, csvlog, jsonlog, syslog и также eventlog для Windows. `filelog` не относится к перечисленным в материале значениям `log_destination`.",
+      "source": {
+        "key": "dba1-12-log-destination",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Журнал сообщений",
+        "locator": "Слайд с log_destination",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-logging-003",
+      "type": "single_choice",
+      "text": "Какой параметр включает встроенный коллектор сообщений PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "logging_collector",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "log_statement",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "log_rotation_age",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "stats_fetch_consistency",
+          "correct": false
+        }
+      ],
+      "explanation": "Коллектор сообщений включается параметром logging_collector.",
+      "source": {
+        "key": "dba1-12-logging-collector",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Журнал сообщений",
+        "locator": "logging_collector",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-logging-004",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о logging_collector соответствуют конспекту? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он собирает сообщения от процессов PostgreSQL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он позволяет записывать stderr в файлы журнала",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Он требуется для файловых форматов csvlog и jsonlog",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "При любой нагрузке его работа гарантированно не влияет на производительность",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал подчёркивает, что коллектор не должен терять сообщения, поэтому при большой нагрузке потенциально способен стать узким местом.",
+      "source": {
+        "key": "dba1-12-logging-collector-004",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Журнал сообщений",
+        "locator": "Свойства logging_collector",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-logging-005",
+      "type": "single_choice",
+      "text": "Каким параметром задаётся каталог файлов журнала при использовании коллектора сообщений?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "log_directory",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "data_directory",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "log_destination",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "log_rotation_size",
+          "correct": false
+        }
+      ],
+      "explanation": "log_directory задаёт каталог, а log_filename — имя или шаблон имени файла.",
+      "source": {
+        "key": "postgresql-16-logging-where-005",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Журнал сообщений",
+        "locator": "log_directory",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config-logging#RUNTIME-CONFIG-LOGGING-WHERE"
+      }
+    },
+    {
+      "key": "dba1-admin-logging-006",
+      "type": "multiple_choice",
+      "text": "Какие параметры участвуют во встроенной ротации файлов журнала? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "log_filename",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "log_rotation_age",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "log_rotation_size",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "log_truncate_on_rotation",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "shared_buffers",
+          "correct": false
+        }
+      ],
+      "explanation": "Эти параметры представлены в занятии как основные настройки встроенной ротации журналов. `shared_buffers` не является параметром встроенной ротации файлов журнала.",
+      "source": {
+        "key": "postgresql-16-logfile-maintenance",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Ротация журнала",
+        "locator": "Параметры ротации",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logfile-maintenance"
+      }
+    },
+    {
+      "key": "dba1-admin-logging-007",
+      "type": "single_choice",
+      "text": "Что ограничивает log_rotation_age?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Время до очередной ротации файла журнала",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Число строк в журнале",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Число активных подключений",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Размер WAL-сегмента",
+          "correct": false
+        }
+      ],
+      "explanation": "log_rotation_age задаёт временной интервал ротации.",
+      "source": {
+        "key": "dba1-12-log-rotation",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Ротация журнала",
+        "locator": "log_rotation_age",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-logging-008",
+      "type": "multiple_choice",
+      "text": "Что позволяет получить схема log_filename = 'postgresql-%H.log' и ротация раз в один час? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Имя файла зависит от часа",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Используется 24 различных имени файлов в течение суток",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Файлы могут циклически использоваться в следующие сутки",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Каждая строка журнала записывается в отдельный файл",
+          "correct": false
+        }
+      ],
+      "explanation": "Конспект приводит этот вариант как пример схемы с 24 файлами в сутки.",
+      "source": {
+        "key": "dba1-12-log-rotation-008",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Ротация журнала",
+        "locator": "Пример postgresql-%H.log, 1h",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-logging-009",
+      "type": "single_choice",
+      "text": "Какой внешний системный инструмент приведён как альтернатива встроенной ротации PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "logrotate",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_repack",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_ctl",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "iostat",
+          "correct": false
+        }
+      ],
+      "explanation": "В конспекте logrotate показан как внешний вариант ротации журналов; для Ubuntu упомянут файл конфигурации postgresql-common.",
+      "source": {
+        "key": "postgresql-16-logfile-maintenance-009",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Ротация журнала",
+        "locator": "Внешняя ротация",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logfile-maintenance"
+      }
+    },
+    {
+      "key": "dba1-admin-logging-010",
+      "type": "multiple_choice",
+      "text": "Какие средства анализа журнала упомянуты в конспекте? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "grep",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "awk",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pgBadger",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "initdb",
+          "correct": false
+        }
+      ],
+      "explanation": "Журналы можно анализировать обычными средствами ОС или специализированным анализатором pgBadger.",
+      "source": {
+        "key": "dba1-12-log-analysis",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Анализ журнала",
+        "locator": "grep, awk и pgBadger",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-logging-011",
+      "type": "single_choice",
+      "text": "Какой специализированный анализатор журналов PostgreSQL назван в материале фактическим стандартом анализа?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pgBadger",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_repack",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pgbench",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_checksums",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал отдельно выделяет pgBadger как специализированное средство анализа журналов.",
+      "source": {
+        "key": "pgbadger",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Анализ журнала",
+        "locator": "pgBadger",
+        "url": "https://github.com/darold/pgbadger"
+      }
+    },
+    {
+      "key": "dba1-admin-logging-012",
+      "type": "multiple_choice",
+      "text": "Что следует учитывать перед использованием pgBadger согласно учебному материалу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Инструмент предъявляет требования к содержимому и настройкам журнала",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Журнал должен содержать информацию, которую pgBadger способен корректно разобрать",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "В конспекте отдельно отмечено требование к языку сообщений",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pgBadger анализирует сервер без какого-либо журнала",
+          "correct": false
+        }
+      ],
+      "explanation": "Лекция подчёркивает, что pgBadger требует определённой конфигурации журнала; в частности, в материале отдельно оговорён язык сообщений.",
+      "source": {
+        "key": "dba1-12-pgbadger",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Анализ журнала",
+        "locator": "Ограничения pgBadger",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-logging-013",
+      "type": "single_choice",
+      "text": "Что задаёт параметр log_filename?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Имя или шаблон имени файла журнала",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Минимальный уровень изоляции",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Каталог WAL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Список активных процессов",
+          "correct": false
+        }
+      ],
+      "explanation": "log_filename поддерживает шаблоны с компонентами даты и времени, что позволяет строить схемы ротации.",
+      "source": {
+        "key": "postgresql-16-logfile-maintenance-013",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Ротация журнала",
+        "locator": "log_filename",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logfile-maintenance"
+      }
+    },
+    {
+      "key": "dba1-admin-logging-014",
+      "type": "multiple_choice",
+      "text": "Какие форматы файлового журнала требуют включённого logging_collector согласно материалу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "csvlog",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "jsonlog",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "stderr при записи коллектором в файл",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "syslog обязательно требует logging_collector",
+          "correct": false
+        }
+      ],
+      "explanation": "Коллектор записывает stderr, csvlog и jsonlog в файлы log_directory/log_filename, тогда как syslog является отдельным назначением.",
+      "source": {
+        "key": "dba1-12-log-destination-014",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Журнал сообщений",
+        "locator": "Приёмники и logging_collector",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-logging-015",
+      "type": "single_choice",
+      "text": "Почему обычно применяется ротация журналов?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы один файл не рос неограниченно и оставался удобным для хранения и анализа",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы PostgreSQL мог запускаться без WAL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы автоматически перестраивать индексы",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы уменьшить shared_buffers",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал объясняет ротацию практической проблемой постоянно растущего единственного файла журнала.",
+      "source": {
+        "key": "dba1-12-log-rotation-015",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Ротация журнала",
+        "locator": "Причина ротации",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-logging-016",
+      "type": "multiple_choice",
+      "text": "Администратор хочет получать машинно-разбираемый журнал в файле. Какие варианты из материала непосредственно подходят для этой задачи? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Включить logging_collector",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Добавить csvlog в log_destination",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Или добавить jsonlog в log_destination",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Выключить все серверные сообщения",
+          "correct": false
+        }
+      ],
+      "explanation": "CSV и JSON являются структурированными форматами журнала, а их запись в файлы осуществляется через коллектор сообщений.",
+      "source": {
+        "key": "postgresql-16-logging-where-016",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Журнал сообщений",
+        "locator": "csvlog и jsonlog",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config-logging#RUNTIME-CONFIG-LOGGING-WHERE"
+      }
+    }
+  ]
+}

@@ -1,3 +1,5 @@
+use dba_trainer_domain::Topic;
+
 use ratatui::{
     Frame,
     layout::{Alignment, Constraint, Direction, Layout},
@@ -30,4 +32,25 @@ pub fn render_message(frame: &mut Frame, title: &str, message: &str, footer: &st
     frame.render_widget(header, areas[0]);
     frame.render_widget(body, areas[1]);
     frame.render_widget(footer, areas[2]);
+}
+
+pub fn topic_display_number(topics: &[&Topic], index: usize) -> String {
+    let topic = topics[index];
+
+    let group_size = topics
+        .iter()
+        .filter(|candidate| candidate.notes_part == topic.notes_part)
+        .count();
+
+    if group_size == 1 {
+        return topic.notes_part.to_string();
+    }
+
+    let subtopic_number = topics
+        .iter()
+        .take(index + 1)
+        .filter(|candidate| candidate.notes_part == topic.notes_part)
+        .count();
+
+    format!("{}.{}", topic.notes_part, subtopic_number)
 }
