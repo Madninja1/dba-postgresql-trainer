@@ -9,6 +9,10 @@ pub trait TopicRepository {
     fn topics(&self) -> Result<Vec<Topic>, RepositoryError>;
 }
 
+pub trait ContentLocaleRepository {
+    fn set_content_locale(&mut self, locale: &str) -> Result<(), RepositoryError>;
+}
+
 pub trait SessionRepository {
     fn start_session(&mut self, config: &SessionConfig) -> Result<QuizSession, RepositoryError>;
 

@@ -5,7 +5,7 @@ use dba_trainer_domain::{
 
 use rand::{rng, seq::SliceRandom};
 
-use crate::{RepositoryError, SessionRepository, TopicRepository};
+use crate::{ContentLocaleRepository, RepositoryError, SessionRepository, TopicRepository};
 
 pub struct TrainerService<R> {
     repository: R,
@@ -67,6 +67,15 @@ where
 
     pub fn clear_statistics(&mut self) -> Result<(), RepositoryError> {
         self.repository.clear_statistics()
+    }
+}
+
+impl<R> TrainerService<R>
+where
+    R: ContentLocaleRepository,
+{
+    pub fn set_content_locale(&mut self, locale: &str) -> Result<(), RepositoryError> {
+        self.repository.set_content_locale(locale)
     }
 }
 

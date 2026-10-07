@@ -689,6 +689,8 @@ internal object IntegrityCheckingUniffiLib {
     ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_current_question(
     ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_set_content_locale(
+    ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_start_all_topics_session(
     ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_start_course_session(
@@ -741,6 +743,8 @@ internal object UniffiLib {
     ): Unit
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_current_question(`ptr`: Long,`sessionId`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_set_content_locale(`ptr`: Long,`locale`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): Unit
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_start_all_topics_session(`ptr`: Long,`limit`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_start_course_session(`ptr`: Long,`courseCode`: RustBuffer.ByValue,`limit`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
@@ -896,6 +900,9 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_current_question() and 0xFFFF) != 42502) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_set_content_locale() and 0xFFFF) != 17472) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_start_all_topics_session() and 0xFFFF) != 51578) {
@@ -1337,6 +1344,8 @@ public interface MobileTrainerInterface {
     
     fun `currentQuestion`(`sessionId`: kotlin.Long): MobileQuestion?
     
+    fun `setContentLocale`(`locale`: kotlin.String)
+    
     fun `startAllTopicsSession`(`limit`: MobileQuestionLimit): MobileQuizSession
     
     fun `startCourseSession`(`courseCode`: kotlin.String, `limit`: MobileQuestionLimit): MobileQuizSession
@@ -1520,6 +1529,20 @@ open class MobileTrainer: Disposable, AutoCloseable, MobileTrainerInterface
     }
     )
     }
+    
+
+    
+    @Throws(MobileException::class)override fun `setContentLocale`(`locale`: kotlin.String)
+        = 
+    callWithHandle {
+    uniffiRustCallWithError(MobileException) { _status ->
+    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_set_content_locale(
+        it,
+        
+        FfiConverterString.lower(`locale`),_status)
+}
+    }
+    
     
 
     

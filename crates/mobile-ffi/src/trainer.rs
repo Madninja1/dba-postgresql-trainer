@@ -36,6 +36,12 @@ impl MobileTrainer {
         }))
     }
 
+    pub fn set_content_locale(&self, locale: String) -> Result<(), MobileError> {
+        let mut service = self.service()?;
+
+        service.set_content_locale(&locale).map_err(to_mobile_error)
+    }
+
     pub fn topics(&self) -> Result<Vec<MobileTopic>, MobileError> {
         let service = self.service()?;
 

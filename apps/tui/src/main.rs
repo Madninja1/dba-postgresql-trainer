@@ -11,7 +11,6 @@ use localization::UiLanguage;
 use dba_trainer_application::TrainerService;
 use dba_trainer_storage_sqlite::SqliteRepository;
 
-use dba_trainer_content::load_builtin_bundles;
 use ratatui::DefaultTerminal;
 
 const DATA_DIRECTORY: &str = "data";
@@ -21,14 +20,7 @@ const LANGUAGE_PATH: &str = "data/tui_language";
 fn main() -> Result<(), Box<dyn Error>> {
     fs::create_dir_all(DATA_DIRECTORY)?;
 
-    let mut repository = SqliteRepository::open(DATABASE_PATH)?;
-
-    let bundles = load_builtin_bundles()?;
-
-    for bundle in &bundles {
-        repository.sync_bundle(bundle)?;
-    }
-
+    let repository = SqliteRepository::open(DATABASE_PATH)?;
     let service = TrainerService::new(repository);
 
     let app = App::new(service, load_language())?;

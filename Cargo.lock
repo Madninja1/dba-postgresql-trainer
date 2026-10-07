@@ -471,7 +471,6 @@ version = "0.2.0"
 dependencies = [
  "crossterm",
  "dba-trainer-application",
- "dba-trainer-content",
  "dba-trainer-domain",
  "dba-trainer-storage-sqlite",
  "ratatui",

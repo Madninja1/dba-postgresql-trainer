@@ -2,6 +2,7 @@
 name = "dba-trainer-application"
 version = "0.2.0"
 edition = "2024"
+license = "Apache-2.0"
 
 [dependencies]
 dba-trainer-domain = { path = "../domain" }

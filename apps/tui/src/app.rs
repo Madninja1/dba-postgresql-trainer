@@ -152,9 +152,10 @@ pub struct App {
 
 impl App {
     pub fn new(
-        service: TrainerService<SqliteRepository>,
+        mut service: TrainerService<SqliteRepository>,
         language: UiLanguage,
     ) -> Result<Self, RepositoryError> {
+        service.set_content_locale(language.code())?;
         let topics = service.topics()?;
 
         let resume_session = service.active_session()?;
@@ -303,7 +304,13 @@ impl App {
                 }
 
                 HomeItem::Language => {
-                    self.language = self.language.toggle();
+                    let language = self.language.toggle();
+
+                    self.service.set_content_locale(language.code())?;
+                    self.topics = self.service.topics()?;
+                    self.topic_selected =
+                        self.topic_selected.min(self.topics.len().saturating_sub(1));
+                    self.language = language;
                 }
 
                 HomeItem::Quit => {

@@ -1,0 +1,29 @@
+DBA Trainer
+Copyright 2026 Daniil
+
+The software source code in this repository is licensed under the
+Apache License, Version 2.0, except where a file or directory states
+otherwise.
+
+Course content
+--------------
+
+The `course-content/` directory may contain original training questions,
+references to third-party documentation, and material derived from factual
+information found in third-party educational or technical sources.
+
+The Apache License 2.0 applying to the software source code does not, by
+itself, relicense third-party source material or third-party documentation.
+Rights in such underlying material remain with their respective copyright
+holders and are subject to their respective terms.
+
+Source links and source metadata are included for attribution, verification,
+and study purposes. A particular course-content file is covered by the
+Apache License 2.0 only when that is explicitly stated for that content.
+
+Trademarks
+----------
+
+PostgreSQL and other third-party names, product names, and marks referenced
+by the project belong to their respective owners. Their use in DBA Trainer
+is descriptive and does not imply endorsement or affiliation.

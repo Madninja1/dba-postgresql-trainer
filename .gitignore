@@ -1,8 +1,16 @@
-/target
-.idea
+/target/
+.idea/
 
 *.db
 *.db-shm
 *.db-wal
 
 .env
+
+*.jks
+*.keystore
+keystore.properties
+
+*.idsig
+
+/dist/

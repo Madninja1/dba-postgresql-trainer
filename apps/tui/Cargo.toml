@@ -2,11 +2,11 @@
 name = "dba-trainer-tui"
 version = "0.2.0"
 edition = "2024"
+license = "Apache-2.0"
 
 [dependencies]
 crossterm = "0.29.0"
 dba-trainer-application = { path = "../../crates/application" }
-dba-trainer-content = { path = "../../crates/content" }
 dba-trainer-domain = { path = "../../crates/domain" }
 dba-trainer-storage-sqlite = { path = "../../crates/storage-sqlite" }
 ratatui = { version = "0.30.2", features = ["crossterm"] }

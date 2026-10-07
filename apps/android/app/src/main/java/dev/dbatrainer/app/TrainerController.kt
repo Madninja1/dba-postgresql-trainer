@@ -146,6 +146,7 @@ class TrainerController(context: Context) {
             ).absolutePath
 
             trainer = MobileTrainer(databasePath)
+            requireTrainer().setContentLocale(language.code)
             topics = requireTrainer().topics()
             resumeSession = requireTrainer().activeSession()
         }
@@ -170,11 +171,15 @@ class TrainerController(context: Context) {
             return
         }
 
-        this.language = language
-        preferences
-            .edit()
-            .putString("ui_language", language.code)
-            .apply()
+        runCoreAction {
+            requireTrainer().setContentLocale(language.code)
+            topics = requireTrainer().topics()
+            this.language = language
+            preferences
+                .edit()
+                .putString("ui_language", language.code)
+                .apply()
+        }
     }
 
     fun openTopics() {

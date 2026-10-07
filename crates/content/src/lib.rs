@@ -4,7 +4,10 @@ mod loader;
 mod model;
 mod validation;
 
-pub use builtin::load_builtin_bundles;
+pub use builtin::{
+    DEFAULT_CONTENT_LOCALE, FALLBACK_CONTENT_LOCALE, builtin_content_locales, load_builtin_bundles,
+    load_builtin_bundles_for_locale,
+};
 
 pub use error::ContentError;
 

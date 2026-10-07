@@ -1,6 +1,7 @@
+use dba_trainer_application::{ContentLocaleRepository, RepositoryError};
 use dba_trainer_content::{
     AnswerDocument, ContentBundle, QuestionDocument, QuestionTypeDocument, SourceDocument,
-    SourceKindDocument, TopicDocument,
+    SourceKindDocument, TopicDocument, load_builtin_bundles_for_locale,
 };
 
 use rusqlite::{Transaction, params};
@@ -66,6 +67,20 @@ impl SqliteRepository {
 
             answers: answer_count,
         })
+    }
+}
+
+impl ContentLocaleRepository for SqliteRepository {
+    fn set_content_locale(&mut self, locale: &str) -> Result<(), RepositoryError> {
+        let bundles = load_builtin_bundles_for_locale(locale)
+            .map_err(|error| RepositoryError::Storage(error.to_string()))?;
+
+        for bundle in &bundles {
+            self.sync_bundle(bundle)
+                .map_err(|error| RepositoryError::Storage(error.to_string()))?;
+        }
+
+        Ok(())
     }
 }
 
