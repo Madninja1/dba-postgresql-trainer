@@ -1,10 +1,10 @@
 [package]
 name = "dba-trainer-storage-sqlite"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 
 [dependencies]
 dba-trainer-domain = { path = "../domain" }
 dba-trainer-application = { path = "../application" }
 rusqlite = { version = "0.40.2", features = ["bundled"] }
-dba-trainer-content = { version = "0.1.0", path = "../content" }
+dba-trainer-content = { path = "../content" }

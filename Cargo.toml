@@ -7,4 +7,6 @@ members = [
     "crates/content",
     "crates/storage-sqlite",
     "apps/tui",
+    "crates/mobile-ffi",
+    "tools/uniffi-bindgen",
 ]
