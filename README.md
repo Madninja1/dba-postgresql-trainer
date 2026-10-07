@@ -188,3 +188,13 @@ The software source code is licensed under the [Apache License 2.0](LICENSE).
 See [NOTICE](NOTICE) for copyright information and the separate treatment of third-party/course material. Content under `course-content/` is not automatically relicensed under Apache-2.0 unless explicitly stated.
 
 Third-party project and product names are used only to identify the technologies being studied. DBA Trainer is an independent project.
+
+## Community & feedback
+
+Project updates, PostgreSQL/Rust notes and other DBA work are also published on Telegram:
+
+**Telegram:** [Madninja1](https://t.me/Madninja1)
+
+For bugs and feature requests, please use GitHub Issues.
+
+For collaboration or development inquiries, you can also contact me via Telegram.
