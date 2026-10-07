@@ -1,0 +1,15 @@
+[package]
+name = "dba-trainer-mobile-ffi"
+version = "0.2.0"
+edition = "2024"
+
+[dependencies]
+dba-trainer-application = { path = "../application" }
+dba-trainer-content = { path = "../content" }
+dba-trainer-domain = { path = "../domain" }
+dba-trainer-storage-sqlite = { path = "../storage-sqlite" }
+uniffi = "0.32.2"
+thiserror = "2"
+
+[lib]
+crate-type = ["cdylib", "rlib"]

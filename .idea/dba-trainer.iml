@@ -8,6 +8,8 @@
       <sourceFolder url="file://$MODULE_DIR$/crates/domain/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/crates/storage-sqlite/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/crates/content/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/mobile-ffi/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/tools/uniffi-bindgen/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />

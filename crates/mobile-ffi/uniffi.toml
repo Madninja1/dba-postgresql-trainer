@@ -1,0 +1,5 @@
+[bindings.kotlin]
+package_name = "dev.dbatrainer.ffi"
+cdylib_name = "dba_trainer_mobile_ffi"
+android = true
+generate_immutable_records = true
