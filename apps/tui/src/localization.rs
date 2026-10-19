@@ -1,4 +1,6 @@
-use dba_trainer_domain::{QuestionLimit, StatisticsLimit, TOPIC_PASS_THRESHOLD_PERCENT, TopicMasteryStats};
+use dba_trainer_domain::{
+    QuestionLimit, StatisticsLimit, TOPIC_PASS_THRESHOLD_PERCENT, TopicMasteryStats,
+};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum UiLanguage {

@@ -1,9 +1,9 @@
 use dba_trainer_application::{RepositoryError, TrainerService};
 
 use dba_trainer_domain::{
-    AnswerOptionId, AnswerResult, Lab, Question, QuestionId, QuestionLimit, QuestionType, QuizScope,
-    SessionConfig, SessionId, SessionProgress, StatisticsFilter, StatisticsLimit, StatisticsScope,
-    Topic, TopicId, TopicMasteryStats, TrainingStats,
+    AnswerOptionId, AnswerResult, Lab, Question, QuestionId, QuestionLimit, QuestionType,
+    QuizScope, SessionConfig, SessionId, SessionProgress, StatisticsFilter, StatisticsLimit,
+    StatisticsScope, Topic, TopicId, TopicMasteryStats, TrainingStats,
 };
 
 use dba_trainer_storage_sqlite::SqliteRepository;

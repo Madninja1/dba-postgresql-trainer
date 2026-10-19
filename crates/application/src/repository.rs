@@ -1,6 +1,6 @@
 use dba_trainer_domain::{
-    AnswerOptionId, AnswerResult, Question, QuestionId, QuizSession, SessionConfig, SessionId,
-    Lab, SessionProgress, StatisticsFilter, Topic, TopicId, TopicMasteryStats, TrainingStats,
+    AnswerOptionId, AnswerResult, Lab, Question, QuestionId, QuizSession, SessionConfig, SessionId,
+    SessionProgress, StatisticsFilter, Topic, TopicId, TopicMasteryStats, TrainingStats,
 };
 
 use crate::RepositoryError;

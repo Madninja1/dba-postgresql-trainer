@@ -114,11 +114,13 @@ pub fn load_builtin_labs_for_locale(
 
     validate_course_lab_numbers_and_keys(&selected)?;
 
-    selected.sort_by_key(|bundle| (
-        bundle.lab.course.clone(),
-        bundle.lab.sort_order,
-        bundle.lab.lab_number,
-    ));
+    selected.sort_by_key(|bundle| {
+        (
+            bundle.lab.course.clone(),
+            bundle.lab.sort_order,
+            bundle.lab.lab_number,
+        )
+    });
 
     Ok(selected)
 }
@@ -164,9 +166,7 @@ fn load_all_localized_labs() -> Result<Vec<LocalizedLab>, ContentError> {
         .collect()
 }
 
-fn validate_localized_lab_compatibility(
-    localized: &[LocalizedLab],
-) -> Result<(), ContentError> {
+fn validate_localized_lab_compatibility(localized: &[LocalizedLab]) -> Result<(), ContentError> {
     let mut by_lab: BTreeMap<&str, Vec<&LocalizedLab>> = BTreeMap::new();
 
     for entry in localized {

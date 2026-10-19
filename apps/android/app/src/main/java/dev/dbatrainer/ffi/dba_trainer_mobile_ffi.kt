@@ -689,6 +689,8 @@ internal object IntegrityCheckingUniffiLib {
     ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_current_question(
     ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_labs(
+    ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_set_content_locale(
     ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_start_all_topics_session(
@@ -704,6 +706,8 @@ internal object IntegrityCheckingUniffiLib {
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_statistics_topic(
     ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_submit_answer(
+    ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_topic_mastery(
     ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_topics(
     ): Int
@@ -743,6 +747,8 @@ internal object UniffiLib {
     ): Unit
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_current_question(`ptr`: Long,`sessionId`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_labs(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_set_content_locale(`ptr`: Long,`locale`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): Unit
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_start_all_topics_session(`ptr`: Long,`limit`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
@@ -758,6 +764,8 @@ internal object UniffiLib {
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_statistics_topic(`ptr`: Long,`topicId`: Long,`limit`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_submit_answer(`ptr`: Long,`sessionId`: Long,`questionId`: Long,`answerOptionIds`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_topic_mastery(`ptr`: Long,`topicId`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_topics(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
@@ -902,6 +910,9 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
     if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_current_question() and 0xFFFF) != 42502) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_labs() and 0xFFFF) != 34408) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_set_content_locale() and 0xFFFF) != 17472) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
@@ -924,6 +935,9 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_submit_answer() and 0xFFFF) != 23027) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_topic_mastery() and 0xFFFF) != 39919) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_topics() and 0xFFFF) != 50680) {
@@ -1344,6 +1358,8 @@ public interface MobileTrainerInterface {
     
     fun `currentQuestion`(`sessionId`: kotlin.Long): MobileQuestion?
     
+    fun `labs`(): List<MobileLab>
+    
     fun `setContentLocale`(`locale`: kotlin.String)
     
     fun `startAllTopicsSession`(`limit`: MobileQuestionLimit): MobileQuizSession
@@ -1359,6 +1375,8 @@ public interface MobileTrainerInterface {
     fun `statisticsTopic`(`topicId`: kotlin.Long, `limit`: MobileStatisticsLimit): MobileTrainingStats
     
     fun `submitAnswer`(`sessionId`: kotlin.Long, `questionId`: kotlin.Long, `answerOptionIds`: List<kotlin.Long>): MobileAnswerResult
+    
+    fun `topicMastery`(`topicId`: kotlin.Long): MobileTopicMasteryStats
     
     fun `topics`(): List<MobileTopic>
     
@@ -1532,6 +1550,20 @@ open class MobileTrainer: Disposable, AutoCloseable, MobileTrainerInterface
     
 
     
+    @Throws(MobileException::class)override fun `labs`(): List<MobileLab> {
+            return FfiConverterSequenceTypeMobileLab.lift(
+    callWithHandle {
+    uniffiRustCallWithError(MobileException) { _status ->
+    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_labs(
+        it,
+        _status)
+}
+    }
+    )
+    }
+    
+
+    
     @Throws(MobileException::class)override fun `setContentLocale`(`locale`: kotlin.String)
         = 
     callWithHandle {
@@ -1650,6 +1682,21 @@ open class MobileTrainer: Disposable, AutoCloseable, MobileTrainerInterface
         FfiConverterLong.lower(`sessionId`),
         FfiConverterLong.lower(`questionId`),
         FfiConverterSequenceLong.lower(`answerOptionIds`),_status)
+}
+    }
+    )
+    }
+    
+
+    
+    @Throws(MobileException::class)override fun `topicMastery`(`topicId`: kotlin.Long): MobileTopicMasteryStats {
+            return FfiConverterTypeMobileTopicMasteryStats.lift(
+    callWithHandle {
+    uniffiRustCallWithError(MobileException) { _status ->
+    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_topic_mastery(
+        it,
+        
+        FfiConverterLong.lower(`topicId`),_status)
 }
     }
     )
@@ -1791,6 +1838,69 @@ public object FfiConverterTypeMobileAnswerResult: FfiConverterRustBuffer<MobileA
             FfiConverterSequenceLong.write(value.`selectedOptionIds`, buf)
             FfiConverterSequenceLong.write(value.`correctOptionIds`, buf)
             FfiConverterBoolean.write(value.`isCorrect`, buf)
+    }
+}
+
+
+
+data class MobileLab (
+    val `id`: kotlin.Long
+    , 
+    val `courseCode`: kotlin.String
+    , 
+    val `key`: kotlin.String
+    , 
+    val `labNumber`: kotlin.Long
+    , 
+    val `title`: kotlin.String
+    , 
+    val `description`: kotlin.String?
+    , 
+    val `body`: kotlin.String
+    
+){
+    
+
+    
+
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobileLab: FfiConverterRustBuffer<MobileLab> {
+    override fun read(buf: ByteBuffer): MobileLab {
+        return MobileLab(
+            FfiConverterLong.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterLong.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterOptionalString.read(buf),
+            FfiConverterString.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: MobileLab) = (
+            FfiConverterLong.allocationSize(value.`id`) +
+            FfiConverterString.allocationSize(value.`courseCode`) +
+            FfiConverterString.allocationSize(value.`key`) +
+            FfiConverterLong.allocationSize(value.`labNumber`) +
+            FfiConverterString.allocationSize(value.`title`) +
+            FfiConverterOptionalString.allocationSize(value.`description`) +
+            FfiConverterString.allocationSize(value.`body`)
+    )
+
+    override fun write(value: MobileLab, buf: ByteBuffer) {
+            FfiConverterLong.write(value.`id`, buf)
+            FfiConverterString.write(value.`courseCode`, buf)
+            FfiConverterString.write(value.`key`, buf)
+            FfiConverterLong.write(value.`labNumber`, buf)
+            FfiConverterString.write(value.`title`, buf)
+            FfiConverterOptionalString.write(value.`description`, buf)
+            FfiConverterString.write(value.`body`, buf)
     }
 }
 
@@ -2081,6 +2191,64 @@ public object FfiConverterTypeMobileTopic: FfiConverterRustBuffer<MobileTopic> {
 
 
 
+data class MobileTopicMasteryStats (
+    val `topicId`: kotlin.Long
+    , 
+    val `completedAttempts`: kotlin.ULong
+    , 
+    val `bestAccuracyPercent`: kotlin.Double
+    , 
+    val `passThresholdPercent`: kotlin.Double
+    , 
+    val `attemptsToPass`: kotlin.ULong?
+    , 
+    val `passed`: kotlin.Boolean
+    
+){
+    
+
+    
+
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobileTopicMasteryStats: FfiConverterRustBuffer<MobileTopicMasteryStats> {
+    override fun read(buf: ByteBuffer): MobileTopicMasteryStats {
+        return MobileTopicMasteryStats(
+            FfiConverterLong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterDouble.read(buf),
+            FfiConverterDouble.read(buf),
+            FfiConverterOptionalULong.read(buf),
+            FfiConverterBoolean.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: MobileTopicMasteryStats) = (
+            FfiConverterLong.allocationSize(value.`topicId`) +
+            FfiConverterULong.allocationSize(value.`completedAttempts`) +
+            FfiConverterDouble.allocationSize(value.`bestAccuracyPercent`) +
+            FfiConverterDouble.allocationSize(value.`passThresholdPercent`) +
+            FfiConverterOptionalULong.allocationSize(value.`attemptsToPass`) +
+            FfiConverterBoolean.allocationSize(value.`passed`)
+    )
+
+    override fun write(value: MobileTopicMasteryStats, buf: ByteBuffer) {
+            FfiConverterLong.write(value.`topicId`, buf)
+            FfiConverterULong.write(value.`completedAttempts`, buf)
+            FfiConverterDouble.write(value.`bestAccuracyPercent`, buf)
+            FfiConverterDouble.write(value.`passThresholdPercent`, buf)
+            FfiConverterOptionalULong.write(value.`attemptsToPass`, buf)
+            FfiConverterBoolean.write(value.`passed`, buf)
+    }
+}
+
+
+
 data class MobileTrainingStats (
     val `completedSessions`: kotlin.ULong
     , 
@@ -2344,6 +2512,38 @@ public object FfiConverterTypeMobileStatisticsLimit: FfiConverterRustBuffer<Mobi
 /**
  * @suppress
  */
+public object FfiConverterOptionalULong: FfiConverterRustBuffer<kotlin.ULong?> {
+    override fun read(buf: ByteBuffer): kotlin.ULong? {
+        if (buf.get().toInt() == 0) {
+            return null
+        }
+        return FfiConverterULong.read(buf)
+    }
+
+    override fun allocationSize(value: kotlin.ULong?): ULong {
+        if (value == null) {
+            return 1UL
+        } else {
+            return 1UL + FfiConverterULong.allocationSize(value)
+        }
+    }
+
+    override fun write(value: kotlin.ULong?, buf: ByteBuffer) {
+        if (value == null) {
+            buf.put(0)
+        } else {
+            buf.put(1)
+            FfiConverterULong.write(value, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
 public object FfiConverterOptionalLong: FfiConverterRustBuffer<kotlin.Long?> {
     override fun read(buf: ByteBuffer): kotlin.Long? {
         if (buf.get().toInt() == 0) {
@@ -2518,6 +2718,34 @@ public object FfiConverterSequenceTypeMobileAnswerOption: FfiConverterRustBuffer
         buf.putInt(value.size)
         value.iterator().forEach {
             FfiConverterTypeMobileAnswerOption.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterSequenceTypeMobileLab: FfiConverterRustBuffer<List<MobileLab>> {
+    override fun read(buf: ByteBuffer): List<MobileLab> {
+        val len = buf.getInt()
+        return List<MobileLab>(len) {
+            FfiConverterTypeMobileLab.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<MobileLab>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeMobileLab.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<MobileLab>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeMobileLab.write(it, buf)
         }
     }
 }

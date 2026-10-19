@@ -303,7 +303,6 @@ fn valid_url(value: &str) -> bool {
     value.starts_with("https://") || value.starts_with("http://")
 }
 
-
 pub fn validate_lab(lab: &LabDocument, body: &str) -> Result<(), Vec<String>> {
     let mut errors = Vec::new();
 

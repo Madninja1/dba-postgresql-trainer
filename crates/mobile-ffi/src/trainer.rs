@@ -1,7 +1,9 @@
 use std::sync::{Arc, Mutex, MutexGuard};
 
 use dba_trainer_application::TrainerService;
-use dba_trainer_content::{load_builtin_bundles, load_builtin_labs_for_locale, DEFAULT_CONTENT_LOCALE};
+use dba_trainer_content::{
+    DEFAULT_CONTENT_LOCALE, load_builtin_bundles, load_builtin_labs_for_locale,
+};
 use dba_trainer_domain::{
     AnswerOptionId, QuestionId, QuizScope, SessionConfig, SessionId, StatisticsFilter,
     StatisticsScope, TopicId,
@@ -9,9 +11,9 @@ use dba_trainer_domain::{
 use dba_trainer_storage_sqlite::SqliteRepository;
 
 use crate::{
-    MobileAnswerResult, MobileError, MobileLab, MobileQuestion, MobileQuestionLimit, MobileQuizSession,
-    MobileSessionProgress, MobileStatisticsLimit, MobileTopic, MobileTopicMasteryStats, MobileTrainingStats,
-    error::to_mobile_error,
+    MobileAnswerResult, MobileError, MobileLab, MobileQuestion, MobileQuestionLimit,
+    MobileQuizSession, MobileSessionProgress, MobileStatisticsLimit, MobileTopic,
+    MobileTopicMasteryStats, MobileTrainingStats, error::to_mobile_error,
 };
 
 #[derive(uniffi::Object)]

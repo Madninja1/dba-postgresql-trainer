@@ -1,11 +1,13 @@
 use dba_trainer_domain::{
-    AnswerOptionId, AnswerResult, Question, QuestionId, QuizSession, SessionConfig, SessionId,
-    Lab, SessionProgress, StatisticsFilter, Topic, TopicId, TopicMasteryStats, TrainingStats,
+    AnswerOptionId, AnswerResult, Lab, Question, QuestionId, QuizSession, SessionConfig, SessionId,
+    SessionProgress, StatisticsFilter, Topic, TopicId, TopicMasteryStats, TrainingStats,
 };
 
 use rand::{rng, seq::SliceRandom};
 
-use crate::{ContentLocaleRepository, LabRepository, RepositoryError, SessionRepository, TopicRepository};
+use crate::{
+    ContentLocaleRepository, LabRepository, RepositoryError, SessionRepository, TopicRepository,
+};
 
 pub struct TrainerService<R> {
     repository: R,

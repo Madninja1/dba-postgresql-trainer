@@ -49,9 +49,8 @@ fn main() -> io::Result<()> {
     }
 
     generated.push_str("];\n\n");
-    generated.push_str(
-        "pub(crate) const BUILTIN_LAB_DOCUMENTS: &[(&str, &str, &str, &str)] = &[\n",
-    );
+    generated
+        .push_str("pub(crate) const BUILTIN_LAB_DOCUMENTS: &[(&str, &str, &str, &str)] = &[\n");
 
     for bundle in labs {
         let first_path = bundle.first_path.canonicalize()?;
@@ -170,7 +169,10 @@ fn register_pair(
         .ok_or_else(|| {
             io::Error::new(
                 io::ErrorKind::InvalidData,
-                format!("content locale directory {} has no valid name", directory.display()),
+                format!(
+                    "content locale directory {} has no valid name",
+                    directory.display()
+                ),
             )
         })?;
 
@@ -189,7 +191,8 @@ fn register_pair(
             io::ErrorKind::InvalidData,
             format!(
                 "content locale directory {} must be nested under a {} directory",
-                directory.display(), content_type
+                directory.display(),
+                content_type
             ),
         )
     })?;

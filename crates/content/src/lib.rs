@@ -14,6 +14,7 @@ pub use error::ContentError;
 pub use loader::{load_bundle, load_bundle_from_dir, load_lab};
 
 pub use model::{
-    AnswerDocument, CONTENT_SCHEMA_VERSION, ContentBundle, LabBundle, LabDocument, QuestionDocument,
-    QuestionTypeDocument, QuestionsDocument, SourceDocument, SourceKindDocument, TopicDocument,
+    AnswerDocument, CONTENT_SCHEMA_VERSION, ContentBundle, LabBundle, LabDocument,
+    QuestionDocument, QuestionTypeDocument, QuestionsDocument, SourceDocument, SourceKindDocument,
+    TopicDocument,
 };

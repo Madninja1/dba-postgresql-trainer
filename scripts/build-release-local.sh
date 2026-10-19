@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="${1:-0.2.0}"
+VERSION="${1:-0.4.0}"
 KEYSTORE="${DBA_TRAINER_KEYSTORE:-./dba-trainer-release.jks}"
 KEY_ALIAS="${DBA_TRAINER_KEY_ALIAS:-dba-trainer}"
 

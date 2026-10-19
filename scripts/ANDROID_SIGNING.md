@@ -17,7 +17,7 @@ Example:
 export DBA_TRAINER_KEYSTORE="$HOME/.config/dba-trainer/dba-trainer-release.jks"
 export DBA_TRAINER_KEY_ALIAS="dba-trainer"
 
-./scripts/build-release-local.sh 0.2.0
+./scripts/build-release-local.sh 0.4.0
 ```
 
 If the keystore is in the repository root and is ignored by Git, the default path is:

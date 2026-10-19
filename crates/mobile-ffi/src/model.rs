@@ -1,6 +1,6 @@
 use dba_trainer_domain::{
-    AnswerResult, Lab, Question, QuestionLimit, QuestionType, QuizScope, QuizSession, SessionProgress,
-    Source, SourceKind, StatisticsLimit, Topic, TopicMasteryStats, TrainingStats,
+    AnswerResult, Lab, Question, QuestionLimit, QuestionType, QuizScope, QuizSession,
+    SessionProgress, Source, SourceKind, StatisticsLimit, Topic, TopicMasteryStats, TrainingStats,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, uniffi::Enum)]
@@ -40,7 +40,6 @@ pub struct MobileTopic {
     pub title: String,
     pub description: Option<String>,
 }
-
 
 #[derive(Debug, Clone, uniffi::Record)]
 pub struct MobileLab {

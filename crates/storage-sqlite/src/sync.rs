@@ -532,8 +532,12 @@ mod tests {
             .expect("lab content should be valid");
         let mut repository = SqliteRepository::in_memory().expect("database should open");
 
-        repository.sync_lab(&bundle).expect("first lab sync should work");
-        repository.sync_lab(&bundle).expect("second lab sync should work");
+        repository
+            .sync_lab(&bundle)
+            .expect("first lab sync should work");
+        repository
+            .sync_lab(&bundle)
+            .expect("second lab sync should work");
 
         let count: i64 = repository
             .connection
@@ -546,5 +550,4 @@ mod tests {
 
         assert_eq!(count, 1);
     }
-
 }

@@ -5,8 +5,8 @@ use dba_trainer_application::{LabRepository, RepositoryError, SessionRepository,
 use dba_trainer_domain::{
     AnswerOption, AnswerOptionId, AnswerResult, Lab, Question, QuestionId, QuestionType, QuizScope,
     QuizSession, SessionConfig, SessionId, SessionProgress, Source, SourceId, SourceKind,
-    StatisticsFilter, StatisticsLimit, StatisticsScope, TOPIC_PASS_THRESHOLD_PERCENT, Topic, TopicId,
-    TopicMasteryStats, TrainingStats,
+    StatisticsFilter, StatisticsLimit, StatisticsScope, TOPIC_PASS_THRESHOLD_PERCENT, Topic,
+    TopicId, TopicMasteryStats, TrainingStats,
 };
 
 use rusqlite::{Connection, OptionalExtension, params};
@@ -262,8 +262,7 @@ impl TopicRepository for SqliteRepository {
 
             if answered > 0
                 && (best_answered_questions == 0
-                    || correct * best_answered_questions
-                        > best_correct_answers * answered)
+                    || correct * best_answered_questions > best_correct_answers * answered)
             {
                 best_correct_answers = correct;
                 best_answered_questions = answered;
@@ -271,8 +270,7 @@ impl TopicRepository for SqliteRepository {
 
             if attempts_to_pass.is_none()
                 && answered > 0
-                && (correct as f64 / answered as f64) * 100.0
-                    >= TOPIC_PASS_THRESHOLD_PERCENT
+                && (correct as f64 / answered as f64) * 100.0 >= TOPIC_PASS_THRESHOLD_PERCENT
             {
                 attempts_to_pass = Some(index + 1);
             }

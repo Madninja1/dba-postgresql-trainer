@@ -24,7 +24,6 @@ pub fn load_bundle(topic_json: &str, questions_json: &str) -> Result<ContentBund
     Ok(ContentBundle { topic, questions })
 }
 
-
 pub fn load_lab(lab_json: &str, lab_markdown: &str) -> Result<LabBundle, ContentError> {
     let lab: LabDocument = serde_json::from_str(lab_json).map_err(|source| ContentError::Json {
         document: "lab.json",
@@ -366,8 +365,8 @@ mod tests {
         }
         "#;
 
-        let bundle = load_lab(lab_json, "# Lab\n\nRun `systemctl status`.")
-            .expect("valid lab should load");
+        let bundle =
+            load_lab(lab_json, "# Lab\n\nRun `systemctl status`.").expect("valid lab should load");
 
         assert_eq!(bundle.lab.course, "linux-dba-1");
         assert_eq!(bundle.lab.lab_number, 23);
