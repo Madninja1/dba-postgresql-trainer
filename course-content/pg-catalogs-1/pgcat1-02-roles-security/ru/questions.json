@@ -1,0 +1,494 @@
+{
+  "schema_version": 1,
+  "topic": "pgcat1-roles-security",
+  "questions": [
+    {
+      "key": "pgcat1-roles-security-001",
+      "type": "single_choice",
+      "text": "Какой каталог содержит сведения об идентификаторах авторизации (ролях)?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_authid",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_auth_members",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_roles",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_policy",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_authid хранит роли. Понятия пользователей и групп в PostgreSQL реализованы через роли.",
+      "source": {
+        "key": "pgcat1-pg-authid-bb291d5a",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.8. pg_authid",
+        "locator": "Назначение каталога ролей",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-authid"
+      }
+    },
+    {
+      "key": "pgcat1-roles-security-002",
+      "type": "multiple_choice",
+      "text": "Почему обычным пользователям не следует давать прямой доступ к pg_authid и что предлагается вместо этого?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_authid содержит поле пароля",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для общего просмотра предназначено представление pg_roles",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "В pg_roles поле пароля очищено",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Нужно использовать pg_largeobject_metadata вместо pg_authid",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_authid содержит парольные данные, поэтому для общего использования документация указывает представление pg_roles, где пароль очищен.",
+      "source": {
+        "key": "pgcat1-pg-authid-7653de7a",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.8. pg_authid",
+        "locator": "Ограничение доступа и представление pg_roles",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-authid"
+      }
+    },
+    {
+      "key": "pgcat1-roles-security-003",
+      "type": "single_choice",
+      "text": "Какой флаг pg_authid показывает, может ли роль подключаться к серверу?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "rolcanlogin",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "rolinherit",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "rolcreatedb",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "rolreplication",
+          "correct": false
+        }
+      ],
+      "explanation": "rolcanlogin=true означает, что роль может использоваться как начальный идентификатор авторизации сеанса.",
+      "source": {
+        "key": "pgcat1-pg-authid-4e27504f",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.8. pg_authid",
+        "locator": "Столбец rolcanlogin",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-authid"
+      }
+    },
+    {
+      "key": "pgcat1-roles-security-004",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о pg_auth_members верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "roleid указывает роль, включающую другую",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "member указывает включаемую роль",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "admin_option разрешает member выдавать членство другим ролям",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "set_option определяет возможность SET ROLE",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Каталог хранит только пароли ролей",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_auth_members описывает членство между ролями и связанные опции admin/inherit/set.",
+      "source": {
+        "key": "pgcat1-pg-auth-members-cae075cd",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.9. pg_auth_members",
+        "locator": "roleid, member, admin_option, inherit_option, set_option",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-auth-members"
+      }
+    },
+    {
+      "key": "pgcat1-roles-security-005",
+      "type": "single_choice",
+      "text": "Для чего предназначен pg_db_role_setting?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для значений runtime-параметров по умолчанию для комбинаций ролей и баз",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для политик row-level security",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Для паролей ролей",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Для DEFAULT значений столбцов",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_db_role_setting хранит значения конфигурационных переменных по умолчанию для различных комбинаций роли и базы данных.",
+      "source": {
+        "key": "pgcat1-pg-db-role-setting-502ef4e5",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.16. pg_db_role_setting",
+        "locator": "Назначение каталога; setdatabase, setrole, setconfig",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-db-role-setting"
+      }
+    },
+    {
+      "key": "pgcat1-roles-security-006",
+      "type": "multiple_choice",
+      "text": "Что верно о pg_default_acl?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он хранит начальные права, назначаемые вновь создаваемым объектам",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "defaclrole связывает запись с ролью",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "defaclnamespace может быть 0 для глобальной записи",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Текущий pg_default_acl ретроактивно изменяет ACL всех ранее созданных объектов",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_default_acl влияет на права при создании объектов. Изменение default ACL не переписывает уже существующие ACL.",
+      "source": {
+        "key": "pgcat1-pg-default-acl-c7b8eda0",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.17. pg_default_acl",
+        "locator": "Назначение и область действия default ACL",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-default-acl"
+      }
+    },
+    {
+      "key": "pgcat1-roles-security-007",
+      "type": "single_choice",
+      "text": "Что означает privtype=`e` в pg_init_privs?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Начальные права были назначены в процессе CREATE EXTENSION",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Права заданы initdb",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Права принадлежат PUBLIC",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Объект не имеет начальных прав",
+          "correct": false
+        }
+      ],
+      "explanation": "В pg_init_privs `i` означает права от initdb, а `e` — права, записанные при CREATE EXTENSION.",
+      "source": {
+        "key": "pgcat1-pg-init-privs-687363f2",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.28. pg_init_privs",
+        "locator": "Столбец privtype",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-init-privs"
+      }
+    },
+    {
+      "key": "pgcat1-roles-security-008",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о pg_parameter_acl верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Каталог содержит параметры конфигурации, для которых назначены нестандартные права",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "parname — имя параметра",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "paracl — ACL параметра",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Каталог разделяется всеми базами кластера",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "В нём перечислены вообще все параметры конфигурации без исключения",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_parameter_acl содержит только параметры, для которых были назначены права одной или нескольким ролям; параметры со стандартными правами отсутствуют.",
+      "source": {
+        "key": "pgcat1-pg-parameter-acl-56ae9bd5",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.36. pg_parameter_acl",
+        "locator": "Назначение; parname; paracl; shared catalog",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-parameter-acl"
+      }
+    },
+    {
+      "key": "pgcat1-roles-security-009",
+      "type": "single_choice",
+      "text": "Где хранятся политики защиты строк (RLS)?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_policy",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_seclabel",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_constraint",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_authid",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_policy хранит политики защиты строк для таблиц.",
+      "source": {
+        "key": "pgcat1-pg-policy-ebbc6cb7",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.38. pg_policy",
+        "locator": "Назначение каталога RLS",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-policy"
+      }
+    },
+    {
+      "key": "pgcat1-roles-security-010",
+      "type": "multiple_choice",
+      "text": "Какие коды pg_policy.polcmd соответствуют командам?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`r` — SELECT",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`a` — INSERT",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`w` — UPDATE",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`d` — DELETE",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`*` — все команды",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "`p` — только PREPARE",
+          "correct": false
+        }
+      ],
+      "explanation": "polcmd кодирует команду, к которой применяется RLS policy: r/a/w/d/*.",
+      "source": {
+        "key": "pgcat1-pg-policy-25f88640",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.38. pg_policy",
+        "locator": "Столбец polcmd",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-policy"
+      }
+    },
+    {
+      "key": "pgcat1-roles-security-011",
+      "type": "single_choice",
+      "text": "Какое дополнительное условие нужно для применения записей pg_policy к таблице?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "У таблицы должно быть включено pg_class.relrowsecurity",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "У таблицы должен быть relkind=`i`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "В pg_database.datallowconn должно быть false",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Нужно наличие строки в pg_sequence",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация отмечает, что политики из pg_policy применяются только когда у таблицы установлено свойство pg_class.relrowsecurity.",
+      "source": {
+        "key": "pgcat1-pg-policy-b48d830f",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.38. pg_policy",
+        "locator": "Примечание о pg_class.relrowsecurity",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-policy"
+      }
+    },
+    {
+      "key": "pgcat1-roles-security-012",
+      "type": "multiple_choice",
+      "text": "Чем отличаются pg_seclabel и pg_shseclabel?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_seclabel хранит метки безопасности объектов базы данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_shseclabel хранит метки безопасности глобальных объектов кластера",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_shseclabel разделяется всеми базами кластера",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Оба каталога предназначены для хранения DEFAULT значений столбцов",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_seclabel относится к объектам конкретной базы, а pg_shseclabel — к глобальным объектам и является shared catalog.",
+      "source": {
+        "key": "pgcat1-pg-shseclabel-901b7938",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.50. pg_shseclabel",
+        "locator": "Назначение shared security labels",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-shseclabel"
+      }
+    },
+    {
+      "key": "pgcat1-roles-security-013",
+      "type": "single_choice",
+      "text": "Что хранит pg_seclabel?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Метки безопасности объектов базы данных вместе с provider и label",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Пароли ролей",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Параметры tablespace",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Состояние подписок",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_seclabel хранит security labels объектов базы; provider указывает поставщика метки, label — саму метку.",
+      "source": {
+        "key": "pgcat1-pg-seclabel-f52334cf",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.46. pg_seclabel",
+        "locator": "Назначение; provider; label",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-seclabel"
+      }
+    }
+  ]
+}

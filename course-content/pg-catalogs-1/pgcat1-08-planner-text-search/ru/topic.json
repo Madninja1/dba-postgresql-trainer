@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "pg-catalogs-1",
+  "slug": "pgcat1-planner-text-search",
+  "notes_part": 53,
+  "topic_number": 8,
+  "title": "Статистика планировщика и полнотекстовый поиск",
+  "description": "pg_statistic, pg_statistic_ext, pg_statistic_ext_data и каталоги pg_ts_*",
+  "sort_order": 80
+}

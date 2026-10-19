@@ -1,0 +1,550 @@
+{
+  "schema_version": 1,
+  "topic": "pgcat1-core-relations-types",
+  "questions": [
+    {
+      "key": "pgcat1-core-relations-types-001",
+      "type": "single_choice",
+      "text": "Что представляют собой системные каталоги PostgreSQL согласно обзору главы 53?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Обычные таблицы, в которых PostgreSQL хранит метаданные и служебные сведения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только виртуальные представления, которые никогда не хранятся на диске",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Набор файлов конфигурации postgresql.conf",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Отдельный внешний сервис метаданных",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава 53 описывает системные каталоги как обычные таблицы PostgreSQL. При этом вручную модифицировать их обычно не следует: для этого предусмотрены SQL-команды.",
+      "source": {
+        "key": "pgcat1-overview-fac038e5",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.1. Обзор",
+        "locator": "Обзор системных каталогов и рекомендация не изменять их вручную",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalogs-overview"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-002",
+      "type": "multiple_choice",
+      "text": "Какие утверждения об области действия системных каталогов верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Большинство каталогов копируются из базы-шаблона и принадлежат конкретной базе",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Некоторые каталоги физически разделяются всеми базами кластера",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_database существует в единственном экземпляре на кластер",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Каждый системный каталог обязательно имеет отдельную копию в каждой базе",
+          "correct": false
+        }
+      ],
+      "explanation": "Большинство каталогов относятся к конкретной базе, но часть каталогов разделяется всем кластером; pg_database — один из таких каталогов.",
+      "source": {
+        "key": "pgcat1-overview-13f47aa0",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.1. Обзор",
+        "locator": "Обзор: локальные для базы и разделяемые каталоги",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalogs-overview"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-003",
+      "type": "single_choice",
+      "text": "Какой каталог описывает таблицы, индексы, последовательности, представления и другие отношения?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_class",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_attribute",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_namespace",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_database",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_class содержит строки для отношений разных видов: таблиц, индексов, последовательностей, представлений, materialized views, TOAST-таблиц и других объектов.",
+      "source": {
+        "key": "pgcat1-pg-class-12682512",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.11. pg_class",
+        "locator": "Назначение каталога; relkind",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-class"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-004",
+      "type": "multiple_choice",
+      "text": "Какие соответствия значений pg_class.relkind верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`r` — обычная таблица",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`i` — индекс",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`v` — представление",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`m` — материализованное представление",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`p` — секционированная таблица",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "`x` — внешний сервер",
+          "correct": false
+        }
+      ],
+      "explanation": "relkind кодирует вид отношения. В материале перечислены r, i, S, t, v, m, c, f, p и I; `x` как внешний сервер там не используется.",
+      "source": {
+        "key": "pgcat1-pg-class-c9161989",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.11. pg_class",
+        "locator": "Столбец relkind",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-class"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-005",
+      "type": "single_choice",
+      "text": "Что означает pg_class.reltuples?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Примерную оценку числа актуальных строк, используемую планировщиком",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Точное число строк, пересчитываемое при каждом SELECT",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Число пользовательских столбцов",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Количество страниц, полностью видимых в visibility map",
+          "correct": false
+        }
+      ],
+      "explanation": "reltuples — приблизительная оценка количества актуальных строк. Она обновляется VACUUM, ANALYZE и некоторыми DDL-командами; -1 означает неизвестное количество.",
+      "source": {
+        "key": "pgcat1-pg-class-2cbb240f",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.11. pg_class",
+        "locator": "Столбец reltuples",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-class"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-006",
+      "type": "multiple_choice",
+      "text": "Что верно о pg_attribute?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для каждого столбца каждого отношения есть строка в pg_attribute",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "attname хранит имя столбца",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "attnum обычных столбцов начинается с 1",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Системные столбцы обычно имеют отрицательные attnum",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Удалённый столбец немедленно исчезает из pg_attribute без следа",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_attribute описывает атрибуты/столбцы. Удалённые столбцы могут сохраняться как записи с attisdropped=true.",
+      "source": {
+        "key": "pgcat1-pg-attribute-db5b35f0",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.7. pg_attribute",
+        "locator": "Назначение; attname; attnum; attisdropped",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-attribute"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-007",
+      "type": "single_choice",
+      "text": "Где хранится само выражение DEFAULT для столбца, если оно явно задано?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_attrdef",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_attribute.attnotnull",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_class.reloptions",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_type.typdefault только для любых столбцов",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_attribute.atthasdef лишь указывает на наличие default/generated expression; само выражение для столбца хранится в pg_attrdef.",
+      "source": {
+        "key": "pgcat1-pg-attrdef-5b61cfe7",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.6. pg_attrdef",
+        "locator": "Назначение pg_attrdef; adbin",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-attrdef"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-008",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о pg_namespace верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Каталог хранит пространства имён, на которых основаны SQL-схемы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "nspname — имя пространства имён",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "nspowner ссылается на pg_authid.oid",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "nspacl хранит права доступа",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Каждая строка pg_namespace описывает отдельную базу данных",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_namespace описывает пространства имён/схемы: имя, владельца и ACL.",
+      "source": {
+        "key": "pgcat1-pg-namespace-16531017",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.32. pg_namespace",
+        "locator": "Назначение; nspname; nspowner; nspacl",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-namespace"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-009",
+      "type": "single_choice",
+      "text": "Какое значение pg_type.typtype означает домен?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "d",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "c",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "e",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "r",
+          "correct": false
+        }
+      ],
+      "explanation": "В pg_type.typtype: b — base, c — composite, d — domain, e — enum, p — pseudo-type, r — range, m — multirange.",
+      "source": {
+        "key": "pgcat1-pg-type-27f4187e",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.64. pg_type",
+        "locator": "Столбец typtype",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-type"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-010",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о pg_database верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "datname хранит имя базы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "datallowconn=false запрещает подключения к базе",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "datconnlimit=-1 означает отсутствие ограничения подключений",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_database разделяется всеми базами кластера",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Каждая база имеет собственную отдельную копию pg_database",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_database — разделяемый каталог уровня кластера. Он содержит имя базы, возможность подключения и лимит соединений среди прочих свойств.",
+      "source": {
+        "key": "pgcat1-pg-database-bb4d6051",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.15. pg_database",
+        "locator": "Назначение; datname; datallowconn; datconnlimit",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-database"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-011",
+      "type": "single_choice",
+      "text": "Какой каталог содержит параметры последовательностей, такие как старт, шаг, минимум, максимум, cache и cycle?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_sequence",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_class",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_enum",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_attribute",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_sequence хранит seqstart, seqincrement, seqmax, seqmin, seqcache и seqcycle; имя и схема последовательности при этом находятся в pg_class.",
+      "source": {
+        "key": "pgcat1-pg-sequence-9f8a87bd",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.47. pg_sequence",
+        "locator": "Назначение и параметры последовательности",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-sequence"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-012",
+      "type": "multiple_choice",
+      "text": "Какие утверждения верны о pg_enum и pg_collation?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_enum.enumlabel хранит текстовую метку значения enum",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_enum.enumsortorder задаёт порядок значения внутри перечисления",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_collation.collprovider может указывать libc или ICU",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_collation.collencoding=-1 означает применимость к любой кодировке",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "pg_enum хранит определения ролей",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_enum описывает значения перечислений и их порядок, а pg_collation — доступные правила сортировки и их провайдер/кодировку.",
+      "source": {
+        "key": "pgcat1-pg-enum-572db962",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.20. pg_enum",
+        "locator": "enumlabel и enumsortorder",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-enum"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-013",
+      "type": "single_choice",
+      "text": "Какой каталог хранит доступные табличные пространства и разделяется всеми базами кластера?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_tablespace",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_database",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_class",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_namespace",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_tablespace хранит доступные tablespaces; каталог является общим для всего кластера.",
+      "source": {
+        "key": "pgcat1-pg-tablespace-0355a567",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.56. pg_tablespace",
+        "locator": "Назначение pg_tablespace; shared catalog",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-tablespace"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-014",
+      "type": "multiple_choice",
+      "text": "Что верно о pg_collation?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "collname — имя правила сортировки",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "collprovider=`c` означает libc",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "collprovider=`i` означает ICU",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "collencoding=-1 означает применимость к любой кодировке",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "collversion хранит определяемую провайдером версию collation",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "Все перечисленные свойства хранятся только в pg_database",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_collation описывает правила сортировки, их provider, encoding и версию.",
+      "source": {
+        "key": "pgcat1-pg-collation-274d51c2",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.12. pg_collation",
+        "locator": "collname, collprovider, collencoding, collversion",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-collation"
+      }
+    }
+  ]
+}

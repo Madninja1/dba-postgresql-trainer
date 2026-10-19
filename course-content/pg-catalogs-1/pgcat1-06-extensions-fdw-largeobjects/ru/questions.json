@@ -1,0 +1,458 @@
+{
+  "schema_version": 1,
+  "topic": "pgcat1-extensions-fdw-largeobjects",
+  "questions": [
+    {
+      "key": "pgcat1-extensions-fdw-largeobjects-001",
+      "type": "single_choice",
+      "text": "Какой каталог хранит сведения об установленных расширениях?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_extension",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_foreign_data_wrapper",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_proc",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_event_trigger",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_extension содержит установленные extensions и их свойства.",
+      "source": {
+        "key": "pgcat1-pg-extension-2b2a76f0",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.22. pg_extension",
+        "locator": "Назначение pg_extension",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-extension"
+      }
+    },
+    {
+      "key": "pgcat1-extensions-fdw-largeobjects-002",
+      "type": "multiple_choice",
+      "text": "Какие поля pg_extension описаны в материале?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "extname — имя расширения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "extowner — владелец",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "extnamespace — схема, содержащая все или большинство экспортируемых объектов",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "extrelocatable — можно ли переместить расширение",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "extversion — версия",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "extnamespace означает, что имя расширения всегда дополняется схемой",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_extension хранит имя, владельца, namespace, relocatability, version и config-related fields.",
+      "source": {
+        "key": "pgcat1-pg-extension-e3e5acda",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.22. pg_extension",
+        "locator": "extname, extowner, extnamespace, extrelocatable, extversion",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-extension"
+      }
+    },
+    {
+      "key": "pgcat1-extensions-fdw-largeobjects-003",
+      "type": "single_choice",
+      "text": "Что важно понимать про pg_extension.extnamespace?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он не означает, что само расширение принадлежит схеме; имена расширений не schema-qualified",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он всегда равен OID базы данных",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Он содержит пароль расширения",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Он является partition key",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация отдельно отмечает: extnamespace показывает место большинства/всех schema-bound объектов, но extension name не дополняется схемой.",
+      "source": {
+        "key": "pgcat1-pg-extension-dc557288",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.22. pg_extension",
+        "locator": "Примечание о extnamespace",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-extension"
+      }
+    },
+    {
+      "key": "pgcat1-extensions-fdw-largeobjects-004",
+      "type": "multiple_choice",
+      "text": "Как устроена цепочка Foreign Data Wrapper по каталогам?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_foreign_data_wrapper описывает FDW-механизм",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_foreign_server описывает внешний сервер и ссылается на FDW",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_foreign_table дополняет запись foreign table из pg_class",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_user_mapping связывает локальную роль с внешним сервером",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "pg_index хранит пароли FDW",
+          "correct": false
+        }
+      ],
+      "explanation": "FDW-объекты распределены по каталогам wrapper → server → foreign table/user mapping.",
+      "source": {
+        "key": "pgcat1-pg-foreign-table-1a849a97",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.25. pg_foreign_table",
+        "locator": "Связь foreign table с pg_class и foreign server",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-foreign-table"
+      }
+    },
+    {
+      "key": "pgcat1-extensions-fdw-largeobjects-005",
+      "type": "single_choice",
+      "text": "Какое поле pg_foreign_server указывает используемую обёртку сторонних данных?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "srvfdw",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "srvowner",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "srvname",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "srvoptions",
+          "correct": false
+        }
+      ],
+      "explanation": "srvfdw — OID pg_foreign_data_wrapper для данного сервера.",
+      "source": {
+        "key": "pgcat1-pg-foreign-server-ab998c24",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.24. pg_foreign_server",
+        "locator": "Столбец srvfdw",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-foreign-server"
+      }
+    },
+    {
+      "key": "pgcat1-extensions-fdw-largeobjects-006",
+      "type": "multiple_choice",
+      "text": "Какие поля pg_foreign_table верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "ftrelid — OID записи pg_class для foreign table",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "ftserver — OID foreign server",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "ftoptions — параметры foreign table",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "ftrelid — PID backend",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_foreign_table хранит специфические свойства foreign table, дополняя основную запись в pg_class.",
+      "source": {
+        "key": "pgcat1-pg-foreign-table-7409b402",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.25. pg_foreign_table",
+        "locator": "ftrelid, ftserver, ftoptions",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-foreign-table"
+      }
+    },
+    {
+      "key": "pgcat1-extensions-fdw-largeobjects-007",
+      "type": "single_choice",
+      "text": "Что хранит pg_user_mapping?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Сопоставления локальных пользователей/ролей с удалёнными через foreign server",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Членство ролей PostgreSQL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только роли с LOGIN",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Значения DEFAULT столбцов",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_user_mapping содержит local-to-remote user mappings для foreign servers.",
+      "source": {
+        "key": "pgcat1-pg-user-mapping-9818f4d1",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.65. pg_user_mapping",
+        "locator": "Назначение pg_user_mapping",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-user-mapping"
+      }
+    },
+    {
+      "key": "pgcat1-extensions-fdw-largeobjects-008",
+      "type": "multiple_choice",
+      "text": "Какие ограничения доступа к pg_user_mapping указаны в материале?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Обычные пользователи не имеют прямого доступа к каталогу",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для обычных пользователей предназначено представление pg_user_mappings",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "umserver ссылается на pg_foreign_server",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Каталог открыт всем, включая секретные options без ограничений",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация направляет обычных пользователей к view pg_user_mappings.",
+      "source": {
+        "key": "pgcat1-pg-user-mapping-5ea7e8bc",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.65. pg_user_mapping",
+        "locator": "Ограничение доступа и pg_user_mappings",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-user-mapping"
+      }
+    },
+    {
+      "key": "pgcat1-extensions-fdw-largeobjects-009",
+      "type": "single_choice",
+      "text": "Где хранятся собственно данные больших объектов?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_largeobject",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_largeobject_metadata",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_class",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_type",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_largeobject хранит страницы данных large objects; metadata вынесены в отдельный каталог.",
+      "source": {
+        "key": "pgcat1-pg-largeobject-e3dda8cb",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.30. pg_largeobject",
+        "locator": "Назначение pg_largeobject",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-largeobject"
+      }
+    },
+    {
+      "key": "pgcat1-extensions-fdw-largeobjects-010",
+      "type": "multiple_choice",
+      "text": "Какие поля pg_largeobject описывают страницу большого объекта?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "loid — идентификатор large object",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pageno — номер страницы, начиная с 0",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "data — данные bytea",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "lomowner — владелец large object в этой же таблице",
+          "correct": false
+        }
+      ],
+      "explanation": "Строка pg_largeobject представляет страницу large object через loid, pageno и data.",
+      "source": {
+        "key": "pgcat1-pg-largeobject-b25149af",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.30. pg_largeobject",
+        "locator": "loid, pageno, data",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-largeobject"
+      }
+    },
+    {
+      "key": "pgcat1-extensions-fdw-largeobjects-011",
+      "type": "single_choice",
+      "text": "Где хранится владелец большого объекта и его ACL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_largeobject_metadata",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_largeobject",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_authid",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_description",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_largeobject_metadata содержит lomowner и lomacl; собственные bytes находятся в pg_largeobject.",
+      "source": {
+        "key": "pgcat1-pg-largeobject-metadata-774fa011",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.31. pg_largeobject_metadata",
+        "locator": "lomowner и lomacl",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-largeobject-metadata"
+      }
+    },
+    {
+      "key": "pgcat1-extensions-fdw-largeobjects-012",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о FDW options соответствуют материалу?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_foreign_data_wrapper.fdwoptions хранит параметры wrapper",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_foreign_server.srvoptions хранит параметры server",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_foreign_table.ftoptions хранит параметры foreign table",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_user_mapping.umoptions хранит параметры user mapping",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Все параметры FDW хранятся только в postgresql.conf",
+          "correct": false
+        }
+      ],
+      "explanation": "Каждый уровень FDW имеет собственный массив options в соответствующем каталоге.",
+      "source": {
+        "key": "pgcat1-pg-foreign-data-wrapper-1f761cc0",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.23. pg_foreign_data_wrapper",
+        "locator": "fdwoptions и структура FDW",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-foreign-data-wrapper"
+      }
+    }
+  ]
+}

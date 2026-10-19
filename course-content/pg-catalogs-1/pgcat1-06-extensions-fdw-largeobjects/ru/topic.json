@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "pg-catalogs-1",
+  "slug": "pgcat1-extensions-fdw-largeobjects",
+  "notes_part": 53,
+  "topic_number": 6,
+  "title": "Расширения, FDW и большие объекты",
+  "description": "pg_extension, pg_foreign_data_wrapper, pg_foreign_server, pg_foreign_table, pg_user_mapping, pg_largeobject и pg_largeobject_metadata",
+  "sort_order": 60
+}

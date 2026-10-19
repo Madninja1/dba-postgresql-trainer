@@ -1,0 +1,499 @@
+{
+  "schema_version": 1,
+  "topic": "pgcat1-indexes-access-methods",
+  "questions": [
+    {
+      "key": "pgcat1-indexes-access-methods-001",
+      "type": "single_choice",
+      "text": "Что описывает pg_am?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Методы доступа отношений",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Параметры autovacuum",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Членство ролей",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Состояния подписок",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_am содержит по строке на метод доступа, поддерживаемый системой; в текущем описании методы задаются для таблиц и индексов.",
+      "source": {
+        "key": "pgcat1-pg-am-8663c1f8",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.3. pg_am",
+        "locator": "Назначение pg_am",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-am"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-002",
+      "type": "multiple_choice",
+      "text": "Какие значения pg_am.amtype верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`t` — табличный метод доступа",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`i` — индексный метод доступа",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`v` — view access method",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`r` — replication method",
+          "correct": false
+        }
+      ],
+      "explanation": "amtype различает table (`t`) и index (`i`) access methods.",
+      "source": {
+        "key": "pgcat1-pg-am-ad455b94",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.3. pg_am",
+        "locator": "Столбец amtype",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-am"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-003",
+      "type": "single_choice",
+      "text": "Что описывает pg_amop?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Операторы, являющиеся членами семейств операторов методов доступа",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Опорные функции семейств операторов",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только обычные SQL-функции",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только physical storage tablespaces",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_amop хранит операторы семейств методов доступа; оператор может быть поисковым или упорядочивающим.",
+      "source": {
+        "key": "pgcat1-pg-amop-d57ca57c",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.4. pg_amop",
+        "locator": "Назначение pg_amop",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-amop"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-004",
+      "type": "multiple_choice",
+      "text": "Какие значения pg_amop.amoppurpose указаны в материале?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`s` — search",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`o` — ordering",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`a` — aggregate",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`t` — trigger",
+          "correct": false
+        }
+      ],
+      "explanation": "amoppurpose использует `s` для поиска и `o` для упорядочивания.",
+      "source": {
+        "key": "pgcat1-pg-amop-fd14ed32",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.4. pg_amop",
+        "locator": "Столбец amoppurpose",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-amop"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-005",
+      "type": "single_choice",
+      "text": "Какой каталог хранит опорные функции семейств операторов методов доступа?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_amproc",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_amop",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_proc",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_opclass",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_amproc описывает support functions, принадлежащие семействам операторов методов доступа.",
+      "source": {
+        "key": "pgcat1-pg-amproc-7243b2b8",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.5. pg_amproc",
+        "locator": "Назначение pg_amproc",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-amproc"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-006",
+      "type": "multiple_choice",
+      "text": "Что верно о pg_opclass и pg_opfamily?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_opclass связывает индексируемый тип данных с методом доступа и семейством операторов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_opfamily представляет семейство совместимых операторов и процедур",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "opcmethod ссылается на pg_am",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "opcfamily ссылается на pg_opfamily",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "pg_opfamily хранит только базы данных кластера",
+          "correct": false
+        }
+      ],
+      "explanation": "Operator class задаёт применение семейства для типа/метода доступа, а operator family объединяет совместимые операторы и support procedures.",
+      "source": {
+        "key": "pgcat1-pg-opclass-4d390ff5",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.33. pg_opclass",
+        "locator": "Назначение pg_opclass и ссылки opcmethod/opcfamily",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-opclass"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-007",
+      "type": "single_choice",
+      "text": "В каком каталоге хранится часть информации об индексах, дополняющая pg_class?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_index",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_am",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_opclass",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_partitioned_table",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_index содержит специфические свойства индекса, тогда как общая информация об отношении находится в pg_class.",
+      "source": {
+        "key": "pgcat1-pg-index-2e33066d",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.26. pg_index",
+        "locator": "Назначение pg_index",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-index"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-008",
+      "type": "multiple_choice",
+      "text": "Какие флаги pg_index характеризуют состояние или назначение индекса?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "indisunique — уникальный индекс",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "indisprimary — индекс представляет PRIMARY KEY",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "indisvalid — индекс можно применять в запросах",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "indisready — индекс готов к добавлению данных",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "indislive=false — индекс находится в процессе удаления",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "indisready=false означает, что индекс можно безопасно применять в запросах",
+          "correct": false
+        }
+      ],
+      "explanation": "Эти поля позволяют различать уникальность/primary key и фазы готовности, валидности и удаления индекса.",
+      "source": {
+        "key": "pgcat1-pg-index-d3a24ef8",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.26. pg_index",
+        "locator": "indisunique, indisprimary, indisvalid, indisready, indislive",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-index"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-009",
+      "type": "single_choice",
+      "text": "Что означает ноль в элементе pg_index.indkey?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Соответствующий атрибут индекса задаётся выражением, а не простой ссылкой на столбец",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Это всегда первый столбец таблицы",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Индекс полностью невалиден",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Столбец имеет тип integer",
+          "correct": false
+        }
+      ],
+      "explanation": "В indkey обычные номера соответствуют pg_attribute.attnum, а 0 указывает на expression index attribute.",
+      "source": {
+        "key": "pgcat1-pg-index-0effb7cf",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.26. pg_index",
+        "locator": "Столбец indkey",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-index"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-010",
+      "type": "multiple_choice",
+      "text": "Что хранится в pg_partitioned_table?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Информация о ключах секционирования",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "partstrat: h/list/range в кодах h/l/r",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "partnatts — число атрибутов ключа",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "partattrs — номера столбцов ключа или 0 для выражения",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Состояния logical replication subscriptions",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_partitioned_table описывает стратегию и состав partition key.",
+      "source": {
+        "key": "pgcat1-pg-partitioned-table-ab575ac2",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.37. pg_partitioned_table",
+        "locator": "partstrat, partnatts, partattrs",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-partitioned-table"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-011",
+      "type": "single_choice",
+      "text": "Какой каталог хранит непосредственные связи родитель—потомок для наследования таблиц и индексов?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_inherits",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_depend",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_partitioned_table",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_class",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_inherits содержит по записи на каждую непосредственную связь parent-child.",
+      "source": {
+        "key": "pgcat1-pg-inherits-de96e976",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.27. pg_inherits",
+        "locator": "Назначение pg_inherits",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-inherits"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-012",
+      "type": "multiple_choice",
+      "text": "Какие поля pg_inherits верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "inhrelid — OID дочерней таблицы/индекса",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "inhparent — OID родительской таблицы/индекса",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "inhseqno задаёт порядок наследованных столбцов при нескольких родителях",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "inhdetachpending=true для секции, которая сейчас отсоединяется",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "inhparent хранит имя базы данных",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_inherits хранит child, parent, sequence number и флаг pending detach.",
+      "source": {
+        "key": "pgcat1-pg-inherits-bf4d85c4",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.27. pg_inherits",
+        "locator": "inhrelid, inhparent, inhseqno, inhdetachpending",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-inherits"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-013",
+      "type": "single_choice",
+      "text": "Что представляет pg_opfamily?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Семейство совместимых операторов и support procedures для метода доступа",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Список ролей, которым разрешён CREATE INDEX",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Таблицу статистики planner",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Состояние partition detach",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_opfamily определяет operator families; основная информация семейства также находится в связанных строках pg_amop, pg_amproc и pg_opclass.",
+      "source": {
+        "key": "pgcat1-pg-opfamily-b530768e",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.35. pg_opfamily",
+        "locator": "Назначение и связь с pg_amop/pg_amproc/pg_opclass",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-opfamily"
+      }
+    }
+  ]
+}

@@ -1,0 +1,499 @@
+{
+  "schema_version": 1,
+  "topic": "pgcat1-functions-operators-language",
+  "questions": [
+    {
+      "key": "pgcat1-functions-operators-language-001",
+      "type": "single_choice",
+      "text": "Как соотносятся pg_aggregate и pg_proc для агрегатной функции?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Запись pg_aggregate дополняет соответствующую запись pg_proc",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Агрегаты существуют только в pg_aggregate и не имеют pg_proc",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_proc хранит только триггеры",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_aggregate хранит таблицы, а pg_proc индексы",
+          "correct": false
+        }
+      ],
+      "explanation": "Для агрегата pg_proc хранит общие свойства подпрограммы, а pg_aggregate — специфические свойства агрегирования.",
+      "source": {
+        "key": "pgcat1-pg-aggregate-3d25f932",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.2. pg_aggregate",
+        "locator": "Связь записей pg_aggregate с pg_proc",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-aggregate"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-002",
+      "type": "multiple_choice",
+      "text": "Какие значения pg_aggregate.aggkind указаны в материале?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`n` — normal",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`o` — ordered-set",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`h` — hypothetical-set",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`w` — window-only",
+          "correct": false
+        }
+      ],
+      "explanation": "aggkind различает обычный, ordered-set и hypothetical-set aggregate.",
+      "source": {
+        "key": "pgcat1-pg-aggregate-c2a29d61",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.2. pg_aggregate",
+        "locator": "Столбец aggkind",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-aggregate"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-003",
+      "type": "single_choice",
+      "text": "Что хранит pg_proc?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Функции, процедуры, агрегатные и оконные функции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только роли",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только индексы",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только публикации",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_proc описывает подпрограммы: functions, procedures, aggregate и window functions.",
+      "source": {
+        "key": "pgcat1-pg-proc-6955bbc4",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.39. pg_proc",
+        "locator": "Назначение каталога pg_proc",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-proc"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-004",
+      "type": "multiple_choice",
+      "text": "Какие значения pg_proc.prokind верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`f` — функция",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`p` — процедура",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`a` — агрегатная функция",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`w` — оконная функция",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`t` — таблица",
+          "correct": false
+        }
+      ],
+      "explanation": "prokind кодирует четыре вида подпрограмм, перечисленные в документации.",
+      "source": {
+        "key": "pgcat1-pg-proc-9f16b1fa",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.39. pg_proc",
+        "locator": "Столбец prokind",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-proc"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-005",
+      "type": "single_choice",
+      "text": "Какое значение pg_proc.provolatile означает immutable-функцию?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "i",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "s",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "v",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "p",
+          "correct": false
+        }
+      ],
+      "explanation": "provolatile: i — immutable, s — stable, v — volatile.",
+      "source": {
+        "key": "pgcat1-pg-proc-200f559b",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.39. pg_proc",
+        "locator": "Столбец provolatile",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-proc"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-006",
+      "type": "multiple_choice",
+      "text": "Какие значения pg_proc.proparallel описаны в материале?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`s` — безопасно выполнять в parallel mode",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`r` — только в ведущем процессе parallel group",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`u` — unsafe для parallel mode",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`i` — immutable parallel mode",
+          "correct": false
+        }
+      ],
+      "explanation": "proparallel различает safe, restricted и unsafe execution in parallel mode.",
+      "source": {
+        "key": "pgcat1-pg-proc-a37bd549",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.39. pg_proc",
+        "locator": "Столбец proparallel",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-proc"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-007",
+      "type": "single_choice",
+      "text": "Какой каталог хранит определения SQL-операторов?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_operator",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_opclass",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_amop",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_cast",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_operator содержит имя, типы операндов/результата и функцию реализации оператора.",
+      "source": {
+        "key": "pgcat1-pg-operator-16060894",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.34. pg_operator",
+        "locator": "Назначение pg_operator",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-operator"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-008",
+      "type": "multiple_choice",
+      "text": "Что верно о pg_cast?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "castsource — исходный тип",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "casttarget — целевой тип",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "castcontext=`e` означает только explicit cast",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "castcontext=`i` разрешает implicit cast",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "castmethod=`f` означает использование функции castfunc",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "castmethod=`b` означает обязательный вызов функции castfunc",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_cast описывает источник/назначение, допустимый контекст приведения и механизм выполнения.",
+      "source": {
+        "key": "pgcat1-pg-cast-129c5f1e",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.10. pg_cast",
+        "locator": "castsource, casttarget, castcontext, castmethod",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-cast"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-009",
+      "type": "single_choice",
+      "text": "Какой каталог регистрирует языки, на которых можно писать функции и процедуры?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_language",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_proc",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_transform",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_conversion",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_language содержит зарегистрированные procedural languages и связанные handler/validator functions.",
+      "source": {
+        "key": "pgcat1-pg-language-2f8b50ca",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.29. pg_language",
+        "locator": "Назначение pg_language",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-language"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-010",
+      "type": "multiple_choice",
+      "text": "Что означает pg_language.lanpltrusted?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "true означает доверенный язык",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "На доверенном языке функции могут создавать не только суперпользователи",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Недоверенные языки доступны для создания функций только суперпользователям",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Поле определяет кодировку базы",
+          "correct": false
+        }
+      ],
+      "explanation": "lanpltrusted показывает доверенность языка; материал отмечает ограничение на создание функций в недоверенных языках.",
+      "source": {
+        "key": "pgcat1-pg-language-787a22f2",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.29. pg_language",
+        "locator": "Столбец lanpltrusted",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-language"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-011",
+      "type": "single_choice",
+      "text": "Для чего предназначен pg_transform?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для адаптации типов данных при обмене с процедурными языками",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для хранения ролей",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Для хранения partition bounds",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Для statistics targets",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_transform описывает преобразования типов между SQL и процедурными языками.",
+      "source": {
+        "key": "pgcat1-pg-transform-d7ccba2e",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.57. pg_transform",
+        "locator": "Назначение pg_transform",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-transform"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-012",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о pg_conversion и pg_range верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_conversion описывает функции преобразования кодировок",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_conversion.condefault показывает преобразование по умолчанию",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_range.rngsubtype указывает тип элемента диапазона",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_range.rngcanonical может ссылаться на функцию канонизации",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "pg_range хранит роли репликации",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_conversion относится к перекодировкам, а pg_range дополняет pg_type информацией о range types.",
+      "source": {
+        "key": "pgcat1-pg-range-56022770",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.43. pg_range",
+        "locator": "Назначение pg_range; rngsubtype; rngcanonical",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-range"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-013",
+      "type": "multiple_choice",
+      "text": "Какие поля pg_conversion описывают перекодировку?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "conforencoding — ID исходной кодировки",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "contoencoding — ID целевой кодировки",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "conproc — функция преобразования",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "condefault=true — преобразование по умолчанию",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "conname — PID backend",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_conversion хранит имя и функцию преобразования между исходной и целевой кодировками, а также признак default conversion.",
+      "source": {
+        "key": "pgcat1-pg-conversion-2f4b2f7d",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.14. pg_conversion",
+        "locator": "conforencoding, contoencoding, conproc, condefault",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-conversion"
+      }
+    }
+  ]
+}

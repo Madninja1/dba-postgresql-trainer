@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "pg-catalogs-1",
+  "slug": "pgcat1-roles-security",
+  "notes_part": 53,
+  "topic_number": 2,
+  "title": "Роли, права и безопасность",
+  "description": "pg_authid, pg_auth_members, pg_db_role_setting, pg_default_acl, pg_init_privs, pg_parameter_acl, pg_policy и security labels",
+  "sort_order": 20
+}

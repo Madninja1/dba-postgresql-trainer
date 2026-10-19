@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "pg-catalogs-1",
+  "slug": "pgcat1-indexes-access-methods",
+  "notes_part": 53,
+  "topic_number": 4,
+  "title": "Индексы и методы доступа",
+  "description": "pg_am, pg_amop, pg_amproc, pg_opclass, pg_opfamily, pg_index, pg_partitioned_table и pg_inherits",
+  "sort_order": 40
+}

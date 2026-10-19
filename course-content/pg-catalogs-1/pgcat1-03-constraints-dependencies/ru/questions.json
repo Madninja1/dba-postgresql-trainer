@@ -1,0 +1,519 @@
+{
+  "schema_version": 1,
+  "topic": "pgcat1-constraints-dependencies",
+  "questions": [
+    {
+      "key": "pgcat1-constraints-dependencies-001",
+      "type": "single_choice",
+      "text": "Где PostgreSQL хранит CHECK, UNIQUE, PRIMARY KEY, FOREIGN KEY и EXCLUDE constraints?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_constraint",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_attribute",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_depend",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_trigger",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_constraint содержит основные табличные и доменные ограничения, включая CHECK, UNIQUE, PRIMARY KEY, FOREIGN KEY и EXCLUDE.",
+      "source": {
+        "key": "pgcat1-pg-constraint-3f971b66",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.13. pg_constraint",
+        "locator": "Назначение каталога",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-constraint"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-002",
+      "type": "multiple_choice",
+      "text": "Какие соответствия pg_constraint.contype верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`c` — CHECK",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`f` — FOREIGN KEY",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`p` — PRIMARY KEY",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`u` — UNIQUE",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`x` — EXCLUDE",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "`n` — NOT NULL",
+          "correct": false
+        }
+      ],
+      "explanation": "NOT NULL не представлен как contype в pg_constraint: это свойство хранится в pg_attribute.attnotnull.",
+      "source": {
+        "key": "pgcat1-pg-constraint-5fa69194",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.13. pg_constraint",
+        "locator": "Столбец contype; примечание о NOT NULL",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-constraint"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-003",
+      "type": "single_choice",
+      "text": "Где хранится ограничение NOT NULL для столбца?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В pg_attribute.attnotnull",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "В pg_constraint с contype=`n`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "В pg_index.indisprimary",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "В pg_type.typnotnull для всех табличных столбцов",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация pg_constraint прямо отмечает, что ограничения NULL представлены не здесь, а в pg_attribute.",
+      "source": {
+        "key": "pgcat1-pg-constraint-d66f8c58",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.13. pg_constraint",
+        "locator": "NOT NULL хранится в pg_attribute",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-constraint"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-004",
+      "type": "multiple_choice",
+      "text": "Какие поля pg_constraint используются для внешнего ключа?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "conrelid — таблица с ограничением",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "confrelid — таблица, на которую ссылается FK",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "conkey — столбцы ограничения",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "confkey — столбцы, на которые ссылается FK",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "prosrc — тело функции FK",
+          "correct": false
+        }
+      ],
+      "explanation": "Для FK pg_constraint хранит обе стороны связи и номера соответствующих столбцов.",
+      "source": {
+        "key": "pgcat1-pg-constraint-72c97552",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.13. pg_constraint",
+        "locator": "conrelid, confrelid, conkey, confkey",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-constraint"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-005",
+      "type": "single_choice",
+      "text": "Какой каталог записывает зависимости между объектами внутри базы данных?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_depend",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_shdepend",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_description",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_rewrite",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_depend хранит зависимости объектов базы и позволяет DROP решать, что удалять с CASCADE и когда запрещать удаление при RESTRICT.",
+      "source": {
+        "key": "pgcat1-pg-depend-7bf9dd0f",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.18. pg_depend",
+        "locator": "Назначение каталога зависимостей",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-depend"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-006",
+      "type": "multiple_choice",
+      "text": "Какие типы зависимостей pg_depend описаны в материале?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`n` — NORMAL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`a` — AUTO",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`i` — INTERNAL",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`e` — EXTENSION",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`x` — AUTO_EXTENSION",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "`z` — ZOMBIE",
+          "correct": false
+        }
+      ],
+      "explanation": "В тексте перечислены NORMAL, AUTO, INTERNAL, PARTITION_PRI/SEC, EXTENSION и AUTO_EXTENSION; `z` там не используется.",
+      "source": {
+        "key": "pgcat1-pg-depend-5023aba1",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.18. pg_depend",
+        "locator": "Поле deptype и виды зависимостей",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-depend"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-007",
+      "type": "single_choice",
+      "text": "Какой каталог аналогичен pg_depend, но описывает зависимости от разделяемых объектов кластера, например ролей?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_shdepend",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_shdescription",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_auth_members",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_default_acl",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_shdepend хранит зависимости объектов баз данных от shared-объектов, таких как роли и tablespaces.",
+      "source": {
+        "key": "pgcat1-pg-shdepend-18019fe7",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.48. pg_shdepend",
+        "locator": "Назначение shared dependencies",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-shdepend"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-008",
+      "type": "multiple_choice",
+      "text": "Какие пары каталогов относятся к комментариям объектов?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_description — комментарии объектов базы данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_shdescription — комментарии глобальных объектов",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_description.description — текст описания",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_shdescription хранит только пароли ролей",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_description относится к объектам базы, а pg_shdescription — к глобальным объектам кластера.",
+      "source": {
+        "key": "pgcat1-pg-description-e672e7b9",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.19. pg_description",
+        "locator": "Назначение и поле description",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-description"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-009",
+      "type": "single_choice",
+      "text": "Где хранятся правила перезаписи запросов для таблиц и представлений?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_rewrite",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_trigger",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_proc",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_policy",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_rewrite содержит правила перезаписи; ev_class указывает отношение, а ev_action хранит дерево действия.",
+      "source": {
+        "key": "pgcat1-pg-rewrite-631f1a58",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.45. pg_rewrite",
+        "locator": "Назначение каталога rewrite rules",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-rewrite"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-010",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о pg_trigger верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "tgrelid указывает таблицу триггера",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "tgname — имя триггера",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "tgfoid ссылается на вызываемую функцию",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "tgenabled кодирует режимы session_replication_role",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "tgqual хранит WHEN-условие, если оно есть",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "tgtype хранит SQL-текст функции триггера",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_trigger хранит связь триггера с таблицей и функцией, режим включения, аргументы и условие WHEN.",
+      "source": {
+        "key": "pgcat1-pg-trigger-aa4ceabb",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.58. pg_trigger",
+        "locator": "Основные поля tgrelid, tgname, tgfoid, tgenabled, tgqual",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-trigger"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-011",
+      "type": "single_choice",
+      "text": "Какой каталог хранит событийные триггеры (event triggers)?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_event_trigger",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_trigger",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_rewrite",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_constraint",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_event_trigger предназначен именно для событийных триггеров.",
+      "source": {
+        "key": "pgcat1-pg-event-trigger-70d8b748",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.21. pg_event_trigger",
+        "locator": "Назначение каталога event triggers",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-event-trigger"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-012",
+      "type": "multiple_choice",
+      "text": "Какие поля pg_event_trigger описывают событие и вызываемую функцию?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "evtevent — событие",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "evtfoid — вызываемая функция",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "evtenabled — режимы срабатывания",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "evttags — фильтр по тегам команд",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "confrelid — таблица внешнего ключа",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_event_trigger содержит событие, функцию, режим включения и список command tags.",
+      "source": {
+        "key": "pgcat1-pg-event-trigger-c4a85cf0",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.21. pg_event_trigger",
+        "locator": "evtevent, evtfoid, evtenabled, evttags",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-event-trigger"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-013",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о pg_shdescription верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Каталог хранит комментарии к глобальным объектам",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он разделяется всеми базами кластера",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "objoid указывает комментируемый объект",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "description содержит текст комментария",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Каталог хранит только комментарии столбцов локальной таблицы",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_shdescription — shared-аналог pg_description для глобальных объектов кластера.",
+      "source": {
+        "key": "pgcat1-pg-shdescription-a3254b88",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.49. pg_shdescription",
+        "locator": "Назначение; objoid; description; shared catalog",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-shdescription"
+      }
+    }
+  ]
+}

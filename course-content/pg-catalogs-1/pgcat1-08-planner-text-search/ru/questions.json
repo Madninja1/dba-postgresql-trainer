@@ -1,0 +1,509 @@
+{
+  "schema_version": 1,
+  "topic": "pgcat1-planner-text-search",
+  "questions": [
+    {
+      "key": "pgcat1-planner-text-search-001",
+      "type": "single_choice",
+      "text": "Какой каталог содержит статистику о содержимом базы, создаваемую ANALYZE и используемую планировщиком?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_statistic",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_statistic_ext",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_class",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_stats_ext",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_statistic хранит базовую статистику столбцов и выражений, которую создаёт ANALYZE и использует planner.",
+      "source": {
+        "key": "pgcat1-pg-statistic-0a2f3c41",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.51. pg_statistic",
+        "locator": "Назначение pg_statistic",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-statistic"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-002",
+      "type": "multiple_choice",
+      "text": "Какие поля pg_statistic относятся к базовой статистике столбца?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "stanullfrac — доля NULL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "stawidth — средний размер non-NULL значений",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "stadistinct — оценка числа distinct non-NULL значений",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "starelid — таблица или индекс",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "staattnum — номер столбца",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "stanullfrac хранит точное количество строк с NULL",
+          "correct": false
+        }
+      ],
+      "explanation": "Эти поля описывают отношение/столбец и ключевые общие статистики.",
+      "source": {
+        "key": "pgcat1-pg-statistic-a93a8f60",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.51. pg_statistic",
+        "locator": "starelid, staattnum, stanullfrac, stawidth, stadistinct",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-statistic"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-003",
+      "type": "single_choice",
+      "text": "Почему pg_statistic не открыт на чтение всем пользователям?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Даже статистика может раскрывать конфиденциальные сведения о значениях данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он содержит обязательные открытые пароли всех ролей",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Он всегда блокирует таблицы на запись",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "В нём хранится postgresql.conf",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация приводит пример, что даже min/max или другие статистики могут раскрывать чувствительные данные.",
+      "source": {
+        "key": "pgcat1-pg-statistic-13f6c6e1",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.51. pg_statistic",
+        "locator": "Ограничение доступа и представление pg_stats",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-statistic"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-004",
+      "type": "multiple_choice",
+      "text": "Что предлагается обычным пользователям вместо прямого чтения pg_statistic?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Представление pg_stats",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Оно показывает информацию только по тем таблицам, которые пользователь может читать",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_stats основано на pg_statistic",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_authid",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_stats — безопаснее доступное view поверх pg_statistic с фильтрацией по правам текущего пользователя.",
+      "source": {
+        "key": "pgcat1-pg-statistic-06d92697",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.51. pg_statistic",
+        "locator": "Представление pg_stats",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-statistic"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-005",
+      "type": "single_choice",
+      "text": "Где хранится определение объекта расширенной статистики, созданного CREATE STATISTICS?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_statistic_ext",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_statistic_ext_data",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_statistic",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_proc",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_statistic_ext содержит definition объекта extended statistics; сами вычисленные данные появляются в pg_statistic_ext_data после ANALYZE.",
+      "source": {
+        "key": "pgcat1-pg-statistic-ext-79deaaa0",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.52. pg_statistic_ext",
+        "locator": "Назначение и связь с CREATE STATISTICS/ANALYZE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-statistic-ext"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-006",
+      "type": "multiple_choice",
+      "text": "Какие коды pg_statistic_ext.stxkind указаны в материале?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`d` — n-distinct",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`e` — statistics по выражениям",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`f` — functional dependencies",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`m` — MCV lists",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`h` — hash index",
+          "correct": false
+        }
+      ],
+      "explanation": "stxkind перечисляет виды extended statistics: d/e/f/m.",
+      "source": {
+        "key": "pgcat1-pg-statistic-ext-963fd9e7",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.52. pg_statistic_ext",
+        "locator": "Столбец stxkind",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-statistic-ext"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-007",
+      "type": "single_choice",
+      "text": "Где сохраняются вычисленные значения расширенной статистики после ANALYZE?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_statistic_ext_data",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_statistic_ext",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_stats",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_class",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_statistic_ext_data хранит actual data для объектов, определённых в pg_statistic_ext.",
+      "source": {
+        "key": "pgcat1-pg-statistic-ext-data-06071eee",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.53. pg_statistic_ext_data",
+        "locator": "Назначение pg_statistic_ext_data",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-statistic-ext-data"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-008",
+      "type": "multiple_choice",
+      "text": "Какие данные может содержать pg_statistic_ext_data?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "stxdndistinct — n-distinct",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "stxddependencies — functional dependencies",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "stxdmcv — MCV list",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "stxdexpr — статистика выражений",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "subconninfo — строка подключения subscription",
+          "correct": false
+        }
+      ],
+      "explanation": "Расширенная статистика сериализуется по отдельным полям для distinct, dependencies, MCV и expressions.",
+      "source": {
+        "key": "pgcat1-pg-statistic-ext-data-b31c0e8e",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.53. pg_statistic_ext_data",
+        "locator": "stxdndistinct, stxddependencies, stxdmcv, stxdexpr",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-statistic-ext-data"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-009",
+      "type": "single_choice",
+      "text": "Что представляет pg_ts_config?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Конфигурации текстового поиска, связывающие parser и набор словарей по типам фрагментов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Таблицу с runtime GUC",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Каталог ролей",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Каталог WAL segments",
+          "correct": false
+        }
+      ],
+      "explanation": "Text search configuration определяет parser, а mapping tokens→dictionaries хранится в pg_ts_config_map.",
+      "source": {
+        "key": "pgcat1-pg-ts-config-ca0b1650",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.59. pg_ts_config",
+        "locator": "Назначение pg_ts_config",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-ts-config"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-010",
+      "type": "multiple_choice",
+      "text": "Какие связи между каталогами полнотекстового поиска верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_ts_config.cfgparser ссылается на pg_ts_parser",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_ts_config_map.mapcfg ссылается на pg_ts_config",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_ts_config_map.mapdict ссылается на pg_ts_dict",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_ts_dict.dicttemplate ссылается на pg_ts_template",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "pg_ts_parser хранит membership ролей",
+          "correct": false
+        }
+      ],
+      "explanation": "Конфигурация использует parser и mapping; mapping указывает dictionaries, а dictionary основан на template.",
+      "source": {
+        "key": "pgcat1-pg-ts-config-map-9b89f21f",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.60. pg_ts_config_map",
+        "locator": "Связи mapcfg и mapdict в цепочке text search",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-ts-config-map"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-011",
+      "type": "single_choice",
+      "text": "Какой каталог описывает анализаторы текстового поиска, разбивающие текст на лексемы и назначающие тип фрагмента?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_ts_parser",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_ts_dict",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_ts_template",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_ts_config",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_ts_parser хранит функции parser lifecycle: start, token, end и дополнительные callbacks.",
+      "source": {
+        "key": "pgcat1-pg-ts-parser-9a98dbbf",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.62. pg_ts_parser",
+        "locator": "Назначение pg_ts_parser",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-ts-parser"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-012",
+      "type": "multiple_choice",
+      "text": "Что верно о pg_ts_dict и pg_ts_template?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_ts_dict определяет словари и их параметры",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_ts_dict.dicttemplate ссылается на шаблон словаря",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_ts_template — заготовка для класса словарей",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Создавать новые templates разрешено только суперпользователям, потому что реализация требует C-level functions",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "pg_ts_template хранит subscription slots",
+          "correct": false
+        }
+      ],
+      "explanation": "Dictionary настраивает template, а template предоставляет реализационные функции; новые templates требуют superuser.",
+      "source": {
+        "key": "pgcat1-pg-ts-template-e3f8eb4a",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.63. pg_ts_template",
+        "locator": "Назначение pg_ts_template и ограничение на создание",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-ts-template"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-013",
+      "type": "multiple_choice",
+      "text": "Что верно о pg_ts_dict?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Каталог содержит словари текстового поиска",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "dictname — имя словаря",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "dicttemplate ссылается на pg_ts_template",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "dictinitoption хранит параметры инициализации шаблона",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Словарь хранит replication slot",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_ts_dict описывает text search dictionaries, их namespace/owner, template и initialization options.",
+      "source": {
+        "key": "pgcat1-pg-ts-dict-23d11bef",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Глава 53. Системные каталоги",
+        "section": "53.61. pg_ts_dict",
+        "locator": "Назначение; dictname; dicttemplate; dictinitoption",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-ts-dict"
+      }
+    }
+  ]
+}
