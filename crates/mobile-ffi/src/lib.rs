@@ -4,9 +4,12 @@ mod trainer;
 
 pub use error::MobileError;
 pub use model::{
-    MobileAnswerOption, MobileAnswerResult, MobileLab, MobileQuestion, MobileQuestionLimit,
-    MobileQuestionType, MobileQuizSession, MobileSessionProgress, MobileSource, MobileSourceKind,
-    MobileStatisticsLimit, MobileTopic, MobileTopicMasteryStats, MobileTrainingStats,
+    MobileActivityStats, MobileAnswerOption, MobileAnswerResult, MobileCourseProgress,
+    MobileDailyActivity, MobileLab, MobileProgressLevel, MobileQuestion,
+    MobileQuestionAttemptHistory, MobileQuestionLimit, MobileQuestionMistakeDetail,
+    MobileQuestionMistakeSummary, MobileQuestionType, MobileQuizSession, MobileSessionProgress,
+    MobileSource, MobileSourceKind, MobileStatisticsLimit, MobileTopic, MobileTopicMasteryStats,
+    MobileTrainingStats,
 };
 pub use trainer::MobileTrainer;
 

@@ -4,6 +4,9 @@ mod service;
 
 pub use error::RepositoryError;
 
-pub use repository::{ContentLocaleRepository, LabRepository, SessionRepository, TopicRepository};
+pub use repository::{
+    ContentLocaleRepository, LabRepository, LearningHistoryRepository, SessionRepository,
+    TopicRepository,
+};
 
 pub use service::TrainerService;

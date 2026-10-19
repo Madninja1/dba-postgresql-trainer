@@ -1,5 +1,6 @@
 mod id;
 mod lab;
+mod progress;
 mod question;
 mod session;
 mod source;
@@ -10,6 +11,11 @@ pub use id::{AnswerOptionId, QuestionId, SessionId, SourceId, TopicId};
 pub use lab::Lab;
 
 pub use question::{AnswerOption, Question, QuestionType};
+
+pub use progress::{
+    ActivityStats, CourseProgress, DailyActivity, ProgressLevel, QuestionAttemptHistory,
+    QuestionMistakeDetail, QuestionMistakeSummary, STUDY_DAY_QUESTION_TARGET,
+};
 
 pub use session::{
     AnswerResult, QuestionLimit, QuizScope, QuizSession, SessionConfig, SessionProgress,

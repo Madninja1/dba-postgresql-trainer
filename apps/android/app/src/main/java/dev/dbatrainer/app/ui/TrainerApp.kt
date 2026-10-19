@@ -35,6 +35,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -47,10 +48,12 @@ import dev.dbatrainer.app.TrainerController
 import dev.dbatrainer.app.UiLanguage
 import dev.dbatrainer.app.UiStrings
 import dev.dbatrainer.app.uiStrings
+import dev.dbatrainer.ffi.MobileActivityStats
 import dev.dbatrainer.ffi.MobileAnswerResult
 import dev.dbatrainer.ffi.MobileLab
 import dev.dbatrainer.ffi.MobileQuestion
 import dev.dbatrainer.ffi.MobileQuestionLimit
+import dev.dbatrainer.ffi.MobileQuestionMistakeSummary
 import dev.dbatrainer.ffi.MobileQuestionType
 import dev.dbatrainer.ffi.MobileSource
 import dev.dbatrainer.ffi.MobileTopic
@@ -644,10 +647,15 @@ private fun LabDetailScreen(controller: TrainerController) {
 @Composable
 private fun LimitScreen(controller: TrainerController) {
     val strings = LocalUiStrings.current
-    val title = controller.pendingTopic?.let { topic ->
-        "${topic.topicNumber}. ${topic.title}"
-    } ?: controller.pendingCourse?.uppercase()
-        ?: strings.generalQuiz
+    val title = when {
+        controller.pendingMistakeReview -> strings.workOnMistakes
+        controller.pendingTopic != null -> {
+            val topic = controller.pendingTopic!!
+            "${topic.topicNumber}. ${topic.title}"
+        }
+        controller.pendingCourse != null -> controller.pendingCourse!!.uppercase()
+        else -> strings.generalQuiz
+    }
 
     TrainerScaffold(
         title = title,
@@ -1033,6 +1041,9 @@ private fun StatisticsScreen(controller: TrainerController) {
         StatisticsPage.Topics -> StatisticsTopicsScreen(controller)
         StatisticsPage.GlobalModes -> StatisticsGlobalModesScreen(controller)
         StatisticsPage.ScopeModes -> StatisticsScopeModesScreen(controller)
+        StatisticsPage.Mistakes -> StatisticsMistakesScreen(controller)
+        StatisticsPage.MistakeDetail -> StatisticsMistakeDetailScreen(controller)
+        StatisticsPage.Activity -> StatisticsActivityScreen(controller)
         StatisticsPage.Detail -> StatisticsDetailScreen(controller)
     }
 }
@@ -1074,6 +1085,24 @@ private fun StatisticsRootScreen(controller: TrainerController) {
                     stats = overall,
                     subtitle = strings.modesDescription,
                     onClick = controller::openStatisticsGlobalModes,
+                )
+            }
+
+            item {
+                StatisticsNavigationCard(
+                    title = strings.mistakes,
+                    stats = null,
+                    subtitle = strings.workOnMistakes,
+                    onClick = controller::openMistakes,
+                )
+            }
+
+            item {
+                StatisticsNavigationCard(
+                    title = strings.activity,
+                    stats = null,
+                    subtitle = strings.studyDayTarget,
+                    onClick = controller::openActivity,
                 )
             }
 
@@ -1259,6 +1288,363 @@ private fun StatisticsModesList(
             )
         }
     }
+}
+
+@Composable
+private fun StatisticsMistakesScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
+    val mistakes = controller.mistakeSummaries
+
+    TrainerScaffold(
+        title = strings.mistakes,
+        onBack = controller::back,
+    ) { modifier ->
+        if (mistakes.isEmpty()) {
+            EmptyMessage(
+                text = strings.noMistakes,
+                modifier = modifier,
+            )
+            return@TrainerScaffold
+        }
+
+        LazyColumn(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            item {
+                Button(
+                    onClick = controller::openMistakeReview,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(strings.workOnMistakes)
+                }
+            }
+
+            items(
+                items = mistakes,
+                key = { summary -> summary.questionId },
+            ) { summary ->
+                MistakeSummaryCard(
+                    summary = summary,
+                    onClick = {
+                        controller.openMistakeDetail(summary)
+                    },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun MistakeSummaryCard(
+    summary: MobileQuestionMistakeSummary,
+    onClick: () -> Unit,
+) {
+    val strings = LocalUiStrings.current
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+    ) {
+        Column(
+            modifier = Modifier.padding(18.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            Text(
+                text = summary.questionText,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = "${summary.courseCode.uppercase()} · ${summary.topicTitle}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                text = "${strings.incorrectAnswersCount}: ${summary.incorrectAttempts}/${summary.totalAttempts} · ${formatPercent(summary.errorRatePercent)}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
+            Text(
+                text = "${strings.lastError}: ${summary.lastIncorrectAt}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@Composable
+private fun StatisticsMistakeDetailScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
+    val detail = controller.mistakeDetail
+
+    TrainerScaffold(
+        title = strings.mistakes,
+        onBack = controller::back,
+    ) { modifier ->
+        if (detail == null) {
+            EmptyMessage(
+                text = strings.statisticsUnavailable,
+                modifier = modifier,
+            )
+            return@TrainerScaffold
+        }
+
+        LazyColumn(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            item {
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        modifier = Modifier.padding(18.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Text(
+                            text = detail.question.text,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Text(
+                            text = "${detail.summary.courseCode.uppercase()} · ${detail.summary.topicTitle}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            text = "${strings.incorrectAnswersCount}: ${detail.summary.incorrectAttempts}/${detail.summary.totalAttempts} · ${formatPercent(detail.summary.errorRatePercent)}",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                        Text(
+                            text = "${strings.lastError}: ${detail.summary.lastIncorrectAt}",
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    }
+                }
+            }
+
+            item {
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        modifier = Modifier.padding(18.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Text(
+                            text = strings.correctAnswers,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        detail.correctAnswers.forEach { answer ->
+                            Text("• $answer")
+                        }
+                        HorizontalDivider()
+                        Text(
+                            text = strings.explanation,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Text(detail.question.explanation)
+                        Text(
+                            text = "${strings.source}: ${formatSource(detail.question.source, strings)}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            }
+
+            item {
+                Text(
+                    text = strings.attemptHistory,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+
+            itemsIndexed(
+                items = detail.attempts,
+            ) { index, attempt ->
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp),
+                    ) {
+                        Text(
+                            text = "${index + 1}. ${if (attempt.isCorrect) strings.correct else strings.incorrect} · ${attempt.answeredAt}",
+                            fontWeight = FontWeight.SemiBold,
+                            color = if (attempt.isCorrect) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.error
+                            },
+                        )
+                        Text("${strings.yourAnswer}:")
+                        if (attempt.selectedAnswers.isEmpty()) {
+                            Text("—")
+                        } else {
+                            attempt.selectedAnswers.forEach { answer ->
+                                Text("• $answer")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun StatisticsActivityScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
+    val stats = controller.activityStats
+
+    TrainerScaffold(
+        title = strings.activity,
+        onBack = controller::back,
+    ) { modifier ->
+        if (stats == null) {
+            EmptyMessage(
+                text = strings.statisticsUnavailable,
+                modifier = modifier,
+            )
+            return@TrainerScaffold
+        }
+
+        val todayAccuracy = if (stats.todayAnsweredQuestions == 0UL) {
+            0.0
+        } else {
+            stats.todayCorrectAnswers.toDouble() /
+                stats.todayAnsweredQuestions.toDouble() * 100.0
+        }
+
+        LazyColumn(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            item {
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Text(
+                            text = "${strings.rank}: ${strings.progressLevel(stats.level)}",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                        Text(strings.progressMessage(stats.level))
+                        HorizontalDivider()
+                        Text("${strings.today}: ${stats.todayAnsweredQuestions} · ${stats.todayCorrectAnswers}/${stats.todayAnsweredQuestions} · ${formatPercent(todayAccuracy)}")
+                        Text("${strings.activeDays}: ${stats.activeDays}")
+                        Text("${strings.studyDays}: ${stats.studyDays}")
+                        Text("${strings.answeredQuestions}: ${stats.totalAnsweredQuestions}")
+                        Text("${strings.currentStreak}: ${stats.currentStreak}")
+                        Text("${strings.bestStreak}: ${stats.bestStreak}")
+                        Text("${strings.last7Days}: ${stats.last7DaysAnsweredQuestions}")
+                        Text(
+                            text = "${strings.careerPath}: ${formatPercent(stats.overallMasteryPercent)}",
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Text(
+                            text = strings.salaryDisclaimer,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            }
+
+            item {
+                Text(
+                    text = strings.courseProgress,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+
+            items(
+                items = stats.courseProgress,
+                key = { progress -> progress.courseCode },
+            ) { progress ->
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp),
+                    ) {
+                        Text(
+                            text = progress.courseCode.uppercase(),
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Text("${progress.passedTopics}/${progress.totalTopics} · ${formatPercent(progress.completionPercent)}")
+                        LinearProgressIndicator(
+                            progress = {
+                                (progress.completionPercent / 100.0)
+                                    .toFloat()
+                                    .coerceIn(0f, 1f)
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+                }
+            }
+
+            item {
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        modifier = Modifier.padding(18.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Text(
+                            text = strings.recentActivity,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Text(
+                            text = activityHeatmap(stats),
+                            fontFamily = FontFamily.Monospace,
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                        stats.recentDays.asReversed().forEach { day ->
+                            Text(
+                                text = "${day.date} — ${strings.answeredQuestions}: ${day.answeredQuestions} · ${strings.correctAnswersCount}: ${day.correctAnswers}",
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                        }
+                        Text(
+                            text = strings.studyDayTarget,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+private fun activityHeatmap(stats: MobileActivityStats): String {
+    if (stats.recentDays.isEmpty()) {
+        return "—"
+    }
+
+    val rows = stats.recentDays
+        .chunked(7)
+        .joinToString("\n") { week ->
+            week.joinToString("") { day ->
+                when (day.answeredQuestions.toLong()) {
+                    0L -> "·"
+                    in 1L..9L -> "░"
+                    in 10L..24L -> "▒"
+                    in 25L..49L -> "▓"
+                    else -> "█"
+                }
+            }
+        }
+
+    return "${stats.recentDays.first().date} → ${stats.recentDays.last().date}\n$rows"
 }
 
 @Composable

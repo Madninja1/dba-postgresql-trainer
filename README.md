@@ -8,16 +8,16 @@ The current course focus is PostgreSQL DBA training. The repository is structure
 
 ## Current release
 
-Current application version: **0.4.0**.
+Current application version: **0.5.0**.
 
 Prebuilt packages are kept in the repository under `releases/<version>/` when they are published. The intended release set is:
 
 ```text
 releases/
-└── v0.4.0/
-    ├── dba-trainer-android-v0.4.0.apk
-    ├── dba-trainer-tui-linux-x86_64-v0.4.0.tar.gz
-    └── dba-trainer-tui-windows-x86_64-v0.4.0.zip
+└── v0.5.0/
+    ├── dba-trainer-android-v0.5.0.apk
+    ├── dba-trainer-tui-linux-x86_64-v0.5.0.tar.gz
+    └── dba-trainer-tui-windows-x86_64-v0.5.0.zip
 ```
 
 The Android package is an installable APK. The Linux and Windows packages contain terminal binaries; there is no separate desktop GUI installer.
@@ -37,7 +37,11 @@ The Android package is an installable APK. The Linux and Windows packages contai
 - overall, course, topic, and quiz-mode statistics;
 - per-topic mastery status with an 85% pass threshold, best result, and attempts required to pass;
 - offline laboratory guides grouped by course;
-- statistics reset;
+- mistake history with every attempt and the answers selected for questions answered incorrectly;
+- a “Work on mistakes” quiz built from questions that have previous incorrect attempts;
+- daily activity statistics: app-open days, study days, streaks, questions per day, and a 28-day activity view;
+- gamified IT/DBA progress ranks and per-course mastery progress;
+- statistics reset, including mistake history and activity;
 - English and Russian UI;
 - English is the default UI language;
 - the selected UI language is remembered independently by Android and TUI;

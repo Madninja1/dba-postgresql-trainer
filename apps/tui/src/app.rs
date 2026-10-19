@@ -1,9 +1,10 @@
 use dba_trainer_application::{RepositoryError, TrainerService};
 
 use dba_trainer_domain::{
-    AnswerOptionId, AnswerResult, Lab, Question, QuestionId, QuestionLimit, QuestionType,
-    QuizScope, SessionConfig, SessionId, SessionProgress, StatisticsFilter, StatisticsLimit,
-    StatisticsScope, Topic, TopicId, TopicMasteryStats, TrainingStats,
+    ActivityStats, AnswerOptionId, AnswerResult, Lab, Question, QuestionId, QuestionLimit,
+    QuestionMistakeDetail, QuestionMistakeSummary, QuestionType, QuizScope, SessionConfig,
+    SessionId, SessionProgress, StatisticsFilter, StatisticsLimit, StatisticsScope, Topic, TopicId,
+    TopicMasteryStats, TrainingStats,
 };
 
 use dba_trainer_storage_sqlite::SqliteRepository;
@@ -55,6 +56,9 @@ pub enum StatisticsView {
         title: String,
     },
     Modes,
+    Mistakes,
+    MistakeDetail,
+    Activity,
     Detail {
         filter: StatisticsFilter,
         title: String,
@@ -149,6 +153,14 @@ pub struct App {
 
     pub statistics_selected: usize,
 
+    pub statistics_scroll: u16,
+
+    pub mistake_summaries: Vec<QuestionMistakeSummary>,
+
+    pub mistake_detail: Option<QuestionMistakeDetail>,
+
+    pub activity_stats: Option<ActivityStats>,
+
     statistics_course_summaries: Vec<(String, TrainingStats)>,
 
     statistics_topic_summaries: Vec<(TopicId, TrainingStats)>,
@@ -174,6 +186,7 @@ impl App {
         language: UiLanguage,
     ) -> Result<Self, RepositoryError> {
         service.set_content_locale(language.code())?;
+        service.record_app_open()?;
         let topics = service.topics()?;
         let labs = service.labs()?;
 
@@ -249,6 +262,14 @@ impl App {
             statistics_view: StatisticsView::Root,
 
             statistics_selected: 0,
+
+            statistics_scroll: 0,
+
+            mistake_summaries: Vec::new(),
+
+            mistake_detail: None,
+
+            activity_stats: None,
 
             statistics_course_summaries: Vec::new(),
 
@@ -356,6 +377,10 @@ impl App {
                     self.statistics_view = StatisticsView::Root;
                     self.statistics_selected = 0;
                     self.statistics = None;
+                    self.statistics_scroll = 0;
+                    self.mistake_summaries.clear();
+                    self.mistake_detail = None;
+                    self.activity_stats = None;
                     self.statistics_history.clear();
                     self.screen = Screen::Statistics;
                 }
@@ -581,6 +606,7 @@ impl App {
                     QuizScope::Topic(_) => Screen::Topics,
                     QuizScope::Course(_) => Screen::Courses,
                     QuizScope::AllTopics => Screen::Home,
+                    QuizScope::Mistakes => Screen::Statistics,
                 };
             }
 
@@ -660,9 +686,20 @@ impl App {
 
     fn handle_results_action(&mut self, action: Action) -> Result<(), RepositoryError> {
         if matches!(action, Action::Confirm | Action::Back) {
+            let was_mistake_review = matches!(&self.quiz_scope, QuizScope::Mistakes);
+
             self.reset_quiz();
 
-            self.screen = Screen::Home;
+            if was_mistake_review {
+                self.mistake_summaries = self.service.mistake_summaries()?;
+                self.mistake_detail = None;
+                self.statistics_view = StatisticsView::Mistakes;
+                self.statistics_selected = 0;
+                self.statistics_scroll = 0;
+                self.screen = Screen::Statistics;
+            } else {
+                self.screen = Screen::Home;
+            }
         }
 
         Ok(())
@@ -723,7 +760,20 @@ impl App {
     }
 
     fn handle_statistics_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        let scrollable = matches!(
+            &self.statistics_view,
+            StatisticsView::MistakeDetail | StatisticsView::Activity
+        );
+
         match action {
+            Action::Up if scrollable => {
+                self.statistics_scroll = self.statistics_scroll.saturating_sub(1);
+            }
+
+            Action::Down if scrollable => {
+                self.statistics_scroll = self.statistics_scroll.saturating_add(1);
+            }
+
             Action::Up => {
                 let count = self.statistics_item_count();
                 self.statistics_selected = previous_index(self.statistics_selected, count);
@@ -745,7 +795,14 @@ impl App {
             Action::ClearStatistics => {
                 self.service.clear_statistics()?;
                 self.zero_statistics_summaries();
-                self.refresh_statistics_detail()?;
+                self.mistake_summaries.clear();
+                self.mistake_detail = None;
+                self.activity_stats = None;
+                self.statistics = None;
+                self.statistics_view = StatisticsView::Root;
+                self.statistics_history.clear();
+                self.statistics_selected = 0;
+                self.statistics_scroll = 0;
             }
 
             Action::Toggle | Action::Quit => {}
@@ -768,6 +825,14 @@ impl App {
                 2 => {
                     self.load_statistics_mode_summaries()?;
                     self.open_statistics_view(StatisticsView::Modes);
+                }
+                3 => {
+                    self.mistake_summaries = self.service.mistake_summaries()?;
+                    self.open_statistics_view(StatisticsView::Mistakes);
+                }
+                4 => {
+                    self.activity_stats = Some(self.service.activity_stats()?);
+                    self.open_statistics_view(StatisticsView::Activity);
                 }
                 _ => {}
             },
@@ -847,7 +912,31 @@ impl App {
                 }
             }
 
-            StatisticsView::Detail { .. } => {
+            StatisticsView::Mistakes => {
+                if self.mistake_summaries.is_empty() {
+                    return Ok(());
+                }
+
+                if self.statistics_selected == 0 {
+                    self.quiz_scope = QuizScope::Mistakes;
+                    self.limit_selected = 0;
+                    self.screen = Screen::QuizSetup;
+                } else {
+                    let question_id = self
+                        .mistake_summaries
+                        .get(self.statistics_selected.saturating_sub(1))
+                        .map(|summary| summary.question_id);
+
+                    if let Some(question_id) = question_id {
+                        self.mistake_detail = Some(self.service.mistake_detail(question_id)?);
+                        self.open_statistics_view(StatisticsView::MistakeDetail);
+                    }
+                }
+            }
+
+            StatisticsView::MistakeDetail
+            | StatisticsView::Activity
+            | StatisticsView::Detail { .. } => {
                 self.back_statistics();
             }
         }
@@ -862,6 +951,7 @@ impl App {
             .push((previous, self.statistics_selected));
 
         self.statistics_selected = 0;
+        self.statistics_scroll = 0;
         self.statistics = None;
     }
 
@@ -882,39 +972,38 @@ impl App {
         if let Some((view, selected)) = self.statistics_history.pop() {
             self.statistics_view = view;
             self.statistics_selected = selected;
+            self.statistics_scroll = 0;
             self.statistics = None;
+            self.mistake_detail = None;
         } else {
             self.statistics_view = StatisticsView::Root;
             self.statistics_selected = 0;
+            self.statistics_scroll = 0;
             self.statistics = None;
+            self.mistake_detail = None;
             self.screen = Screen::Home;
         }
     }
 
-    fn refresh_statistics_detail(&mut self) -> Result<(), RepositoryError> {
-        let filter = match &self.statistics_view {
-            StatisticsView::Detail { filter, .. } => filter.clone(),
-            _ => {
-                self.statistics = None;
-                return Ok(());
-            }
-        };
-
-        self.statistics = Some(self.service.statistics(&filter)?);
-
-        Ok(())
-    }
-
     fn statistics_item_count(&self) -> usize {
         match &self.statistics_view {
-            StatisticsView::Root => 3,
+            StatisticsView::Root => 5,
             StatisticsView::Courses => self.statistics_course_codes().len(),
             StatisticsView::Course(course_code) => {
                 1 + self.statistics_topics_for_course(course_code).len()
             }
             StatisticsView::Filters { .. } => 4,
             StatisticsView::Modes => 3,
-            StatisticsView::Detail { .. } => 0,
+            StatisticsView::Mistakes => {
+                if self.mistake_summaries.is_empty() {
+                    0
+                } else {
+                    1 + self.mistake_summaries.len()
+                }
+            }
+            StatisticsView::MistakeDetail
+            | StatisticsView::Activity
+            | StatisticsView::Detail { .. } => 0,
         }
     }
 

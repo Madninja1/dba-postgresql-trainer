@@ -11,7 +11,8 @@ use dba_trainer_domain::{
 use dba_trainer_storage_sqlite::SqliteRepository;
 
 use crate::{
-    MobileAnswerResult, MobileError, MobileLab, MobileQuestion, MobileQuestionLimit,
+    MobileActivityStats, MobileAnswerResult, MobileError, MobileLab, MobileQuestion,
+    MobileQuestionLimit, MobileQuestionMistakeDetail, MobileQuestionMistakeSummary,
     MobileQuizSession, MobileSessionProgress, MobileStatisticsLimit, MobileTopic,
     MobileTopicMasteryStats, MobileTrainingStats, error::to_mobile_error,
 };
@@ -38,8 +39,11 @@ impl MobileTrainer {
             repository.sync_lab(lab).map_err(to_mobile_error)?;
         }
 
+        let mut service = TrainerService::new(repository);
+        service.record_app_open().map_err(to_mobile_error)?;
+
         Ok(Arc::new(Self {
-            service: Mutex::new(TrainerService::new(repository)),
+            service: Mutex::new(service),
         }))
     }
 
@@ -117,6 +121,16 @@ impl MobileTrainer {
         })
     }
 
+    pub fn start_mistake_session(
+        &self,
+        limit: MobileQuestionLimit,
+    ) -> Result<MobileQuizSession, MobileError> {
+        self.start_session(SessionConfig {
+            scope: QuizScope::Mistakes,
+            limit: limit.into(),
+        })
+    }
+
     pub fn current_question(&self, session_id: i64) -> Result<Option<MobileQuestion>, MobileError> {
         let service = self.service()?;
 
@@ -187,6 +201,41 @@ impl MobileTrainer {
             scope: StatisticsScope::Topic(TopicId(topic_id)),
             limit: limit.into(),
         })
+    }
+
+    pub fn mistake_summaries(&self) -> Result<Vec<MobileQuestionMistakeSummary>, MobileError> {
+        let service = self.service()?;
+
+        service
+            .mistake_summaries()
+            .map(|summaries| {
+                summaries
+                    .into_iter()
+                    .map(MobileQuestionMistakeSummary::from)
+                    .collect()
+            })
+            .map_err(to_mobile_error)
+    }
+
+    pub fn mistake_detail(
+        &self,
+        question_id: i64,
+    ) -> Result<MobileQuestionMistakeDetail, MobileError> {
+        let service = self.service()?;
+
+        service
+            .mistake_detail(QuestionId(question_id))
+            .map(MobileQuestionMistakeDetail::from)
+            .map_err(to_mobile_error)
+    }
+
+    pub fn activity_stats(&self) -> Result<MobileActivityStats, MobileError> {
+        let service = self.service()?;
+
+        service
+            .activity_stats()
+            .map(MobileActivityStats::from)
+            .map_err(to_mobile_error)
     }
 
     pub fn clear_statistics(&self) -> Result<(), MobileError> {

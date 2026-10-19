@@ -5,6 +5,7 @@ pub enum QuizScope {
     Topic(TopicId),
     Course(String),
     AllTopics,
+    Mistakes,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

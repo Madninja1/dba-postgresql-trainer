@@ -36,6 +36,8 @@ pub fn render(frame: &mut Frame, app: &App) {
             .find(|topic| topic.id == *topic_id)
             .map(|topic| format!("{}: {}", app.strings().topic, topic.title))
             .unwrap_or_else(|| app.strings().topic_quiz.to_string()),
+
+        QuizScope::Mistakes => app.strings().work_on_mistakes.to_string(),
     };
 
     let header = Paragraph::new(title);

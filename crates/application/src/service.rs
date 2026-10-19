@@ -1,12 +1,14 @@
 use dba_trainer_domain::{
-    AnswerOptionId, AnswerResult, Lab, Question, QuestionId, QuizSession, SessionConfig, SessionId,
-    SessionProgress, StatisticsFilter, Topic, TopicId, TopicMasteryStats, TrainingStats,
+    ActivityStats, AnswerOptionId, AnswerResult, Lab, Question, QuestionId, QuestionMistakeDetail,
+    QuestionMistakeSummary, QuizSession, SessionConfig, SessionId, SessionProgress,
+    StatisticsFilter, Topic, TopicId, TopicMasteryStats, TrainingStats,
 };
 
 use rand::{rng, seq::SliceRandom};
 
 use crate::{
-    ContentLocaleRepository, LabRepository, RepositoryError, SessionRepository, TopicRepository,
+    ContentLocaleRepository, LabRepository, LearningHistoryRepository, RepositoryError,
+    SessionRepository, TopicRepository,
 };
 
 pub struct TrainerService<R> {
@@ -82,6 +84,30 @@ where
 {
     pub fn labs(&self) -> Result<Vec<Lab>, RepositoryError> {
         self.repository.labs()
+    }
+}
+
+impl<R> TrainerService<R>
+where
+    R: LearningHistoryRepository,
+{
+    pub fn mistake_summaries(&self) -> Result<Vec<QuestionMistakeSummary>, RepositoryError> {
+        self.repository.mistake_summaries()
+    }
+
+    pub fn mistake_detail(
+        &self,
+        question_id: QuestionId,
+    ) -> Result<QuestionMistakeDetail, RepositoryError> {
+        self.repository.mistake_detail(question_id)
+    }
+
+    pub fn activity_stats(&self) -> Result<ActivityStats, RepositoryError> {
+        self.repository.activity_stats()
+    }
+
+    pub fn record_app_open(&mut self) -> Result<(), RepositoryError> {
+        self.repository.record_app_open()
     }
 }
 

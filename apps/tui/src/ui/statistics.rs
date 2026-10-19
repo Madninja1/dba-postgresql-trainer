@@ -1,10 +1,10 @@
-use dba_trainer_domain::{StatisticsLimit, TrainingStats};
+use dba_trainer_domain::{ActivityStats, Source, SourceKind, StatisticsLimit, TrainingStats};
 
 use ratatui::{
     Frame,
     layout::{Alignment, Constraint, Direction, Layout},
     style::{Modifier, Style},
-    widgets::{Block, Borders, List, ListItem, Paragraph},
+    widgets::{Block, Borders, List, ListItem, ListState, Paragraph, Wrap},
 };
 
 use crate::app::{App, StatisticsView};
@@ -22,6 +22,8 @@ pub fn render(frame: &mut Frame, app: &App) {
                 strings.overall.to_string(),
                 strings.by_courses_topics.to_string(),
                 strings.by_modes.to_string(),
+                strings.mistakes.to_string(),
+                strings.activity.to_string(),
             ],
             app.statistics_selected,
             strings.footer_statistics,
@@ -117,6 +119,12 @@ pub fn render(frame: &mut Frame, app: &App) {
             );
         }
 
+        StatisticsView::Mistakes => render_mistakes(frame, app),
+
+        StatisticsView::MistakeDetail => render_mistake_detail(frame, app),
+
+        StatisticsView::Activity => render_activity(frame, app),
+
         StatisticsView::Detail { filter, title } => {
             let title = if title.is_empty() {
                 strings.statistics_limit(filter.limit).to_string()
@@ -156,12 +164,276 @@ fn render_menu(
         .collect::<Vec<_>>();
 
     let list = List::new(items).block(Block::default().title(title).borders(Borders::ALL));
+    let mut state = ListState::default();
+
+    if !labels.is_empty() {
+        state.select(Some(selected.min(labels.len().saturating_sub(1))));
+    }
 
     let footer = Paragraph::new(footer_text)
         .alignment(Alignment::Center)
         .block(Block::default().borders(Borders::ALL));
 
-    frame.render_widget(list, areas[0]);
+    frame.render_stateful_widget(list, areas[0], &mut state);
+    frame.render_widget(footer, areas[1]);
+}
+
+fn render_mistakes(frame: &mut Frame, app: &App) {
+    let strings = app.strings();
+
+    if app.mistake_summaries.is_empty() {
+        render_message_with_footer(
+            frame,
+            strings.mistakes,
+            strings.no_mistakes,
+            strings.footer_statistics,
+            0,
+        );
+        return;
+    }
+
+    let mut labels = Vec::with_capacity(app.mistake_summaries.len() + 1);
+    labels.push(format!(
+        "{} ({})",
+        strings.work_on_mistakes,
+        app.mistake_summaries.len()
+    ));
+
+    labels.extend(app.mistake_summaries.iter().map(|summary| {
+        format!(
+            "{} / {} · {:.1}%    [{}] {} — {}",
+            summary.incorrect_attempts,
+            summary.total_attempts,
+            summary.error_rate_percent(),
+            summary.course_code.to_uppercase(),
+            summary.topic_title,
+            summary.question_text,
+        )
+    }));
+
+    render_menu(
+        frame,
+        strings.mistakes,
+        &labels,
+        app.statistics_selected,
+        strings.footer_statistics,
+    );
+}
+
+fn render_mistake_detail(frame: &mut Frame, app: &App) {
+    let strings = app.strings();
+    let Some(detail) = app.mistake_detail.as_ref() else {
+        render_message_with_footer(
+            frame,
+            strings.mistakes,
+            strings.statistics_unavailable,
+            strings.footer_statistics_scroll,
+            app.statistics_scroll,
+        );
+        return;
+    };
+
+    let mut message = format!(
+        "[{}] {}\n\n{}\n\n{}: {} / {} ({:.1}%)\n{}: {}\n\n{}:\n{}\n\n{}:\n{}",
+        detail.summary.course_code.to_uppercase(),
+        detail.summary.topic_title,
+        detail.question.text,
+        strings.incorrect_answers_count,
+        detail.summary.incorrect_attempts,
+        detail.summary.total_attempts,
+        detail.summary.error_rate_percent(),
+        strings.last_error,
+        detail.summary.last_incorrect_at,
+        strings.correct_answers,
+        detail.correct_answers.join("\n"),
+        strings.explanation,
+        detail.question.explanation,
+    );
+
+    message.push_str(&format!(
+        "\n\n{}:\n{}",
+        strings.source,
+        format_source(strings, &detail.question.source),
+    ));
+
+    message.push_str(&format!("\n\n{}:\n", strings.mistake_history));
+
+    for (index, attempt) in detail.attempts.iter().enumerate() {
+        let result = if attempt.is_correct {
+            strings.correct
+        } else {
+            strings.incorrect
+        };
+        let selected = if attempt.selected_answers.is_empty() {
+            "—".to_string()
+        } else {
+            attempt.selected_answers.join(" | ")
+        };
+
+        message.push_str(&format!(
+            "\n{}. [{}] {}\n{}: {}\n",
+            index + 1,
+            result,
+            attempt.answered_at,
+            strings.your_answer,
+            selected,
+        ));
+    }
+
+    render_message_with_footer(
+        frame,
+        strings.mistakes,
+        &message,
+        strings.footer_statistics_scroll,
+        app.statistics_scroll,
+    );
+}
+
+fn render_activity(frame: &mut Frame, app: &App) {
+    let strings = app.strings();
+    let Some(stats) = app.activity_stats.as_ref() else {
+        render_message_with_footer(
+            frame,
+            strings.activity,
+            strings.statistics_unavailable,
+            strings.footer_statistics_scroll,
+            app.statistics_scroll,
+        );
+        return;
+    };
+
+    let level = stats.level();
+    let today_accuracy = if stats.today_answered_questions == 0 {
+        0.0
+    } else {
+        stats.today_correct_answers as f64 / stats.today_answered_questions as f64 * 100.0
+    };
+
+    let mut message = format!(
+        "{}: {}\n{}\n\n{}: {} · {} / {} · {:.1}%\n{}: {}\n{}: {}\n{}: {}\n{}: {}\n{}: {}\n{}: {}\n\n{}: {:.1}%\n{}\n\n{}:\n",
+        strings.rank,
+        strings.progress_level(level),
+        strings.progress_message(level),
+        strings.today,
+        stats.today_answered_questions,
+        stats.today_correct_answers,
+        stats.today_answered_questions,
+        today_accuracy,
+        strings.active_days,
+        stats.active_days,
+        strings.study_days,
+        stats.study_days,
+        strings.answered_questions,
+        stats.total_answered_questions,
+        strings.current_streak,
+        stats.current_streak,
+        strings.best_streak,
+        stats.best_streak,
+        strings.last_7_days,
+        stats.last_7_days_answered_questions,
+        strings.career_path,
+        stats.overall_mastery_percent(),
+        strings.salary_disclaimer,
+        strings.course_progress,
+    );
+
+    if stats.course_progress.is_empty() {
+        message.push_str("—\n");
+    } else {
+        for progress in &stats.course_progress {
+            message.push_str(&format!(
+                "{}: {}/{} ({:.1}%)\n",
+                progress.course_code.to_uppercase(),
+                progress.passed_topics,
+                progress.total_topics,
+                progress.completion_percent(),
+            ));
+        }
+    }
+
+    message.push_str(&format!(
+        "\n{}\n{}:\n{}\n",
+        strings.study_day_target,
+        strings.recent_activity,
+        heatmap(stats),
+    ));
+
+    for day in stats.recent_days.iter().rev() {
+        message.push_str(&format!(
+            "{} — {}: {} · {}: {}\n",
+            day.date,
+            strings.answered_questions,
+            day.answered_questions,
+            strings.correct_answers_count,
+            day.correct_answers,
+        ));
+    }
+
+    render_message_with_footer(
+        frame,
+        strings.activity,
+        &message,
+        strings.footer_statistics_scroll,
+        app.statistics_scroll,
+    );
+}
+
+fn heatmap(stats: &ActivityStats) -> String {
+    if stats.recent_days.is_empty() {
+        return String::from("—");
+    }
+
+    let first = stats
+        .recent_days
+        .first()
+        .map(|day| day.date.as_str())
+        .unwrap_or("");
+    let last = stats
+        .recent_days
+        .last()
+        .map(|day| day.date.as_str())
+        .unwrap_or("");
+    let mut rows = Vec::new();
+
+    for week in stats.recent_days.chunks(7) {
+        let row = week
+            .iter()
+            .map(|day| match day.answered_questions {
+                0 => '·',
+                1..=9 => '░',
+                10..=24 => '▒',
+                25..=49 => '▓',
+                _ => '█',
+            })
+            .collect::<String>();
+        rows.push(row);
+    }
+
+    format!("{first} → {last}\n{}", rows.join("\n"))
+}
+
+fn render_message_with_footer(
+    frame: &mut Frame,
+    title: &str,
+    message: &str,
+    footer_text: &str,
+    scroll: u16,
+) {
+    let areas = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Min(5), Constraint::Length(3)])
+        .split(frame.area());
+
+    let body = Paragraph::new(message)
+        .wrap(Wrap { trim: false })
+        .scroll((scroll, 0))
+        .block(Block::default().title(title).borders(Borders::ALL));
+
+    let footer = Paragraph::new(footer_text)
+        .alignment(Alignment::Center)
+        .block(Block::default().borders(Borders::ALL));
+
+    frame.render_widget(body, areas[0]);
     frame.render_widget(footer, areas[1]);
 }
 
@@ -216,5 +488,24 @@ fn accuracy_label(stats: Option<&TrainingStats>) -> String {
             format!("{:.1}%", stats.accuracy_percent())
         }
         _ => String::from("—"),
+    }
+}
+
+fn format_source(strings: &crate::localization::UiStrings, source: &Source) -> String {
+    match source.kind {
+        SourceKind::CourseMaterial => format!(
+            "{}\n{} / {}\n{}",
+            strings.course_material, source.module, source.section, source.locator,
+        ),
+        SourceKind::PostgreSqlDocs => match source.url.as_deref() {
+            Some(url) => format!(
+                "{}\n{} / {}\n{}\n{}",
+                strings.postgresql_docs, source.module, source.section, source.locator, url,
+            ),
+            None => format!(
+                "{}\n{} / {}\n{}",
+                strings.postgresql_docs, source.module, source.section, source.locator,
+            ),
+        },
     }
 }

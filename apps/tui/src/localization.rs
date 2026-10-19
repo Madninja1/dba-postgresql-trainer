@@ -1,5 +1,5 @@
 use dba_trainer_domain::{
-    QuestionLimit, StatisticsLimit, TOPIC_PASS_THRESHOLD_PERCENT, TopicMasteryStats,
+    ProgressLevel, QuestionLimit, StatisticsLimit, TOPIC_PASS_THRESHOLD_PERCENT, TopicMasteryStats,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -100,6 +100,24 @@ pub struct UiStrings {
     pub answered_questions: &'static str,
     pub incorrect_answers_count: &'static str,
     pub accuracy: &'static str,
+    pub mistakes: &'static str,
+    pub work_on_mistakes: &'static str,
+    pub no_mistakes: &'static str,
+    pub last_error: &'static str,
+    pub mistake_history: &'static str,
+    pub activity: &'static str,
+    pub active_days: &'static str,
+    pub study_days: &'static str,
+    pub current_streak: &'static str,
+    pub best_streak: &'static str,
+    pub today: &'static str,
+    pub last_7_days: &'static str,
+    pub rank: &'static str,
+    pub career_path: &'static str,
+    pub salary_disclaimer: &'static str,
+    pub course_progress: &'static str,
+    pub recent_activity: &'static str,
+    pub study_day_target: &'static str,
 
     pub all_modes: &'static str,
     pub twenty_questions: &'static str,
@@ -120,6 +138,7 @@ pub struct UiStrings {
     pub footer_result: &'static str,
     pub footer_statistics: &'static str,
     pub footer_statistics_detail: &'static str,
+    pub footer_statistics_scroll: &'static str,
     pub footer_labs: &'static str,
     pub footer_lab_detail: &'static str,
     pub footer_back: &'static str,
@@ -147,6 +166,77 @@ impl UiStrings {
             StatisticsLimit::Twenty => self.twenty_questions,
             StatisticsLimit::Fifty => self.fifty_questions,
             StatisticsLimit::AllQuestions => self.all_questions,
+        }
+    }
+
+    pub fn progress_level(&self, level: ProgressLevel) -> &'static str {
+        match level {
+            ProgressLevel::ColdStart => "Cold Start",
+            ProgressLevel::QueryRunner => "Query Runner",
+            ProgressLevel::WarmCache => "Warm Cache",
+            ProgressLevel::BackendTamer => "Backend Tamer",
+            ProgressLevel::WalKeeper => "WAL Keeper",
+            ProgressLevel::IncidentHandler => "Incident Handler",
+            ProgressLevel::DbaOneMaster => "DBA-1 Master",
+            ProgressLevel::ProductionSurvivor => "Production Survivor",
+        }
+    }
+
+    pub fn progress_message(&self, level: ProgressLevel) -> &'static str {
+        if self.main_menu == "Main menu" {
+            match level {
+                ProgressLevel::ColdStart => {
+                    "Warm-up is over. Ten questions are enough to make today count."
+                }
+                ProgressLevel::QueryRunner => {
+                    "Queries are moving. Keep knowledge from turning into a cache miss."
+                }
+                ProgressLevel::WarmCache => {
+                    "Cache is warm. Discipline is already doing more than random motivation."
+                }
+                ProgressLevel::BackendTamer => {
+                    "Backend tamed. Weak spots are visible now; finish them deliberately."
+                }
+                ProgressLevel::WalKeeper => {
+                    "WAL is under watch. Keep going without magic fixes or chmod 777."
+                }
+                ProgressLevel::IncidentHandler => {
+                    "Incidents look less mystical now: observe first, then fix."
+                }
+                ProgressLevel::DbaOneMaster => {
+                    "DBA-1 completed. Now you can at least tell what exactly broke."
+                }
+                ProgressLevel::ProductionSurvivor => {
+                    "Production Survivor. Everything currently loaded is mastered; add the next level."
+                }
+            }
+        } else {
+            match level {
+                ProgressLevel::ColdStart => {
+                    "Разогрев закончен. Десять вопросов — и день уже не потерян."
+                }
+                ProgressLevel::QueryRunner => {
+                    "Запросы пошли. Главное — не превращать знания в cache miss."
+                }
+                ProgressLevel::WarmCache => {
+                    "Кэш прогрет. Дисциплина уже работает лучше случайной мотивации."
+                }
+                ProgressLevel::BackendTamer => {
+                    "Backend приручён. Слабые места видно — добивай их осознанно."
+                }
+                ProgressLevel::WalKeeper => {
+                    "WAL под присмотром. Продолжай без магии и без chmod 777."
+                }
+                ProgressLevel::IncidentHandler => {
+                    "Инциденты уже не выглядят мистикой: сначала наблюдаем, потом чиним."
+                }
+                ProgressLevel::DbaOneMaster => {
+                    "DBA-1 закрыт. Теперь ты хотя бы знаешь, что именно сломалось."
+                }
+                ProgressLevel::ProductionSurvivor => {
+                    "Production Survivor. Всё загруженное освоено — пора добавлять следующий уровень."
+                }
+            }
         }
     }
 
@@ -259,6 +349,24 @@ static ENGLISH: UiStrings = UiStrings {
     answered_questions: "Answered questions",
     incorrect_answers_count: "Incorrect answers",
     accuracy: "Accuracy",
+    mistakes: "Mistakes",
+    work_on_mistakes: "Work on mistakes",
+    no_mistakes: "No mistakes have been recorded yet.",
+    last_error: "Last error",
+    mistake_history: "Attempt history",
+    activity: "Activity and progress",
+    active_days: "Active days",
+    study_days: "Study days",
+    current_streak: "Current streak",
+    best_streak: "Best streak",
+    today: "Today",
+    last_7_days: "Last 7 days",
+    rank: "Rank",
+    career_path: "Career path (game)",
+    salary_disclaimer: "Skills are counted. Salary is not guaranteed.",
+    course_progress: "Course progress",
+    recent_activity: "Recent 28 days",
+    study_day_target: "A study day requires at least 10 answered questions.",
 
     all_modes: "All modes",
     twenty_questions: "20 questions",
@@ -279,6 +387,7 @@ static ENGLISH: UiStrings = UiStrings {
     footer_result: "Enter or Esc/Backspace — main menu | q — quit",
     footer_statistics: "↑/↓ — select | Enter — open | Esc/Backspace — back | c — clear all statistics | q — quit",
     footer_statistics_detail: "Enter, Esc or Backspace — back | c — clear all statistics | q — quit",
+    footer_statistics_scroll: "↑/↓ or j/k — scroll | Esc/Backspace — back | c — clear all statistics | q — quit",
     footer_labs: "↑/↓ or j/k — select | Enter — open | Esc/Backspace — back | q — quit",
     footer_lab_detail: "↑/↓ or j/k — scroll | Esc/Backspace — back | q — quit",
     footer_back: "Esc/Backspace — back | q — quit",
@@ -352,6 +461,24 @@ static RUSSIAN: UiStrings = UiStrings {
     answered_questions: "Отвечено вопросов",
     incorrect_answers_count: "Неправильных ответов",
     accuracy: "Точность",
+    mistakes: "Ошибки",
+    work_on_mistakes: "Работа над ошибками",
+    no_mistakes: "Ошибок пока нет.",
+    last_error: "Последняя ошибка",
+    mistake_history: "История попыток",
+    activity: "Активность и прогресс",
+    active_days: "Дней с запуском",
+    study_days: "Учебных дней",
+    current_streak: "Текущая серия",
+    best_streak: "Лучшая серия",
+    today: "Сегодня",
+    last_7_days: "За 7 дней",
+    rank: "Ранг",
+    career_path: "Путь к 500k ₽ (игровой)",
+    salary_disclaimer: "Навыки считаем. Зарплату не гарантируем.",
+    course_progress: "Прогресс по курсам",
+    recent_activity: "Последние 28 дней",
+    study_day_target: "Учебный день — минимум 10 отвеченных вопросов.",
 
     all_modes: "Все режимы",
     twenty_questions: "20 вопросов",
@@ -372,6 +499,7 @@ static RUSSIAN: UiStrings = UiStrings {
     footer_result: "Enter или Esc/Backspace — главное меню | q — выход",
     footer_statistics: "↑/↓ — выбор | Enter — открыть | Esc/Backspace — назад | c — очистить всю статистику | q — выход",
     footer_statistics_detail: "Enter, Esc или Backspace — назад | c — очистить всю статистику | q — выход",
+    footer_statistics_scroll: "↑/↓ или j/k — прокрутка | Esc/Backspace — назад | c — очистить всю статистику | q — выход",
     footer_labs: "↑/↓ или j/k — выбор | Enter — открыть | Esc/Backspace — назад | q — выход",
     footer_lab_detail: "↑/↓ или j/k — прокрутка | Esc/Backspace — назад | q — выход",
     footer_back: "Esc/Backspace — назад | q — выход",

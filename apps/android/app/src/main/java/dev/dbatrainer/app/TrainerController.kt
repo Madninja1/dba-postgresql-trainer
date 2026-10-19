@@ -5,10 +5,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import dev.dbatrainer.ffi.MobileActivityStats
 import dev.dbatrainer.ffi.MobileAnswerResult
 import dev.dbatrainer.ffi.MobileLab
 import dev.dbatrainer.ffi.MobileQuestion
 import dev.dbatrainer.ffi.MobileQuestionLimit
+import dev.dbatrainer.ffi.MobileQuestionMistakeDetail
+import dev.dbatrainer.ffi.MobileQuestionMistakeSummary
 import dev.dbatrainer.ffi.MobileQuestionType
 import dev.dbatrainer.ffi.MobileSessionProgress
 import dev.dbatrainer.ffi.MobileStatisticsLimit
@@ -39,6 +42,9 @@ enum class StatisticsPage {
     Topics,
     GlobalModes,
     ScopeModes,
+    Mistakes,
+    MistakeDetail,
+    Activity,
     Detail,
 }
 
@@ -99,6 +105,9 @@ class TrainerController(context: Context) {
     var pendingCourse by mutableStateOf<String?>(null)
         private set
 
+    var pendingMistakeReview by mutableStateOf(false)
+        private set
+
     var currentQuestion by mutableStateOf<MobileQuestion?>(null)
         private set
 
@@ -147,6 +156,15 @@ class TrainerController(context: Context) {
         private set
 
     var statisticsDetailTitle by mutableStateOf("")
+        private set
+
+    var mistakeSummaries by mutableStateOf<List<MobileQuestionMistakeSummary>>(emptyList())
+        private set
+
+    var mistakeDetail by mutableStateOf<MobileQuestionMistakeDetail?>(null)
+        private set
+
+    var activityStats by mutableStateOf<MobileActivityStats?>(null)
         private set
 
     var selectedStatisticsCourse by mutableStateOf<String?>(null)
@@ -227,6 +245,7 @@ class TrainerController(context: Context) {
         selectedTopicCourse = null
         pendingTopic = null
         pendingCourse = null
+        pendingMistakeReview = false
         screen = AppScreen.TopicCourses
     }
 
@@ -266,24 +285,29 @@ class TrainerController(context: Context) {
     fun openGeneralQuiz() {
         pendingTopic = null
         pendingCourse = null
+        pendingMistakeReview = false
         screen = AppScreen.Courses
     }
 
     fun chooseCourse(courseCode: String) {
         pendingTopic = null
         pendingCourse = courseCode
+        pendingMistakeReview = false
         screen = AppScreen.Limit
     }
 
     fun chooseTopic(topic: MobileTopic) {
         pendingCourse = null
         pendingTopic = topic
+        pendingMistakeReview = false
         screen = AppScreen.Limit
     }
 
     fun startQuiz(limit: MobileQuestionLimit) {
         runCoreAction {
             val session = when {
+                pendingMistakeReview -> requireTrainer().startMistakeSession(limit)
+
                 pendingTopic != null -> {
                     requireTrainer().startTopicSession(
                         pendingTopic!!.id,
@@ -412,8 +436,20 @@ class TrainerController(context: Context) {
     }
 
     fun finishResults() {
+        val wasMistakeReview = pendingMistakeReview
+
         resetQuizState()
-        screen = AppScreen.Home
+
+        if (wasMistakeReview) {
+            runCoreAction {
+                mistakeSummaries = requireTrainer().mistakeSummaries()
+                mistakeDetail = null
+                statisticsPage = StatisticsPage.Mistakes
+                screen = AppScreen.Statistics
+            }
+        } else {
+            screen = AppScreen.Home
+        }
     }
 
     fun openStatistics() {
@@ -509,11 +545,47 @@ class TrainerController(context: Context) {
         statisticsPage = StatisticsPage.Detail
     }
 
+    fun openMistakes() {
+        runCoreAction {
+            mistakeSummaries = requireTrainer().mistakeSummaries()
+            mistakeDetail = null
+            statisticsPage = StatisticsPage.Mistakes
+        }
+    }
+
+    fun openMistakeDetail(summary: MobileQuestionMistakeSummary) {
+        runCoreAction {
+            mistakeDetail = requireTrainer().mistakeDetail(summary.questionId)
+            statisticsPage = StatisticsPage.MistakeDetail
+        }
+    }
+
+    fun openMistakeReview() {
+        if (mistakeSummaries.isEmpty()) {
+            return
+        }
+
+        pendingTopic = null
+        pendingCourse = null
+        pendingMistakeReview = true
+        screen = AppScreen.Limit
+    }
+
+    fun openActivity() {
+        runCoreAction {
+            activityStats = requireTrainer().activityStats()
+            statisticsPage = StatisticsPage.Activity
+        }
+    }
+
     fun clearStatistics() {
         runCoreAction {
             requireTrainer().clearStatistics()
             refreshStatisticsOverview()
             resetStatisticsNavigation()
+            mistakeSummaries = emptyList()
+            mistakeDetail = null
+            activityStats = null
         }
     }
 
@@ -535,6 +607,11 @@ class TrainerController(context: Context) {
             AppScreen.LabDetail -> screen = AppScreen.Labs
             AppScreen.Limit -> {
                 screen = when {
+                    pendingMistakeReview -> {
+                        pendingMistakeReview = false
+                        statisticsPage = StatisticsPage.Mistakes
+                        AppScreen.Statistics
+                    }
                     pendingTopic != null -> AppScreen.Topics
                     pendingCourse != null -> AppScreen.Courses
                     else -> AppScreen.Home
@@ -567,6 +644,12 @@ class TrainerController(context: Context) {
                 statisticsPage = StatisticsPage.Topics
             }
 
+            StatisticsPage.Mistakes -> statisticsPage = StatisticsPage.Root
+            StatisticsPage.MistakeDetail -> {
+                mistakeDetail = null
+                statisticsPage = StatisticsPage.Mistakes
+            }
+            StatisticsPage.Activity -> statisticsPage = StatisticsPage.Root
             StatisticsPage.Detail -> statisticsPage = statisticsDetailReturnPage
         }
     }
@@ -670,6 +753,8 @@ class TrainerController(context: Context) {
         scopeModeStatistics = emptyList()
         statisticsDetail = null
         statisticsDetailTitle = ""
+        mistakeDetail = null
+        activityStats = null
         statisticsDetailReturnPage = StatisticsPage.Root
     }
 
@@ -684,6 +769,7 @@ class TrainerController(context: Context) {
         selectedTopicCourse = null
         pendingTopic = null
         pendingCourse = null
+        pendingMistakeReview = false
     }
 
     private fun requireTrainer(): MobileTrainer =

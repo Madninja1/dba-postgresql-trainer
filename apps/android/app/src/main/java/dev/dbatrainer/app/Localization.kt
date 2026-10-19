@@ -1,5 +1,6 @@
 package dev.dbatrainer.app
 
+import dev.dbatrainer.ffi.MobileProgressLevel
 import dev.dbatrainer.ffi.MobileTopicMasteryStats
 
 enum class UiLanguage(val code: String) {
@@ -72,6 +73,25 @@ data class UiStrings(
     val correctAnswersCount: String,
     val incorrectAnswersCount: String,
     val accuracy: String,
+    val mistakes: String,
+    val workOnMistakes: String,
+    val noMistakes: String,
+    val attemptHistory: String,
+    val attempts: String,
+    val lastError: String,
+    val activity: String,
+    val activeDays: String,
+    val studyDays: String,
+    val currentStreak: String,
+    val bestStreak: String,
+    val today: String,
+    val last7Days: String,
+    val rank: String,
+    val careerPath: String,
+    val salaryDisclaimer: String,
+    val courseProgress: String,
+    val recentActivity: String,
+    val studyDayTarget: String,
     val back: String,
     val courseMaterial: String,
     val postgresqlDocumentation: String,
@@ -132,6 +152,43 @@ data class UiStrings(
             }
         }
     }
+
+    fun progressLevel(level: MobileProgressLevel): String =
+        when (level) {
+            MobileProgressLevel.COLD_START -> "Cold Start"
+            MobileProgressLevel.QUERY_RUNNER -> "Query Runner"
+            MobileProgressLevel.WARM_CACHE -> "Warm Cache"
+            MobileProgressLevel.BACKEND_TAMER -> "Backend Tamer"
+            MobileProgressLevel.WAL_KEEPER -> "WAL Keeper"
+            MobileProgressLevel.INCIDENT_HANDLER -> "Incident Handler"
+            MobileProgressLevel.DBA_ONE_MASTER -> "DBA-1 Master"
+            MobileProgressLevel.PRODUCTION_SURVIVOR -> "Production Survivor"
+        }
+
+    fun progressMessage(level: MobileProgressLevel): String =
+        if (this === ENGLISH_STRINGS) {
+            when (level) {
+                MobileProgressLevel.COLD_START -> "Warm-up is over. Ten questions are enough to make today count."
+                MobileProgressLevel.QUERY_RUNNER -> "Queries are moving. Keep knowledge from turning into a cache miss."
+                MobileProgressLevel.WARM_CACHE -> "Cache is warm. Discipline is already doing more than random motivation."
+                MobileProgressLevel.BACKEND_TAMER -> "Backend tamed. Weak spots are visible now; finish them deliberately."
+                MobileProgressLevel.WAL_KEEPER -> "WAL is under watch. Keep going without magic fixes or chmod 777."
+                MobileProgressLevel.INCIDENT_HANDLER -> "Incidents look less mystical now: observe first, then fix."
+                MobileProgressLevel.DBA_ONE_MASTER -> "DBA-1 completed. Now you can at least tell what exactly broke."
+                MobileProgressLevel.PRODUCTION_SURVIVOR -> "Production Survivor. Everything currently loaded is mastered; add the next level."
+            }
+        } else {
+            when (level) {
+                MobileProgressLevel.COLD_START -> "Разогрев закончен. Десять вопросов — и день уже не потерян."
+                MobileProgressLevel.QUERY_RUNNER -> "Запросы пошли. Главное — не превращать знания в cache miss."
+                MobileProgressLevel.WARM_CACHE -> "Кэш прогрет. Дисциплина уже работает лучше случайной мотивации."
+                MobileProgressLevel.BACKEND_TAMER -> "Backend приручён. Слабые места видно — добивай их осознанно."
+                MobileProgressLevel.WAL_KEEPER -> "WAL под присмотром. Продолжай без магии и без chmod 777."
+                MobileProgressLevel.INCIDENT_HANDLER -> "Инциденты уже не выглядят мистикой: сначала наблюдаем, потом чиним."
+                MobileProgressLevel.DBA_ONE_MASTER -> "DBA-1 закрыт. Теперь ты хотя бы знаешь, что именно сломалось."
+                MobileProgressLevel.PRODUCTION_SURVIVOR -> "Production Survivor. Всё загруженное освоено — пора добавлять следующий уровень."
+            }
+        }
 
     fun resultScore(correct: Int, total: Int): String =
         if (this === ENGLISH_STRINGS) {
@@ -214,6 +271,25 @@ private val ENGLISH_STRINGS = UiStrings(
     correctAnswersCount = "Correct answers",
     incorrectAnswersCount = "Incorrect answers",
     accuracy = "Accuracy",
+    mistakes = "Mistakes",
+    workOnMistakes = "Work on mistakes",
+    noMistakes = "No mistakes have been recorded yet.",
+    attemptHistory = "Attempt history",
+    attempts = "Attempts",
+    lastError = "Last error",
+    activity = "Activity and progress",
+    activeDays = "Active days",
+    studyDays = "Study days",
+    currentStreak = "Current streak",
+    bestStreak = "Best streak",
+    today = "Today",
+    last7Days = "Last 7 days",
+    rank = "Rank",
+    careerPath = "Career path (game)",
+    salaryDisclaimer = "Skills are counted. Salary is not guaranteed.",
+    courseProgress = "Course progress",
+    recentActivity = "Recent 28 days",
+    studyDayTarget = "A study day requires at least 10 answered questions.",
     back = "Back",
     courseMaterial = "Course material",
     postgresqlDocumentation = "PostgreSQL documentation",
@@ -279,6 +355,25 @@ private val RUSSIAN_STRINGS = UiStrings(
     correctAnswersCount = "Правильных ответов",
     incorrectAnswersCount = "Неправильных ответов",
     accuracy = "Точность",
+    mistakes = "Ошибки",
+    workOnMistakes = "Работа над ошибками",
+    noMistakes = "Ошибок пока нет.",
+    attemptHistory = "История попыток",
+    attempts = "Попыток",
+    lastError = "Последняя ошибка",
+    activity = "Активность и прогресс",
+    activeDays = "Дней с запуском",
+    studyDays = "Учебных дней",
+    currentStreak = "Текущая серия",
+    bestStreak = "Лучшая серия",
+    today = "Сегодня",
+    last7Days = "За 7 дней",
+    rank = "Ранг",
+    careerPath = "Путь к 500k ₽ (игровой)",
+    salaryDisclaimer = "Навыки считаем. Зарплату не гарантируем.",
+    courseProgress = "Прогресс по курсам",
+    recentActivity = "Последние 28 дней",
+    studyDayTarget = "Учебный день — минимум 10 отвеченных вопросов.",
     back = "Назад",
     courseMaterial = "Материал курса",
     postgresqlDocumentation = "Документация PostgreSQL",

@@ -1,12 +1,16 @@
 use std::path::Path;
 
-use dba_trainer_application::{LabRepository, RepositoryError, SessionRepository, TopicRepository};
+use dba_trainer_application::{
+    LabRepository, LearningHistoryRepository, RepositoryError, SessionRepository, TopicRepository,
+};
 
 use dba_trainer_domain::{
-    AnswerOption, AnswerOptionId, AnswerResult, Lab, Question, QuestionId, QuestionType, QuizScope,
-    QuizSession, SessionConfig, SessionId, SessionProgress, Source, SourceId, SourceKind,
-    StatisticsFilter, StatisticsLimit, StatisticsScope, TOPIC_PASS_THRESHOLD_PERCENT, Topic,
-    TopicId, TopicMasteryStats, TrainingStats,
+    ActivityStats, AnswerOption, AnswerOptionId, AnswerResult, CourseProgress, DailyActivity, Lab,
+    Question, QuestionAttemptHistory, QuestionId, QuestionMistakeDetail, QuestionMistakeSummary,
+    QuestionType, QuizScope, QuizSession, STUDY_DAY_QUESTION_TARGET, SessionConfig, SessionId,
+    SessionProgress, Source, SourceId, SourceKind, StatisticsFilter, StatisticsLimit,
+    StatisticsScope, TOPIC_PASS_THRESHOLD_PERCENT, Topic, TopicId, TopicMasteryStats,
+    TrainingStats,
 };
 
 use rusqlite::{Connection, OptionalExtension, params};
@@ -326,14 +330,444 @@ impl LabRepository for SqliteRepository {
     }
 }
 
+impl LearningHistoryRepository for SqliteRepository {
+    fn mistake_summaries(&self) -> Result<Vec<QuestionMistakeSummary>, RepositoryError> {
+        let mut statement = self
+            .connection
+            .prepare(
+                "
+                SELECT
+                    q.id,
+                    q.topic_id,
+                    t.course_code,
+                    t.title,
+                    q.text,
+                    COUNT(a.id),
+                    SUM(CASE WHEN a.is_correct = 0 THEN 1 ELSE 0 END),
+                    MAX(CASE WHEN a.is_correct = 0 THEN a.answered_at END)
+                FROM attempts a
+                JOIN questions q
+                  ON q.id = a.question_id
+                JOIN topics t
+                  ON t.id = q.topic_id
+                WHERE q.is_active = 1
+                  AND t.is_active = 1
+                GROUP BY q.id, q.topic_id, t.course_code, t.title, q.text
+                HAVING SUM(CASE WHEN a.is_correct = 0 THEN 1 ELSE 0 END) > 0
+                ORDER BY
+                    SUM(CASE WHEN a.is_correct = 0 THEN 1 ELSE 0 END) DESC,
+                    COUNT(a.id) DESC,
+                    MAX(CASE WHEN a.is_correct = 0 THEN a.answered_at END) DESC,
+                    q.id
+                ",
+            )
+            .map_err(repository_error)?;
+
+        let rows = statement
+            .query_map([], |row| {
+                Ok(QuestionMistakeSummary {
+                    question_id: QuestionId(row.get(0)?),
+                    topic_id: TopicId(row.get(1)?),
+                    course_code: row.get(2)?,
+                    topic_title: row.get(3)?,
+                    question_text: row.get(4)?,
+                    total_attempts: row.get::<_, i64>(5)? as usize,
+                    incorrect_attempts: row.get::<_, i64>(6)? as usize,
+                    last_incorrect_at: row.get(7)?,
+                })
+            })
+            .map_err(repository_error)?;
+
+        rows.collect::<rusqlite::Result<Vec<_>>>()
+            .map_err(repository_error)
+    }
+
+    fn mistake_detail(
+        &self,
+        question_id: QuestionId,
+    ) -> Result<QuestionMistakeDetail, RepositoryError> {
+        let summary = self
+            .mistake_summaries()?
+            .into_iter()
+            .find(|summary| summary.question_id == question_id)
+            .ok_or(RepositoryError::NotFound)?;
+
+        let question = self.load_question(question_id)?;
+
+        let correct_answers = {
+            let mut statement = self
+                .connection
+                .prepare(
+                    "
+                    SELECT text
+                    FROM answer_options
+                    WHERE question_id = ?1
+                      AND is_active = 1
+                      AND is_correct = 1
+                    ORDER BY sort_order, id
+                    ",
+                )
+                .map_err(repository_error)?;
+
+            let rows = statement
+                .query_map(params![question_id.0], |row| row.get::<_, String>(0))
+                .map_err(repository_error)?;
+
+            rows.collect::<rusqlite::Result<Vec<_>>>()
+                .map_err(repository_error)?
+        };
+
+        let attempts = {
+            let mut statement = self
+                .connection
+                .prepare(
+                    "
+                    SELECT id, answered_at, is_correct
+                    FROM attempts
+                    WHERE question_id = ?1
+                    ORDER BY answered_at DESC, id DESC
+                    ",
+                )
+                .map_err(repository_error)?;
+
+            let rows = statement
+                .query_map(params![question_id.0], |row| {
+                    Ok((
+                        row.get::<_, i64>(0)?,
+                        row.get::<_, String>(1)?,
+                        row.get::<_, i64>(2)? != 0,
+                    ))
+                })
+                .map_err(repository_error)?;
+
+            rows.collect::<rusqlite::Result<Vec<_>>>()
+                .map_err(repository_error)?
+        };
+
+        let mut history = Vec::with_capacity(attempts.len());
+
+        for (attempt_id, answered_at, is_correct) in attempts {
+            let mut statement = self
+                .connection
+                .prepare(
+                    "
+                    SELECT ao.text
+                    FROM attempt_answers aa
+                    JOIN answer_options ao
+                      ON ao.id = aa.answer_option_id
+                     AND ao.question_id = aa.question_id
+                    WHERE aa.attempt_id = ?1
+                    ORDER BY ao.sort_order, ao.id
+                    ",
+                )
+                .map_err(repository_error)?;
+
+            let rows = statement
+                .query_map(params![attempt_id], |row| row.get::<_, String>(0))
+                .map_err(repository_error)?;
+
+            let selected_answers = rows
+                .collect::<rusqlite::Result<Vec<_>>>()
+                .map_err(repository_error)?;
+
+            history.push(QuestionAttemptHistory {
+                answered_at,
+                is_correct,
+                selected_answers,
+            });
+        }
+
+        Ok(QuestionMistakeDetail {
+            summary,
+            question,
+            correct_answers,
+            attempts: history,
+        })
+    }
+
+    fn activity_stats(&self) -> Result<ActivityStats, RepositoryError> {
+        let (active_days, study_days, total_answered_questions) = self
+            .connection
+            .query_row(
+                "
+                SELECT
+                    COALESCE(SUM(CASE WHEN open_count > 0 THEN 1 ELSE 0 END), 0),
+                    COALESCE(SUM(CASE WHEN answered_questions >= ?1 THEN 1 ELSE 0 END), 0),
+                    COALESCE(SUM(answered_questions), 0)
+                FROM daily_activity
+                ",
+                params![STUDY_DAY_QUESTION_TARGET as i64],
+                |row| {
+                    Ok((
+                        row.get::<_, i64>(0)?,
+                        row.get::<_, i64>(1)?,
+                        row.get::<_, i64>(2)?,
+                    ))
+                },
+            )
+            .map_err(repository_error)?;
+
+        let (today_answered_questions, today_correct_answers) = self
+            .connection
+            .query_row(
+                "
+                SELECT
+                    COALESCE(answered_questions, 0),
+                    COALESCE(correct_answers, 0)
+                FROM daily_activity
+                WHERE activity_date = date('now', 'localtime')
+                ",
+                [],
+                |row| Ok((row.get::<_, i64>(0)?, row.get::<_, i64>(1)?)),
+            )
+            .optional()
+            .map_err(repository_error)?
+            .unwrap_or((0, 0));
+
+        let last_7_days_answered_questions = self
+            .connection
+            .query_row(
+                "
+                SELECT COALESCE(SUM(answered_questions), 0)
+                FROM daily_activity
+                WHERE activity_date >= date('now', 'localtime', '-6 days')
+                  AND activity_date <= date('now', 'localtime')
+                ",
+                [],
+                |row| row.get::<_, i64>(0),
+            )
+            .map_err(repository_error)?;
+
+        let current_streak = self
+            .connection
+            .query_row(
+                "
+                WITH RECURSIVE
+                streak_start(day) AS (
+                    SELECT CASE
+                        WHEN COALESCE((
+                            SELECT answered_questions
+                            FROM daily_activity
+                            WHERE activity_date = date('now', 'localtime')
+                        ), 0) >= ?1
+                        THEN date('now', 'localtime')
+
+                        WHEN COALESCE((
+                            SELECT answered_questions
+                            FROM daily_activity
+                            WHERE activity_date = date('now', 'localtime', '-1 day')
+                        ), 0) >= ?1
+                        THEN date('now', 'localtime', '-1 day')
+
+                        ELSE NULL
+                    END
+                ),
+                streak(day, length) AS (
+                    SELECT day, 1
+                    FROM streak_start
+                    WHERE day IS NOT NULL
+
+                    UNION ALL
+
+                    SELECT date(day, '-1 day'), length + 1
+                    FROM streak
+                    WHERE COALESCE((
+                        SELECT answered_questions
+                        FROM daily_activity
+                        WHERE activity_date = date(streak.day, '-1 day')
+                    ), 0) >= ?1
+                )
+                SELECT COALESCE(MAX(length), 0)
+                FROM streak
+                ",
+                params![STUDY_DAY_QUESTION_TARGET as i64],
+                |row| row.get::<_, i64>(0),
+            )
+            .map_err(repository_error)?;
+
+        let best_streak = self
+            .connection
+            .query_row(
+                "
+                WITH study_days AS (
+                    SELECT
+                        activity_date,
+                        ROW_NUMBER() OVER (ORDER BY activity_date) AS row_number
+                    FROM daily_activity
+                    WHERE answered_questions >= ?1
+                ), grouped AS (
+                    SELECT
+                        activity_date,
+                        julianday(activity_date) - row_number AS group_key
+                    FROM study_days
+                ), streaks AS (
+                    SELECT COUNT(*) AS streak_length
+                    FROM grouped
+                    GROUP BY group_key
+                )
+                SELECT COALESCE(MAX(streak_length), 0)
+                FROM streaks
+                ",
+                params![STUDY_DAY_QUESTION_TARGET as i64],
+                |row| row.get::<_, i64>(0),
+            )
+            .map_err(repository_error)?;
+
+        let recent_days = {
+            let mut statement = self
+                .connection
+                .prepare(
+                    "
+                    WITH RECURSIVE days(day) AS (
+                        SELECT date('now', 'localtime', '-27 days')
+
+                        UNION ALL
+
+                        SELECT date(day, '+1 day')
+                        FROM days
+                        WHERE day < date('now', 'localtime')
+                    )
+                    SELECT
+                        days.day,
+                        COALESCE(a.open_count, 0),
+                        COALESCE(a.answered_questions, 0),
+                        COALESCE(a.correct_answers, 0),
+                        COALESCE(a.completed_sessions, 0)
+                    FROM days
+                    LEFT JOIN daily_activity a
+                      ON a.activity_date = days.day
+                    ORDER BY days.day
+                    ",
+                )
+                .map_err(repository_error)?;
+
+            let rows = statement
+                .query_map([], |row| {
+                    Ok(DailyActivity {
+                        date: row.get(0)?,
+                        open_count: row.get::<_, i64>(1)? as usize,
+                        answered_questions: row.get::<_, i64>(2)? as usize,
+                        correct_answers: row.get::<_, i64>(3)? as usize,
+                        completed_sessions: row.get::<_, i64>(4)? as usize,
+                    })
+                })
+                .map_err(repository_error)?;
+
+            rows.collect::<rusqlite::Result<Vec<_>>>()
+                .map_err(repository_error)?
+        };
+
+        let course_totals = {
+            let mut statement = self
+                .connection
+                .prepare(
+                    "
+                    SELECT course_code, COUNT(*)
+                    FROM topics
+                    WHERE is_active = 1
+                    GROUP BY course_code
+                    ORDER BY course_code
+                    ",
+                )
+                .map_err(repository_error)?;
+
+            let rows = statement
+                .query_map([], |row| {
+                    Ok((row.get::<_, String>(0)?, row.get::<_, i64>(1)?))
+                })
+                .map_err(repository_error)?;
+
+            rows.collect::<rusqlite::Result<Vec<_>>>()
+                .map_err(repository_error)?
+        };
+
+        let mut course_progress = Vec::with_capacity(course_totals.len());
+
+        for (course_code, total_topics) in course_totals {
+            let passed_topics = self
+                .connection
+                .query_row(
+                    "
+                    SELECT COUNT(DISTINCT topic_id)
+                    FROM (
+                        SELECT
+                            s.id,
+                            s.topic_id AS topic_id
+                        FROM quiz_sessions s
+                        JOIN attempts a
+                          ON a.session_id = s.id
+                        JOIN topics t
+                          ON t.id = s.topic_id
+                        WHERE s.scope = 'topic'
+                          AND s.finished_at IS NOT NULL
+                          AND s.cancelled_at IS NULL
+                          AND s.is_review = 0
+                          AND t.is_active = 1
+                          AND t.course_code = ?1
+                        GROUP BY s.id, s.topic_id
+                        HAVING COUNT(a.id) > 0
+                           AND (SUM(a.is_correct) * 100.0 / COUNT(a.id)) >= ?2
+                    ) passed_sessions
+                    ",
+                    params![course_code, TOPIC_PASS_THRESHOLD_PERCENT],
+                    |row| row.get::<_, i64>(0),
+                )
+                .map_err(repository_error)?;
+
+            course_progress.push(CourseProgress {
+                course_code,
+                passed_topics: passed_topics as usize,
+                total_topics: total_topics as usize,
+            });
+        }
+
+        Ok(ActivityStats {
+            active_days: active_days as usize,
+            study_days: study_days as usize,
+            current_streak: current_streak as usize,
+            best_streak: best_streak as usize,
+            total_answered_questions: total_answered_questions as usize,
+            today_answered_questions: today_answered_questions as usize,
+            today_correct_answers: today_correct_answers as usize,
+            last_7_days_answered_questions: last_7_days_answered_questions as usize,
+            recent_days,
+            course_progress,
+        })
+    }
+
+    fn record_app_open(&mut self) -> Result<(), RepositoryError> {
+        self.connection
+            .execute(
+                "
+                INSERT INTO daily_activity (
+                    activity_date,
+                    open_count
+                )
+                VALUES (
+                    date('now', 'localtime'),
+                    1
+                )
+                ON CONFLICT(activity_date) DO UPDATE SET
+                    open_count = daily_activity.open_count + 1
+                ",
+                [],
+            )
+            .map_err(repository_error)?;
+
+        Ok(())
+    }
+}
+
 impl SessionRepository for SqliteRepository {
     fn start_session(&mut self, config: &SessionConfig) -> Result<QuizSession, RepositoryError> {
-        let (scope, topic_id, course_code) = match &config.scope {
-            QuizScope::Topic(topic_id) => ("topic", Some(topic_id.0), None),
+        let (scope, topic_id, course_code, is_review) = match &config.scope {
+            QuizScope::Topic(topic_id) => ("topic", Some(topic_id.0), None, false),
 
-            QuizScope::Course(course_code) => ("all", None, Some(course_code.as_str())),
+            QuizScope::Course(course_code) => ("all", None, Some(course_code.as_str()), false),
 
-            QuizScope::AllTopics => ("all", None, None),
+            QuizScope::AllTopics => ("all", None, None, false),
+
+            QuizScope::Mistakes => ("all", None, None, true),
         };
 
         let requested_count = config.limit.as_limit().map(|value| value as i64);
@@ -384,16 +818,26 @@ impl SessionRepository for SqliteRepository {
                           ?2 IS NULL
                           OR t.course_code = ?2
                       )
+                      AND (
+                          ?3 = 0
+                          OR EXISTS (
+                              SELECT 1
+                              FROM attempts previous_attempt
+                              WHERE previous_attempt.question_id = q.id
+                                AND previous_attempt.is_correct = 0
+                          )
+                      )
                     ORDER BY RANDOM()
-                    LIMIT ?3
+                    LIMIT ?4
                     ",
                 )
                 .map_err(repository_error)?;
 
             let rows = statement
-                .query_map(params![topic_id, course_code, sql_limit], |row| {
-                    row.get::<_, i64>(0)
-                })
+                .query_map(
+                    params![topic_id, course_code, is_review as i64, sql_limit],
+                    |row| row.get::<_, i64>(0),
+                )
                 .map_err(repository_error)?;
 
             let ids = rows
@@ -414,11 +858,18 @@ impl SessionRepository for SqliteRepository {
                     scope,
                     topic_id,
                     course_code,
-                    requested_count
+                    requested_count,
+                    is_review
                 )
-                VALUES (?1, ?2, ?3, ?4)
+                VALUES (?1, ?2, ?3, ?4, ?5)
                 ",
-                params![scope, topic_id, course_code, requested_count],
+                params![
+                    scope,
+                    topic_id,
+                    course_code,
+                    requested_count,
+                    is_review as i64
+                ],
             )
             .map_err(repository_error)?;
 
@@ -678,13 +1129,14 @@ impl SessionRepository for SqliteRepository {
             )
             .map_err(repository_error)?;
 
-        transaction
+        let completed_session = transaction
             .execute(
                 "
             UPDATE quiz_sessions
             SET finished_at =
                 CURRENT_TIMESTAMP
             WHERE id = ?1
+              AND finished_at IS NULL
               AND current_index >= (
                   SELECT COUNT(*)
                   FROM session_questions
@@ -692,6 +1144,34 @@ impl SessionRepository for SqliteRepository {
               )
             ",
                 params![session_id.0],
+            )
+            .map_err(repository_error)?
+            > 0;
+
+        transaction
+            .execute(
+                "
+                INSERT INTO daily_activity (
+                    activity_date,
+                    open_count,
+                    answered_questions,
+                    correct_answers,
+                    completed_sessions
+                )
+                VALUES (
+                    date('now', 'localtime'),
+                    1,
+                    1,
+                    ?1,
+                    ?2
+                )
+                ON CONFLICT(activity_date) DO UPDATE SET
+                    open_count = MAX(daily_activity.open_count, 1),
+                    answered_questions = daily_activity.answered_questions + 1,
+                    correct_answers = daily_activity.correct_answers + excluded.correct_answers,
+                    completed_sessions = daily_activity.completed_sessions + excluded.completed_sessions
+                ",
+                params![is_correct as i64, completed_session as i64],
             )
             .map_err(repository_error)?;
 
@@ -715,6 +1195,7 @@ impl SessionRepository for SqliteRepository {
                 s.scope,
                 s.topic_id,
                 s.course_code,
+                s.is_review,
                 s.current_index,
 
                 (
@@ -754,10 +1235,11 @@ impl SessionRepository for SqliteRepository {
                         row.get::<_, String>(1)?,
                         row.get::<_, Option<i64>>(2)?,
                         row.get::<_, Option<String>>(3)?,
-                        row.get::<_, i64>(4)?,
+                        row.get::<_, i64>(4)? != 0,
                         row.get::<_, i64>(5)?,
                         row.get::<_, i64>(6)?,
                         row.get::<_, i64>(7)?,
+                        row.get::<_, i64>(8)?,
                     ))
                 },
             )
@@ -769,6 +1251,7 @@ impl SessionRepository for SqliteRepository {
             scope,
             topic_id,
             course_code,
+            is_review,
             current_index,
             total_questions,
             answered_questions,
@@ -778,24 +1261,28 @@ impl SessionRepository for SqliteRepository {
             return Ok(None);
         };
 
-        let scope = match scope.as_str() {
-            "topic" => {
-                let topic_id = topic_id.ok_or_else(|| {
-                    RepositoryError::InvalidState(String::from("topic session has no topic_id"))
-                })?;
+        let scope = if is_review {
+            QuizScope::Mistakes
+        } else {
+            match scope.as_str() {
+                "topic" => {
+                    let topic_id = topic_id.ok_or_else(|| {
+                        RepositoryError::InvalidState(String::from("topic session has no topic_id"))
+                    })?;
 
-                QuizScope::Topic(TopicId(topic_id))
-            }
+                    QuizScope::Topic(TopicId(topic_id))
+                }
 
-            "all" => match course_code {
-                Some(course_code) => QuizScope::Course(course_code),
-                None => QuizScope::AllTopics,
-            },
+                "all" => match course_code {
+                    Some(course_code) => QuizScope::Course(course_code),
+                    None => QuizScope::AllTopics,
+                },
 
-            other => {
-                return Err(RepositoryError::InvalidState(format!(
-                    "unknown session scope: {other}"
-                )));
+                other => {
+                    return Err(RepositoryError::InvalidState(format!(
+                        "unknown session scope: {other}"
+                    )));
+                }
             }
         };
 
@@ -875,7 +1362,8 @@ impl SessionRepository for SqliteRepository {
                         END
                     ), 0)
                 FROM quiz_sessions s
-                WHERE (
+                WHERE s.is_review = 0
+                  AND (
                     ?1 = 'any'
                     OR (?1 = '20' AND s.requested_count = 20)
                     OR (?1 = '50' AND s.requested_count = 50)
@@ -930,6 +1418,7 @@ impl SessionRepository for SqliteRepository {
                   ON t.id = q.topic_id
                 WHERE s.finished_at IS NOT NULL
                   AND s.cancelled_at IS NULL
+                  AND s.is_review = 0
                   AND (
                       ?1 = 'any'
                       OR (?1 = '20' AND s.requested_count = 20)
@@ -956,16 +1445,24 @@ impl SessionRepository for SqliteRepository {
     }
 
     fn clear_statistics(&mut self) -> Result<(), RepositoryError> {
-        self.connection
+        let transaction = self.connection.transaction().map_err(repository_error)?;
+
+        transaction
             .execute(
                 "
-            DELETE FROM quiz_sessions
-            WHERE finished_at IS NOT NULL
-               OR cancelled_at IS NOT NULL
-            ",
+                DELETE FROM quiz_sessions
+                WHERE finished_at IS NOT NULL
+                   OR cancelled_at IS NOT NULL
+                ",
                 [],
             )
             .map_err(repository_error)?;
+
+        transaction
+            .execute("DELETE FROM daily_activity", [])
+            .map_err(repository_error)?;
+
+        transaction.commit().map_err(repository_error)?;
 
         Ok(())
     }
@@ -1405,6 +1902,134 @@ mod tests {
     }
 
     #[test]
+    fn mistake_history_can_start_review_without_changing_main_statistics() {
+        let mut repository = seeded_repository();
+        let config = SessionConfig {
+            scope: QuizScope::Topic(TopicId(1)),
+            limit: QuestionLimit::All,
+        };
+
+        let session = repository
+            .start_session(&config)
+            .expect("topic session should start");
+        let question = repository
+            .current_question(session.id)
+            .expect("question should load")
+            .expect("question should exist");
+
+        repository
+            .submit_answer(session.id, question.id, &[AnswerOptionId(2)])
+            .expect("wrong answer should be stored");
+
+        let summaries = repository
+            .mistake_summaries()
+            .expect("mistake summaries should load");
+        assert_eq!(summaries.len(), 1);
+        assert_eq!(summaries[0].incorrect_attempts, 1);
+        assert_eq!(summaries[0].total_attempts, 1);
+
+        let detail = repository
+            .mistake_detail(QuestionId(1))
+            .expect("mistake detail should load");
+        assert_eq!(detail.attempts.len(), 1);
+        assert_eq!(
+            detail.attempts[0].selected_answers,
+            vec![String::from("Incorrect")]
+        );
+        assert_eq!(detail.correct_answers, vec![String::from("Correct")]);
+
+        let review = repository
+            .start_session(&SessionConfig {
+                scope: QuizScope::Mistakes,
+                limit: QuestionLimit::All,
+            })
+            .expect("mistake review should start");
+        assert_eq!(review.question_ids, vec![QuestionId(1)]);
+
+        repository
+            .submit_answer(review.id, QuestionId(1), &[AnswerOptionId(1)])
+            .expect("review answer should be accepted");
+
+        let stats = repository
+            .statistics(&StatisticsFilter::all())
+            .expect("main statistics should load");
+        assert_eq!(stats.completed_sessions, 1);
+        assert_eq!(stats.answered_questions, 1);
+        assert_eq!(stats.correct_answers, 0);
+
+        let detail = repository
+            .mistake_detail(QuestionId(1))
+            .expect("updated mistake detail should load");
+        assert_eq!(detail.attempts.len(), 2);
+        assert_eq!(detail.summary.incorrect_attempts, 1);
+        assert_eq!(detail.summary.total_attempts, 2);
+    }
+
+    #[test]
+    fn activity_tracks_app_open_and_answered_questions() {
+        let mut repository = seeded_repository();
+        repository
+            .record_app_open()
+            .expect("app open should be recorded");
+
+        let session = repository
+            .start_session(&SessionConfig {
+                scope: QuizScope::Topic(TopicId(1)),
+                limit: QuestionLimit::All,
+            })
+            .expect("session should start");
+        let question = repository
+            .current_question(session.id)
+            .expect("question should load")
+            .expect("question should exist");
+        repository
+            .submit_answer(session.id, question.id, &[AnswerOptionId(1)])
+            .expect("answer should be recorded");
+
+        let activity = repository.activity_stats().expect("activity should load");
+
+        assert_eq!(activity.active_days, 1);
+        assert_eq!(activity.study_days, 0);
+        assert_eq!(activity.today_answered_questions, 1);
+        assert_eq!(activity.today_correct_answers, 1);
+        assert_eq!(activity.total_answered_questions, 1);
+        assert_eq!(activity.last_7_days_answered_questions, 1);
+        assert_eq!(activity.recent_days.len(), 28);
+        assert_eq!(activity.recent_days.last().unwrap().answered_questions, 1);
+        assert_eq!(activity.passed_topics(), 1);
+    }
+
+    #[test]
+    fn activity_streak_keeps_yesterdays_series_until_today_is_completed() {
+        let repository = seeded_repository();
+
+        repository
+            .connection
+            .execute_batch(
+                "
+                INSERT INTO daily_activity (
+                    activity_date,
+                    open_count,
+                    answered_questions,
+                    correct_answers,
+                    completed_sessions
+                )
+                VALUES
+                    (date('now', 'localtime', '-2 days'), 1, 10, 8, 1),
+                    (date('now', 'localtime', '-1 day'), 1, 10, 9, 1),
+                    (date('now', 'localtime'), 1, 0, 0, 0);
+                ",
+            )
+            .expect("activity rows should be inserted");
+
+        let activity = repository.activity_stats().expect("activity should load");
+
+        assert_eq!(activity.study_days, 2);
+        assert_eq!(activity.current_streak, 2);
+        assert_eq!(activity.best_streak, 2);
+    }
+
+    #[test]
     fn clear_statistics_removes_history_but_keeps_active_session() {
         let mut repository = seeded_repository();
 
@@ -1448,6 +2073,17 @@ mod tests {
             .expect("mastery should load after statistics reset");
         assert_eq!(mastery.completed_attempts, 0);
         assert_eq!(mastery.attempts_to_pass, None);
+
+        let activity = repository
+            .activity_stats()
+            .expect("activity should load after statistics reset");
+        assert_eq!(activity.active_days, 0);
+        assert_eq!(activity.total_answered_questions, 0);
+
+        let mistakes = repository
+            .mistake_summaries()
+            .expect("mistakes should load after statistics reset");
+        assert!(mistakes.is_empty());
 
         let active = repository
             .active_session()
