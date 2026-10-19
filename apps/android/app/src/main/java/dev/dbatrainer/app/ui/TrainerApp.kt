@@ -48,6 +48,7 @@ import dev.dbatrainer.app.UiLanguage
 import dev.dbatrainer.app.UiStrings
 import dev.dbatrainer.app.uiStrings
 import dev.dbatrainer.ffi.MobileAnswerResult
+import dev.dbatrainer.ffi.MobileLab
 import dev.dbatrainer.ffi.MobileQuestion
 import dev.dbatrainer.ffi.MobileQuestionLimit
 import dev.dbatrainer.ffi.MobileQuestionType
@@ -88,6 +89,9 @@ fun TrainerApp(controller: TrainerController) {
                 AppScreen.Topics -> TopicsScreen(controller)
                 AppScreen.Courses -> CoursesScreen(controller)
                 AppScreen.Limit -> LimitScreen(controller)
+                AppScreen.LabCourses -> LabCoursesScreen(controller)
+                AppScreen.Labs -> LabsScreen(controller)
+                AppScreen.LabDetail -> LabDetailScreen(controller)
                 AppScreen.Quiz -> QuizScreen(controller)
                 AppScreen.Feedback -> FeedbackScreen(controller)
                 AppScreen.Results -> ResultsScreen(controller)
@@ -217,6 +221,15 @@ private fun HomeScreen(controller: TrainerController) {
         Spacer(Modifier.height(12.dp))
 
         OutlinedButton(
+            onClick = controller::openLabs,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text(strings.labs)
+        }
+
+        Spacer(Modifier.height(12.dp))
+
+        OutlinedButton(
             onClick = controller::openStatistics,
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -327,6 +340,9 @@ private fun TopicsScreen(controller: TrainerController) {
                     TopicCard(
                         topic = topic,
                         displayNumber = topicDisplayNumber(topics, index),
+                        masterySummary = strings.topicMasterySummary(
+                            controller.topicMasteryFor(topic.id),
+                        ),
                         onClick = {
                             controller.chooseTopic(topic)
                         },
@@ -420,6 +436,7 @@ private fun CourseSelectionScreen(
 private fun TopicCard(
     topic: MobileTopic,
     displayNumber: String,
+    masterySummary: String,
     onClick: () -> Unit,
 ) {
     Card(
@@ -444,12 +461,180 @@ private fun TopicCard(
                 fontWeight = FontWeight.SemiBold,
             )
 
+            Spacer(Modifier.height(6.dp))
+
+            Text(
+                text = masterySummary,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary,
+            )
+
             topic.description?.let { description ->
                 Spacer(Modifier.height(8.dp))
                 Text(
                     text = description,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun LabCoursesScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
+
+    TrainerScaffold(
+        title = strings.labs,
+        onBack = controller::back,
+    ) { modifier ->
+        if (controller.labCourseCodes.isEmpty()) {
+            EmptyMessage(
+                text = strings.labsEmpty,
+                modifier = modifier,
+            )
+            return@TrainerScaffold
+        }
+
+        LazyColumn(
+            modifier = modifier,
+            contentPadding = PaddingValues(vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            item {
+                Text(
+                    text = strings.chooseLabCourse,
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            }
+
+            items(
+                items = controller.labCourseCodes,
+                key = { courseCode -> courseCode },
+            ) { courseCode ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { controller.chooseLabCourse(courseCode) },
+                ) {
+                    Column(Modifier.padding(20.dp)) {
+                        Text(
+                            text = courseCode.uppercase(),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+
+                        Spacer(Modifier.height(4.dp))
+
+                        Text(
+                            text = strings.labCount(
+                                controller.labs.count { lab -> lab.courseCode == courseCode },
+                            ),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun LabsScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
+    val courseCode = controller.selectedLabCourse
+    val labs = controller.labsForSelectedCourse
+
+    TrainerScaffold(
+        title = if (courseCode == null) {
+            strings.labs
+        } else {
+            "${strings.labs} → ${courseCode.uppercase()}"
+        },
+        onBack = controller::back,
+    ) { modifier ->
+        if (labs.isEmpty()) {
+            EmptyMessage(
+                text = strings.labsEmpty,
+                modifier = modifier,
+            )
+            return@TrainerScaffold
+        }
+
+        LazyColumn(
+            modifier = modifier,
+            contentPadding = PaddingValues(vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            items(
+                items = labs,
+                key = { lab -> lab.id },
+            ) { lab ->
+                LabCard(
+                    lab = lab,
+                    onClick = { controller.chooseLab(lab) },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun LabCard(
+    lab: MobileLab,
+    onClick: () -> Unit,
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+    ) {
+        Column(Modifier.padding(20.dp)) {
+            Text(
+                text = "${lab.labNumber}. ${lab.title}",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
+
+            lab.description?.let { description ->
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun LabDetailScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
+    val lab = controller.selectedLab
+
+    TrainerScaffold(
+        title = lab?.let { "${it.labNumber}. ${it.title}" } ?: strings.labs,
+        onBack = controller::back,
+    ) { modifier ->
+        if (lab == null) {
+            EmptyMessage(
+                text = strings.labsEmpty,
+                modifier = modifier,
+            )
+            return@TrainerScaffold
+        }
+
+        LazyColumn(
+            modifier = modifier,
+            contentPadding = PaddingValues(vertical = 12.dp),
+        ) {
+            item {
+                Text(
+                    text = lab.body,
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
         }

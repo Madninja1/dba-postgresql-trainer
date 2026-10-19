@@ -56,8 +56,17 @@ pub fn render(frame: &mut Frame, app: &App) {
             };
 
             let display_number = topic_display_number(&topics, index);
+            let mastery = app
+                .strings()
+                .topic_mastery_summary(app.topic_mastery_for(topic.id));
 
-            ListItem::new(format!("{display_number}. {}", topic.title)).style(style)
+            let label = if mastery.is_empty() {
+                format!("{display_number}. {}", topic.title)
+            } else {
+                format!("{display_number}. {}  |  {mastery}", topic.title)
+            };
+
+            ListItem::new(label).style(style)
         })
         .collect::<Vec<_>>();
 

@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "course": "linux-dba-1",
+  "key": "linuxdba1-lab-25-users-groups-permissions",
+  "lab_number": 25,
+  "title": "Пользователи, группы и права Linux",
+  "description": "UID/GID, owner/group/others, rwx, chmod/chown/umask и диагностика Permission denied",
+  "sort_order": 250
+}

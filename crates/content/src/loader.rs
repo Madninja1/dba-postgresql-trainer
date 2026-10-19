@@ -2,8 +2,8 @@ use std::{fs, path::Path};
 
 use crate::{
     error::ContentError,
-    model::{ContentBundle, QuestionsDocument, TopicDocument},
-    validation::validate_bundle,
+    model::{ContentBundle, LabBundle, LabDocument, QuestionsDocument, TopicDocument},
+    validation::{validate_bundle, validate_lab},
 };
 
 pub fn load_bundle(topic_json: &str, questions_json: &str) -> Result<ContentBundle, ContentError> {
@@ -22,6 +22,21 @@ pub fn load_bundle(topic_json: &str, questions_json: &str) -> Result<ContentBund
     validate_bundle(&topic, &questions).map_err(ContentError::Validation)?;
 
     Ok(ContentBundle { topic, questions })
+}
+
+
+pub fn load_lab(lab_json: &str, lab_markdown: &str) -> Result<LabBundle, ContentError> {
+    let lab: LabDocument = serde_json::from_str(lab_json).map_err(|source| ContentError::Json {
+        document: "lab.json",
+        source,
+    })?;
+
+    validate_lab(&lab, lab_markdown).map_err(ContentError::Validation)?;
+
+    Ok(LabBundle {
+        lab,
+        body: lab_markdown.to_owned(),
+    })
 }
 
 pub fn load_bundle_from_dir(directory: impl AsRef<Path>) -> Result<ContentBundle, ContentError> {
@@ -335,6 +350,28 @@ mod tests {
         let result = load_bundle(TOPIC_JSON, questions_json);
 
         assert!(matches!(result, Err(ContentError::Validation(_))));
+    }
+
+    #[test]
+    fn loads_valid_lab() {
+        let lab_json = r#"
+        {
+            "schema_version": 1,
+            "course": "linux-dba-1",
+            "key": "linuxdba1-lab-23-systemd-journal",
+            "lab_number": 23,
+            "title": "systemd и journalctl",
+            "description": "Test lab",
+            "sort_order": 230
+        }
+        "#;
+
+        let bundle = load_lab(lab_json, "# Lab\n\nRun `systemctl status`.")
+            .expect("valid lab should load");
+
+        assert_eq!(bundle.lab.course, "linux-dba-1");
+        assert_eq!(bundle.lab.lab_number, 23);
+        assert!(bundle.body.contains("systemctl"));
     }
 
     #[test]

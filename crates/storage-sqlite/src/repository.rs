@@ -1,11 +1,12 @@
 use std::path::Path;
 
-use dba_trainer_application::{RepositoryError, SessionRepository, TopicRepository};
+use dba_trainer_application::{LabRepository, RepositoryError, SessionRepository, TopicRepository};
 
 use dba_trainer_domain::{
-    AnswerOption, AnswerOptionId, AnswerResult, Question, QuestionId, QuestionType, QuizScope,
+    AnswerOption, AnswerOptionId, AnswerResult, Lab, Question, QuestionId, QuestionType, QuizScope,
     QuizSession, SessionConfig, SessionId, SessionProgress, Source, SourceId, SourceKind,
-    StatisticsFilter, StatisticsLimit, StatisticsScope, Topic, TopicId, TrainingStats,
+    StatisticsFilter, StatisticsLimit, StatisticsScope, TOPIC_PASS_THRESHOLD_PERCENT, Topic, TopicId,
+    TopicMasteryStats, TrainingStats,
 };
 
 use rusqlite::{Connection, OptionalExtension, params};
@@ -207,6 +208,117 @@ impl TopicRepository for SqliteRepository {
                     topic_number: row.get(4)?,
                     title: row.get(5)?,
                     description: row.get(6)?,
+                })
+            })
+            .map_err(repository_error)?;
+
+        rows.collect::<rusqlite::Result<Vec<_>>>()
+            .map_err(repository_error)
+    }
+
+    fn topic_mastery(&self, topic_id: TopicId) -> Result<TopicMasteryStats, RepositoryError> {
+        let mut statement = self
+            .connection
+            .prepare(
+                "
+                SELECT
+                    s.id,
+                    COUNT(a.id),
+                    COALESCE(SUM(a.is_correct), 0)
+                FROM quiz_sessions s
+                LEFT JOIN attempts a
+                  ON a.session_id = s.id
+                WHERE s.scope = 'topic'
+                  AND s.topic_id = ?1
+                  AND s.finished_at IS NOT NULL
+                  AND s.cancelled_at IS NULL
+                GROUP BY s.id
+                ORDER BY s.finished_at, s.id
+                ",
+            )
+            .map_err(repository_error)?;
+
+        let rows = statement
+            .query_map(params![topic_id.0], |row| {
+                Ok((
+                    row.get::<_, i64>(0)?,
+                    row.get::<_, i64>(1)?,
+                    row.get::<_, i64>(2)?,
+                ))
+            })
+            .map_err(repository_error)?;
+
+        let attempts = rows
+            .collect::<rusqlite::Result<Vec<_>>>()
+            .map_err(repository_error)?;
+
+        let mut best_correct_answers = 0usize;
+        let mut best_answered_questions = 0usize;
+        let mut attempts_to_pass = None;
+
+        for (index, (_, answered, correct)) in attempts.iter().enumerate() {
+            let answered = *answered as usize;
+            let correct = *correct as usize;
+
+            if answered > 0
+                && (best_answered_questions == 0
+                    || correct * best_answered_questions
+                        > best_correct_answers * answered)
+            {
+                best_correct_answers = correct;
+                best_answered_questions = answered;
+            }
+
+            if attempts_to_pass.is_none()
+                && answered > 0
+                && (correct as f64 / answered as f64) * 100.0
+                    >= TOPIC_PASS_THRESHOLD_PERCENT
+            {
+                attempts_to_pass = Some(index + 1);
+            }
+        }
+
+        Ok(TopicMasteryStats {
+            topic_id,
+            completed_attempts: attempts.len(),
+            best_correct_answers,
+            best_answered_questions,
+            attempts_to_pass,
+        })
+    }
+}
+
+impl LabRepository for SqliteRepository {
+    fn labs(&self) -> Result<Vec<Lab>, RepositoryError> {
+        let mut statement = self
+            .connection
+            .prepare(
+                "
+                SELECT
+                    id,
+                    course_code,
+                    content_key,
+                    lab_number,
+                    title,
+                    description,
+                    body
+                FROM labs
+                WHERE is_active = 1
+                ORDER BY course_code, sort_order, lab_number, title
+                ",
+            )
+            .map_err(repository_error)?;
+
+        let rows = statement
+            .query_map([], |row| {
+                Ok(Lab {
+                    id: row.get(0)?,
+                    course_code: row.get(1)?,
+                    key: row.get(2)?,
+                    lab_number: row.get(3)?,
+                    title: row.get(4)?,
+                    description: row.get(5)?,
+                    body: row.get(6)?,
                 })
             })
             .map_err(repository_error)?;
@@ -1255,6 +1367,46 @@ mod tests {
     }
 
     #[test]
+    fn topic_mastery_tracks_best_result_and_attempt_to_pass() {
+        let mut repository = seeded_repository();
+        let config = SessionConfig {
+            scope: QuizScope::Topic(TopicId(1)),
+            limit: QuestionLimit::All,
+        };
+
+        let first = repository
+            .start_session(&config)
+            .expect("first session should start");
+        let question = repository
+            .current_question(first.id)
+            .expect("question should load")
+            .expect("question should exist");
+        repository
+            .submit_answer(first.id, question.id, &[AnswerOptionId(2)])
+            .expect("wrong answer should still complete session");
+
+        let second = repository
+            .start_session(&config)
+            .expect("second session should start");
+        let question = repository
+            .current_question(second.id)
+            .expect("question should load")
+            .expect("question should exist");
+        repository
+            .submit_answer(second.id, question.id, &[AnswerOptionId(1)])
+            .expect("correct answer should complete session");
+
+        let mastery = repository
+            .topic_mastery(TopicId(1))
+            .expect("mastery should load");
+
+        assert_eq!(mastery.completed_attempts, 2);
+        assert_eq!(mastery.best_accuracy_percent(), 100.0);
+        assert_eq!(mastery.attempts_to_pass, Some(2));
+        assert!(mastery.passed());
+    }
+
+    #[test]
     fn clear_statistics_removes_history_but_keeps_active_session() {
         let mut repository = seeded_repository();
 
@@ -1292,6 +1444,12 @@ mod tests {
         assert_eq!(stats.cancelled_sessions, 0);
         assert_eq!(stats.answered_questions, 0);
         assert_eq!(stats.correct_answers, 0);
+
+        let mastery = repository
+            .topic_mastery(TopicId(1))
+            .expect("mastery should load after statistics reset");
+        assert_eq!(mastery.completed_attempts, 0);
+        assert_eq!(mastery.attempts_to_pass, None);
 
         let active = repository
             .active_session()

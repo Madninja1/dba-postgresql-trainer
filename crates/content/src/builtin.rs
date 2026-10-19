@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use crate::{ContentBundle, ContentError, QuestionDocument, load_bundle};
+use crate::{ContentBundle, ContentError, LabBundle, QuestionDocument, load_bundle, load_lab};
 
 include!(concat!(env!("OUT_DIR"), "/builtin_registry.rs"));
 
@@ -12,6 +12,13 @@ struct LocalizedBundle {
     topic_key: &'static str,
     locale: &'static str,
     bundle: ContentBundle,
+}
+
+#[derive(Debug, Clone)]
+struct LocalizedLab {
+    lab_key: &'static str,
+    locale: &'static str,
+    bundle: LabBundle,
 }
 
 pub fn load_builtin_bundles() -> Result<Vec<ContentBundle>, ContentError> {
@@ -64,12 +71,69 @@ pub fn load_builtin_bundles_for_locale(
     Ok(selected)
 }
 
+pub fn load_builtin_labs_for_locale(
+    requested_locale: &str,
+) -> Result<Vec<LabBundle>, ContentError> {
+    let localized = load_all_localized_labs()?;
+    validate_localized_lab_compatibility(&localized)?;
+
+    let requested = normalize_locale(requested_locale);
+    let base = requested.split('-').next().unwrap_or(requested.as_str());
+
+    let mut by_lab: BTreeMap<&str, Vec<&LocalizedLab>> = BTreeMap::new();
+
+    for entry in &localized {
+        by_lab.entry(entry.lab_key).or_default().push(entry);
+    }
+
+    let mut selected = Vec::with_capacity(by_lab.len());
+
+    for entries in by_lab.values() {
+        let chosen = entries
+            .iter()
+            .copied()
+            .find(|entry| entry.locale == requested)
+            .or_else(|| {
+                if base == requested {
+                    None
+                } else {
+                    entries.iter().copied().find(|entry| entry.locale == base)
+                }
+            })
+            .or_else(|| {
+                entries
+                    .iter()
+                    .copied()
+                    .find(|entry| entry.locale == FALLBACK_CONTENT_LOCALE)
+            })
+            .or_else(|| entries.first().copied())
+            .expect("localized lab group must not be empty");
+
+        selected.push(chosen.bundle.clone());
+    }
+
+    validate_course_lab_numbers_and_keys(&selected)?;
+
+    selected.sort_by_key(|bundle| (
+        bundle.lab.course.clone(),
+        bundle.lab.sort_order,
+        bundle.lab.lab_number,
+    ));
+
+    Ok(selected)
+}
+
 pub fn builtin_content_locales() -> Result<Vec<String>, ContentError> {
-    let localized = load_all_localized_bundles()?;
-    let locales = localized
+    let mut locales = load_all_localized_bundles()?
         .into_iter()
         .map(|entry| entry.locale.to_owned())
         .collect::<BTreeSet<_>>();
+
+    locales.extend(
+        load_all_localized_labs()?
+            .into_iter()
+            .map(|entry| entry.locale.to_owned()),
+    );
 
     Ok(locales.into_iter().collect())
 }
@@ -85,6 +149,89 @@ fn load_all_localized_bundles() -> Result<Vec<LocalizedBundle>, ContentError> {
             })
         })
         .collect()
+}
+
+fn load_all_localized_labs() -> Result<Vec<LocalizedLab>, ContentError> {
+    BUILTIN_LAB_DOCUMENTS
+        .iter()
+        .map(|(lab_key, locale, lab_json, lab_markdown)| {
+            load_lab(lab_json, lab_markdown).map(|bundle| LocalizedLab {
+                lab_key,
+                locale,
+                bundle,
+            })
+        })
+        .collect()
+}
+
+fn validate_localized_lab_compatibility(
+    localized: &[LocalizedLab],
+) -> Result<(), ContentError> {
+    let mut by_lab: BTreeMap<&str, Vec<&LocalizedLab>> = BTreeMap::new();
+
+    for entry in localized {
+        by_lab.entry(entry.lab_key).or_default().push(entry);
+    }
+
+    let mut errors = Vec::new();
+
+    for (lab_key, entries) in by_lab {
+        let Some(reference) = entries.first().copied() else {
+            continue;
+        };
+
+        for candidate in entries.iter().copied().skip(1) {
+            if reference.bundle.lab.course != candidate.bundle.lab.course
+                || reference.bundle.lab.key != candidate.bundle.lab.key
+                || reference.bundle.lab.lab_number != candidate.bundle.lab.lab_number
+                || reference.bundle.lab.sort_order != candidate.bundle.lab.sort_order
+            {
+                errors.push(format!(
+                    "localized lab '{lab_key}' must keep course, key, lab_number and sort_order in '{}' and '{}'",
+                    reference.locale, candidate.locale
+                ));
+            }
+        }
+    }
+
+    if errors.is_empty() {
+        Ok(())
+    } else {
+        Err(ContentError::Validation(errors))
+    }
+}
+
+fn validate_course_lab_numbers_and_keys(labs: &[LabBundle]) -> Result<(), ContentError> {
+    let mut seen_numbers = BTreeMap::<(String, i64), String>::new();
+    let mut seen_keys = BTreeMap::<String, (String, i64)>::new();
+    let mut errors = Vec::new();
+
+    for bundle in labs {
+        let lab = &bundle.lab;
+        let number_key = (lab.course.clone(), lab.lab_number);
+
+        if let Some(existing_key) = seen_numbers.insert(number_key.clone(), lab.key.clone()) {
+            errors.push(format!(
+                "course '{}' uses lab_number {} for both '{}' and '{}'",
+                number_key.0, number_key.1, existing_key, lab.key
+            ));
+        }
+
+        if let Some((existing_course, existing_number)) =
+            seen_keys.insert(lab.key.clone(), (lab.course.clone(), lab.lab_number))
+        {
+            errors.push(format!(
+                "lab key '{}' is reused by {} #{} and {} #{}",
+                lab.key, existing_course, existing_number, lab.course, lab.lab_number
+            ));
+        }
+    }
+
+    if errors.is_empty() {
+        Ok(())
+    } else {
+        Err(ContentError::Validation(errors))
+    }
 }
 
 fn normalize_locale(value: &str) -> String {
@@ -289,5 +436,15 @@ mod tests {
     #[test]
     fn locale_normalization_accepts_region_and_underscore() {
         assert_eq!(normalize_locale("EN_us"), "en-us");
+    }
+
+    #[test]
+    fn builtin_labs_are_valid_and_fall_back_to_russian() {
+        let labs = load_builtin_labs_for_locale("en")
+            .expect("English locale should fall back to available lab content");
+
+        assert!(!labs.is_empty());
+        assert!(labs.iter().any(|bundle| bundle.lab.lab_number == 23));
+        assert!(labs.iter().all(|bundle| !bundle.body.trim().is_empty()));
     }
 }

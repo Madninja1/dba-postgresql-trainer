@@ -35,6 +35,8 @@ The Android package is an installable APK. The Linux and Windows packages contai
 - resumable active sessions;
 - explicit session cancellation;
 - overall, course, topic, and quiz-mode statistics;
+- per-topic mastery status with an 85% pass threshold, best result, and attempts required to pass;
+- offline laboratory guides grouped by course;
 - statistics reset;
 - English and Russian UI;
 - English is the default UI language;
@@ -57,7 +59,7 @@ course-content/
             └── questions.json
 ```
 
-A locale directory may be empty. A locale becomes usable only when both `topic.json` and `questions.json` are present.
+A locale directory may be empty. A quiz locale becomes usable only when both `topic.json` and `questions.json` are present. Laboratory content uses `lab.json` plus `lab.md` under `course-content/<course>/labs/<lab>/<locale>/`.
 
 At runtime the application tries to use the selected locale. If it is unavailable, content falls back to another available locale according to the content loader rules. This means the UI can be English while the current question bank still falls back to Russian.
 

@@ -1,6 +1,6 @@
 use dba_trainer_domain::{
-    AnswerResult, Question, QuestionLimit, QuestionType, QuizScope, QuizSession, SessionProgress,
-    Source, SourceKind, StatisticsLimit, Topic, TrainingStats,
+    AnswerResult, Lab, Question, QuestionLimit, QuestionType, QuizScope, QuizSession, SessionProgress,
+    Source, SourceKind, StatisticsLimit, Topic, TopicMasteryStats, TrainingStats,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, uniffi::Enum)]
@@ -39,6 +39,28 @@ pub struct MobileTopic {
     pub topic_number: i64,
     pub title: String,
     pub description: Option<String>,
+}
+
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct MobileLab {
+    pub id: i64,
+    pub course_code: String,
+    pub key: String,
+    pub lab_number: i64,
+    pub title: String,
+    pub description: Option<String>,
+    pub body: String,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct MobileTopicMasteryStats {
+    pub topic_id: i64,
+    pub completed_attempts: u64,
+    pub best_accuracy_percent: f64,
+    pub pass_threshold_percent: f64,
+    pub attempts_to_pass: Option<u64>,
+    pub passed: bool,
 }
 
 #[derive(Debug, Clone, uniffi::Record)]
@@ -134,6 +156,33 @@ impl From<Topic> for MobileTopic {
             topic_number: value.topic_number,
             title: value.title,
             description: value.description,
+        }
+    }
+}
+
+impl From<Lab> for MobileLab {
+    fn from(value: Lab) -> Self {
+        Self {
+            id: value.id,
+            course_code: value.course_code,
+            key: value.key,
+            lab_number: value.lab_number,
+            title: value.title,
+            description: value.description,
+            body: value.body,
+        }
+    }
+}
+
+impl From<TopicMasteryStats> for MobileTopicMasteryStats {
+    fn from(value: TopicMasteryStats) -> Self {
+        Self {
+            topic_id: value.topic_id.0,
+            completed_attempts: value.completed_attempts as u64,
+            best_accuracy_percent: value.best_accuracy_percent(),
+            pass_threshold_percent: dba_trainer_domain::TOPIC_PASS_THRESHOLD_PERCENT,
+            attempts_to_pass: value.attempts_to_pass.map(|attempt| attempt as u64),
+            passed: value.passed(),
         }
     }
 }

@@ -3,6 +3,9 @@ mod common;
 mod courses;
 mod feedback;
 mod home;
+mod lab_courses;
+mod lab_detail;
+mod labs;
 mod quiz;
 mod quiz_setup;
 mod results;
@@ -43,6 +46,18 @@ pub fn render(frame: &mut Frame, app: &App) {
 
         Screen::QuizSetup => {
             quiz_setup::render(frame, app);
+        }
+
+        Screen::LabCourses => {
+            lab_courses::render(frame, app);
+        }
+
+        Screen::Labs => {
+            labs::render(frame, app);
+        }
+
+        Screen::LabDetail => {
+            lab_detail::render(frame, app);
         }
 
         Screen::Quiz => {

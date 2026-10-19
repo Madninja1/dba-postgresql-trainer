@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "course": "linux-dba-1",
+  "key": "linuxdba1-lab-27-cpu-ram-swap",
+  "lab_number": 27,
+  "title": "CPU, RAM и swap",
+  "description": "CPU bottleneck, memory pressure, swap activity, I/O wait, stress-ng и влияние системной нагрузки на pgbench",
+  "sort_order": 270
+}

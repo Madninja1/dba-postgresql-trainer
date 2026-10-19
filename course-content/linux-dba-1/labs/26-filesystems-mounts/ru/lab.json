@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "course": "linux-dba-1",
+  "key": "linuxdba1-lab-26-filesystems-mounts",
+  "lab_number": 26,
+  "title": "Файловые системы и монтирование",
+  "description": "PGDATA, filesystem, block devices, partitions, ext4, mount/umount, df/du/inodes и безопасная работа с лабораторным диском",
+  "sort_order": 260
+}

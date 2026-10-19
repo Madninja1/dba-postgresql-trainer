@@ -1,7 +1,7 @@
 use std::collections::{HashMap, HashSet};
 
 use crate::model::{
-    CONTENT_SCHEMA_VERSION, QuestionTypeDocument, QuestionsDocument, SourceDocument,
+    CONTENT_SCHEMA_VERSION, LabDocument, QuestionTypeDocument, QuestionsDocument, SourceDocument,
     SourceKindDocument, TopicDocument,
 };
 
@@ -301,6 +301,57 @@ fn valid_url(value: &str) -> bool {
     let value = value.trim();
 
     value.starts_with("https://") || value.starts_with("http://")
+}
+
+
+pub fn validate_lab(lab: &LabDocument, body: &str) -> Result<(), Vec<String>> {
+    let mut errors = Vec::new();
+
+    if lab.schema_version != CONTENT_SCHEMA_VERSION {
+        errors.push(format!(
+            "unsupported lab schema_version {}, expected {}",
+            lab.schema_version, CONTENT_SCHEMA_VERSION
+        ));
+    }
+
+    if !valid_course_code(&lab.course) {
+        errors.push(format!("invalid lab course code '{}'", lab.course));
+    }
+
+    if !valid_key(&lab.key) {
+        errors.push(format!("invalid lab key '{}'", lab.key));
+    }
+
+    if lab.lab_number <= 0 {
+        errors.push(format!("lab '{}' must have lab_number > 0", lab.key));
+    }
+
+    if lab.title.trim().is_empty() {
+        errors.push(format!("lab '{}' must have a non-empty title", lab.key));
+    }
+
+    if let Some(description) = &lab.description
+        && description.trim().is_empty()
+    {
+        errors.push(format!(
+            "lab '{}' description must not be empty when present",
+            lab.key
+        ));
+    }
+
+    if lab.sort_order < 0 {
+        errors.push(format!("lab '{}' sort_order must not be negative", lab.key));
+    }
+
+    if body.trim().is_empty() {
+        errors.push(format!("lab '{}' must have a non-empty body", lab.key));
+    }
+
+    if errors.is_empty() {
+        Ok(())
+    } else {
+        Err(errors)
+    }
 }
 
 #[cfg(test)]

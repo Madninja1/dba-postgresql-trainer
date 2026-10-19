@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "course": "linux-dba-1",
+  "key": "linuxdba1-lab-23-systemd-journal",
+  "lab_number": 23,
+  "title": "systemd и journalctl",
+  "description": "Диагностика PostgreSQL через systemd и journalctl, работа со справкой Linux, сервисами, журналом и портом",
+  "sort_order": 230
+}

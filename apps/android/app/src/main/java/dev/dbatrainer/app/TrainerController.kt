@@ -6,12 +6,14 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import dev.dbatrainer.ffi.MobileAnswerResult
+import dev.dbatrainer.ffi.MobileLab
 import dev.dbatrainer.ffi.MobileQuestion
 import dev.dbatrainer.ffi.MobileQuestionLimit
 import dev.dbatrainer.ffi.MobileQuestionType
 import dev.dbatrainer.ffi.MobileSessionProgress
 import dev.dbatrainer.ffi.MobileStatisticsLimit
 import dev.dbatrainer.ffi.MobileTopic
+import dev.dbatrainer.ffi.MobileTopicMasteryStats
 import dev.dbatrainer.ffi.MobileTrainer
 import dev.dbatrainer.ffi.MobileTrainingStats
 import java.io.File
@@ -22,6 +24,9 @@ enum class AppScreen {
     Topics,
     Courses,
     Limit,
+    LabCourses,
+    Labs,
+    LabDetail,
     Quiz,
     Feedback,
     Results,
@@ -73,7 +78,19 @@ class TrainerController(context: Context) {
     var topics by mutableStateOf<List<MobileTopic>>(emptyList())
         private set
 
+    var labs by mutableStateOf<List<MobileLab>>(emptyList())
+        private set
+
+    var topicMastery by mutableStateOf<Map<Long, MobileTopicMasteryStats>>(emptyMap())
+        private set
+
     var selectedTopicCourse by mutableStateOf<String?>(null)
+        private set
+
+    var selectedLabCourse by mutableStateOf<String?>(null)
+        private set
+
+    var selectedLab by mutableStateOf<MobileLab?>(null)
         private set
 
     var pendingTopic by mutableStateOf<MobileTopic?>(null)
@@ -152,6 +169,7 @@ class TrainerController(context: Context) {
             trainer = MobileTrainer(databasePath)
             requireTrainer().setContentLocale(language.code)
             topics = requireTrainer().topics()
+            labs = requireTrainer().labs()
             resumeSession = requireTrainer().activeSession()
         }
     }
@@ -171,6 +189,18 @@ class TrainerController(context: Context) {
             return topics.filter { topic -> topic.courseCode == courseCode }
         }
 
+    val labCourseCodes: List<String>
+        get() = labs
+            .map { lab -> lab.courseCode }
+            .distinct()
+            .sortedWith(courseCodeComparator)
+
+    val labsForSelectedCourse: List<MobileLab>
+        get() {
+            val courseCode = selectedLabCourse ?: return emptyList()
+            return labs.filter { lab -> lab.courseCode == courseCode }
+        }
+
     val statisticsScopeTitle: String
         get() = selectedStatisticsTopic?.let { topic ->
             "${topic.courseCode.uppercase()} → ${topic.title}"
@@ -184,6 +214,7 @@ class TrainerController(context: Context) {
         runCoreAction {
             requireTrainer().setContentLocale(language.code)
             topics = requireTrainer().topics()
+            labs = requireTrainer().labs()
             this.language = language
             preferences
                 .edit()
@@ -200,10 +231,36 @@ class TrainerController(context: Context) {
     }
 
     fun chooseTopicCourse(courseCode: String) {
-        selectedTopicCourse = courseCode
-        pendingTopic = null
-        pendingCourse = null
-        screen = AppScreen.Topics
+        runCoreAction {
+            selectedTopicCourse = courseCode
+            pendingTopic = null
+            pendingCourse = null
+            val visibleTopics = topics.filter { topic -> topic.courseCode == courseCode }
+            topicMastery = visibleTopics.associate { topic ->
+                topic.id to requireTrainer().topicMastery(topic.id)
+            }
+            screen = AppScreen.Topics
+        }
+    }
+
+    fun topicMasteryFor(topicId: Long): MobileTopicMasteryStats? =
+        topicMastery[topicId]
+
+    fun openLabs() {
+        selectedLabCourse = null
+        selectedLab = null
+        screen = AppScreen.LabCourses
+    }
+
+    fun chooseLabCourse(courseCode: String) {
+        selectedLabCourse = courseCode
+        selectedLab = null
+        screen = AppScreen.Labs
+    }
+
+    fun chooseLab(lab: MobileLab) {
+        selectedLab = lab
+        screen = AppScreen.LabDetail
     }
 
     fun openGeneralQuiz() {
@@ -470,6 +527,12 @@ class TrainerController(context: Context) {
             AppScreen.TopicCourses -> screen = AppScreen.Home
             AppScreen.Topics -> screen = AppScreen.TopicCourses
             AppScreen.Courses -> screen = AppScreen.Home
+            AppScreen.LabCourses -> screen = AppScreen.Home
+            AppScreen.Labs -> {
+                selectedLab = null
+                screen = AppScreen.LabCourses
+            }
+            AppScreen.LabDetail -> screen = AppScreen.Labs
             AppScreen.Limit -> {
                 screen = when {
                     pendingTopic != null -> AppScreen.Topics

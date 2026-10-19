@@ -1,7 +1,8 @@
 use dba_trainer_application::{ContentLocaleRepository, RepositoryError};
 use dba_trainer_content::{
-    AnswerDocument, ContentBundle, QuestionDocument, QuestionTypeDocument, SourceDocument,
-    SourceKindDocument, TopicDocument, load_builtin_bundles_for_locale,
+    AnswerDocument, ContentBundle, LabBundle, LabDocument, QuestionDocument, QuestionTypeDocument,
+    SourceDocument, SourceKindDocument, TopicDocument, load_builtin_bundles_for_locale,
+    load_builtin_labs_for_locale,
 };
 
 use rusqlite::{Transaction, params};
@@ -13,6 +14,11 @@ pub struct ContentSyncReport {
     pub topic_slug: String,
     pub questions: usize,
     pub answers: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct LabSyncReport {
+    pub lab_key: String,
 }
 
 impl SqliteRepository {
@@ -70,6 +76,20 @@ impl SqliteRepository {
     }
 }
 
+impl SqliteRepository {
+    pub fn sync_lab(&mut self, bundle: &LabBundle) -> Result<LabSyncReport, StorageError> {
+        let transaction = self.connection.transaction()?;
+
+        sync_lab_document(&transaction, &bundle.lab, &bundle.body)?;
+
+        transaction.commit()?;
+
+        Ok(LabSyncReport {
+            lab_key: bundle.lab.key.clone(),
+        })
+    }
+}
+
 impl ContentLocaleRepository for SqliteRepository {
     fn set_content_locale(&mut self, locale: &str) -> Result<(), RepositoryError> {
         let bundles = load_builtin_bundles_for_locale(locale)
@@ -80,8 +100,58 @@ impl ContentLocaleRepository for SqliteRepository {
                 .map_err(|error| RepositoryError::Storage(error.to_string()))?;
         }
 
+        let labs = load_builtin_labs_for_locale(locale)
+            .map_err(|error| RepositoryError::Storage(error.to_string()))?;
+
+        for lab in &labs {
+            self.sync_lab(lab)
+                .map_err(|error| RepositoryError::Storage(error.to_string()))?;
+        }
+
         Ok(())
     }
+}
+
+fn sync_lab_document(
+    transaction: &Transaction<'_>,
+    lab: &LabDocument,
+    body: &str,
+) -> rusqlite::Result<()> {
+    transaction.execute(
+        "
+        INSERT INTO labs (
+            course_code,
+            content_key,
+            lab_number,
+            title,
+            description,
+            body,
+            sort_order,
+            is_active
+        )
+        VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, 1)
+        ON CONFLICT(content_key)
+        DO UPDATE SET
+            course_code = excluded.course_code,
+            lab_number = excluded.lab_number,
+            title = excluded.title,
+            description = excluded.description,
+            body = excluded.body,
+            sort_order = excluded.sort_order,
+            is_active = 1
+        ",
+        params![
+            lab.course,
+            lab.key,
+            lab.lab_number,
+            lab.title,
+            lab.description,
+            body,
+            lab.sort_order,
+        ],
+    )?;
+
+    Ok(())
 }
 
 fn sync_topic(transaction: &Transaction<'_>, topic: &TopicDocument) -> rusqlite::Result<i64> {
@@ -444,4 +514,37 @@ mod tests {
         assert_eq!(questions, 1);
         assert_eq!(answers, 2);
     }
+    #[test]
+    fn sync_lab_is_idempotent() {
+        let lab_json = r#"
+        {
+            "schema_version": 1,
+            "course": "linux-dba-1",
+            "key": "linuxdba1-lab-23-systemd-journal",
+            "lab_number": 23,
+            "title": "systemd и journalctl",
+            "description": null,
+            "sort_order": 230
+        }
+        "#;
+
+        let bundle = dba_trainer_content::load_lab(lab_json, "# Lab\nBody")
+            .expect("lab content should be valid");
+        let mut repository = SqliteRepository::in_memory().expect("database should open");
+
+        repository.sync_lab(&bundle).expect("first lab sync should work");
+        repository.sync_lab(&bundle).expect("second lab sync should work");
+
+        let count: i64 = repository
+            .connection
+            .query_row(
+                "SELECT COUNT(*) FROM labs WHERE content_key = ?1",
+                params![bundle.lab.key],
+                |row| row.get(0),
+            )
+            .expect("lab count should load");
+
+        assert_eq!(count, 1);
+    }
+
 }

@@ -1,11 +1,11 @@
 use dba_trainer_domain::{
     AnswerOptionId, AnswerResult, Question, QuestionId, QuizSession, SessionConfig, SessionId,
-    SessionProgress, StatisticsFilter, Topic, TrainingStats,
+    Lab, SessionProgress, StatisticsFilter, Topic, TopicId, TopicMasteryStats, TrainingStats,
 };
 
 use rand::{rng, seq::SliceRandom};
 
-use crate::{ContentLocaleRepository, RepositoryError, SessionRepository, TopicRepository};
+use crate::{ContentLocaleRepository, LabRepository, RepositoryError, SessionRepository, TopicRepository};
 
 pub struct TrainerService<R> {
     repository: R,
@@ -21,6 +21,10 @@ where
 
     pub fn topics(&self) -> Result<Vec<Topic>, RepositoryError> {
         self.repository.topics()
+    }
+
+    pub fn topic_mastery(&self, topic_id: TopicId) -> Result<TopicMasteryStats, RepositoryError> {
+        self.repository.topic_mastery(topic_id)
     }
 
     pub fn start_session(
@@ -72,6 +76,15 @@ where
 
 impl<R> TrainerService<R>
 where
+    R: LabRepository,
+{
+    pub fn labs(&self) -> Result<Vec<Lab>, RepositoryError> {
+        self.repository.labs()
+    }
+}
+
+impl<R> TrainerService<R>
+where
     R: ContentLocaleRepository,
 {
     pub fn set_content_locale(&mut self, locale: &str) -> Result<(), RepositoryError> {
@@ -98,6 +111,16 @@ mod tests {
                 title: String::from("Architecture"),
                 description: None,
             }])
+        }
+
+        fn topic_mastery(&self, topic_id: TopicId) -> Result<TopicMasteryStats, RepositoryError> {
+            Ok(TopicMasteryStats {
+                topic_id,
+                completed_attempts: 0,
+                best_correct_answers: 0,
+                best_answered_questions: 0,
+                attempts_to_pass: None,
+            })
         }
     }
 

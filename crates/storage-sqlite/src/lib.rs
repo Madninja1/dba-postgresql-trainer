@@ -7,4 +7,4 @@ pub use error::StorageError;
 
 pub use repository::SqliteRepository;
 
-pub use sync::ContentSyncReport;
+pub use sync::{ContentSyncReport, LabSyncReport};

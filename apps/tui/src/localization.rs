@@ -1,4 +1,4 @@
-use dba_trainer_domain::{QuestionLimit, StatisticsLimit};
+use dba_trainer_domain::{QuestionLimit, StatisticsLimit, TOPIC_PASS_THRESHOLD_PERCENT, TopicMasteryStats};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum UiLanguage {
@@ -35,6 +35,7 @@ pub struct UiStrings {
     pub topic_quiz: &'static str,
     pub general_quiz: &'static str,
     pub statistics: &'static str,
+    pub labs: &'static str,
     pub language: &'static str,
     pub quit: &'static str,
     pub english: &'static str,
@@ -46,6 +47,9 @@ pub struct UiStrings {
     pub choose_topic_course: &'static str,
     pub choose_course: &'static str,
     pub topic: &'static str,
+    pub labs_title: &'static str,
+    pub labs_empty: &'static str,
+    pub choose_lab_course: &'static str,
 
     pub quiz: &'static str,
     pub question: &'static str,
@@ -114,6 +118,8 @@ pub struct UiStrings {
     pub footer_result: &'static str,
     pub footer_statistics: &'static str,
     pub footer_statistics_detail: &'static str,
+    pub footer_labs: &'static str,
+    pub footer_lab_detail: &'static str,
     pub footer_back: &'static str,
 }
 
@@ -141,6 +147,39 @@ impl UiStrings {
             StatisticsLimit::AllQuestions => self.all_questions,
         }
     }
+
+    pub fn topic_mastery_summary(&self, stats: Option<&TopicMasteryStats>) -> String {
+        let Some(stats) = stats else {
+            return String::new();
+        };
+
+        if stats.completed_attempts == 0 {
+            return if self.main_menu == "Main menu" {
+                format!("no attempts · target {:.0}%", TOPIC_PASS_THRESHOLD_PERCENT)
+            } else {
+                format!("нет попыток · цель {:.0}%", TOPIC_PASS_THRESHOLD_PERCENT)
+            };
+        }
+
+        let best = stats.best_accuracy_percent();
+
+        match stats.attempts_to_pass {
+            Some(attempt) if self.main_menu == "Main menu" => {
+                format!("best {best:.1}% · passed on attempt #{attempt}")
+            }
+            Some(attempt) => {
+                format!("лучший {best:.1}% · пройдено с попытки №{attempt}")
+            }
+            None if self.main_menu == "Main menu" => format!(
+                "best {best:.1}% · {} attempts · target {:.0}%",
+                stats.completed_attempts, TOPIC_PASS_THRESHOLD_PERCENT
+            ),
+            None => format!(
+                "лучший {best:.1}% · попыток {} · цель {:.0}%",
+                stats.completed_attempts, TOPIC_PASS_THRESHOLD_PERCENT
+            ),
+        }
+    }
 }
 
 pub fn ui_strings(language: UiLanguage) -> &'static UiStrings {
@@ -155,6 +194,7 @@ static ENGLISH: UiStrings = UiStrings {
     topic_quiz: "Quiz by topic",
     general_quiz: "General quiz",
     statistics: "Statistics",
+    labs: "Labs",
     language: "Language",
     quit: "Quit",
     english: "English",
@@ -166,6 +206,9 @@ static ENGLISH: UiStrings = UiStrings {
     choose_topic_course: "Quiz by topic: choose a course",
     choose_course: "General quiz: choose a course block",
     topic: "Topic",
+    labs_title: "Labs",
+    labs_empty: "No labs are loaded yet.",
+    choose_lab_course: "Labs: choose a course",
 
     quiz: "Quiz",
     question: "Question",
@@ -234,6 +277,8 @@ static ENGLISH: UiStrings = UiStrings {
     footer_result: "Enter or Esc/Backspace — main menu | q — quit",
     footer_statistics: "↑/↓ — select | Enter — open | Esc/Backspace — back | c — clear all statistics | q — quit",
     footer_statistics_detail: "Enter, Esc or Backspace — back | c — clear all statistics | q — quit",
+    footer_labs: "↑/↓ or j/k — select | Enter — open | Esc/Backspace — back | q — quit",
+    footer_lab_detail: "↑/↓ or j/k — scroll | Esc/Backspace — back | q — quit",
     footer_back: "Esc/Backspace — back | q — quit",
 };
 
@@ -242,6 +287,7 @@ static RUSSIAN: UiStrings = UiStrings {
     topic_quiz: "Тест по теме",
     general_quiz: "Общий тест",
     statistics: "Статистика",
+    labs: "Лабораторные",
     language: "Язык",
     quit: "Выход",
     english: "English",
@@ -253,6 +299,9 @@ static RUSSIAN: UiStrings = UiStrings {
     choose_topic_course: "Тест по теме: выберите курс",
     choose_course: "Общий тест: выберите курс",
     topic: "Тема",
+    labs_title: "Лабораторные",
+    labs_empty: "Лабораторные пока не загружены.",
+    choose_lab_course: "Лабораторные: выберите курс",
 
     quiz: "Тест",
     question: "Вопрос",
@@ -321,5 +370,7 @@ static RUSSIAN: UiStrings = UiStrings {
     footer_result: "Enter или Esc/Backspace — главное меню | q — выход",
     footer_statistics: "↑/↓ — выбор | Enter — открыть | Esc/Backspace — назад | c — очистить всю статистику | q — выход",
     footer_statistics_detail: "Enter, Esc или Backspace — назад | c — очистить всю статистику | q — выход",
+    footer_labs: "↑/↓ или j/k — выбор | Enter — открыть | Esc/Backspace — назад | q — выход",
+    footer_lab_detail: "↑/↓ или j/k — прокрутка | Esc/Backspace — назад | q — выход",
     footer_back: "Esc/Backspace — назад | q — выход",
 };

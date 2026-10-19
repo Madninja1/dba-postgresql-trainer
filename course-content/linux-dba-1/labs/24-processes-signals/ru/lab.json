@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "course": "linux-dba-1",
+  "key": "linuxdba1-lab-24-processes-signals",
+  "lab_number": 24,
+  "title": "Процессы PostgreSQL и сигналы",
+  "description": "Linux PID, PostgreSQL backend, pg_stat_activity, SIGINT/SIGTERM и безопасное управление запросами и сессиями",
+  "sort_order": 240
+}

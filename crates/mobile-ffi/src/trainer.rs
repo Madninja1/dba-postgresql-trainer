@@ -1,7 +1,7 @@
 use std::sync::{Arc, Mutex, MutexGuard};
 
 use dba_trainer_application::TrainerService;
-use dba_trainer_content::load_builtin_bundles;
+use dba_trainer_content::{load_builtin_bundles, load_builtin_labs_for_locale, DEFAULT_CONTENT_LOCALE};
 use dba_trainer_domain::{
     AnswerOptionId, QuestionId, QuizScope, SessionConfig, SessionId, StatisticsFilter,
     StatisticsScope, TopicId,
@@ -9,8 +9,8 @@ use dba_trainer_domain::{
 use dba_trainer_storage_sqlite::SqliteRepository;
 
 use crate::{
-    MobileAnswerResult, MobileError, MobileQuestion, MobileQuestionLimit, MobileQuizSession,
-    MobileSessionProgress, MobileStatisticsLimit, MobileTopic, MobileTrainingStats,
+    MobileAnswerResult, MobileError, MobileLab, MobileQuestion, MobileQuestionLimit, MobileQuizSession,
+    MobileSessionProgress, MobileStatisticsLimit, MobileTopic, MobileTopicMasteryStats, MobileTrainingStats,
     error::to_mobile_error,
 };
 
@@ -31,6 +31,11 @@ impl MobileTrainer {
             repository.sync_bundle(bundle).map_err(to_mobile_error)?;
         }
 
+        let labs = load_builtin_labs_for_locale(DEFAULT_CONTENT_LOCALE).map_err(to_mobile_error)?;
+        for lab in &labs {
+            repository.sync_lab(lab).map_err(to_mobile_error)?;
+        }
+
         Ok(Arc::new(Self {
             service: Mutex::new(TrainerService::new(repository)),
         }))
@@ -48,6 +53,24 @@ impl MobileTrainer {
         service
             .topics()
             .map(|topics| topics.into_iter().map(MobileTopic::from).collect())
+            .map_err(to_mobile_error)
+    }
+
+    pub fn topic_mastery(&self, topic_id: i64) -> Result<MobileTopicMasteryStats, MobileError> {
+        let service = self.service()?;
+
+        service
+            .topic_mastery(TopicId(topic_id))
+            .map(MobileTopicMasteryStats::from)
+            .map_err(to_mobile_error)
+    }
+
+    pub fn labs(&self) -> Result<Vec<MobileLab>, MobileError> {
+        let service = self.service()?;
+
+        service
+            .labs()
+            .map(|labs| labs.into_iter().map(MobileLab::from).collect())
             .map_err(to_mobile_error)
     }
 

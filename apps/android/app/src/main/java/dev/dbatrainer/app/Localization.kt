@@ -1,5 +1,7 @@
 package dev.dbatrainer.app
 
+import dev.dbatrainer.ffi.MobileTopicMasteryStats
+
 enum class UiLanguage(val code: String) {
     English("en"),
     Russian("ru"),
@@ -16,6 +18,7 @@ data class UiStrings(
     val topicQuiz: String,
     val generalQuiz: String,
     val statistics: String,
+    val labs: String,
     val language: String,
     val topics: String,
     val topicsEmpty: String,
@@ -23,6 +26,8 @@ data class UiStrings(
     val coursesEmpty: String,
     val chooseTopicCourse: String,
     val chooseCourse: String,
+    val chooseLabCourse: String,
+    val labsEmpty: String,
     val questionCount: String,
     val twentyQuestions: String,
     val fiftyQuestions: String,
@@ -93,6 +98,41 @@ data class UiStrings(
             "Тем: $value"
         }
 
+    fun labCount(value: Int): String =
+        if (this === ENGLISH_STRINGS) {
+            "$value labs"
+        } else {
+            "Лабораторных: $value"
+        }
+
+    fun topicMasterySummary(stats: MobileTopicMasteryStats?): String {
+        val target = stats?.passThresholdPercent?.let { "%.0f".format(it) } ?: "85"
+        if (stats == null || stats.completedAttempts == 0UL) {
+            return if (this === ENGLISH_STRINGS) {
+                "No completed attempts · target $target%"
+            } else {
+                "Нет завершённых попыток · цель $target%"
+            }
+        }
+
+        val best = "%.1f%%".format(stats.bestAccuracyPercent)
+        val passedAttempt = stats.attemptsToPass
+
+        return if (this === ENGLISH_STRINGS) {
+            if (passedAttempt != null) {
+                "Best $best · passed on attempt #$passedAttempt"
+            } else {
+                "Best $best · attempts ${stats.completedAttempts} · target $target%"
+            }
+        } else {
+            if (passedAttempt != null) {
+                "Лучший результат $best · пройдено с попытки №$passedAttempt"
+            } else {
+                "Лучший результат $best · попыток ${stats.completedAttempts} · цель $target%"
+            }
+        }
+    }
+
     fun resultScore(correct: Int, total: Int): String =
         if (this === ENGLISH_STRINGS) {
             "$correct of $total correct"
@@ -120,6 +160,7 @@ private val ENGLISH_STRINGS = UiStrings(
     topicQuiz = "Quiz by topic",
     generalQuiz = "General quiz",
     statistics = "Statistics",
+    labs = "Labs",
     language = "Language",
     topics = "Topics",
     topicsEmpty = "No topics are loaded yet.",
@@ -127,6 +168,8 @@ private val ENGLISH_STRINGS = UiStrings(
     coursesEmpty = "No courses are loaded yet.",
     chooseTopicCourse = "Choose a course for topic quiz",
     chooseCourse = "Choose a course block",
+    chooseLabCourse = "Choose a course with labs",
+    labsEmpty = "No labs are loaded yet.",
     questionCount = "Number of questions",
     twentyQuestions = "20 questions",
     fiftyQuestions = "50 questions",
@@ -182,6 +225,7 @@ private val RUSSIAN_STRINGS = UiStrings(
     topicQuiz = "Тест по теме",
     generalQuiz = "Общий тест",
     statistics = "Статистика",
+    labs = "Лабораторные",
     language = "Язык",
     topics = "Темы",
     topicsEmpty = "Темы пока не загружены.",
@@ -189,6 +233,8 @@ private val RUSSIAN_STRINGS = UiStrings(
     coursesEmpty = "Курсы пока не загружены.",
     chooseTopicCourse = "Выберите курс для теста по теме",
     chooseCourse = "Выберите блок курса",
+    chooseLabCourse = "Выберите курс с лабораторными",
+    labsEmpty = "Лабораторные пока не загружены.",
     questionCount = "Количество вопросов",
     twentyQuestions = "20 вопросов",
     fiftyQuestions = "50 вопросов",

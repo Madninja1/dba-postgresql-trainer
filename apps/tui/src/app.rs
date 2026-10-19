@@ -1,9 +1,9 @@
 use dba_trainer_application::{RepositoryError, TrainerService};
 
 use dba_trainer_domain::{
-    AnswerOptionId, AnswerResult, Question, QuestionId, QuestionLimit, QuestionType, QuizScope,
+    AnswerOptionId, AnswerResult, Lab, Question, QuestionId, QuestionLimit, QuestionType, QuizScope,
     SessionConfig, SessionId, SessionProgress, StatisticsFilter, StatisticsLimit, StatisticsScope,
-    Topic, TopicId, TrainingStats,
+    Topic, TopicId, TopicMasteryStats, TrainingStats,
 };
 
 use dba_trainer_storage_sqlite::SqliteRepository;
@@ -20,6 +20,10 @@ pub enum Screen {
     Topics,
     Courses,
     QuizSetup,
+
+    LabCourses,
+    Labs,
+    LabDetail,
 
     Quiz,
     Feedback,
@@ -61,6 +65,7 @@ pub enum StatisticsView {
 pub enum HomeItem {
     Topics,
     GeneralQuiz,
+    Labs,
     Statistics,
     Language,
     Quit,
@@ -71,6 +76,7 @@ impl HomeItem {
         match self {
             Self::Topics => strings.topic_quiz.to_string(),
             Self::GeneralQuiz => strings.general_quiz.to_string(),
+            Self::Labs => strings.labs.to_string(),
             Self::Statistics => strings.statistics.to_string(),
             Self::Language => format!("{}: {}", strings.language, strings.language_name(language)),
             Self::Quit => strings.quit.to_string(),
@@ -78,9 +84,10 @@ impl HomeItem {
     }
 }
 
-pub const HOME_ITEMS: [HomeItem; 5] = [
+pub const HOME_ITEMS: [HomeItem; 6] = [
     HomeItem::Topics,
     HomeItem::GeneralQuiz,
+    HomeItem::Labs,
     HomeItem::Statistics,
     HomeItem::Language,
     HomeItem::Quit,
@@ -102,11 +109,17 @@ pub struct App {
     pub topic_selected: usize,
     pub course_selected: usize,
     pub limit_selected: usize,
+    pub lab_course_selected: usize,
+    pub lab_selected: usize,
 
     pub option_selected: usize,
 
     pub topics: Vec<Topic>,
     pub selected_topic_course: Option<String>,
+    pub labs: Vec<Lab>,
+    pub selected_lab_course: Option<String>,
+    pub selected_lab: Option<Lab>,
+    pub lab_scroll: u16,
 
     pub quiz_scope: QuizScope,
 
@@ -144,6 +157,8 @@ pub struct App {
 
     statistics_filter_summaries: Vec<(StatisticsLimit, TrainingStats)>,
 
+    topic_mastery_summaries: Vec<(TopicId, TopicMasteryStats)>,
+
     statistics_history: Vec<(StatisticsView, usize)>,
 
     cancel_return_screen: Screen,
@@ -160,6 +175,7 @@ impl App {
     ) -> Result<Self, RepositoryError> {
         service.set_content_locale(language.code())?;
         let topics = service.topics()?;
+        let labs = service.labs()?;
 
         let resume_session = service.active_session()?;
 
@@ -186,11 +202,23 @@ impl App {
 
             limit_selected: 0,
 
+            lab_course_selected: 0,
+
+            lab_selected: 0,
+
             option_selected: 0,
 
             topics,
 
             selected_topic_course: None,
+
+            labs,
+
+            selected_lab_course: None,
+
+            selected_lab: None,
+
+            lab_scroll: 0,
 
             quiz_scope: QuizScope::AllTopics,
 
@@ -230,6 +258,8 @@ impl App {
 
             statistics_filter_summaries: Vec::new(),
 
+            topic_mastery_summaries: Vec::new(),
+
             statistics_history: Vec::new(),
 
             cancel_return_screen: Screen::Quiz,
@@ -265,6 +295,12 @@ impl App {
             Screen::Courses => self.handle_courses_action(action),
 
             Screen::QuizSetup => self.handle_quiz_setup_action(action),
+
+            Screen::LabCourses => self.handle_lab_courses_action(action),
+
+            Screen::Labs => self.handle_labs_action(action),
+
+            Screen::LabDetail => self.handle_lab_detail_action(action),
 
             Screen::Quiz => self.handle_quiz_action(action),
 
@@ -307,6 +343,15 @@ impl App {
                     self.screen = Screen::Courses;
                 }
 
+                HomeItem::Labs => {
+                    self.lab_course_selected = 0;
+                    self.lab_selected = 0;
+                    self.selected_lab_course = None;
+                    self.selected_lab = None;
+                    self.lab_scroll = 0;
+                    self.screen = Screen::LabCourses;
+                }
+
                 HomeItem::Statistics => {
                     self.statistics_view = StatisticsView::Root;
                     self.statistics_selected = 0;
@@ -320,6 +365,7 @@ impl App {
 
                     self.service.set_content_locale(language.code())?;
                     self.topics = self.service.topics()?;
+                    self.labs = self.service.labs()?;
                     self.topic_course_selected = self
                         .topic_course_selected
                         .min(self.course_codes().len().saturating_sub(1));
@@ -357,6 +403,7 @@ impl App {
                 if let Some(course_code) = courses.get(self.topic_course_selected) {
                     self.selected_topic_course = Some(course_code.clone());
                     self.topic_selected = 0;
+                    self.load_topic_mastery_for_selected_course()?;
                     self.screen = Screen::Topics;
                 }
             }
@@ -434,6 +481,82 @@ impl App {
             }
 
             Action::Toggle | Action::Quit | Action::ClearStatistics => {}
+        }
+
+        Ok(())
+    }
+
+    fn handle_lab_courses_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        let courses = self.lab_course_codes();
+
+        match action {
+            Action::Up => {
+                self.lab_course_selected = previous_index(self.lab_course_selected, courses.len());
+            }
+            Action::Down => {
+                self.lab_course_selected = next_index(self.lab_course_selected, courses.len());
+            }
+            Action::Confirm => {
+                if let Some(course_code) = courses.get(self.lab_course_selected) {
+                    self.selected_lab_course = Some(course_code.clone());
+                    self.lab_selected = 0;
+                    self.screen = Screen::Labs;
+                }
+            }
+            Action::Back => {
+                self.selected_lab_course = None;
+                self.screen = Screen::Home;
+            }
+            Action::Toggle | Action::Quit | Action::ClearStatistics => {}
+        }
+
+        Ok(())
+    }
+
+    fn handle_labs_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        let lab_count = self.labs_for_selected_course().len();
+
+        match action {
+            Action::Up => {
+                self.lab_selected = previous_index(self.lab_selected, lab_count);
+            }
+            Action::Down => {
+                self.lab_selected = next_index(self.lab_selected, lab_count);
+            }
+            Action::Confirm => {
+                self.selected_lab = self
+                    .labs_for_selected_course()
+                    .get(self.lab_selected)
+                    .map(|lab| (*lab).clone());
+                self.lab_scroll = 0;
+
+                if self.selected_lab.is_some() {
+                    self.screen = Screen::LabDetail;
+                }
+            }
+            Action::Back => {
+                self.selected_lab = None;
+                self.screen = Screen::LabCourses;
+            }
+            Action::Toggle | Action::Quit | Action::ClearStatistics => {}
+        }
+
+        Ok(())
+    }
+
+    fn handle_lab_detail_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        match action {
+            Action::Up => {
+                self.lab_scroll = self.lab_scroll.saturating_sub(1);
+            }
+            Action::Down => {
+                self.lab_scroll = self.lab_scroll.saturating_add(1);
+            }
+            Action::Back => {
+                self.lab_scroll = 0;
+                self.screen = Screen::Labs;
+            }
+            Action::Confirm | Action::Toggle | Action::Quit | Action::ClearStatistics => {}
         }
 
         Ok(())
@@ -815,6 +938,52 @@ impl App {
         self.topics
             .iter()
             .filter(|topic| topic.course_code == course_code)
+            .collect()
+    }
+
+    pub fn topic_mastery_for(&self, topic_id: TopicId) -> Option<&TopicMasteryStats> {
+        self.topic_mastery_summaries
+            .iter()
+            .find(|(id, _)| *id == topic_id)
+            .map(|(_, stats)| stats)
+    }
+
+    fn load_topic_mastery_for_selected_course(&mut self) -> Result<(), RepositoryError> {
+        let topic_ids = self
+            .topics_for_selected_course()
+            .into_iter()
+            .map(|topic| topic.id)
+            .collect::<Vec<_>>();
+
+        let mut summaries = Vec::with_capacity(topic_ids.len());
+        for topic_id in topic_ids {
+            summaries.push((topic_id, self.service.topic_mastery(topic_id)?));
+        }
+
+        self.topic_mastery_summaries = summaries;
+        Ok(())
+    }
+
+    pub fn lab_course_codes(&self) -> Vec<String> {
+        let mut course_codes = self
+            .labs
+            .iter()
+            .map(|lab| lab.course_code.clone())
+            .collect::<Vec<_>>();
+
+        course_codes.sort();
+        course_codes.dedup();
+        course_codes
+    }
+
+    pub fn labs_for_selected_course(&self) -> Vec<&Lab> {
+        let Some(course_code) = self.selected_lab_course.as_deref() else {
+            return Vec::new();
+        };
+
+        self.labs
+            .iter()
+            .filter(|lab| lab.course_code == course_code)
             .collect()
     }
 

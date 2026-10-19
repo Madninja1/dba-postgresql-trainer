@@ -89,3 +89,21 @@ pub struct ContentBundle {
     pub topic: TopicDocument,
     pub questions: QuestionsDocument,
 }
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct LabDocument {
+    pub schema_version: u32,
+    pub course: String,
+    pub key: String,
+    pub lab_number: i64,
+    pub title: String,
+    pub description: Option<String>,
+    pub sort_order: i64,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct LabBundle {
+    pub lab: LabDocument,
+    pub body: String,
+}
