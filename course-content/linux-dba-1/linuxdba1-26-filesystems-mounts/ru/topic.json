@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "linux-dba-1",
+  "slug": "linuxdba1-filesystems-mounts",
+  "notes_part": 26,
+  "topic_number": 4,
+  "title": "Файловые системы и монтирование",
+  "description": "Связь PGDATA с файловой системой и block device, df/du/inodes, partitions, ext4, mount/umount и безопасная диагностика дискового пространства",
+  "sort_order": 40
+}

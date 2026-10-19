@@ -1,0 +1,582 @@
+{
+  "schema_version": 1,
+  "topic": "linuxdba1-processes-signals",
+  "questions": [
+    {
+      "key": "linuxdba1-processes-signals-001",
+      "type": "single_choice",
+      "text": "Что показывает `echo $$` в лабораторной?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "PID текущего shell",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "PID PostgreSQL postmaster",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Количество процессов",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Exit status последней команды",
+          "correct": false
+        }
+      ],
+      "explanation": "`$$` — специальный параметр shell, содержащий PID текущего shell.",
+      "source": {
+        "key": "linuxdba1-24-shell-pid",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Процессы Linux",
+        "locator": "Лабораторная №24 — этап «Что такое процесс»",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-processes-signals-002",
+      "type": "multiple_choice",
+      "text": "Что означают параметры в `ps -ef`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`-e` — показать все процессы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`-f` — full-format listing",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`-e` — показать только процессы текущего терминала",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`-f` — следить за процессами в реальном времени",
+          "correct": false
+        }
+      ],
+      "explanation": "В лабораторной `-e` означает все процессы, а `-f` включает расширенный формат с дополнительными полями.",
+      "source": {
+        "key": "linuxdba1-24-ps-ef",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "ps",
+        "locator": "Лабораторная №24 — этап `ps -ef`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-processes-signals-003",
+      "type": "single_choice",
+      "text": "Как в лабораторной характеризуется синтаксис `ps aux`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Как BSD-style синтаксис `ps`, отличный от UNIX-style `ps -ef`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Как точный эквивалент `ps -a -u -x` в обычном GNU-разборе флагов",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Как SQL-команда PostgreSQL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Как параметр `pgrep`",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал подчёркивает, что у `ps` исторически есть разные стили синтаксиса и `ps aux` относится к BSD style.",
+      "source": {
+        "key": "linuxdba1-24-ps-aux",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "ps",
+        "locator": "Лабораторная №24 — этап `ps aux`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-processes-signals-004",
+      "type": "multiple_choice",
+      "text": "Какие команды из лабораторной позволяют найти процессы PostgreSQL в Linux? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`ps -ef | grep postgres`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`ps aux | grep postgres`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`pgrep -a postgres`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`df -h postgres`",
+          "correct": false
+        }
+      ],
+      "explanation": "В материале показаны варианты через `ps | grep` и более чистый вывод через `pgrep -a postgres`.",
+      "source": {
+        "key": "linuxdba1-24-find-processes",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Процессы PostgreSQL",
+        "locator": "Лабораторная №24 — поиск процессов PostgreSQL",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-processes-signals-005",
+      "type": "single_choice",
+      "text": "Какая SQL-функция возвращает PID backend текущей PostgreSQL-сессии?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_backend_pid()",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_cancel_backend()",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_terminate_backend()",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_sleep()",
+          "correct": false
+        }
+      ],
+      "explanation": "`pg_backend_pid()` возвращает PID backend-процесса текущего соединения.",
+      "source": {
+        "key": "linuxdba1-24-backend-pid",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "PostgreSQL backend PID",
+        "locator": "Лабораторная №24 — связь backend с Linux PID",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-processes-signals-006",
+      "type": "multiple_choice",
+      "text": "Какие действия связывают текущую PostgreSQL-сессию с Linux-процессом? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Выполнить `SELECT pg_backend_pid();`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Передать полученный PID в `ps -fp PID`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Сравнить PID с `pg_stat_activity.pid`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Использовать `du -sh PID`",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал строит прямую цепочку: PostgreSQL session → backend PID → Linux process и предлагает сверять PID с `pg_stat_activity`.",
+      "source": {
+        "key": "linuxdba1-24-pid-link",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "PostgreSQL backend PID",
+        "locator": "Лабораторная №24 — связь PostgreSQL session и Linux process",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-processes-signals-007",
+      "type": "single_choice",
+      "text": "Какое представление используется для просмотра PID, пользователя, базы, состояния и текущего запроса PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_stat_activity",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_tables",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_settings",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_roles",
+          "correct": false
+        }
+      ],
+      "explanation": "В лабораторной для текущей активности используется `pg_stat_activity` с полями `pid`, `usename`, `datname`, `state` и `query`.",
+      "source": {
+        "key": "linuxdba1-24-pg-stat-activity",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "pg_stat_activity",
+        "locator": "Лабораторная №24 — этап `pg_stat_activity`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-processes-signals-008",
+      "type": "multiple_choice",
+      "text": "Что демонстрирует пример с `SELECT pg_sleep(300);`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Можно создать длительный запрос",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "В другой сессии можно найти его PID и текст через `pg_stat_activity`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Полученный PID соответствует backend этого запроса",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`pg_sleep` завершает весь PostgreSQL cluster",
+          "correct": false
+        }
+      ],
+      "explanation": "Долгий `pg_sleep` используется как цель для наблюдения и последующей отмены текущего запроса.",
+      "source": {
+        "key": "linuxdba1-24-pg-sleep",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "pg_stat_activity",
+        "locator": "Лабораторная №24 — поиск долгого запроса",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-processes-signals-009",
+      "type": "single_choice",
+      "text": "Что обычно происходит с PostgreSQL backend после `kill -INT PID` во время `pg_sleep` согласно лабораторной?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Текущий запрос прерывается, а backend остаётся жить",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Весь cluster немедленно останавливается",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Backend обязательно превращается в zombie",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Сигнал игнорируется всегда",
+          "correct": false
+        }
+      ],
+      "explanation": "SIGINT в лабораторной используется для отмены текущего запроса; после этого то же соединение проверяется командой `SELECT 1;`.",
+      "source": {
+        "key": "linuxdba1-24-sigint",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Сигналы PostgreSQL backend",
+        "locator": "Лабораторная №24 — SIGINT",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-processes-signals-010",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о SIGTERM для отдельного PostgreSQL backend соответствуют лабораторной? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Сигнал отправляется как `kill -TERM PID`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Backend-процесс завершается",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Клиентская сессия теряет соединение",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Текущий запрос отменяется, но соединение гарантированно остаётся тем же",
+          "correct": false
+        }
+      ],
+      "explanation": "Для отдельного backend SIGTERM в лабораторной приводит к завершению backend и потере клиентского соединения.",
+      "source": {
+        "key": "linuxdba1-24-sigterm",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Сигналы PostgreSQL backend",
+        "locator": "Лабораторная №24 — SIGTERM",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-processes-signals-011",
+      "type": "single_choice",
+      "text": "Какая PostgreSQL-функция предназначена для отмены текущей работы backend без обязательного завершения соединения?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_cancel_backend(PID)",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_terminate_backend(PID)",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_backend_pid()",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_sleep(PID)",
+          "correct": false
+        }
+      ],
+      "explanation": "`pg_cancel_backend()` используется для отмены текущей работы backend; лабораторная отдельно противопоставляет cancel и terminate.",
+      "source": {
+        "key": "linuxdba1-24-cancel-backend",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "SQL-управление backend",
+        "locator": "Лабораторная №24 — PostgreSQL-функции управления",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-processes-signals-012",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `kill -KILL PID` / `kill -9 PID` приведены в лабораторной? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Это отправка SIGKILL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "SIGKILL нельзя обработать или проигнорировать",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Для PostgreSQL это не рекомендуется как стандартный способ управления процессами",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "В лабораторной предлагается применять SIGKILL как первый вариант отмены запроса",
+          "correct": false
+        }
+      ],
+      "explanation": "SIGKILL описан как жёсткий сигнал, который нельзя обработать; для обычного управления PostgreSQL его использовать не следует.",
+      "source": {
+        "key": "linuxdba1-24-sigkill",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Сигналы Linux",
+        "locator": "Лабораторная №24 — раздел «Про kill -9»",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-processes-signals-013",
+      "type": "single_choice",
+      "text": "Что добавляет `-a` в `pgrep -a postgres`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Показывает PID вместе с полной командной строкой",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Показывает только активные SQL-запросы",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Отправляет сигнал всем процессам",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Показывает дерево файлов",
+          "correct": false
+        }
+      ],
+      "explanation": "`pgrep -a` выводит PID и командную строку подходящих процессов.",
+      "source": {
+        "key": "linuxdba1-24-pgrep-a",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "pgrep",
+        "locator": "Лабораторная №24 — этап `pgrep`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-processes-signals-014",
+      "type": "multiple_choice",
+      "text": "Что даёт `pstree -p` в контексте PostgreSQL? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Показывает иерархию процессов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Показывает PID рядом с процессами",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Помогает увидеть основной процесс и дочерние процессы PostgreSQL",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Показывает размер PGDATA",
+          "correct": false
+        }
+      ],
+      "explanation": "`pstree -p` показывает дерево процессов и PID, позволяя увидеть родительско-дочернюю структуру PostgreSQL.",
+      "source": {
+        "key": "linuxdba1-24-pstree",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Процессы PostgreSQL",
+        "locator": "Лабораторная №24 — иерархия процессов",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-processes-signals-015",
+      "type": "single_choice",
+      "text": "Что делает `kill -l`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Выводит список сигналов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Завершает все процессы",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Показывает только PID backend",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Перезапускает postmaster",
+          "correct": false
+        }
+      ],
+      "explanation": "`-l` означает list signals и используется для просмотра доступных сигналов.",
+      "source": {
+        "key": "linuxdba1-24-kill-list",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Сигналы Linux",
+        "locator": "Лабораторная №24 — `kill -l`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-processes-signals-016",
+      "type": "multiple_choice",
+      "text": "В чём различие `pg_cancel_backend()` и `pg_terminate_backend()` в рамках лабораторной? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`pg_cancel_backend()` отменяет текущую работу backend",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`pg_terminate_backend()` завершает backend/сессию",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Cancel и terminate — разные действия",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Обе функции только показывают PID",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал закрепляет модель `cancel ≠ terminate`: первая функция отменяет текущую работу, вторая завершает сессию.",
+      "source": {
+        "key": "linuxdba1-24-cancel-terminate",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "SQL-управление backend",
+        "locator": "Лабораторная №24 — сравнение cancel и terminate",
+        "url": null
+      }
+    }
+  ]
+}

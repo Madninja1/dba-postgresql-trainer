@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "linux-dba-1",
+  "slug": "linuxdba1-processes-signals",
+  "notes_part": 24,
+  "topic_number": 2,
+  "title": "Процессы PostgreSQL и сигналы",
+  "description": "Поиск процессов PostgreSQL в Linux, связь backend PID с pg_stat_activity и управление запросами и сессиями через сигналы и SQL-функции",
+  "sort_order": 20
+}

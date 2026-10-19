@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "linux-dba-1",
+  "slug": "linuxdba1-cpu-ram-swap",
+  "notes_part": 27,
+  "topic_number": 5,
+  "title": "CPU, RAM и swap",
+  "description": "Диагностика CPU bottleneck, memory pressure, swap activity и I/O wait с помощью top, free, vmstat, stress-ng и pgbench",
+  "sort_order": 50
+}

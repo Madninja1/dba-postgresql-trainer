@@ -1,0 +1,587 @@
+{
+  "schema_version": 1,
+  "topic": "linuxdba1-users-groups-permissions",
+  "questions": [
+    {
+      "key": "linuxdba1-users-groups-permissions-001",
+      "type": "single_choice",
+      "text": "Что показывает команда `whoami`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Пользователя, от имени которого работает текущий shell",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только primary GID",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Текущий mount point",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "PID postmaster",
+          "correct": false
+        }
+      ],
+      "explanation": "`whoami` показывает имя пользователя, от которого выполняется текущий shell.",
+      "source": {
+        "key": "linuxdba1-25-whoami",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Пользователи Linux",
+        "locator": "Лабораторная №25 — начало работы с пользователями",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-002",
+      "type": "multiple_choice",
+      "text": "Какие данные показывает `id` по лабораторной? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "UID",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Primary GID",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Дополнительные группы",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Filesystem UUID",
+          "correct": false
+        }
+      ],
+      "explanation": "`id` выводит идентификаторы пользователя и его групп: UID, GID и список групп.",
+      "source": {
+        "key": "linuxdba1-25-id",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Пользователи Linux",
+        "locator": "Лабораторная №25 — UID и GID",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-003",
+      "type": "single_choice",
+      "text": "Что делает `useradd -m dba1`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Создаёт пользователя `dba1` и его домашний каталог",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Добавляет существующего пользователя в группу `dba1`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Меняет owner каталога на `dba1`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Создаёт только группу без пользователя",
+          "correct": false
+        }
+      ],
+      "explanation": "`-m` означает создание home directory для нового пользователя.",
+      "source": {
+        "key": "linuxdba1-25-useradd",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Пользователи Linux",
+        "locator": "Лабораторная №25 — создание пользователя dba1",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-004",
+      "type": "multiple_choice",
+      "text": "Что означает команда `usermod -aG dbadmins dba1`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Добавляет `dba1` в дополнительную группу `dbadmins`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`-G` задаёт supplementary groups",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`-a` означает append и сохраняет остальные дополнительные группы",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Без `-a` список дополнительных групп никогда не может измениться",
+          "correct": false
+        }
+      ],
+      "explanation": "Безопасная связка `-aG` добавляет группу, а не заменяет существующий список supplementary groups.",
+      "source": {
+        "key": "linuxdba1-25-usermod",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Группы Linux",
+        "locator": "Лабораторная №25 — `usermod -aG`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-005",
+      "type": "single_choice",
+      "text": "Что устанавливает `chmod 750 /srv/pgbackup`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "owner `rwx`, group `r-x`, others `---`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "owner `rw-`, group `r--`, others `---`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "всем полный доступ",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "только owner `r--`",
+          "correct": false
+        }
+      ],
+      "explanation": "В octal notation `7 = rwx`, `5 = r-x`, `0 = ---`.",
+      "source": {
+        "key": "linuxdba1-25-chmod-750",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "chmod",
+        "locator": "Лабораторная №25 — octal permissions",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-006",
+      "type": "multiple_choice",
+      "text": "Что означают `r`, `w`, `x` для каталога? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`r` — читать список имён внутри каталога",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`w` — создавать, удалять или переименовывать entries",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`x` — проходить через каталог и обращаться к объектам внутри",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`x` — всегда удалить каталог",
+          "correct": false
+        }
+      ],
+      "explanation": "Для каталогов смысл `rwx` отличается от обычных файлов; особенно важен `x`, необходимый для прохода по пути.",
+      "source": {
+        "key": "linuxdba1-25-directory-rwx",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Права доступа",
+        "locator": "Лабораторная №25 — `rwx` для каталога",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-007",
+      "type": "single_choice",
+      "text": "Почему проверка `sudo -u dba1 touch /srv/pgbackup/dba1.txt` полезнее простого просмотра `ls -l`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Она реально проверяет операцию от имени нужного пользователя",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Она автоматически делает chmod 777",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Она меняет primary group пользователя",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Она показывает только размер каталога",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал подчёркивает: права надо проверять реальным действием от конкретного пользователя, а не только визуально.",
+      "source": {
+        "key": "linuxdba1-25-effective-check",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Проверка прав",
+        "locator": "Лабораторная №25 — проверяем права не глазами",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-008",
+      "type": "multiple_choice",
+      "text": "Почему в проверке записи используется `sudo -u dba1 sh -c 'echo test >> /srv/pgbackup/test.txt'`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Redirect `>>` обычно обрабатывает текущий shell",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`sh -c` заставляет shell и redirect выполняться от `dba1`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Это даёт честную проверку прав записи для `dba1`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`sh -c` автоматически меняет owner файла на root",
+          "correct": false
+        }
+      ],
+      "explanation": "Если написать `sudo -u dba1 echo ... >> file`, перенаправление может выполнить исходный shell; `sh -c` переносит и команду, и redirect в контекст `dba1`.",
+      "source": {
+        "key": "linuxdba1-25-shell-redirect",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Проверка прав",
+        "locator": "Лабораторная №25 — зачем `sh -c`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-009",
+      "type": "single_choice",
+      "text": "Какие обычные права получаются при `umask 022` согласно упрощённой модели лабораторной?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Файл 644, каталог 755",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Файл 777, каталог 666",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Файл 600, каталог 700",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Файл 444, каталог 555",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал использует базы 666 для файлов и 777 для каталогов; с umask 022 обычно получаются 644 и 755.",
+      "source": {
+        "key": "linuxdba1-25-umask-022",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "umask",
+        "locator": "Лабораторная №25 — `umask 022`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-010",
+      "type": "multiple_choice",
+      "text": "Что происходит после временного `umask 0077` в текущем shell? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Новый обычный файл обычно получает 600",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Новый каталог обычно получает 700",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Изменение относится к текущему shell и его дочерним процессам",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Это глобально меняет права всей ОС навсегда",
+          "correct": false
+        }
+      ],
+      "explanation": "`umask 0077` убирает права group/others при создании новых объектов и действует в контексте shell, а не как глобальная настройка всей системы.",
+      "source": {
+        "key": "linuxdba1-25-umask-077",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "umask",
+        "locator": "Лабораторная №25 — временное изменение umask",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-011",
+      "type": "single_choice",
+      "text": "Почему PostgreSQL может получить `Permission denied`, даже если сам файл имеет подходящие права для `postgres`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "На одном из родительских каталогов может отсутствовать право `x` для прохода",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Потому что `r` на файле всегда запрещает чтение",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Потому что любой каталог требует chmod 777",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Потому что UID не используется Linux",
+          "correct": false
+        }
+      ],
+      "explanation": "Для доступа к файлу процессу нужен проход по всей цепочке каталогов; отсутствие `x` на родительском каталоге блокирует путь.",
+      "source": {
+        "key": "linuxdba1-25-parent-execute",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Permission denied",
+        "locator": "Лабораторная №25 — права родительских каталогов",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-012",
+      "type": "multiple_choice",
+      "text": "Что показывает `namei -l /srv/dba-lab/data/report.txt` в лабораторной? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Элементы пути до файла",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Permissions каждого элемента пути",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Owner/group по элементам пути",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Текущий TPS pgbench",
+          "correct": false
+        }
+      ],
+      "explanation": "`namei -l` позволяет увидеть место в цепочке каталогов, где доступ ломается.",
+      "source": {
+        "key": "linuxdba1-25-namei",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Permission denied",
+        "locator": "Лабораторная №25 — `namei -l`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-013",
+      "type": "single_choice",
+      "text": "Что делает `chown postgres:dbadmins /srv/pgbackup`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Устанавливает owner `postgres` и group `dbadmins`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Устанавливает режим 770",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Добавляет postgres в группу dbadmins",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Создаёт каталог /srv/pgbackup",
+          "correct": false
+        }
+      ],
+      "explanation": "Синтаксис `owner:group` позволяет одной командой задать владельца и группу объекта.",
+      "source": {
+        "key": "linuxdba1-25-chown-owner-group",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Владельцы и группы",
+        "locator": "Лабораторная №25 — owner и group одновременно",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-014",
+      "type": "multiple_choice",
+      "text": "Какие вопросы входят в диагностическую цепочку при `Permission denied`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "От какого Linux-user выполняется операция?",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Кто owner и какая group у объекта?",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Какие `rwx` действуют?",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Есть ли доступ по всей цепочке каталогов?",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Какой WAL segment нужно удалить?",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал предлагает последовательно проверить пользователя процесса, владельца/группу, права и проходимость всего пути.",
+      "source": {
+        "key": "linuxdba1-25-permission-chain",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Permission denied",
+        "locator": "Лабораторная №25 — диагностическая модель",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-015",
+      "type": "single_choice",
+      "text": "Почему `chmod -R 777 /srv/dba-lab` назван плохой привычкой?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он выдаёт полный доступ всем вместо назначения минимально необходимых прав",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он всегда удаляет каталог",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Он меняет filesystem на ext4",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Он завершает процессы PostgreSQL",
+          "correct": false
+        }
+      ],
+      "explanation": "Лабораторная закрепляет принцип least privilege: исправлять конкретную причину доступа, а не открывать всё всем.",
+      "source": {
+        "key": "linuxdba1-25-no-777",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Permission denied",
+        "locator": "Лабораторная №25 — почему chmod 777 не решение",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-016",
+      "type": "multiple_choice",
+      "text": "Какие команды позволяют проверить owner/group/permissions объекта или пути в лабораторной? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`ls -ld /srv/pgbackup`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`stat /srv/pgbackup`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`namei -l /path/to/file`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`uptime /srv/pgbackup`",
+          "correct": false
+        }
+      ],
+      "explanation": "`ls -ld`, `stat` и `namei -l` дают разные уровни просмотра прав, владельцев и цепочки каталогов.",
+      "source": {
+        "key": "linuxdba1-25-inspect-permissions",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Права доступа",
+        "locator": "Лабораторная №25 — инструменты диагностики прав",
+        "url": null
+      }
+    }
+  ]
+}

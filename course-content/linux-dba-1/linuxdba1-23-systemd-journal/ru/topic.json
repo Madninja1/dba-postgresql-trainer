@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "linux-dba-1",
+  "slug": "linuxdba1-systemd-journal",
+  "notes_part": 23,
+  "topic_number": 1,
+  "title": "systemd и journalctl",
+  "description": "Диагностика PostgreSQL через systemd и journalctl, работа со справкой Linux, состоянием сервисов, журналом и TCP-портом",
+  "sort_order": 10
+}

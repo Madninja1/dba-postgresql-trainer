@@ -1,0 +1,592 @@
+{
+  "schema_version": 1,
+  "topic": "linuxdba1-systemd-journal",
+  "questions": [
+    {
+      "key": "linuxdba1-systemd-journal-001",
+      "type": "single_choice",
+      "text": "Какой инструмент в лабораторной используется как основной встроенный справочник Linux с подробными manual pages?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "man",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "grep",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "systemctl",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "type",
+          "correct": false
+        }
+      ],
+      "explanation": "`man` открывает manual page команды и используется для подробного изучения её назначения, параметров и поведения.",
+      "source": {
+        "key": "linuxdba1-23-man",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Справка в Linux",
+        "locator": "Лабораторная №23 — раздел «man»",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-systemd-journal-002",
+      "type": "multiple_choice",
+      "text": "Какие действия внутри `man`/`less` соответствуют лабораторной? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`/слово` — поиск вперёд",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`n` — следующее совпадение",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`q` — выход",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`G` — перейти в начало",
+          "correct": false
+        }
+      ],
+      "explanation": "В лабораторной `/слово` используется для поиска вперёд, `n` — для следующего совпадения, `q` — для выхода; `G` ведёт в конец, а `g` — в начало.",
+      "source": {
+        "key": "linuxdba1-23-man-navigation",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Справка в Linux",
+        "locator": "Лабораторная №23 — навигация в man/less",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-systemd-journal-003",
+      "type": "single_choice",
+      "text": "Какую команду следует использовать, если название программы известно и нужно быстро узнать её назначение одной строкой?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "whatis",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "apropos",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "journalctl",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pgrep",
+          "correct": false
+        }
+      ],
+      "explanation": "`whatis COMMAND` даёт краткое описание известной команды; `apropos` нужен, когда название инструмента ещё неизвестно и поиск идёт по ключевому слову.",
+      "source": {
+        "key": "linuxdba1-23-whatis",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Справка в Linux",
+        "locator": "Лабораторная №23 — раздел «whatis»",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-systemd-journal-004",
+      "type": "multiple_choice",
+      "text": "Что может показать команда `type COMMAND` по материалу лабораторной? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Что команда является shell builtin",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Что команда является alias",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Что будет запущен внешний executable",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Текущий systemd journal выбранного unit",
+          "correct": false
+        }
+      ],
+      "explanation": "`type` помогает понять, что именно выполнит shell: builtin, alias или внешнюю программу.",
+      "source": {
+        "key": "linuxdba1-23-type",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Справка в Linux",
+        "locator": "Лабораторная №23 — раздел «type»",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-systemd-journal-005",
+      "type": "single_choice",
+      "text": "Что делает `systemctl list-units --type=service`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Показывает units, отфильтрованные до сервисов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Показывает только ошибки journal",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Перезапускает все services",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Показывает только TCP sockets",
+          "correct": false
+        }
+      ],
+      "explanation": "`list-units` выводит units, а `--type=service` ограничивает вывод объектами типа service.",
+      "source": {
+        "key": "linuxdba1-23-systemctl-list-units",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "systemctl",
+        "locator": "Лабораторная №23 — поиск PostgreSQL services",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-systemd-journal-006",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `systemctl is-active` и `systemctl is-enabled` верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`is-active` отвечает на вопрос, работает ли unit сейчас",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`is-enabled` относится к настройке запуска unit через systemd",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Unit может быть active и при этом disabled",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`active` и `enabled` всегда означают одно и то же",
+          "correct": false
+        }
+      ],
+      "explanation": "Текущее состояние и настройка запуска — разные характеристики; лабораторная отдельно подчёркивает `active ≠ enabled`.",
+      "source": {
+        "key": "linuxdba1-23-active-enabled",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "systemctl",
+        "locator": "Лабораторная №23 — is-active и is-enabled",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-systemd-journal-007",
+      "type": "single_choice",
+      "text": "Что содержит shell-переменная `$?` сразу после выполнения команды?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Exit status последней выполненной команды",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "PID текущего shell",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Имя текущего systemd unit",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Количество строк в journal",
+          "correct": false
+        }
+      ],
+      "explanation": "`$?` содержит код завершения последней команды; значение 0 обычно означает успешное выполнение.",
+      "source": {
+        "key": "linuxdba1-23-exit-status",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Shell",
+        "locator": "Лабораторная №23 — проверка exit code",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-systemd-journal-008",
+      "type": "multiple_choice",
+      "text": "Какие параметры `journalctl` используются в лабораторной для ограничения или сопровождения вывода? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`-u` — выбрать unit",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`-n` — последние N записей",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`-f` — следить за новыми событиями",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`--since` — задать нижнюю границу времени",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`--compile` — пересобрать unit",
+          "correct": false
+        }
+      ],
+      "explanation": "Лабораторная вводит `-u`, `-n`, `-f`, `--since` и `--until` как основные способы сузить или сопровождать журнал.",
+      "source": {
+        "key": "linuxdba1-23-journal-filters",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "journalctl",
+        "locator": "Лабораторная №23 — фильтры journalctl",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-systemd-journal-009",
+      "type": "single_choice",
+      "text": "Какой unit на Debian/Ubuntu в лабораторной указан как конкретный кластер PostgreSQL 16 main?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "postgresql@16-main.service",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "postgresql.target",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "postgres.service@main",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg16.socket",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал различает верхнеуровневый `postgresql.service` и конкретный кластер `postgresql@16-main.service`.",
+      "source": {
+        "key": "linuxdba1-23-postgresql-unit",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "systemctl",
+        "locator": "Лабораторная №23 — конкретный PostgreSQL cluster unit",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-systemd-journal-010",
+      "type": "multiple_choice",
+      "text": "Что означают флаги в `ss -lnt` по лабораторной? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`-l` — listening sockets",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`-n` — numeric output",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`-t` — TCP",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`-n` — показать последние N строк",
+          "correct": false
+        }
+      ],
+      "explanation": "Для `ss` комбинация `-lnt` означает listening, numeric и TCP. Значение одинаковой буквы зависит от конкретной программы.",
+      "source": {
+        "key": "linuxdba1-23-ss-lnt",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Сетевой контроль",
+        "locator": "Лабораторная №23 — проверка порта через ss",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-systemd-journal-011",
+      "type": "single_choice",
+      "text": "Какой вариант `ss` в лабораторной используется, чтобы увидеть процесс, занявший TCP/5432?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "sudo ss -lntp | grep 5432",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "ss -f 5432",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "ss --kill 5432",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "ss -u postgresql@16-main",
+          "correct": false
+        }
+      ],
+      "explanation": "`-p` у `ss` показывает процесс, связанный с socket; вместе с `-lntp` это помогает выяснить, кто занял порт.",
+      "source": {
+        "key": "linuxdba1-23-ss-process",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Сетевой контроль",
+        "locator": "Лабораторная №23 — инцидент «порт занят»",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-systemd-journal-012",
+      "type": "multiple_choice",
+      "text": "Какие проверки входят в финальную схему диагностики недоступного PostgreSQL из лабораторной? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Проверить состояние systemd unit",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Посмотреть journal PostgreSQL",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Проверить TCP/5432",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "После исправления проверить SQL",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Сразу удалить postgresql.conf",
+          "correct": false
+        }
+      ],
+      "explanation": "Финальная практика строится вокруг проверки systemd, журнала, TCP и SQL после устранения причины.",
+      "source": {
+        "key": "linuxdba1-23-incident-flow",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Диагностика PostgreSQL",
+        "locator": "Лабораторная №23 — финальный мини-экзамен",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-systemd-journal-013",
+      "type": "single_choice",
+      "text": "Что означает `-f` в `journalctl -u postgresql@16-main -f`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Следить за новыми событиями в реальном времени",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Показать только failed units",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Перейти к первому boot",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Показать full-format process list",
+          "correct": false
+        }
+      ],
+      "explanation": "`-f` — короткая форма `--follow`; команда остаётся запущенной и показывает новые события по мере их появления.",
+      "source": {
+        "key": "linuxdba1-23-journal-follow",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "journalctl",
+        "locator": "Лабораторная №23 — режим follow",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-systemd-journal-014",
+      "type": "multiple_choice",
+      "text": "Как расшифровывается объединённая запись `journalctl -xeu postgresql@16-main`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`-x` — дополнительные пояснения из message catalog",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`-e` — открыть вывод ближе к концу",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`-u` — выбрать конкретный unit",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`-x` — завершить PostgreSQL process",
+          "correct": false
+        }
+      ],
+      "explanation": "`-xeu` — объединение трёх коротких параметров `-x`, `-e` и `-u`.",
+      "source": {
+        "key": "linuxdba1-23-journal-xeu",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "journalctl",
+        "locator": "Лабораторная №23 — раздел `journalctl -xeu`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-systemd-journal-015",
+      "type": "single_choice",
+      "text": "Что означает `-u postgres` в `sudo -u postgres psql -c \"SELECT now();\"`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Выполнить команду от Linux-пользователя postgres",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Выбрать systemd unit postgres",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Ограничить journal пользователем postgres",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Показать PostgreSQL uptime",
+          "correct": false
+        }
+      ],
+      "explanation": "У `sudo` параметр `-u` означает `--user`; одинаковая буква у другой программы может иметь другой смысл.",
+      "source": {
+        "key": "linuxdba1-23-sudo-user",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "sudo",
+        "locator": "Лабораторная №23 — разбор `sudo -u postgres`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-systemd-journal-016",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `journalctl -b` и `journalctl -p` соответствуют лабораторной? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`-b` ограничивает сообщения выбранной загрузкой ОС",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`-p` фильтрует по priority",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`-p warning` можно сочетать с `-u postgresql@16-main`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`-b` создаёт backup журнала",
+          "correct": false
+        }
+      ],
+      "explanation": "`-b` относится к boot, а `-p` — к уровню сообщений; эти фильтры можно сочетать с выбором unit.",
+      "source": {
+        "key": "linuxdba1-23-journal-boot-priority",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "journalctl",
+        "locator": "Лабораторная №23 — дополнительные фильтры journalctl",
+        "url": null
+      }
+    }
+  ]
+}

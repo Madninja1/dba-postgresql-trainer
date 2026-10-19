@@ -1,0 +1,607 @@
+{
+  "schema_version": 1,
+  "topic": "linuxdba1-filesystems-mounts",
+  "questions": [
+    {
+      "key": "linuxdba1-filesystems-mounts-001",
+      "type": "single_choice",
+      "text": "Какой SQL-параметр используется в лабораторной, чтобы узнать фактический каталог данных PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "SHOW data_directory;",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "SHOW mount_point;",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "SHOW block_device;",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "SHOW filesystem;",
+          "correct": false
+        }
+      ],
+      "explanation": "`SHOW data_directory;` возвращает текущий путь PGDATA.",
+      "source": {
+        "key": "linuxdba1-26-pgdata",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "PGDATA",
+        "locator": "Лабораторная №26 — поиск data_directory",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-002",
+      "type": "multiple_choice",
+      "text": "Что означает комбинация `-Atc` в `psql -Atc \"SHOW data_directory;\"`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`-A` — unaligned output",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`-t` — tuples only",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`-c` — выполнить command",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`-A` — показать все block devices",
+          "correct": false
+        }
+      ],
+      "explanation": "Комбинация удобна в shell: убрать табличное форматирование, заголовки/служебные строки и выполнить одну SQL-команду.",
+      "source": {
+        "key": "linuxdba1-26-psql-atc",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "PGDATA",
+        "locator": "Лабораторная №26 — разбор `psql -Atc`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-003",
+      "type": "single_choice",
+      "text": "В чём основная разница между `df` и `du` по лабораторной?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`df` показывает использование filesystem, `du` — объём конкретных файлов/каталогов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`df` показывает PID, `du` — UID",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`df` создаёт filesystem, `du` её монтирует",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Разницы нет",
+          "correct": false
+        }
+      ],
+      "explanation": "`df` отвечает про файловую систему целиком, а `du` — про объём дерева файлов/каталогов.",
+      "source": {
+        "key": "linuxdba1-26-df-du",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Дисковое пространство",
+        "locator": "Лабораторная №26 — различие df и du",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-004",
+      "type": "multiple_choice",
+      "text": "Какие данные помогают получить `df -hT \"$PGDATA\"` и `findmnt -T \"$PGDATA\"`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Filesystem type",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Mount point / target",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Source block device или источник mount",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Использование/свободное место через df",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "PID текущего backend",
+          "correct": false
+        }
+      ],
+      "explanation": "`df -hT` показывает использование и тип filesystem, а `findmnt -T` определяет filesystem, фактически обслуживающую указанный путь.",
+      "source": {
+        "key": "linuxdba1-26-findmnt-df",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Дисковое пространство",
+        "locator": "Лабораторная №26 — связь PGDATA с filesystem",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-005",
+      "type": "single_choice",
+      "text": "Что показывает `lsblk -f`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Block devices вместе с информацией о filesystem, UUID и mountpoints",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только процессы PostgreSQL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только inode usage",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только размер текущего каталога",
+          "correct": false
+        }
+      ],
+      "explanation": "`lsblk -f` расширяет список block devices информацией о файловых системах и точках монтирования.",
+      "source": {
+        "key": "linuxdba1-26-lsblk",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Block devices",
+        "locator": "Лабораторная №26 — `lsblk -f`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-006",
+      "type": "multiple_choice",
+      "text": "Что проверяет `df -i \"$PGDATA\"`? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Количество inode",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Использованные inode",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Свободные inode",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Номер сигнала SIGINT",
+          "correct": false
+        }
+      ],
+      "explanation": "`df -i` переключает отчёт с блоков/байтов на использование inode.",
+      "source": {
+        "key": "linuxdba1-26-inodes",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Дисковое пространство",
+        "locator": "Лабораторная №26 — inode usage",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-007",
+      "type": "single_choice",
+      "text": "Что такое mount point в модели лабораторной?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Каталог, к которому подключена файловая система",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Обязательно отдельный физический диск",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "PID процесса mount",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Файл конфигурации PostgreSQL",
+          "correct": false
+        }
+      ],
+      "explanation": "Mount point — обычный каталог, который становится точкой доступа к содержимому подключённой filesystem.",
+      "source": {
+        "key": "linuxdba1-26-mount-point",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Монтирование",
+        "locator": "Лабораторная №26 — определение mount point",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-008",
+      "type": "multiple_choice",
+      "text": "Почему каталог `/pgdata` может существовать даже при несмонтированном отдельном диске? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Mount point сам по себе является обычным каталогом",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Если mount не произошёл, запись может пойти на родительскую/root filesystem",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`ls -ld /pgdata` может продолжать работать",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Наличие каталога гарантирует, что нужный диск смонтирован",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал подчёркивает риск: каталог остаётся существовать, даже если ожидаемая filesystem не подключена.",
+      "source": {
+        "key": "linuxdba1-26-missing-mount",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Монтирование",
+        "locator": "Лабораторная №26 — риск записи в mount point без mount",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-009",
+      "type": "single_choice",
+      "text": "Какая последовательность уровней соответствует лаборатории с отдельным диском?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "disk → partition → filesystem → mount point",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "filesystem → PID → partition → user",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "mount point → signal → disk → SQL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "partition → process → journal → filesystem",
+          "correct": false
+        }
+      ],
+      "explanation": "Практика явно разделяет `/dev/sdb` как disk, `/dev/sdb1` как partition, ext4 как filesystem и `/mnt/pg-lab` как mount point.",
+      "source": {
+        "key": "linuxdba1-26-storage-chain",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Block devices",
+        "locator": "Лабораторная №26 — модель disk/partition/filesystem/mount",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-010",
+      "type": "multiple_choice",
+      "text": "Какие команды `fdisk` в интерактивном режиме используются в лабораторной? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`m` — help",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`p` — print partition table",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`n` — new partition",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`w` — записать изменения и выйти",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`q` — выйти без сохранения",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "`x` — обязательно форматировать ext4",
+          "correct": false
+        }
+      ],
+      "explanation": "Лабораторная отдельно закрепляет `m`, `p`, `n`, `w` и `q` как базовый набор для работы с `fdisk`.",
+      "source": {
+        "key": "linuxdba1-26-fdisk-commands",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Partitioning",
+        "locator": "Лабораторная №26 — создание partition через fdisk",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-011",
+      "type": "single_choice",
+      "text": "Что делает `fdisk -l /dev/sdb` в лаборатории?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Показывает partition table устройства без внесения изменений",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Создаёт новую ext4 filesystem",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Монтирует `/dev/sdb`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Удаляет все partitions",
+          "correct": false
+        }
+      ],
+      "explanation": "`-l` используется как безопасная проверочная операция для просмотра partition table.",
+      "source": {
+        "key": "linuxdba1-26-fdisk-list",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Partitioning",
+        "locator": "Лабораторная №26 — предварительная проверка диска",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-012",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о `mkfs.ext4 /dev/sdb1` верны по лабораторной? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Команда создаёт новую filesystem ext4",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Целью должен быть проверенный block device/partition",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Операция разрушительна для существующей filesystem/данных на выбранном устройстве",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Её безопасно без проверки запускать на `/dev/sda2` с root filesystem",
+          "correct": false
+        }
+      ],
+      "explanation": "`mkfs.ext4` создаёт filesystem и поэтому требует особенно внимательно проверить выбранное устройство перед запуском.",
+      "source": {
+        "key": "linuxdba1-26-mkfs",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Filesystem",
+        "locator": "Лабораторная №26 — создание ext4 и предупреждение о destructive operation",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-013",
+      "type": "single_choice",
+      "text": "Что делает loop device в лабораторной модели?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Представляет обычный файл как виртуальный block device",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Преобразует PID в filesystem",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Создаёт PostgreSQL backend",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Заменяет `findmnt`",
+          "correct": false
+        }
+      ],
+      "explanation": "Loop device позволяет обращаться с обычным файлом почти как с block device, на котором можно создать filesystem и выполнить mount.",
+      "source": {
+        "key": "linuxdba1-26-loop-device",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Loop device",
+        "locator": "Лабораторная №26 — loop device",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-014",
+      "type": "multiple_choice",
+      "text": "Что означают параметры `losetup -fP` по материалу? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`-f` — найти первый свободный loop device",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`-P` — попросить kernel просканировать partition table",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Команда связывает файл с loop device",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`-P` — показать PID PostgreSQL",
+          "correct": false
+        }
+      ],
+      "explanation": "`losetup` связывает файл с loop device; `-f` выбирает свободный `/dev/loopX`, а `-P` инициирует сканирование partition table.",
+      "source": {
+        "key": "linuxdba1-26-losetup",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Loop device",
+        "locator": "Лабораторная №26 — `losetup -fP`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-015",
+      "type": "single_choice",
+      "text": "Какую дополнительную проверку нужно обязательно включить при `No space left on device`, даже если по гигабайтам место ещё может быть?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`df -i` для проверки inode",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`kill -l`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`whoami`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`pg_backend_pid()`",
+          "correct": false
+        }
+      ],
+      "explanation": "Ошибка нехватки места может быть связана не только с блоками, но и с исчерпанием inode.",
+      "source": {
+        "key": "linuxdba1-26-no-space-inodes",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Инцидент No space left",
+        "locator": "Лабораторная №26 — диагностика `No space left on device`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-016",
+      "type": "multiple_choice",
+      "text": "Какие проверки входят в минимальную диагностику `No space left on device` из лабораторной? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`df -hT \"$PGDATA\"`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`df -i \"$PGDATA\"`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`findmnt -T \"$PGDATA\"`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`lsblk -f`",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`du` по PGDATA для поиска занимающих место каталогов",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "Сразу удалять WAL без диагностики",
+          "correct": false
+        }
+      ],
+      "explanation": "Сначала нужно определить filesystem/device, проверить место и inode, убедиться в mount и понять, что занимает пространство.",
+      "source": {
+        "key": "linuxdba1-26-no-space-flow",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Инцидент No space left",
+        "locator": "Лабораторная №26 — итоговая DBA-схема",
+        "url": null
+      }
+    }
+  ]
+}
