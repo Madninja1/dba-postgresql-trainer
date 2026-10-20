@@ -697,6 +697,26 @@ internal object IntegrityCheckingUniffiLib {
     ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_mistake_summaries(
     ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_check(
+    ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_execute(
+    ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_load_task(
+    ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_progress(
+    ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_reset(
+    ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_save_draft(
+    ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_schema(
+    ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_stats(
+    ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_table_data(
+    ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_tasks(
+    ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_set_content_locale(
     ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_start_all_topics_session(
@@ -766,6 +786,26 @@ internal object UniffiLib {
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_mistake_detail(`ptr`: Long,`questionId`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_mistake_summaries(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_check(`ptr`: Long,`taskId`: Long,`sql`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_execute(`ptr`: Long,`taskId`: Long,`sql`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_load_task(`ptr`: Long,`taskId`: Long,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_progress(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_reset(`ptr`: Long,`taskId`: Long,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_save_draft(`ptr`: Long,`taskId`: Long,`sql`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): Unit
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_schema(`ptr`: Long,`taskId`: Long,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_stats(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_table_data(`ptr`: Long,`taskId`: Long,`table`: RustBuffer.ByValue,`limit`: Long,`offset`: Long,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_tasks(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_set_content_locale(`ptr`: Long,`locale`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): Unit
@@ -944,6 +984,36 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_mistake_summaries() and 0xFFFF) != 9822) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_check() and 0xFFFF) != 5399) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_execute() and 0xFFFF) != 39756) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_load_task() and 0xFFFF) != 34853) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_progress() and 0xFFFF) != 6583) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_reset() and 0xFFFF) != 4151) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_save_draft() and 0xFFFF) != 35918) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_schema() and 0xFFFF) != 4561) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_stats() and 0xFFFF) != 43092) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_table_data() and 0xFFFF) != 57202) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_tasks() and 0xFFFF) != 59616) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_set_content_locale() and 0xFFFF) != 17472) {
@@ -1408,6 +1478,26 @@ public interface MobileTrainerInterface {
     
     fun `mistakeSummaries`(): List<MobileQuestionMistakeSummary>
     
+    fun `practiceCheck`(`taskId`: kotlin.Long, `sql`: kotlin.String): MobilePracticeCheckResult
+    
+    fun `practiceExecute`(`taskId`: kotlin.Long, `sql`: kotlin.String): MobilePracticeExecutionResult
+    
+    fun `practiceLoadTask`(`taskId`: kotlin.Long): MobilePracticeSchema
+    
+    fun `practiceProgress`(): List<MobilePracticeTaskProgress>
+    
+    fun `practiceReset`(`taskId`: kotlin.Long): MobilePracticeSchema
+    
+    fun `practiceSaveDraft`(`taskId`: kotlin.Long, `sql`: kotlin.String)
+    
+    fun `practiceSchema`(`taskId`: kotlin.Long): MobilePracticeSchema
+    
+    fun `practiceStats`(): MobilePracticeStats
+    
+    fun `practiceTableData`(`taskId`: kotlin.Long, `table`: kotlin.String, `limit`: kotlin.ULong, `offset`: kotlin.ULong): MobilePracticeTableData
+    
+    fun `practiceTasks`(): List<MobilePracticeTask>
+    
     fun `setContentLocale`(`locale`: kotlin.String)
     
     fun `startAllTopicsSession`(`limit`: MobileQuestionLimit): MobileQuizSession
@@ -1652,6 +1742,158 @@ open class MobileTrainer: Disposable, AutoCloseable, MobileTrainerInterface
     callWithHandle {
     uniffiRustCallWithError(MobileException) { _status ->
     UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_mistake_summaries(
+        it,
+        _status)
+}
+    }
+    )
+    }
+    
+
+    
+    @Throws(MobileException::class)override fun `practiceCheck`(`taskId`: kotlin.Long, `sql`: kotlin.String): MobilePracticeCheckResult {
+            return FfiConverterTypeMobilePracticeCheckResult.lift(
+    callWithHandle {
+    uniffiRustCallWithError(MobileException) { _status ->
+    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_check(
+        it,
+        
+        FfiConverterLong.lower(`taskId`),
+        FfiConverterString.lower(`sql`),_status)
+}
+    }
+    )
+    }
+    
+
+    
+    @Throws(MobileException::class)override fun `practiceExecute`(`taskId`: kotlin.Long, `sql`: kotlin.String): MobilePracticeExecutionResult {
+            return FfiConverterTypeMobilePracticeExecutionResult.lift(
+    callWithHandle {
+    uniffiRustCallWithError(MobileException) { _status ->
+    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_execute(
+        it,
+        
+        FfiConverterLong.lower(`taskId`),
+        FfiConverterString.lower(`sql`),_status)
+}
+    }
+    )
+    }
+    
+
+    
+    @Throws(MobileException::class)override fun `practiceLoadTask`(`taskId`: kotlin.Long): MobilePracticeSchema {
+            return FfiConverterTypeMobilePracticeSchema.lift(
+    callWithHandle {
+    uniffiRustCallWithError(MobileException) { _status ->
+    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_load_task(
+        it,
+        
+        FfiConverterLong.lower(`taskId`),_status)
+}
+    }
+    )
+    }
+    
+
+    
+    @Throws(MobileException::class)override fun `practiceProgress`(): List<MobilePracticeTaskProgress> {
+            return FfiConverterSequenceTypeMobilePracticeTaskProgress.lift(
+    callWithHandle {
+    uniffiRustCallWithError(MobileException) { _status ->
+    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_progress(
+        it,
+        _status)
+}
+    }
+    )
+    }
+    
+
+    
+    @Throws(MobileException::class)override fun `practiceReset`(`taskId`: kotlin.Long): MobilePracticeSchema {
+            return FfiConverterTypeMobilePracticeSchema.lift(
+    callWithHandle {
+    uniffiRustCallWithError(MobileException) { _status ->
+    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_reset(
+        it,
+        
+        FfiConverterLong.lower(`taskId`),_status)
+}
+    }
+    )
+    }
+    
+
+    
+    @Throws(MobileException::class)override fun `practiceSaveDraft`(`taskId`: kotlin.Long, `sql`: kotlin.String)
+        = 
+    callWithHandle {
+    uniffiRustCallWithError(MobileException) { _status ->
+    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_save_draft(
+        it,
+        
+        FfiConverterLong.lower(`taskId`),
+        FfiConverterString.lower(`sql`),_status)
+}
+    }
+    
+    
+
+    
+    @Throws(MobileException::class)override fun `practiceSchema`(`taskId`: kotlin.Long): MobilePracticeSchema {
+            return FfiConverterTypeMobilePracticeSchema.lift(
+    callWithHandle {
+    uniffiRustCallWithError(MobileException) { _status ->
+    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_schema(
+        it,
+        
+        FfiConverterLong.lower(`taskId`),_status)
+}
+    }
+    )
+    }
+    
+
+    
+    @Throws(MobileException::class)override fun `practiceStats`(): MobilePracticeStats {
+            return FfiConverterTypeMobilePracticeStats.lift(
+    callWithHandle {
+    uniffiRustCallWithError(MobileException) { _status ->
+    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_stats(
+        it,
+        _status)
+}
+    }
+    )
+    }
+    
+
+    
+    @Throws(MobileException::class)override fun `practiceTableData`(`taskId`: kotlin.Long, `table`: kotlin.String, `limit`: kotlin.ULong, `offset`: kotlin.ULong): MobilePracticeTableData {
+            return FfiConverterTypeMobilePracticeTableData.lift(
+    callWithHandle {
+    uniffiRustCallWithError(MobileException) { _status ->
+    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_table_data(
+        it,
+        
+        FfiConverterLong.lower(`taskId`),
+        FfiConverterString.lower(`table`),
+        FfiConverterULong.lower(`limit`),
+        FfiConverterULong.lower(`offset`),_status)
+}
+    }
+    )
+    }
+    
+
+    
+    @Throws(MobileException::class)override fun `practiceTasks`(): List<MobilePracticeTask> {
+            return FfiConverterSequenceTypeMobilePracticeTask.lift(
+    callWithHandle {
+    uniffiRustCallWithError(MobileException) { _status ->
+    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_tasks(
         it,
         _status)
 }
@@ -2254,6 +2496,617 @@ public object FfiConverterTypeMobileLab: FfiConverterRustBuffer<MobileLab> {
             FfiConverterString.write(value.`title`, buf)
             FfiConverterOptionalString.write(value.`description`, buf)
             FfiConverterString.write(value.`body`, buf)
+    }
+}
+
+
+
+data class MobilePracticeCategoryStats (
+    val `category`: kotlin.String
+    , 
+    val `totalTasks`: kotlin.ULong
+    , 
+    val `startedTasks`: kotlin.ULong
+    , 
+    val `solvedTasks`: kotlin.ULong
+    , 
+    val `totalAttempts`: kotlin.ULong
+    , 
+    val `solvedFirstTry`: kotlin.ULong
+    
+){
+    
+
+    
+
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobilePracticeCategoryStats: FfiConverterRustBuffer<MobilePracticeCategoryStats> {
+    override fun read(buf: ByteBuffer): MobilePracticeCategoryStats {
+        return MobilePracticeCategoryStats(
+            FfiConverterString.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: MobilePracticeCategoryStats) = (
+            FfiConverterString.allocationSize(value.`category`) +
+            FfiConverterULong.allocationSize(value.`totalTasks`) +
+            FfiConverterULong.allocationSize(value.`startedTasks`) +
+            FfiConverterULong.allocationSize(value.`solvedTasks`) +
+            FfiConverterULong.allocationSize(value.`totalAttempts`) +
+            FfiConverterULong.allocationSize(value.`solvedFirstTry`)
+    )
+
+    override fun write(value: MobilePracticeCategoryStats, buf: ByteBuffer) {
+            FfiConverterString.write(value.`category`, buf)
+            FfiConverterULong.write(value.`totalTasks`, buf)
+            FfiConverterULong.write(value.`startedTasks`, buf)
+            FfiConverterULong.write(value.`solvedTasks`, buf)
+            FfiConverterULong.write(value.`totalAttempts`, buf)
+            FfiConverterULong.write(value.`solvedFirstTry`, buf)
+    }
+}
+
+
+
+data class MobilePracticeCheckResult (
+    val `isCorrect`: kotlin.Boolean
+    , 
+    val `actualRows`: kotlin.ULong
+    , 
+    val `expectedRows`: kotlin.ULong
+    , 
+    val `failedChecks`: List<kotlin.String>
+    
+){
+    
+
+    
+
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobilePracticeCheckResult: FfiConverterRustBuffer<MobilePracticeCheckResult> {
+    override fun read(buf: ByteBuffer): MobilePracticeCheckResult {
+        return MobilePracticeCheckResult(
+            FfiConverterBoolean.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterSequenceString.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: MobilePracticeCheckResult) = (
+            FfiConverterBoolean.allocationSize(value.`isCorrect`) +
+            FfiConverterULong.allocationSize(value.`actualRows`) +
+            FfiConverterULong.allocationSize(value.`expectedRows`) +
+            FfiConverterSequenceString.allocationSize(value.`failedChecks`)
+    )
+
+    override fun write(value: MobilePracticeCheckResult, buf: ByteBuffer) {
+            FfiConverterBoolean.write(value.`isCorrect`, buf)
+            FfiConverterULong.write(value.`actualRows`, buf)
+            FfiConverterULong.write(value.`expectedRows`, buf)
+            FfiConverterSequenceString.write(value.`failedChecks`, buf)
+    }
+}
+
+
+
+data class MobilePracticeColumn (
+    val `name`: kotlin.String
+    , 
+    val `dataType`: kotlin.String
+    , 
+    val `notNull`: kotlin.Boolean
+    , 
+    val `primaryKey`: kotlin.Boolean
+    , 
+    val `defaultValue`: kotlin.String?
+    
+){
+    
+
+    
+
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobilePracticeColumn: FfiConverterRustBuffer<MobilePracticeColumn> {
+    override fun read(buf: ByteBuffer): MobilePracticeColumn {
+        return MobilePracticeColumn(
+            FfiConverterString.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterBoolean.read(buf),
+            FfiConverterBoolean.read(buf),
+            FfiConverterOptionalString.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: MobilePracticeColumn) = (
+            FfiConverterString.allocationSize(value.`name`) +
+            FfiConverterString.allocationSize(value.`dataType`) +
+            FfiConverterBoolean.allocationSize(value.`notNull`) +
+            FfiConverterBoolean.allocationSize(value.`primaryKey`) +
+            FfiConverterOptionalString.allocationSize(value.`defaultValue`)
+    )
+
+    override fun write(value: MobilePracticeColumn, buf: ByteBuffer) {
+            FfiConverterString.write(value.`name`, buf)
+            FfiConverterString.write(value.`dataType`, buf)
+            FfiConverterBoolean.write(value.`notNull`, buf)
+            FfiConverterBoolean.write(value.`primaryKey`, buf)
+            FfiConverterOptionalString.write(value.`defaultValue`, buf)
+    }
+}
+
+
+
+data class MobilePracticeExecutionResult (
+    val `columns`: List<kotlin.String>
+    , 
+    val `rows`: List<MobilePracticeRow>
+    , 
+    val `affectedRows`: kotlin.ULong?
+    
+){
+    
+
+    
+
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobilePracticeExecutionResult: FfiConverterRustBuffer<MobilePracticeExecutionResult> {
+    override fun read(buf: ByteBuffer): MobilePracticeExecutionResult {
+        return MobilePracticeExecutionResult(
+            FfiConverterSequenceString.read(buf),
+            FfiConverterSequenceTypeMobilePracticeRow.read(buf),
+            FfiConverterOptionalULong.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: MobilePracticeExecutionResult) = (
+            FfiConverterSequenceString.allocationSize(value.`columns`) +
+            FfiConverterSequenceTypeMobilePracticeRow.allocationSize(value.`rows`) +
+            FfiConverterOptionalULong.allocationSize(value.`affectedRows`)
+    )
+
+    override fun write(value: MobilePracticeExecutionResult, buf: ByteBuffer) {
+            FfiConverterSequenceString.write(value.`columns`, buf)
+            FfiConverterSequenceTypeMobilePracticeRow.write(value.`rows`, buf)
+            FfiConverterOptionalULong.write(value.`affectedRows`, buf)
+    }
+}
+
+
+
+data class MobilePracticeRow (
+    val `values`: List<kotlin.String>
+    
+){
+    
+
+    
+
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobilePracticeRow: FfiConverterRustBuffer<MobilePracticeRow> {
+    override fun read(buf: ByteBuffer): MobilePracticeRow {
+        return MobilePracticeRow(
+            FfiConverterSequenceString.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: MobilePracticeRow) = (
+            FfiConverterSequenceString.allocationSize(value.`values`)
+    )
+
+    override fun write(value: MobilePracticeRow, buf: ByteBuffer) {
+            FfiConverterSequenceString.write(value.`values`, buf)
+    }
+}
+
+
+
+data class MobilePracticeRule (
+    val `kind`: MobilePracticeRuleKind
+    , 
+    val `value`: kotlin.String?
+    
+){
+    
+
+    
+
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobilePracticeRule: FfiConverterRustBuffer<MobilePracticeRule> {
+    override fun read(buf: ByteBuffer): MobilePracticeRule {
+        return MobilePracticeRule(
+            FfiConverterTypeMobilePracticeRuleKind.read(buf),
+            FfiConverterOptionalString.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: MobilePracticeRule) = (
+            FfiConverterTypeMobilePracticeRuleKind.allocationSize(value.`kind`) +
+            FfiConverterOptionalString.allocationSize(value.`value`)
+    )
+
+    override fun write(value: MobilePracticeRule, buf: ByteBuffer) {
+            FfiConverterTypeMobilePracticeRuleKind.write(value.`kind`, buf)
+            FfiConverterOptionalString.write(value.`value`, buf)
+    }
+}
+
+
+
+data class MobilePracticeSchema (
+    val `tables`: List<MobilePracticeTable>
+    
+){
+    
+
+    
+
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobilePracticeSchema: FfiConverterRustBuffer<MobilePracticeSchema> {
+    override fun read(buf: ByteBuffer): MobilePracticeSchema {
+        return MobilePracticeSchema(
+            FfiConverterSequenceTypeMobilePracticeTable.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: MobilePracticeSchema) = (
+            FfiConverterSequenceTypeMobilePracticeTable.allocationSize(value.`tables`)
+    )
+
+    override fun write(value: MobilePracticeSchema, buf: ByteBuffer) {
+            FfiConverterSequenceTypeMobilePracticeTable.write(value.`tables`, buf)
+    }
+}
+
+
+
+data class MobilePracticeStats (
+    val `totalTasks`: kotlin.ULong
+    , 
+    val `startedTasks`: kotlin.ULong
+    , 
+    val `solvedTasks`: kotlin.ULong
+    , 
+    val `totalAttempts`: kotlin.ULong
+    , 
+    val `solvedFirstTry`: kotlin.ULong
+    , 
+    val `solvedPercent`: kotlin.Double
+    , 
+    val `categories`: List<MobilePracticeCategoryStats>
+    
+){
+    
+
+    
+
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobilePracticeStats: FfiConverterRustBuffer<MobilePracticeStats> {
+    override fun read(buf: ByteBuffer): MobilePracticeStats {
+        return MobilePracticeStats(
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterDouble.read(buf),
+            FfiConverterSequenceTypeMobilePracticeCategoryStats.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: MobilePracticeStats) = (
+            FfiConverterULong.allocationSize(value.`totalTasks`) +
+            FfiConverterULong.allocationSize(value.`startedTasks`) +
+            FfiConverterULong.allocationSize(value.`solvedTasks`) +
+            FfiConverterULong.allocationSize(value.`totalAttempts`) +
+            FfiConverterULong.allocationSize(value.`solvedFirstTry`) +
+            FfiConverterDouble.allocationSize(value.`solvedPercent`) +
+            FfiConverterSequenceTypeMobilePracticeCategoryStats.allocationSize(value.`categories`)
+    )
+
+    override fun write(value: MobilePracticeStats, buf: ByteBuffer) {
+            FfiConverterULong.write(value.`totalTasks`, buf)
+            FfiConverterULong.write(value.`startedTasks`, buf)
+            FfiConverterULong.write(value.`solvedTasks`, buf)
+            FfiConverterULong.write(value.`totalAttempts`, buf)
+            FfiConverterULong.write(value.`solvedFirstTry`, buf)
+            FfiConverterDouble.write(value.`solvedPercent`, buf)
+            FfiConverterSequenceTypeMobilePracticeCategoryStats.write(value.`categories`, buf)
+    }
+}
+
+
+
+data class MobilePracticeTable (
+    val `name`: kotlin.String
+    , 
+    val `columns`: List<MobilePracticeColumn>
+    
+){
+    
+
+    
+
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobilePracticeTable: FfiConverterRustBuffer<MobilePracticeTable> {
+    override fun read(buf: ByteBuffer): MobilePracticeTable {
+        return MobilePracticeTable(
+            FfiConverterString.read(buf),
+            FfiConverterSequenceTypeMobilePracticeColumn.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: MobilePracticeTable) = (
+            FfiConverterString.allocationSize(value.`name`) +
+            FfiConverterSequenceTypeMobilePracticeColumn.allocationSize(value.`columns`)
+    )
+
+    override fun write(value: MobilePracticeTable, buf: ByteBuffer) {
+            FfiConverterString.write(value.`name`, buf)
+            FfiConverterSequenceTypeMobilePracticeColumn.write(value.`columns`, buf)
+    }
+}
+
+
+
+data class MobilePracticeTableData (
+    val `table`: kotlin.String
+    , 
+    val `result`: MobilePracticeExecutionResult
+    , 
+    val `offset`: kotlin.ULong
+    , 
+    val `hasMore`: kotlin.Boolean
+    
+){
+    
+
+    
+
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobilePracticeTableData: FfiConverterRustBuffer<MobilePracticeTableData> {
+    override fun read(buf: ByteBuffer): MobilePracticeTableData {
+        return MobilePracticeTableData(
+            FfiConverterString.read(buf),
+            FfiConverterTypeMobilePracticeExecutionResult.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterBoolean.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: MobilePracticeTableData) = (
+            FfiConverterString.allocationSize(value.`table`) +
+            FfiConverterTypeMobilePracticeExecutionResult.allocationSize(value.`result`) +
+            FfiConverterULong.allocationSize(value.`offset`) +
+            FfiConverterBoolean.allocationSize(value.`hasMore`)
+    )
+
+    override fun write(value: MobilePracticeTableData, buf: ByteBuffer) {
+            FfiConverterString.write(value.`table`, buf)
+            FfiConverterTypeMobilePracticeExecutionResult.write(value.`result`, buf)
+            FfiConverterULong.write(value.`offset`, buf)
+            FfiConverterBoolean.write(value.`hasMore`, buf)
+    }
+}
+
+
+
+data class MobilePracticeTask (
+    val `id`: kotlin.Long
+    , 
+    val `key`: kotlin.String
+    , 
+    val `category`: kotlin.String
+    , 
+    val `title`: kotlin.String
+    , 
+    val `description`: kotlin.String
+    , 
+    val `kind`: MobilePracticeKind
+    , 
+    val `difficulty`: MobilePracticeDifficulty
+    , 
+    val `starterSql`: kotlin.String
+    , 
+    val `solutionSql`: kotlin.String
+    , 
+    val `solutionExplanation`: kotlin.String?
+    , 
+    val `hints`: List<kotlin.String>
+    , 
+    val `rules`: List<MobilePracticeRule>
+    , 
+    val `sortOrder`: kotlin.Long
+    
+){
+    
+
+    
+
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobilePracticeTask: FfiConverterRustBuffer<MobilePracticeTask> {
+    override fun read(buf: ByteBuffer): MobilePracticeTask {
+        return MobilePracticeTask(
+            FfiConverterLong.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterTypeMobilePracticeKind.read(buf),
+            FfiConverterTypeMobilePracticeDifficulty.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterOptionalString.read(buf),
+            FfiConverterSequenceString.read(buf),
+            FfiConverterSequenceTypeMobilePracticeRule.read(buf),
+            FfiConverterLong.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: MobilePracticeTask) = (
+            FfiConverterLong.allocationSize(value.`id`) +
+            FfiConverterString.allocationSize(value.`key`) +
+            FfiConverterString.allocationSize(value.`category`) +
+            FfiConverterString.allocationSize(value.`title`) +
+            FfiConverterString.allocationSize(value.`description`) +
+            FfiConverterTypeMobilePracticeKind.allocationSize(value.`kind`) +
+            FfiConverterTypeMobilePracticeDifficulty.allocationSize(value.`difficulty`) +
+            FfiConverterString.allocationSize(value.`starterSql`) +
+            FfiConverterString.allocationSize(value.`solutionSql`) +
+            FfiConverterOptionalString.allocationSize(value.`solutionExplanation`) +
+            FfiConverterSequenceString.allocationSize(value.`hints`) +
+            FfiConverterSequenceTypeMobilePracticeRule.allocationSize(value.`rules`) +
+            FfiConverterLong.allocationSize(value.`sortOrder`)
+    )
+
+    override fun write(value: MobilePracticeTask, buf: ByteBuffer) {
+            FfiConverterLong.write(value.`id`, buf)
+            FfiConverterString.write(value.`key`, buf)
+            FfiConverterString.write(value.`category`, buf)
+            FfiConverterString.write(value.`title`, buf)
+            FfiConverterString.write(value.`description`, buf)
+            FfiConverterTypeMobilePracticeKind.write(value.`kind`, buf)
+            FfiConverterTypeMobilePracticeDifficulty.write(value.`difficulty`, buf)
+            FfiConverterString.write(value.`starterSql`, buf)
+            FfiConverterString.write(value.`solutionSql`, buf)
+            FfiConverterOptionalString.write(value.`solutionExplanation`, buf)
+            FfiConverterSequenceString.write(value.`hints`, buf)
+            FfiConverterSequenceTypeMobilePracticeRule.write(value.`rules`, buf)
+            FfiConverterLong.write(value.`sortOrder`, buf)
+    }
+}
+
+
+
+data class MobilePracticeTaskProgress (
+    val `taskId`: kotlin.Long
+    , 
+    val `lastSql`: kotlin.String
+    , 
+    val `attempts`: kotlin.ULong
+    , 
+    val `solved`: kotlin.Boolean
+    , 
+    val `solvedAttempt`: kotlin.ULong?
+    , 
+    val `updatedAt`: kotlin.String
+    , 
+    val `started`: kotlin.Boolean
+    
+){
+    
+
+    
+
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobilePracticeTaskProgress: FfiConverterRustBuffer<MobilePracticeTaskProgress> {
+    override fun read(buf: ByteBuffer): MobilePracticeTaskProgress {
+        return MobilePracticeTaskProgress(
+            FfiConverterLong.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterBoolean.read(buf),
+            FfiConverterOptionalULong.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterBoolean.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: MobilePracticeTaskProgress) = (
+            FfiConverterLong.allocationSize(value.`taskId`) +
+            FfiConverterString.allocationSize(value.`lastSql`) +
+            FfiConverterULong.allocationSize(value.`attempts`) +
+            FfiConverterBoolean.allocationSize(value.`solved`) +
+            FfiConverterOptionalULong.allocationSize(value.`solvedAttempt`) +
+            FfiConverterString.allocationSize(value.`updatedAt`) +
+            FfiConverterBoolean.allocationSize(value.`started`)
+    )
+
+    override fun write(value: MobilePracticeTaskProgress, buf: ByteBuffer) {
+            FfiConverterLong.write(value.`taskId`, buf)
+            FfiConverterString.write(value.`lastSql`, buf)
+            FfiConverterULong.write(value.`attempts`, buf)
+            FfiConverterBoolean.write(value.`solved`, buf)
+            FfiConverterOptionalULong.write(value.`solvedAttempt`, buf)
+            FfiConverterString.write(value.`updatedAt`, buf)
+            FfiConverterBoolean.write(value.`started`, buf)
     }
 }
 
@@ -2892,6 +3745,111 @@ public object FfiConverterTypeMobileError : FfiConverterRustBuffer<MobileExcepti
 
 
 
+enum class MobilePracticeDifficulty {
+    
+    EASY,
+    MEDIUM,
+    HARD;
+
+    
+
+
+    companion object
+}
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobilePracticeDifficulty: FfiConverterRustBuffer<MobilePracticeDifficulty> {
+    override fun read(buf: ByteBuffer) = try {
+        MobilePracticeDifficulty.values()[buf.getInt() - 1]
+    } catch (e: IndexOutOfBoundsException) {
+        throw RuntimeException("invalid enum value, something is very wrong!!", e)
+    }
+
+    override fun allocationSize(value: MobilePracticeDifficulty) = 4UL
+
+    override fun write(value: MobilePracticeDifficulty, buf: ByteBuffer) {
+        buf.putInt(value.ordinal + 1)
+    }
+}
+
+
+
+
+
+
+enum class MobilePracticeKind {
+    
+    WRITE_QUERY,
+    FIX_QUERY,
+    FIND_LOGICAL_ERROR;
+
+    
+
+
+    companion object
+}
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobilePracticeKind: FfiConverterRustBuffer<MobilePracticeKind> {
+    override fun read(buf: ByteBuffer) = try {
+        MobilePracticeKind.values()[buf.getInt() - 1]
+    } catch (e: IndexOutOfBoundsException) {
+        throw RuntimeException("invalid enum value, something is very wrong!!", e)
+    }
+
+    override fun allocationSize(value: MobilePracticeKind) = 4UL
+
+    override fun write(value: MobilePracticeKind, buf: ByteBuffer) {
+        buf.putInt(value.ordinal + 1)
+    }
+}
+
+
+
+
+
+
+enum class MobilePracticeRuleKind {
+    
+    REQUIRE_KEYWORD,
+    FORBID_KEYWORD,
+    FORBID_SELECT_STAR;
+
+    
+
+
+    companion object
+}
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobilePracticeRuleKind: FfiConverterRustBuffer<MobilePracticeRuleKind> {
+    override fun read(buf: ByteBuffer) = try {
+        MobilePracticeRuleKind.values()[buf.getInt() - 1]
+    } catch (e: IndexOutOfBoundsException) {
+        throw RuntimeException("invalid enum value, something is very wrong!!", e)
+    }
+
+    override fun allocationSize(value: MobilePracticeRuleKind) = 4UL
+
+    override fun write(value: MobilePracticeRuleKind, buf: ByteBuffer) {
+        buf.putInt(value.ordinal + 1)
+    }
+}
+
+
+
+
+
+
 enum class MobileProgressLevel {
     
     COLD_START,
@@ -3392,6 +4350,202 @@ public object FfiConverterSequenceTypeMobileLab: FfiConverterRustBuffer<List<Mob
         buf.putInt(value.size)
         value.iterator().forEach {
             FfiConverterTypeMobileLab.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterSequenceTypeMobilePracticeCategoryStats: FfiConverterRustBuffer<List<MobilePracticeCategoryStats>> {
+    override fun read(buf: ByteBuffer): List<MobilePracticeCategoryStats> {
+        val len = buf.getInt()
+        return List<MobilePracticeCategoryStats>(len) {
+            FfiConverterTypeMobilePracticeCategoryStats.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<MobilePracticeCategoryStats>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeMobilePracticeCategoryStats.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<MobilePracticeCategoryStats>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeMobilePracticeCategoryStats.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterSequenceTypeMobilePracticeColumn: FfiConverterRustBuffer<List<MobilePracticeColumn>> {
+    override fun read(buf: ByteBuffer): List<MobilePracticeColumn> {
+        val len = buf.getInt()
+        return List<MobilePracticeColumn>(len) {
+            FfiConverterTypeMobilePracticeColumn.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<MobilePracticeColumn>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeMobilePracticeColumn.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<MobilePracticeColumn>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeMobilePracticeColumn.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterSequenceTypeMobilePracticeRow: FfiConverterRustBuffer<List<MobilePracticeRow>> {
+    override fun read(buf: ByteBuffer): List<MobilePracticeRow> {
+        val len = buf.getInt()
+        return List<MobilePracticeRow>(len) {
+            FfiConverterTypeMobilePracticeRow.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<MobilePracticeRow>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeMobilePracticeRow.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<MobilePracticeRow>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeMobilePracticeRow.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterSequenceTypeMobilePracticeRule: FfiConverterRustBuffer<List<MobilePracticeRule>> {
+    override fun read(buf: ByteBuffer): List<MobilePracticeRule> {
+        val len = buf.getInt()
+        return List<MobilePracticeRule>(len) {
+            FfiConverterTypeMobilePracticeRule.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<MobilePracticeRule>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeMobilePracticeRule.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<MobilePracticeRule>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeMobilePracticeRule.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterSequenceTypeMobilePracticeTable: FfiConverterRustBuffer<List<MobilePracticeTable>> {
+    override fun read(buf: ByteBuffer): List<MobilePracticeTable> {
+        val len = buf.getInt()
+        return List<MobilePracticeTable>(len) {
+            FfiConverterTypeMobilePracticeTable.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<MobilePracticeTable>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeMobilePracticeTable.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<MobilePracticeTable>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeMobilePracticeTable.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterSequenceTypeMobilePracticeTask: FfiConverterRustBuffer<List<MobilePracticeTask>> {
+    override fun read(buf: ByteBuffer): List<MobilePracticeTask> {
+        val len = buf.getInt()
+        return List<MobilePracticeTask>(len) {
+            FfiConverterTypeMobilePracticeTask.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<MobilePracticeTask>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeMobilePracticeTask.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<MobilePracticeTask>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeMobilePracticeTask.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterSequenceTypeMobilePracticeTaskProgress: FfiConverterRustBuffer<List<MobilePracticeTaskProgress>> {
+    override fun read(buf: ByteBuffer): List<MobilePracticeTaskProgress> {
+        val len = buf.getInt()
+        return List<MobilePracticeTaskProgress>(len) {
+            FfiConverterTypeMobilePracticeTaskProgress.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<MobilePracticeTaskProgress>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeMobilePracticeTaskProgress.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<MobilePracticeTaskProgress>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeMobilePracticeTaskProgress.write(it, buf)
         }
     }
 }
