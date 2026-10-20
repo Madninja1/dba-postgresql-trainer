@@ -148,8 +148,6 @@ data class UiStrings(
     val practiceRequireKeyword: String,
     val practiceForbidKeyword: String,
     val practiceForbidSelectStar: String,
-    val practicePreviousPage: String,
-    val practiceNextPage: String,
 ) {
     fun questionProgress(current: Int, total: Int): String =
         if (this === ENGLISH_STRINGS) {
@@ -414,8 +412,6 @@ private val ENGLISH_STRINGS = UiStrings(
     practiceRequireKeyword = "must use",
     practiceForbidKeyword = "do not use",
     practiceForbidSelectStar = "do not use SELECT *",
-    practicePreviousPage = "Previous",
-    practiceNextPage = "Next",
 )
 
 private val RUSSIAN_STRINGS = UiStrings(
@@ -551,8 +547,6 @@ private val RUSSIAN_STRINGS = UiStrings(
     practiceRequireKeyword = "нужно использовать",
     practiceForbidKeyword = "нельзя использовать",
     practiceForbidSelectStar = "нельзя использовать SELECT *",
-    practicePreviousPage = "Назад",
-    practiceNextPage = "Далее",
 )
 
 fun uiStrings(language: UiLanguage): UiStrings = when (language) {

@@ -576,34 +576,11 @@ class TrainerController(context: Context) {
             practiceTableData = requireTrainer().practiceTableData(
                 task.id,
                 table,
-                PRACTICE_TABLE_PAGE_SIZE.toULong(),
+                PRACTICE_TABLE_PREVIEW_LIMIT.toULong(),
                 0UL,
             )
             practicePane = PracticePane.Data
         }
-    }
-
-    fun previousPracticeTablePage() {
-        val task = currentPracticeTask ?: return
-        val data = practiceTableData ?: return
-        val offset = data.offset.toLong()
-            .minus(PRACTICE_TABLE_PAGE_SIZE)
-            .coerceAtLeast(0)
-            .toULong()
-        loadPracticeTablePage(task.id, data.table, offset)
-    }
-
-    fun nextPracticeTablePage() {
-        val task = currentPracticeTask ?: return
-        val data = practiceTableData ?: return
-        if (!data.hasMore) {
-            return
-        }
-        loadPracticeTablePage(
-            task.id,
-            data.table,
-            data.offset + PRACTICE_TABLE_PAGE_SIZE.toULong(),
-        )
     }
 
     fun nextPracticeTask() {
@@ -1221,18 +1198,6 @@ class TrainerController(context: Context) {
         }
     }
 
-    private fun loadPracticeTablePage(taskId: Long, table: String, offset: ULong) {
-        runCoreAction {
-            practiceTableData = requireTrainer().practiceTableData(
-                taskId,
-                table,
-                PRACTICE_TABLE_PAGE_SIZE.toULong(),
-                offset,
-            )
-            practicePane = PracticePane.Data
-        }
-    }
-
     private fun refreshPracticeState() {
         val trainer = requireTrainer()
         practiceTasks = trainer.practiceTasks()
@@ -1393,7 +1358,7 @@ class TrainerController(context: Context) {
     }
 
     private companion object {
-        const val PRACTICE_TABLE_PAGE_SIZE = 200L
+        const val PRACTICE_TABLE_PREVIEW_LIMIT = 1_000L
 
         val courseCodeComparator = Comparator<String> { left, right ->
             val leftParts = splitCourseCode(left)

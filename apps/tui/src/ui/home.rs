@@ -5,7 +5,7 @@ use ratatui::{
     widgets::{Block, Borders, List, ListItem, ListState, Paragraph},
 };
 
-use crate::app::{App, HomeItem, HOME_ITEMS};
+use crate::app::{App, HOME_ITEMS, HomeItem};
 
 use super::common::vertical_chunks;
 

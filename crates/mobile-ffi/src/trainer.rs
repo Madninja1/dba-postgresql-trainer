@@ -260,7 +260,12 @@ impl MobileTrainer {
 
         service
             .unfinished_sessions()
-            .map(|sessions| sessions.into_iter().map(MobileSessionProgress::from).collect())
+            .map(|sessions| {
+                sessions
+                    .into_iter()
+                    .map(MobileSessionProgress::from)
+                    .collect()
+            })
             .map_err(to_mobile_error)
     }
 

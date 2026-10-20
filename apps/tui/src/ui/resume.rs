@@ -14,7 +14,11 @@ pub fn render(frame: &mut Frame, app: &App) {
 
     let areas = vertical_chunks(
         frame.area(),
-        &[Constraint::Length(3), Constraint::Min(5), Constraint::Length(3)],
+        &[
+            Constraint::Length(3),
+            Constraint::Min(5),
+            Constraint::Length(3),
+        ],
     );
 
     let summary = Paragraph::new(format!(

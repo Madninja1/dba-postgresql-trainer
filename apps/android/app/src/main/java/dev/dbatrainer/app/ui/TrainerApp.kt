@@ -127,22 +127,24 @@ fun TrainerApp(controller: TrainerController) {
                 Text(strings.cancelQuizMessage)
             },
             confirmButton = {
-                Button(
-                    onClick = controller::saveAndExitQuiz,
-                ) {
-                    Text(strings.saveAndExitQuiz)
-                }
-            },
-            dismissButton = {
                 Column(
-                    horizontalAlignment = Alignment.End,
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
                 ) {
-                    TextButton(
+                    Button(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = controller::saveAndExitQuiz,
+                    ) {
+                        Text(strings.saveAndExitQuiz)
+                    }
+                    OutlinedButton(
+                        modifier = Modifier.fillMaxWidth(),
                         onClick = controller::confirmCancelQuiz,
                     ) {
                         Text(strings.cancelQuiz)
                     }
                     TextButton(
+                        modifier = Modifier.fillMaxWidth(),
                         onClick = controller::dismissCancelDialog,
                     ) {
                         Text(strings.stayInQuiz)
@@ -767,7 +769,7 @@ private fun LabDetailScreen(controller: TrainerController) {
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
-                    .padding(vertical = 12.dp, end = 12.dp),
+                    .padding(end = LayoutSpacing.section),
             ) {
                 LabMarkdownContent(
                     markdown = lab.body,

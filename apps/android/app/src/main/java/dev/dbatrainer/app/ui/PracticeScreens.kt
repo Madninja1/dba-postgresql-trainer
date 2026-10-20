@@ -460,22 +460,6 @@ private fun PracticeDataPane(controller: TrainerController) {
             result = data.result,
             strings = strings,
         )
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            OutlinedButton(
-                onClick = controller::previousPracticeTablePage,
-                enabled = data.offset > 0UL,
-            ) {
-                Text(strings.practicePreviousPage)
-            }
-            OutlinedButton(
-                onClick = controller::nextPracticeTablePage,
-                enabled = data.hasMore,
-            ) {
-                Text(strings.practiceNextPage)
-            }
-        }
     }
 }
 
