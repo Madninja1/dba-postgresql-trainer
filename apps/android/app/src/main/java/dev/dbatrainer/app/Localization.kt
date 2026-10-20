@@ -1,5 +1,6 @@
 package dev.dbatrainer.app
 
+import dev.dbatrainer.ffi.MobilePracticeDifficulty
 import dev.dbatrainer.ffi.MobileProgressLevel
 import dev.dbatrainer.ffi.MobileTopicMasteryStats
 
@@ -103,6 +104,47 @@ data class UiStrings(
     val courseMaterial: String,
     val postgresqlDocumentation: String,
     val rustCore: String,
+    val practice: String,
+    val practiceSubtitle: String,
+    val practiceCategories: String,
+    val practiceTasks: String,
+    val practiceEmpty: String,
+    val practiceProgress: String,
+    val practiceSolved: String,
+    val practiceStarted: String,
+    val practiceAttempts: String,
+    val practiceFirstTry: String,
+    val practiceContinue: String,
+    val practiceEditor: String,
+    val practiceSchema: String,
+    val practiceData: String,
+    val practiceResult: String,
+    val practiceLearning: String,
+    val practiceRun: String,
+    val practiceCheck: String,
+    val practiceReset: String,
+    val practiceHint: String,
+    val practiceSolution: String,
+    val practiceNext: String,
+    val practiceCorrect: String,
+    val practiceIncorrect: String,
+    val practiceActualRows: String,
+    val practiceExpectedRows: String,
+    val practiceFailedChecks: String,
+    val practiceNoOutput: String,
+    val practiceAffectedRows: String,
+    val practiceRows: String,
+    val practiceOpenTable: String,
+    val practiceNoMoreHints: String,
+    val practiceHintLocked: String,
+    val practiceSolutionLocked: String,
+    val practiceLastTask: String,
+    val practiceRules: String,
+    val practiceRequireKeyword: String,
+    val practiceForbidKeyword: String,
+    val practiceForbidSelectStar: String,
+    val practicePreviousPage: String,
+    val practiceNextPage: String,
 ) {
     fun questionProgress(current: Int, total: Int): String =
         if (this === ENGLISH_STRINGS) {
@@ -194,6 +236,21 @@ data class UiStrings(
                 MobileProgressLevel.INCIDENT_HANDLER -> "Инциденты уже не выглядят мистикой: сначала наблюдаем, потом чиним."
                 MobileProgressLevel.DBA_ONE_MASTER -> "DBA-1 закрыт. Теперь ты хотя бы знаешь, что именно сломалось."
                 MobileProgressLevel.PRODUCTION_SURVIVOR -> "Production Survivor. Всё загруженное освоено — пора добавлять следующий уровень."
+            }
+        }
+
+    fun practiceDifficulty(value: MobilePracticeDifficulty): String =
+        if (this === ENGLISH_STRINGS) {
+            when (value) {
+                MobilePracticeDifficulty.EASY -> "Easy"
+                MobilePracticeDifficulty.MEDIUM -> "Medium"
+                MobilePracticeDifficulty.HARD -> "Hard"
+            }
+        } else {
+            when (value) {
+                MobilePracticeDifficulty.EASY -> "Легко"
+                MobilePracticeDifficulty.MEDIUM -> "Средне"
+                MobilePracticeDifficulty.HARD -> "Сложно"
             }
         }
 
@@ -308,6 +365,47 @@ private val ENGLISH_STRINGS = UiStrings(
     courseMaterial = "Course material",
     postgresqlDocumentation = "PostgreSQL documentation",
     rustCore = "Rust core",
+    practice = "SQL Practice",
+    practiceSubtitle = "Local SQL sandbox with automatic checks",
+    practiceCategories = "Practice sections",
+    practiceTasks = "Tasks",
+    practiceEmpty = "No SQL practice tasks are loaded yet.",
+    practiceProgress = "Practice progress",
+    practiceSolved = "Solved",
+    practiceStarted = "Started",
+    practiceAttempts = "Attempts",
+    practiceFirstTry = "First try",
+    practiceContinue = "Continue last task",
+    practiceEditor = "SQL editor",
+    practiceSchema = "Schema",
+    practiceData = "Table data",
+    practiceResult = "Result",
+    practiceLearning = "Learning",
+    practiceRun = "Run",
+    practiceCheck = "Check",
+    practiceReset = "Reset",
+    practiceHint = "Hint",
+    practiceSolution = "Solution",
+    practiceNext = "Next task",
+    practiceCorrect = "Correct",
+    practiceIncorrect = "Incorrect",
+    practiceActualRows = "Actual rows",
+    practiceExpectedRows = "Expected rows",
+    practiceFailedChecks = "Failed checks",
+    practiceNoOutput = "Run SQL or check the solution to see a result.",
+    practiceAffectedRows = "Affected rows",
+    practiceRows = "Rows",
+    practiceOpenTable = "Open table",
+    practiceNoMoreHints = "No more hints are available.",
+    practiceHintLocked = "The next hint unlocks after another check attempt.",
+    practiceSolutionLocked = "The solution unlocks after 3 attempts or after all hints are opened.",
+    practiceLastTask = "This is the last task in the section.",
+    practiceRules = "Rules",
+    practiceRequireKeyword = "must use",
+    practiceForbidKeyword = "do not use",
+    practiceForbidSelectStar = "do not use SELECT *",
+    practicePreviousPage = "Previous",
+    practiceNextPage = "Next",
 )
 
 private val RUSSIAN_STRINGS = UiStrings(
@@ -399,6 +497,47 @@ private val RUSSIAN_STRINGS = UiStrings(
     courseMaterial = "Материал курса",
     postgresqlDocumentation = "Документация PostgreSQL",
     rustCore = "Rust core",
+    practice = "Практика SQL",
+    practiceSubtitle = "Локальная SQL-песочница с автоматической проверкой",
+    practiceCategories = "Разделы практики",
+    practiceTasks = "Задания",
+    practiceEmpty = "Задания SQL-практики пока не загружены.",
+    practiceProgress = "Прогресс практики",
+    practiceSolved = "Решено",
+    practiceStarted = "Начато",
+    practiceAttempts = "Попыток",
+    practiceFirstTry = "С первой попытки",
+    practiceContinue = "Продолжить последнее задание",
+    practiceEditor = "SQL редактор",
+    practiceSchema = "Схема",
+    practiceData = "Данные",
+    practiceResult = "Результат",
+    practiceLearning = "Обучение",
+    practiceRun = "Выполнить",
+    practiceCheck = "Проверить",
+    practiceReset = "Сброс",
+    practiceHint = "Подсказка",
+    practiceSolution = "Решение",
+    practiceNext = "Следующее задание",
+    practiceCorrect = "Верно",
+    practiceIncorrect = "Неверно",
+    practiceActualRows = "Получено строк",
+    practiceExpectedRows = "Ожидалось строк",
+    practiceFailedChecks = "Не пройдены проверки",
+    practiceNoOutput = "Выполните SQL или проверьте решение, чтобы увидеть результат.",
+    practiceAffectedRows = "Изменено строк",
+    practiceRows = "Строк",
+    practiceOpenTable = "Открыть таблицу",
+    practiceNoMoreHints = "Больше подсказок нет.",
+    practiceHintLocked = "Следующая подсказка откроется после ещё одной проверки.",
+    practiceSolutionLocked = "Решение откроется после 3 попыток или после всех подсказок.",
+    practiceLastTask = "Это последнее задание в разделе.",
+    practiceRules = "Правила",
+    practiceRequireKeyword = "нужно использовать",
+    practiceForbidKeyword = "нельзя использовать",
+    practiceForbidSelectStar = "нельзя использовать SELECT *",
+    practicePreviousPage = "Назад",
+    practiceNextPage = "Далее",
 )
 
 fun uiStrings(language: UiLanguage): UiStrings = when (language) {

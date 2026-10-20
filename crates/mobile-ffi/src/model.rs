@@ -1,8 +1,10 @@
 use dba_trainer_domain::{
-    ActivityStats, AnswerResult, CourseProgress, DailyActivity, Lab, ProgressLevel, Question,
-    QuestionAttemptHistory, QuestionLimit, QuestionMistakeDetail, QuestionMistakeSummary,
-    QuestionType, QuizScope, QuizSession, SessionProgress, Source, SourceKind, StatisticsLimit,
-    Topic, TopicMasteryStats, TrainingStats,
+    ActivityStats, AnswerResult, CourseProgress, DailyActivity, Lab, PracticeCategoryStats,
+    PracticeCheckResult, PracticeColumn, PracticeDifficulty, PracticeExecutionResult, PracticeKind,
+    PracticeRule, PracticeSchema, PracticeStats, PracticeTable, PracticeTableData, PracticeTask,
+    PracticeTaskProgress, ProgressLevel, Question, QuestionAttemptHistory, QuestionLimit,
+    QuestionMistakeDetail, QuestionMistakeSummary, QuestionType, QuizScope, QuizSession,
+    SessionProgress, Source, SourceKind, StatisticsLimit, Topic, TopicMasteryStats, TrainingStats,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, uniffi::Enum)]
@@ -30,6 +32,130 @@ pub enum MobileQuestionType {
 pub enum MobileSourceKind {
     CourseMaterial,
     PostgreSqlDocs,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, uniffi::Enum)]
+pub enum MobilePracticeKind {
+    WriteQuery,
+    FixQuery,
+    FindLogicalError,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, uniffi::Enum)]
+pub enum MobilePracticeDifficulty {
+    Easy,
+    Medium,
+    Hard,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, uniffi::Enum)]
+pub enum MobilePracticeRuleKind {
+    RequireKeyword,
+    ForbidKeyword,
+    ForbidSelectStar,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct MobilePracticeRule {
+    pub kind: MobilePracticeRuleKind,
+    pub value: Option<String>,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct MobilePracticeTask {
+    pub id: i64,
+    pub key: String,
+    pub category: String,
+    pub title: String,
+    pub description: String,
+    pub kind: MobilePracticeKind,
+    pub difficulty: MobilePracticeDifficulty,
+    pub starter_sql: String,
+    pub solution_sql: String,
+    pub solution_explanation: Option<String>,
+    pub hints: Vec<String>,
+    pub rules: Vec<MobilePracticeRule>,
+    pub sort_order: i64,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct MobilePracticeTaskProgress {
+    pub task_id: i64,
+    pub last_sql: String,
+    pub attempts: u64,
+    pub solved: bool,
+    pub solved_attempt: Option<u64>,
+    pub updated_at: String,
+    pub started: bool,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct MobilePracticeCategoryStats {
+    pub category: String,
+    pub total_tasks: u64,
+    pub started_tasks: u64,
+    pub solved_tasks: u64,
+    pub total_attempts: u64,
+    pub solved_first_try: u64,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct MobilePracticeStats {
+    pub total_tasks: u64,
+    pub started_tasks: u64,
+    pub solved_tasks: u64,
+    pub total_attempts: u64,
+    pub solved_first_try: u64,
+    pub solved_percent: f64,
+    pub categories: Vec<MobilePracticeCategoryStats>,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct MobilePracticeRow {
+    pub values: Vec<String>,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct MobilePracticeExecutionResult {
+    pub columns: Vec<String>,
+    pub rows: Vec<MobilePracticeRow>,
+    pub affected_rows: Option<u64>,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct MobilePracticeCheckResult {
+    pub is_correct: bool,
+    pub actual_rows: u64,
+    pub expected_rows: u64,
+    pub failed_checks: Vec<String>,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct MobilePracticeColumn {
+    pub name: String,
+    pub data_type: String,
+    pub not_null: bool,
+    pub primary_key: bool,
+    pub default_value: Option<String>,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct MobilePracticeTable {
+    pub name: String,
+    pub columns: Vec<MobilePracticeColumn>,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct MobilePracticeSchema {
+    pub tables: Vec<MobilePracticeTable>,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct MobilePracticeTableData {
+    pub table: String,
+    pub result: MobilePracticeExecutionResult,
+    pub offset: u64,
+    pub has_more: bool,
 }
 
 #[derive(Debug, Clone, uniffi::Record)]
@@ -202,6 +328,177 @@ pub struct MobileTrainingStats {
     pub correct_answers: u64,
     pub incorrect_answers: u64,
     pub accuracy_percent: f64,
+}
+
+impl From<PracticeKind> for MobilePracticeKind {
+    fn from(value: PracticeKind) -> Self {
+        match value {
+            PracticeKind::WriteQuery => Self::WriteQuery,
+            PracticeKind::FixQuery => Self::FixQuery,
+            PracticeKind::FindLogicalError => Self::FindLogicalError,
+        }
+    }
+}
+
+impl From<PracticeDifficulty> for MobilePracticeDifficulty {
+    fn from(value: PracticeDifficulty) -> Self {
+        match value {
+            PracticeDifficulty::Easy => Self::Easy,
+            PracticeDifficulty::Medium => Self::Medium,
+            PracticeDifficulty::Hard => Self::Hard,
+        }
+    }
+}
+
+impl From<PracticeRule> for MobilePracticeRule {
+    fn from(value: PracticeRule) -> Self {
+        match value {
+            PracticeRule::RequireKeyword(value) => Self {
+                kind: MobilePracticeRuleKind::RequireKeyword,
+                value: Some(value),
+            },
+            PracticeRule::ForbidKeyword(value) => Self {
+                kind: MobilePracticeRuleKind::ForbidKeyword,
+                value: Some(value),
+            },
+            PracticeRule::ForbidSelectStar => Self {
+                kind: MobilePracticeRuleKind::ForbidSelectStar,
+                value: None,
+            },
+        }
+    }
+}
+
+impl From<PracticeTask> for MobilePracticeTask {
+    fn from(value: PracticeTask) -> Self {
+        Self {
+            id: value.id,
+            key: value.key,
+            category: value.category,
+            title: value.title,
+            description: value.description,
+            kind: value.kind.into(),
+            difficulty: value.difficulty.into(),
+            starter_sql: value.starter_sql,
+            solution_sql: value.solution_sql,
+            solution_explanation: value.solution_explanation,
+            hints: value.hints,
+            rules: value.rules.into_iter().map(Into::into).collect(),
+            sort_order: value.sort_order,
+        }
+    }
+}
+
+impl From<PracticeTaskProgress> for MobilePracticeTaskProgress {
+    fn from(value: PracticeTaskProgress) -> Self {
+        let started = value.is_started();
+
+        Self {
+            task_id: value.task_id,
+            last_sql: value.last_sql,
+            attempts: value.attempts as u64,
+            solved: value.solved,
+            solved_attempt: value.solved_attempt.map(|attempt| attempt as u64),
+            updated_at: value.updated_at,
+            started,
+        }
+    }
+}
+
+impl From<PracticeCategoryStats> for MobilePracticeCategoryStats {
+    fn from(value: PracticeCategoryStats) -> Self {
+        Self {
+            category: value.category,
+            total_tasks: value.total_tasks as u64,
+            started_tasks: value.started_tasks as u64,
+            solved_tasks: value.solved_tasks as u64,
+            total_attempts: value.total_attempts as u64,
+            solved_first_try: value.solved_first_try as u64,
+        }
+    }
+}
+
+impl From<PracticeStats> for MobilePracticeStats {
+    fn from(value: PracticeStats) -> Self {
+        let solved_percent = value.solved_percent();
+
+        Self {
+            total_tasks: value.total_tasks as u64,
+            started_tasks: value.started_tasks as u64,
+            solved_tasks: value.solved_tasks as u64,
+            total_attempts: value.total_attempts as u64,
+            solved_first_try: value.solved_first_try as u64,
+            solved_percent,
+            categories: value.categories.into_iter().map(Into::into).collect(),
+        }
+    }
+}
+
+impl From<PracticeExecutionResult> for MobilePracticeExecutionResult {
+    fn from(value: PracticeExecutionResult) -> Self {
+        Self {
+            columns: value.columns,
+            rows: value
+                .rows
+                .into_iter()
+                .map(|row| MobilePracticeRow {
+                    values: row.into_iter().map(|value| value.to_string()).collect(),
+                })
+                .collect(),
+            affected_rows: value.affected_rows.map(|count| count as u64),
+        }
+    }
+}
+
+impl From<PracticeCheckResult> for MobilePracticeCheckResult {
+    fn from(value: PracticeCheckResult) -> Self {
+        Self {
+            is_correct: value.is_correct,
+            actual_rows: value.actual_rows as u64,
+            expected_rows: value.expected_rows as u64,
+            failed_checks: value.failed_checks,
+        }
+    }
+}
+
+impl From<PracticeColumn> for MobilePracticeColumn {
+    fn from(value: PracticeColumn) -> Self {
+        Self {
+            name: value.name,
+            data_type: value.data_type,
+            not_null: value.not_null,
+            primary_key: value.primary_key,
+            default_value: value.default_value,
+        }
+    }
+}
+
+impl From<PracticeTable> for MobilePracticeTable {
+    fn from(value: PracticeTable) -> Self {
+        Self {
+            name: value.name,
+            columns: value.columns.into_iter().map(Into::into).collect(),
+        }
+    }
+}
+
+impl From<PracticeSchema> for MobilePracticeSchema {
+    fn from(value: PracticeSchema) -> Self {
+        Self {
+            tables: value.tables.into_iter().map(Into::into).collect(),
+        }
+    }
+}
+
+impl From<PracticeTableData> for MobilePracticeTableData {
+    fn from(value: PracticeTableData) -> Self {
+        Self {
+            table: value.table,
+            result: value.result.into(),
+            offset: value.offset as u64,
+            has_more: value.has_more,
+        }
+    }
 }
 
 impl From<MobileQuestionLimit> for QuestionLimit {

@@ -1,25 +1,43 @@
 use std::sync::{Arc, Mutex, MutexGuard};
 
-use dba_trainer_application::TrainerService;
+use dba_trainer_application::{PracticeEngine, TrainerService};
 use dba_trainer_content::{
     DEFAULT_CONTENT_LOCALE, load_builtin_bundles, load_builtin_labs_for_locale,
+    load_builtin_practice_for_locale,
 };
 use dba_trainer_domain::{
-    AnswerOptionId, QuestionId, QuizScope, SessionConfig, SessionId, StatisticsFilter,
-    StatisticsScope, TopicId,
+    AnswerOptionId, PracticeTask, QuestionId, QuizScope, SessionConfig, SessionId,
+    StatisticsFilter, StatisticsScope, TopicId,
 };
-use dba_trainer_storage_sqlite::SqliteRepository;
+use dba_trainer_storage_sqlite::{SqlitePracticeEngine, SqliteRepository};
 
 use crate::{
-    MobileActivityStats, MobileAnswerResult, MobileError, MobileLab, MobileQuestion,
+    MobileActivityStats, MobileAnswerResult, MobileError, MobileLab, MobilePracticeCheckResult,
+    MobilePracticeExecutionResult, MobilePracticeSchema, MobilePracticeStats,
+    MobilePracticeTableData, MobilePracticeTask, MobilePracticeTaskProgress, MobileQuestion,
     MobileQuestionLimit, MobileQuestionMistakeDetail, MobileQuestionMistakeSummary,
     MobileQuizSession, MobileSessionProgress, MobileStatisticsLimit, MobileTopic,
     MobileTopicMasteryStats, MobileTrainingStats, error::to_mobile_error,
 };
 
+struct PracticeState {
+    engine: SqlitePracticeEngine,
+    task_id: Option<i64>,
+}
+
+impl Default for PracticeState {
+    fn default() -> Self {
+        Self {
+            engine: SqlitePracticeEngine::new(),
+            task_id: None,
+        }
+    }
+}
+
 #[derive(uniffi::Object)]
 pub struct MobileTrainer {
     service: Mutex<TrainerService<SqliteRepository>>,
+    practice: Mutex<PracticeState>,
 }
 
 #[uniffi::export]
@@ -39,18 +57,32 @@ impl MobileTrainer {
             repository.sync_lab(lab).map_err(to_mobile_error)?;
         }
 
+        let practice =
+            load_builtin_practice_for_locale(DEFAULT_CONTENT_LOCALE).map_err(to_mobile_error)?;
+        for task in &practice {
+            repository.sync_practice(task).map_err(to_mobile_error)?;
+        }
+
         let mut service = TrainerService::new(repository);
         service.record_app_open().map_err(to_mobile_error)?;
 
         Ok(Arc::new(Self {
             service: Mutex::new(service),
+            practice: Mutex::new(PracticeState::default()),
         }))
     }
 
     pub fn set_content_locale(&self, locale: String) -> Result<(), MobileError> {
-        let mut service = self.service()?;
+        {
+            let mut service = self.service()?;
+            service
+                .set_content_locale(&locale)
+                .map_err(to_mobile_error)?;
+        }
 
-        service.set_content_locale(&locale).map_err(to_mobile_error)
+        let mut practice = self.practice()?;
+        *practice = PracticeState::default();
+        Ok(())
     }
 
     pub fn topics(&self) -> Result<Vec<MobileTopic>, MobileError> {
@@ -77,6 +109,149 @@ impl MobileTrainer {
         service
             .labs()
             .map(|labs| labs.into_iter().map(MobileLab::from).collect())
+            .map_err(to_mobile_error)
+    }
+
+    pub fn practice_tasks(&self) -> Result<Vec<MobilePracticeTask>, MobileError> {
+        let service = self.service()?;
+
+        service
+            .practice_tasks()
+            .map(|tasks| tasks.into_iter().map(MobilePracticeTask::from).collect())
+            .map_err(to_mobile_error)
+    }
+
+    pub fn practice_progress(&self) -> Result<Vec<MobilePracticeTaskProgress>, MobileError> {
+        let service = self.service()?;
+
+        service
+            .practice_progress()
+            .map(|progress| {
+                progress
+                    .into_iter()
+                    .map(MobilePracticeTaskProgress::from)
+                    .collect()
+            })
+            .map_err(to_mobile_error)
+    }
+
+    pub fn practice_stats(&self) -> Result<MobilePracticeStats, MobileError> {
+        let service = self.service()?;
+
+        service
+            .practice_stats()
+            .map(MobilePracticeStats::from)
+            .map_err(to_mobile_error)
+    }
+
+    pub fn practice_load_task(&self, task_id: i64) -> Result<MobilePracticeSchema, MobileError> {
+        let task = self.practice_task(task_id)?;
+        let mut practice = self.practice()?;
+        practice.engine.load_task(&task).map_err(to_mobile_error)?;
+        practice.task_id = Some(task_id);
+
+        practice
+            .engine
+            .schema()
+            .map(MobilePracticeSchema::from)
+            .map_err(to_mobile_error)
+    }
+
+    pub fn practice_save_draft(&self, task_id: i64, sql: String) -> Result<(), MobileError> {
+        let mut service = self.service()?;
+        service
+            .save_practice_draft(task_id, &sql)
+            .map_err(to_mobile_error)
+    }
+
+    pub fn practice_execute(
+        &self,
+        task_id: i64,
+        sql: String,
+    ) -> Result<MobilePracticeExecutionResult, MobileError> {
+        self.practice_save_draft(task_id, sql.clone())?;
+        let task = self.practice_task(task_id)?;
+        let mut practice = self.practice()?;
+        Self::ensure_practice_loaded(&mut practice, &task)?;
+
+        practice
+            .engine
+            .execute(&sql)
+            .map(MobilePracticeExecutionResult::from)
+            .map_err(to_mobile_error)
+    }
+
+    pub fn practice_check(
+        &self,
+        task_id: i64,
+        sql: String,
+    ) -> Result<MobilePracticeCheckResult, MobileError> {
+        let task = self.practice_task(task_id)?;
+        let result = {
+            let practice = self.practice()?;
+            practice
+                .engine
+                .check(&task, &sql)
+                .map_err(to_mobile_error)?
+        };
+
+        let mut service = self.service()?;
+        service
+            .save_practice_draft(task_id, &sql)
+            .map_err(to_mobile_error)?;
+        service
+            .record_practice_attempt(task_id, &sql, result.is_correct)
+            .map_err(to_mobile_error)?;
+
+        Ok(result.into())
+    }
+
+    pub fn practice_reset(&self, task_id: i64) -> Result<MobilePracticeSchema, MobileError> {
+        let task = self.practice_task(task_id)?;
+        {
+            let mut service = self.service()?;
+            service
+                .save_practice_draft(task_id, &task.starter_sql)
+                .map_err(to_mobile_error)?;
+        }
+
+        let mut practice = self.practice()?;
+        practice.engine.reset(&task).map_err(to_mobile_error)?;
+        practice.task_id = Some(task_id);
+        practice
+            .engine
+            .schema()
+            .map(MobilePracticeSchema::from)
+            .map_err(to_mobile_error)
+    }
+
+    pub fn practice_schema(&self, task_id: i64) -> Result<MobilePracticeSchema, MobileError> {
+        let task = self.practice_task(task_id)?;
+        let mut practice = self.practice()?;
+        Self::ensure_practice_loaded(&mut practice, &task)?;
+
+        practice
+            .engine
+            .schema()
+            .map(MobilePracticeSchema::from)
+            .map_err(to_mobile_error)
+    }
+
+    pub fn practice_table_data(
+        &self,
+        task_id: i64,
+        table: String,
+        limit: u64,
+        offset: u64,
+    ) -> Result<MobilePracticeTableData, MobileError> {
+        let task = self.practice_task(task_id)?;
+        let mut practice = self.practice()?;
+        Self::ensure_practice_loaded(&mut practice, &task)?;
+
+        practice
+            .engine
+            .table_data(&table, limit as usize, offset as usize)
+            .map(MobilePracticeTableData::from)
             .map_err(to_mobile_error)
     }
 
@@ -267,6 +442,33 @@ impl MobileTrainer {
 }
 
 impl MobileTrainer {
+    fn practice(&self) -> Result<MutexGuard<'_, PracticeState>, MobileError> {
+        self.practice
+            .lock()
+            .map_err(|error| MobileError::Core(error.to_string()))
+    }
+
+    fn practice_task(&self, task_id: i64) -> Result<PracticeTask, MobileError> {
+        let service = self.service()?;
+        service
+            .practice_tasks()
+            .map_err(to_mobile_error)?
+            .into_iter()
+            .find(|task| task.id == task_id)
+            .ok_or_else(|| MobileError::Core(format!("practice task {task_id} was not found")))
+    }
+
+    fn ensure_practice_loaded(
+        practice: &mut PracticeState,
+        task: &PracticeTask,
+    ) -> Result<(), MobileError> {
+        if practice.task_id != Some(task.id) {
+            practice.engine.load_task(task).map_err(to_mobile_error)?;
+            practice.task_id = Some(task.id);
+        }
+        Ok(())
+    }
+
     fn service(&self) -> Result<MutexGuard<'_, TrainerService<SqliteRepository>>, MobileError> {
         self.service
             .lock()

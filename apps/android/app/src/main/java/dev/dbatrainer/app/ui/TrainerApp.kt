@@ -95,6 +95,9 @@ fun TrainerApp(controller: TrainerController) {
                 AppScreen.LabCourses -> LabCoursesScreen(controller)
                 AppScreen.Labs -> LabsScreen(controller)
                 AppScreen.LabDetail -> LabDetailScreen(controller)
+                AppScreen.PracticeCategories -> PracticeCategoriesScreen(controller)
+                AppScreen.PracticeTasks -> PracticeTasksScreen(controller)
+                AppScreen.PracticeWorkbench -> PracticeWorkbenchScreen(controller)
                 AppScreen.Quiz -> QuizScreen(controller)
                 AppScreen.Feedback -> FeedbackScreen(controller)
                 AppScreen.Results -> ResultsScreen(controller)
@@ -239,6 +242,15 @@ private fun HomeScreen(controller: TrainerController) {
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(strings.labs)
+            }
+        }
+
+        item {
+            OutlinedButton(
+                onClick = controller::openPractice,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(strings.practice)
             }
         }
 
@@ -1097,6 +1109,7 @@ private fun StatisticsScreen(controller: TrainerController) {
         StatisticsPage.MistakeQuestions -> StatisticsMistakeQuestionsScreen(controller)
         StatisticsPage.MistakeDetail -> StatisticsMistakeDetailScreen(controller)
         StatisticsPage.Activity -> StatisticsActivityScreen(controller)
+        StatisticsPage.Practice -> PracticeStatisticsScreen(controller)
         StatisticsPage.Detail -> StatisticsDetailScreen(controller)
     }
 }
@@ -1156,6 +1169,15 @@ private fun StatisticsRootScreen(controller: TrainerController) {
                     stats = null,
                     subtitle = strings.studyDayTarget,
                     onClick = controller::openActivity,
+                )
+            }
+
+            item {
+                StatisticsNavigationCard(
+                    title = strings.practice,
+                    stats = null,
+                    subtitle = strings.practiceProgress,
+                    onClick = controller::openPracticeStatistics,
                 )
             }
 

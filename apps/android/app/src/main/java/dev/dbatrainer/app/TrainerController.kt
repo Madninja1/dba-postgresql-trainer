@@ -8,6 +8,14 @@ import androidx.compose.runtime.setValue
 import dev.dbatrainer.ffi.MobileActivityStats
 import dev.dbatrainer.ffi.MobileAnswerResult
 import dev.dbatrainer.ffi.MobileLab
+import dev.dbatrainer.ffi.MobilePracticeCategoryStats
+import dev.dbatrainer.ffi.MobilePracticeCheckResult
+import dev.dbatrainer.ffi.MobilePracticeExecutionResult
+import dev.dbatrainer.ffi.MobilePracticeSchema
+import dev.dbatrainer.ffi.MobilePracticeStats
+import dev.dbatrainer.ffi.MobilePracticeTableData
+import dev.dbatrainer.ffi.MobilePracticeTask
+import dev.dbatrainer.ffi.MobilePracticeTaskProgress
 import dev.dbatrainer.ffi.MobileQuestion
 import dev.dbatrainer.ffi.MobileQuestionLimit
 import dev.dbatrainer.ffi.MobileQuestionMistakeDetail
@@ -30,10 +38,21 @@ enum class AppScreen {
     LabCourses,
     Labs,
     LabDetail,
+    PracticeCategories,
+    PracticeTasks,
+    PracticeWorkbench,
     Quiz,
     Feedback,
     Results,
     Statistics,
+}
+
+enum class PracticePane {
+    Editor,
+    Schema,
+    Data,
+    Result,
+    Learning,
 }
 
 enum class StatisticsPage {
@@ -47,6 +66,7 @@ enum class StatisticsPage {
     MistakeQuestions,
     MistakeDetail,
     Activity,
+    Practice,
     Detail,
 }
 
@@ -145,6 +165,51 @@ class TrainerController(context: Context) {
 
     val selectedOptionIds = mutableStateListOf<Long>()
 
+    var practiceTasks by mutableStateOf<List<MobilePracticeTask>>(emptyList())
+        private set
+
+    var practiceProgress by mutableStateOf<List<MobilePracticeTaskProgress>>(emptyList())
+        private set
+
+    var practiceStats by mutableStateOf<MobilePracticeStats?>(null)
+        private set
+
+    var selectedPracticeCategory by mutableStateOf<String?>(null)
+        private set
+
+    var currentPracticeTask by mutableStateOf<MobilePracticeTask?>(null)
+        private set
+
+    var practiceSql by mutableStateOf("")
+        private set
+
+    var practiceSchema by mutableStateOf<MobilePracticeSchema?>(null)
+        private set
+
+    var practiceTableData by mutableStateOf<MobilePracticeTableData?>(null)
+        private set
+
+    var practiceOutput by mutableStateOf<MobilePracticeExecutionResult?>(null)
+        private set
+
+    var practiceCheck by mutableStateOf<MobilePracticeCheckResult?>(null)
+        private set
+
+    var practicePane by mutableStateOf(PracticePane.Editor)
+        private set
+
+    var practiceHintCount by mutableStateOf(0)
+        private set
+
+    var practiceShowSolution by mutableStateOf(false)
+        private set
+
+    var practiceMessage by mutableStateOf<String?>(null)
+        private set
+
+    var practiceError by mutableStateOf<String?>(null)
+        private set
+
     var statisticsPage by mutableStateOf(StatisticsPage.Root)
         private set
 
@@ -205,6 +270,7 @@ class TrainerController(context: Context) {
             requireTrainer().setContentLocale(language.code)
             topics = requireTrainer().topics()
             labs = requireTrainer().labs()
+            refreshPracticeState()
             activityStats = requireTrainer().activityStats()
             resumeSession = requireTrainer().activeSession()
 
@@ -301,6 +367,41 @@ class TrainerController(context: Context) {
     fun mistakeCountForTopic(topicId: Long): Int =
         mistakeSummaries.count { summary -> summary.topicId == topicId }
 
+    val practiceCategories: List<String>
+        get() = practiceTasks
+            .map { task -> task.category }
+            .distinct()
+            .sorted()
+
+    val practiceTasksForSelectedCategory: List<MobilePracticeTask>
+        get() {
+            val category = selectedPracticeCategory ?: return emptyList()
+            return practiceTasks.filter { task -> task.category == category }
+        }
+
+    val resumablePracticeTask: MobilePracticeTask?
+        get() {
+            val taskId = practiceProgress
+                .firstOrNull { progress -> progress.started && !progress.solved }
+                ?.taskId
+                ?: return null
+            return practiceTasks.firstOrNull { task -> task.id == taskId }
+        }
+
+    val practiceSolutionAvailable: Boolean
+        get() {
+            val task = currentPracticeTask ?: return false
+            val attempts = practiceProgressFor(task.id)?.attempts?.toInt() ?: 0
+            return attempts >= 3 ||
+                (task.hints.isNotEmpty() && practiceHintCount >= task.hints.size)
+        }
+
+    fun practiceProgressFor(taskId: Long): MobilePracticeTaskProgress? =
+        practiceProgress.firstOrNull { progress -> progress.taskId == taskId }
+
+    fun practiceCategoryStats(category: String): MobilePracticeCategoryStats? =
+        practiceStats?.categories?.firstOrNull { stats -> stats.category == category }
+
     fun changeLanguage(language: UiLanguage) {
         if (this.language == language) {
             return
@@ -310,12 +411,208 @@ class TrainerController(context: Context) {
             requireTrainer().setContentLocale(language.code)
             topics = requireTrainer().topics()
             labs = requireTrainer().labs()
+            refreshPracticeState()
+            resetPracticeWorkbench()
             this.language = language
             preferences
                 .edit()
                 .putString("ui_language", language.code)
                 .apply()
         }
+    }
+
+    fun openPractice() {
+        runCoreAction {
+            refreshPracticeState()
+            selectedPracticeCategory = null
+            resetPracticeWorkbench()
+            screen = AppScreen.PracticeCategories
+        }
+    }
+
+    fun choosePracticeCategory(category: String) {
+        selectedPracticeCategory = category
+        screen = AppScreen.PracticeTasks
+    }
+
+    fun resumePractice() {
+        resumablePracticeTask?.let(::openPracticeTask)
+    }
+
+    fun openPracticeTask(task: MobilePracticeTask) {
+        runCoreAction {
+            val schema = requireTrainer().practiceLoadTask(task.id)
+            val progress = practiceProgressFor(task.id)
+            val sql = progress
+                ?.lastSql
+                ?.takeIf { value -> value.isNotBlank() }
+                ?: task.starterSql
+
+            currentPracticeTask = task
+            selectedPracticeCategory = task.category
+            practiceSql = sql
+            practiceSchema = schema
+            practiceTableData = null
+            practiceOutput = null
+            practiceCheck = null
+            practicePane = PracticePane.Editor
+            practiceHintCount = minOf(
+                progress?.attempts?.toInt() ?: 0,
+                task.hints.size,
+            )
+            practiceShowSolution = false
+            practiceMessage = null
+            practiceError = null
+            screen = AppScreen.PracticeWorkbench
+        }
+    }
+
+    fun updatePracticeSql(sql: String) {
+        practiceSql = sql
+        practiceCheck = null
+        practiceError = null
+        practiceMessage = null
+    }
+
+    fun selectPracticePane(pane: PracticePane) {
+        practicePane = pane
+    }
+
+    fun persistPracticeDraft() {
+        val task = currentPracticeTask ?: return
+        runCoreAction {
+            requireTrainer().practiceSaveDraft(task.id, practiceSql)
+        }
+    }
+
+    fun runPracticeSql() {
+        val task = currentPracticeTask ?: return
+        practiceMessage = null
+        practiceError = null
+        try {
+            val output = requireTrainer().practiceExecute(task.id, practiceSql)
+            practiceOutput = output
+            practiceCheck = null
+            practiceSchema = requireTrainer().practiceSchema(task.id)
+            practiceTableData = null
+            practicePane = PracticePane.Result
+            refreshPracticeState()
+        } catch (error: Exception) {
+            practiceError = error.message ?: error::class.java.simpleName
+            practicePane = PracticePane.Learning
+        }
+    }
+
+    fun checkPracticeSql() {
+        val task = currentPracticeTask ?: return
+        practiceMessage = null
+        practiceError = null
+        try {
+            val result = requireTrainer().practiceCheck(task.id, practiceSql)
+            practiceCheck = result
+            if (!result.isCorrect && practiceHintCount < task.hints.size) {
+                practiceHintCount += 1
+            }
+            refreshPracticeState()
+            practicePane = PracticePane.Result
+        } catch (error: Exception) {
+            practiceError = error.message ?: error::class.java.simpleName
+            practicePane = PracticePane.Learning
+        }
+    }
+
+    fun resetPracticeSandbox() {
+        val task = currentPracticeTask ?: return
+        runCoreAction {
+            practiceSchema = requireTrainer().practiceReset(task.id)
+            practiceSql = task.starterSql
+            practiceTableData = null
+            practiceOutput = null
+            practiceCheck = null
+            practicePane = PracticePane.Editor
+            practiceShowSolution = false
+            practiceMessage = null
+            practiceError = null
+            refreshPracticeState()
+        }
+    }
+
+    fun showPracticeHint() {
+        val task = currentPracticeTask ?: return
+        val attempts = practiceProgressFor(task.id)?.attempts?.toInt() ?: 0
+        val unlocked = minOf(attempts + 1, task.hints.size)
+
+        practiceMessage = null
+        when {
+            practiceHintCount < unlocked -> practiceHintCount += 1
+            practiceHintCount >= task.hints.size ->
+                practiceMessage = strings.practiceNoMoreHints
+            else ->
+                practiceMessage = strings.practiceHintLocked
+        }
+        practicePane = PracticePane.Learning
+    }
+
+    fun togglePracticeSolution() {
+        practiceMessage = null
+        if (practiceSolutionAvailable) {
+            practiceShowSolution = !practiceShowSolution
+        } else {
+            practiceMessage = strings.practiceSolutionLocked
+        }
+        practicePane = PracticePane.Learning
+    }
+
+    fun openPracticeTable(table: String) {
+        val task = currentPracticeTask ?: return
+        runCoreAction {
+            practiceTableData = requireTrainer().practiceTableData(
+                task.id,
+                table,
+                PRACTICE_TABLE_PAGE_SIZE.toULong(),
+                0UL,
+            )
+            practicePane = PracticePane.Data
+        }
+    }
+
+    fun previousPracticeTablePage() {
+        val task = currentPracticeTask ?: return
+        val data = practiceTableData ?: return
+        val offset = data.offset.toLong()
+            .minus(PRACTICE_TABLE_PAGE_SIZE)
+            .coerceAtLeast(0)
+            .toULong()
+        loadPracticeTablePage(task.id, data.table, offset)
+    }
+
+    fun nextPracticeTablePage() {
+        val task = currentPracticeTask ?: return
+        val data = practiceTableData ?: return
+        if (!data.hasMore) {
+            return
+        }
+        loadPracticeTablePage(
+            task.id,
+            data.table,
+            data.offset + PRACTICE_TABLE_PAGE_SIZE.toULong(),
+        )
+    }
+
+    fun nextPracticeTask() {
+        val current = currentPracticeTask ?: return
+        val tasks = practiceTasksForSelectedCategory
+        val index = tasks.indexOfFirst { task -> task.id == current.id }
+        val next = tasks.getOrNull(index + 1)
+
+        if (next == null) {
+            practiceMessage = strings.practiceLastTask
+            practicePane = PracticePane.Learning
+            return
+        }
+
+        savePracticeDraft()
+        openPracticeTask(next)
     }
 
     fun openTopics() {
@@ -729,6 +1026,13 @@ class TrainerController(context: Context) {
         }
     }
 
+    fun openPracticeStatistics() {
+        runCoreAction {
+            refreshPracticeState()
+            statisticsPage = StatisticsPage.Practice
+        }
+    }
+
     fun clearStatistics() {
         runCoreAction {
             requireTrainer().clearStatistics()
@@ -737,6 +1041,7 @@ class TrainerController(context: Context) {
             mistakeSummaries = emptyList()
             mistakeDetail = null
             activityStats = requireTrainer().activityStats()
+            refreshPracticeState()
         }
     }
 
@@ -756,6 +1061,12 @@ class TrainerController(context: Context) {
                 screen = AppScreen.LabCourses
             }
             AppScreen.LabDetail -> screen = AppScreen.Labs
+            AppScreen.PracticeCategories -> screen = AppScreen.Home
+            AppScreen.PracticeTasks -> {
+                selectedPracticeCategory = null
+                screen = AppScreen.PracticeCategories
+            }
+            AppScreen.PracticeWorkbench -> practiceBack()
             AppScreen.Limit -> {
                 screen = when {
                     pendingMistakeReview -> {
@@ -816,8 +1127,64 @@ class TrainerController(context: Context) {
                 statisticsPage = StatisticsPage.MistakeQuestions
             }
             StatisticsPage.Activity -> statisticsPage = StatisticsPage.Root
+            StatisticsPage.Practice -> statisticsPage = StatisticsPage.Root
             StatisticsPage.Detail -> statisticsPage = statisticsDetailReturnPage
         }
+    }
+
+    private fun practiceBack() {
+        when (practicePane) {
+            PracticePane.Data -> practicePane = PracticePane.Schema
+            PracticePane.Schema,
+            PracticePane.Result,
+            PracticePane.Learning -> practicePane = PracticePane.Editor
+            PracticePane.Editor -> {
+                savePracticeDraft()
+                resetPracticeWorkbench()
+                screen = AppScreen.PracticeTasks
+            }
+        }
+    }
+
+    private fun savePracticeDraft() {
+        val task = currentPracticeTask ?: return
+        runCoreAction {
+            requireTrainer().practiceSaveDraft(task.id, practiceSql)
+            refreshPracticeState()
+        }
+    }
+
+    private fun loadPracticeTablePage(taskId: Long, table: String, offset: ULong) {
+        runCoreAction {
+            practiceTableData = requireTrainer().practiceTableData(
+                taskId,
+                table,
+                PRACTICE_TABLE_PAGE_SIZE.toULong(),
+                offset,
+            )
+            practicePane = PracticePane.Data
+        }
+    }
+
+    private fun refreshPracticeState() {
+        val trainer = requireTrainer()
+        practiceTasks = trainer.practiceTasks()
+        practiceProgress = trainer.practiceProgress()
+        practiceStats = trainer.practiceStats()
+    }
+
+    private fun resetPracticeWorkbench() {
+        currentPracticeTask = null
+        practiceSql = ""
+        practiceSchema = null
+        practiceTableData = null
+        practiceOutput = null
+        practiceCheck = null
+        practicePane = PracticePane.Editor
+        practiceHintCount = 0
+        practiceShowSolution = false
+        practiceMessage = null
+        practiceError = null
     }
 
     private fun loadCurrentQuestion() {
@@ -958,6 +1325,8 @@ class TrainerController(context: Context) {
     }
 
     private companion object {
+        const val PRACTICE_TABLE_PAGE_SIZE = 200L
+
         val courseCodeComparator = Comparator<String> { left, right ->
             val leftParts = splitCourseCode(left)
             val rightParts = splitCourseCode(right)

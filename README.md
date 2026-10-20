@@ -37,6 +37,7 @@ The Android package is an installable APK. The Linux and Windows packages contai
 - overall, course, topic, and quiz-mode statistics;
 - per-topic mastery status with an 85% pass threshold, best result, and attempts required to pass;
 - offline laboratory guides grouped by course;
+- local SQL Practice sandbox with an editor, schema/data browser, automatic checks, hints, solutions, progress, and statistics on both TUI and Android;
 - mistake history with every attempt and the answers selected for questions answered incorrectly;
 - a “Work on mistakes” quiz built from questions that have previous incorrect attempts;
 - daily activity statistics: app-open days, study days, streaks, questions per day, and a 28-day activity view;
