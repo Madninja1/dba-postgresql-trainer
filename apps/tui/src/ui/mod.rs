@@ -20,12 +20,18 @@ mod topics;
 use ratatui::{
     Frame,
     layout::{Alignment, Rect},
-    widgets::Paragraph,
+    widgets::{Clear, Paragraph},
 };
 
 use crate::app::{App, Screen};
 
 pub fn render(frame: &mut Frame, app: &App) {
+    // Clear the whole frame first. This avoids stale cells when switching between
+    // layouts with different pane sizes and also protects against terminal width
+    // mismatches from glyphs rendered on the previous screen.
+    let area = frame.area();
+    frame.render_widget(Clear, area);
+
     match app.screen {
         Screen::Home => {
             home::render(frame, app);

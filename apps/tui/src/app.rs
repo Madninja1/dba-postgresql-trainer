@@ -74,6 +74,7 @@ pub enum PracticePane {
     Schema,
     Data,
     Result,
+    Learning,
 }
 
 impl PracticePane {
@@ -82,7 +83,17 @@ impl PracticePane {
             Self::Editor => Self::Schema,
             Self::Schema => Self::Data,
             Self::Data => Self::Result,
-            Self::Result => Self::Editor,
+            Self::Result => Self::Learning,
+            Self::Learning => Self::Editor,
+        }
+    }
+
+    fn back(self) -> Option<Self> {
+        match self {
+            Self::Editor => None,
+            Self::Schema => Some(Self::Editor),
+            Self::Data => Some(Self::Schema),
+            Self::Result | Self::Learning => Some(Self::Editor),
         }
     }
 }
@@ -785,14 +796,18 @@ impl App {
                 self.practice_check = None;
                 self.practice_error = None;
             }
-            Action::EditorBackspace if self.practice_pane == PracticePane::Editor => {
-                if let Some(previous) =
-                    previous_char_boundary(&self.practice_sql, self.practice_cursor)
-                {
-                    self.practice_sql.drain(previous..self.practice_cursor);
-                    self.practice_cursor = previous;
-                    self.practice_check = None;
-                    self.practice_error = None;
+            Action::EditorBackspace => {
+                if self.practice_pane == PracticePane::Editor {
+                    if let Some(previous) =
+                        previous_char_boundary(&self.practice_sql, self.practice_cursor)
+                    {
+                        self.practice_sql.drain(previous..self.practice_cursor);
+                        self.practice_cursor = previous;
+                        self.practice_check = None;
+                        self.practice_error = None;
+                    }
+                } else {
+                    self.navigate_back_from_practice()?;
                 }
             }
             Action::EditorNewline if self.practice_pane == PracticePane::Editor => {
@@ -846,7 +861,7 @@ impl App {
                         self.practice_schema.tables.len(),
                     );
                 }
-                PracticePane::Data | PracticePane::Result => {
+                PracticePane::Data | PracticePane::Result | PracticePane::Learning => {
                     self.practice_scroll = self.practice_scroll.saturating_sub(1);
                 }
             },
@@ -861,7 +876,7 @@ impl App {
                         self.practice_schema.tables.len(),
                     );
                 }
-                PracticePane::Data | PracticePane::Result => {
+                PracticePane::Data | PracticePane::Result | PracticePane::Learning => {
                     self.practice_scroll = self.practice_scroll.saturating_add(1);
                 }
             },
@@ -894,6 +909,8 @@ impl App {
                     Err(error) => {
                         self.practice_error =
                             Some(format_practice_error(&self.practice_sql, &error));
+                        self.practice_pane = PracticePane::Learning;
+                        self.practice_scroll = 0;
                     }
                 }
             }
@@ -920,6 +937,8 @@ impl App {
                     Err(error) => {
                         self.practice_error =
                             Some(format_practice_error(&self.practice_sql, &error));
+                        self.practice_pane = PracticePane::Learning;
+                        self.practice_scroll = 0;
                     }
                 }
             }
@@ -963,6 +982,9 @@ impl App {
                         self.practice_message =
                             Some(self.strings().practice_hint_locked.to_string());
                     }
+                    self.practice_pane = PracticePane::Learning;
+                    self.practice_scroll = 0;
+                    self.practice_horizontal_scroll = 0;
                 }
             }
             Action::PracticeSolution => {
@@ -982,17 +1004,32 @@ impl App {
                     self.practice_message =
                         Some(self.strings().practice_solution_locked.to_string());
                 }
+                self.practice_pane = PracticePane::Learning;
+                self.practice_scroll = 0;
+                self.practice_horizontal_scroll = 0;
             }
             Action::PracticeNextTask => {
                 self.open_next_practice_task()?;
             }
             Action::Back => {
-                self.persist_practice_draft()?;
-                self.clear_practice_editor_state();
-                self.screen = Screen::PracticeTasks;
+                self.navigate_back_from_practice()?;
             }
             _ => {}
         }
+        Ok(())
+    }
+
+    fn navigate_back_from_practice(&mut self) -> Result<(), RepositoryError> {
+        if let Some(previous_pane) = self.practice_pane.back() {
+            self.practice_pane = previous_pane;
+            self.practice_scroll = 0;
+            self.practice_horizontal_scroll = 0;
+        } else {
+            self.persist_practice_draft()?;
+            self.clear_practice_editor_state();
+            self.screen = Screen::PracticeTasks;
+        }
+
         Ok(())
     }
 

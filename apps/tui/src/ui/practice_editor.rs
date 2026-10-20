@@ -22,15 +22,27 @@ pub fn render(frame: &mut Frame, app: &App) {
         return;
     };
 
-    let areas = vertical_chunks(
-        frame.area(),
-        &[
-            Constraint::Length(7),
-            Constraint::Min(12),
-            Constraint::Length(9),
-            Constraint::Length(3),
-        ],
-    );
+    let compact = frame.area().height < 36;
+    let areas = if compact {
+        vertical_chunks(
+            frame.area(),
+            &[
+                Constraint::Length(7),
+                Constraint::Min(10),
+                Constraint::Length(3),
+            ],
+        )
+    } else {
+        vertical_chunks(
+            frame.area(),
+            &[
+                Constraint::Length(7),
+                Constraint::Min(12),
+                Constraint::Length(9),
+                Constraint::Length(3),
+            ],
+        )
+    };
 
     let progress = app.progress_for_practice_task(task.id);
     let status = match progress {
@@ -58,16 +70,27 @@ pub fn render(frame: &mut Frame, app: &App) {
     );
 
     frame.render_widget(task_panel, areas[0]);
-    render_workbench(frame, app, areas[1]);
-    render_learning_panel(frame, app, areas[2]);
+    render_workbench(frame, app, areas[1], compact);
+
+    let footer_index = if compact {
+        2
+    } else {
+        render_learning_panel(
+            frame,
+            app,
+            areas[2],
+            app.practice_pane == PracticePane::Learning,
+        );
+        3
+    };
 
     let footer = Paragraph::new(app.strings().footer_practice_editor)
         .alignment(Alignment::Center)
         .block(Block::default().borders(Borders::ALL));
-    frame.render_widget(footer, areas[3]);
+    frame.render_widget(footer, areas[footer_index]);
 }
 
-fn render_workbench(frame: &mut Frame, app: &App, area: Rect) {
+fn render_workbench(frame: &mut Frame, app: &App, area: Rect, compact: bool) {
     let horizontal = area.width >= 100;
     let panes = Layout::default()
         .direction(if horizontal {
@@ -79,7 +102,7 @@ fn render_workbench(frame: &mut Frame, app: &App, area: Rect) {
         .split(area);
 
     render_editor(frame, app, panes[0]);
-    render_inspector(frame, app, panes[1]);
+    render_inspector(frame, app, panes[1], compact);
 }
 
 fn render_editor(frame: &mut Frame, app: &App, area: Rect) {
@@ -89,7 +112,7 @@ fn render_editor(frame: &mut Frame, app: &App, area: Rect) {
         .chars()
         .filter(|character| *character == '\n')
         .count();
-    editor_text.insert(cursor, '▌');
+    editor_text.insert(cursor, '|');
     let visible_height = area.height.saturating_sub(2) as usize;
     let scroll = cursor_line
         .saturating_sub(visible_height.saturating_sub(1))
@@ -104,11 +127,13 @@ fn render_editor(frame: &mut Frame, app: &App, area: Rect) {
     frame.render_widget(editor, area);
 }
 
-fn render_inspector(frame: &mut Frame, app: &App, area: Rect) {
+fn render_inspector(frame: &mut Frame, app: &App, area: Rect, compact: bool) {
     match app.practice_pane {
         PracticePane::Editor | PracticePane::Schema => render_schema(frame, app, area),
         PracticePane::Data => render_data(frame, app, area),
         PracticePane::Result => render_result(frame, app, area),
+        PracticePane::Learning if compact => render_learning_panel(frame, app, area, true),
+        PracticePane::Learning => render_schema(frame, app, area),
     }
 }
 
@@ -168,7 +193,14 @@ fn render_data(frame: &mut Frame, app: &App, area: Rect) {
     let title = app
         .practice_table_data
         .as_ref()
-        .map(|data| format!("{} — {}", app.strings().practice_data, data.table))
+        .map(|data| {
+            format!(
+                "{} — {} | Esc -> {}",
+                app.strings().practice_data,
+                data.table,
+                app.strings().practice_schema
+            )
+        })
         .unwrap_or_else(|| app.strings().practice_data.to_string());
     let lines = app
         .practice_table_data
@@ -256,7 +288,7 @@ fn render_scrolled_text(
     frame.render_widget(body, area);
 }
 
-fn render_learning_panel(frame: &mut Frame, app: &App, area: Rect) {
+fn render_learning_panel(frame: &mut Frame, app: &App, area: Rect, active: bool) {
     let Some(task) = app.current_practice_task.as_ref() else {
         return;
     };
@@ -286,7 +318,7 @@ fn render_learning_panel(frame: &mut Frame, app: &App, area: Rect) {
             lines.push(format!("  {explanation}"));
         }
     } else if !app.practice_solution_available() {
-        lines.push(format!("{}: 🔒", app.strings().practice_solution));
+        lines.push(app.strings().practice_solution_locked.to_string());
     }
 
     if let Some(message) = app.practice_message.as_deref() {
@@ -302,10 +334,14 @@ fn render_learning_panel(frame: &mut Frame, app: &App, area: Rect) {
         lines.push(String::from("F3 — hint · F4 — solution"));
     }
 
-    let body = Paragraph::new(lines.join("\n"))
-        .wrap(Wrap { trim: false })
-        .block(Block::default().title("Learning").borders(Borders::ALL));
-    frame.render_widget(body, area);
+    render_scrolled_text(
+        frame,
+        app,
+        area,
+        app.strings().practice_learning,
+        lines,
+        active,
+    );
 }
 
 fn matrix_lines(result: &PracticeExecutionResult, affected_rows_label: &str) -> Vec<String> {

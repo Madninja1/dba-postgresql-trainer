@@ -68,6 +68,7 @@ pub struct UiStrings {
     pub practice_difficulty: &'static str,
     pub practice_schema: &'static str,
     pub practice_data: &'static str,
+    pub practice_learning: &'static str,
     pub practice_hints: &'static str,
     pub practice_solution: &'static str,
     pub practice_solution_locked: &'static str,
@@ -378,6 +379,7 @@ static ENGLISH: UiStrings = UiStrings {
     practice_difficulty: "Difficulty",
     practice_schema: "Schema",
     practice_data: "Table data",
+    practice_learning: "Learning",
     practice_hints: "Hints",
     practice_solution: "Solution",
     practice_solution_locked: "Solution unlocks after 3 attempts or after all hints are opened.",
@@ -492,7 +494,7 @@ static ENGLISH: UiStrings = UiStrings {
     footer_labs: "↑/↓ or j/k — select | Enter — open | Esc/Backspace — back | q — quit",
     footer_lab_detail: "↑/↓ or j/k — scroll | Esc/Backspace — back | q — quit",
     footer_practice_tasks: "↑/↓ or j/k — select | Enter — open | Esc/Backspace — back | q — quit",
-    footer_practice_editor: "F2 pane | F3 hint | F4 solution | F5 run | F6 reset | F7 check | F8 next | PgUp/PgDn scroll | Esc back",
+    footer_practice_editor: "F2 pane (incl. Learning) | F3 hint | F4 solution | F5 run | F6 reset | F7 check | F8 next | Esc/Backspace back (Backspace deletes in editor)",
     footer_back: "Esc/Backspace — back | q — quit",
 };
 
@@ -532,6 +534,7 @@ static RUSSIAN: UiStrings = UiStrings {
     practice_difficulty: "Сложность",
     practice_schema: "Схема",
     practice_data: "Данные таблицы",
+    practice_learning: "Обучение",
     practice_hints: "Подсказки",
     practice_solution: "Решение",
     practice_solution_locked: "Решение откроется после 3 попыток или после просмотра всех подсказок.",
@@ -646,6 +649,6 @@ static RUSSIAN: UiStrings = UiStrings {
     footer_labs: "↑/↓ или j/k — выбор | Enter — открыть | Esc/Backspace — назад | q — выход",
     footer_lab_detail: "↑/↓ или j/k — прокрутка | Esc/Backspace — назад | q — выход",
     footer_practice_tasks: "↑/↓ или j/k — выбор | Enter — открыть | Esc/Backspace — назад | q — выход",
-    footer_practice_editor: "F2 панель | F3 подсказка | F4 решение | F5 выполнить | F6 сброс | F7 проверить | F8 далее | PgUp/PgDn прокрутка | Esc назад",
+    footer_practice_editor: "F2 панель (вкл. Обучение) | F3 подсказка | F4 решение | F5 выполнить | F6 сброс | F7 проверить | F8 далее | Esc/Backspace назад (Backspace удаляет в редакторе)",
     footer_back: "Esc/Backspace — назад | q — выход",
 };
