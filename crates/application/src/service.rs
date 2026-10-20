@@ -1,7 +1,8 @@
 use dba_trainer_domain::{
-    ActivityStats, AnswerOptionId, AnswerResult, Lab, PracticeTask, Question, QuestionId,
-    QuestionMistakeDetail, QuestionMistakeSummary, QuizSession, SessionConfig, SessionId,
-    SessionProgress, StatisticsFilter, Topic, TopicId, TopicMasteryStats, TrainingStats,
+    ActivityStats, AnswerOptionId, AnswerResult, Lab, PracticeStats, PracticeTask,
+    PracticeTaskProgress, Question, QuestionId, QuestionMistakeDetail, QuestionMistakeSummary,
+    QuizSession, SessionConfig, SessionId, SessionProgress, StatisticsFilter, Topic, TopicId,
+    TopicMasteryStats, TrainingStats,
 };
 
 use rand::{rng, seq::SliceRandom};
@@ -121,6 +122,28 @@ where
 
     pub fn practice_task(&self, key: &str) -> Result<PracticeTask, RepositoryError> {
         self.repository.practice_task(key)
+    }
+
+    pub fn practice_progress(&self) -> Result<Vec<PracticeTaskProgress>, RepositoryError> {
+        self.repository.practice_progress()
+    }
+
+    pub fn save_practice_draft(&mut self, task_id: i64, sql: &str) -> Result<(), RepositoryError> {
+        self.repository.save_practice_draft(task_id, sql)
+    }
+
+    pub fn record_practice_attempt(
+        &mut self,
+        task_id: i64,
+        sql: &str,
+        success: bool,
+    ) -> Result<(), RepositoryError> {
+        self.repository
+            .record_practice_attempt(task_id, sql, success)
+    }
+
+    pub fn practice_stats(&self) -> Result<PracticeStats, RepositoryError> {
+        self.repository.practice_stats()
     }
 }
 

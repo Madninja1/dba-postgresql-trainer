@@ -14,8 +14,10 @@ pub use lab::Lab;
 pub use question::{AnswerOption, Question, QuestionType};
 
 pub use practice::{
-    PracticeCheckResult, PracticeComparison, PracticeExecutionResult, PracticeKind, PracticeTask,
-    PracticeValue,
+    PracticeAssertion, PracticeCategoryStats, PracticeCheckResult, PracticeColumn,
+    PracticeComparison, PracticeDifficulty, PracticeExecutionResult, PracticeKind, PracticeRule,
+    PracticeSchema, PracticeStats, PracticeTable, PracticeTableData, PracticeTask,
+    PracticeTaskProgress, PracticeValue,
 };
 
 pub use progress::{

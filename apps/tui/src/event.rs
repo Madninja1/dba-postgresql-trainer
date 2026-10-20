@@ -44,9 +44,15 @@ fn practice_editor_action(key: KeyEvent) -> Option<Action> {
         (KeyCode::Enter, modifiers) if modifiers.contains(KeyModifiers::CONTROL) => {
             Some(Action::PracticeCheck)
         }
+        (KeyCode::F(2), _) => Some(Action::PracticeNextPane),
+        (KeyCode::F(3), _) => Some(Action::PracticeHint),
+        (KeyCode::F(4), _) => Some(Action::PracticeSolution),
         (KeyCode::F(5), _) => Some(Action::PracticeRun),
         (KeyCode::F(6), _) => Some(Action::PracticeReset),
         (KeyCode::F(7), _) => Some(Action::PracticeCheck),
+        (KeyCode::F(8), _) => Some(Action::PracticeNextTask),
+        (KeyCode::PageUp, _) => Some(Action::PracticePageUp),
+        (KeyCode::PageDown, _) => Some(Action::PracticePageDown),
         (KeyCode::Left, _) => Some(Action::EditorLeft),
         (KeyCode::Right, _) => Some(Action::EditorRight),
         (KeyCode::Up, _) => Some(Action::EditorUp),

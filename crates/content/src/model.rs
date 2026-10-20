@@ -125,6 +125,33 @@ pub enum PracticeComparisonDocument {
     RowCount,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Default)]
+#[serde(rename_all = "snake_case")]
+pub enum PracticeDifficultyDocument {
+    Easy,
+    #[default]
+    Medium,
+    Hard,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
+pub enum PracticeRuleDocument {
+    RequireKeyword { keyword: String },
+    ForbidKeyword { keyword: String },
+    ForbidSelectStar,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
+pub enum PracticeAssertionDocument {
+    ResultEqualsSolution,
+    TableExists { table: String },
+    IndexExists { index: String },
+    ScalarEquals { sql: String, expected: String },
+    RowCountEquals { sql: String, expected: usize },
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct PracticeDocument {
@@ -140,7 +167,22 @@ pub struct PracticeDocument {
     pub comparison: PracticeComparisonDocument,
 
     #[serde(default)]
+    pub difficulty: PracticeDifficultyDocument,
+
+    #[serde(default)]
     pub starter_sql: String,
+
+    #[serde(default)]
+    pub hints: Vec<String>,
+
+    #[serde(default)]
+    pub solution_explanation: Option<String>,
+
+    #[serde(default)]
+    pub rules: Vec<PracticeRuleDocument>,
+
+    #[serde(default)]
+    pub assertions: Vec<PracticeAssertionDocument>,
 
     pub sort_order: i64,
 }

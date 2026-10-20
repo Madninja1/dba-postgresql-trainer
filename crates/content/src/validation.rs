@@ -396,6 +396,198 @@ pub fn validate_practice(
         ));
     }
 
+    for hint in &practice.hints {
+        if hint.trim().is_empty() {
+            errors.push(format!(
+                "practice '{}' contains an empty hint",
+                practice.key
+            ));
+        }
+    }
+
+    for rule in &practice.rules {
+        match rule {
+            crate::model::PracticeRuleDocument::RequireKeyword { keyword }
+            | crate::model::PracticeRuleDocument::ForbidKeyword { keyword } => {
+                if keyword.trim().is_empty() {
+                    errors.push(format!(
+                        "practice '{}' contains an empty rule keyword",
+                        practice.key
+                    ));
+                }
+            }
+            crate::model::PracticeRuleDocument::ForbidSelectStar => {}
+        }
+    }
+
+    for assertion in &practice.assertions {
+        match assertion {
+            crate::model::PracticeAssertionDocument::ResultEqualsSolution => {}
+            crate::model::PracticeAssertionDocument::TableExists { table } => {
+                if table.trim().is_empty() {
+                    errors.push(format!(
+                        "practice '{}' contains an empty table assertion",
+                        practice.key
+                    ));
+                }
+            }
+            crate::model::PracticeAssertionDocument::IndexExists { index } => {
+                if index.trim().is_empty() {
+                    errors.push(format!(
+                        "practice '{}' contains an empty index assertion",
+                        practice.key
+                    ));
+                }
+            }
+            crate::model::PracticeAssertionDocument::ScalarEquals { sql, .. }
+            | crate::model::PracticeAssertionDocument::RowCountEquals { sql, .. } => {
+                if sql.trim().is_empty() {
+                    errors.push(format!(
+                        "practice '{}' contains an assertion with empty SQL",
+                        practice.key
+                    ));
+                }
+            }
+        }
+    }
+
+    if let Some(explanation) = &practice.solution_explanation
+        && explanation.trim().is_empty()
+    {
+        errors.push(format!(
+            "practice '{}' solution_explanation must not be empty when present",
+            practice.key
+        ));
+    }
+
+    for hint in &practice.hints {
+        if hint.trim().is_empty() {
+            errors.push(format!(
+                "practice '{}' contains an empty hint",
+                practice.key
+            ));
+        }
+    }
+
+    for rule in &practice.rules {
+        match rule {
+            crate::model::PracticeRuleDocument::RequireKeyword { keyword }
+            | crate::model::PracticeRuleDocument::ForbidKeyword { keyword } => {
+                if keyword.trim().is_empty() {
+                    errors.push(format!(
+                        "practice '{}' contains an empty rule keyword",
+                        practice.key
+                    ));
+                }
+            }
+            crate::model::PracticeRuleDocument::ForbidSelectStar => {}
+        }
+    }
+
+    for assertion in &practice.assertions {
+        match assertion {
+            crate::model::PracticeAssertionDocument::ResultEqualsSolution => {}
+            crate::model::PracticeAssertionDocument::TableExists { table } => {
+                if table.trim().is_empty() {
+                    errors.push(format!(
+                        "practice '{}' contains an empty table assertion",
+                        practice.key
+                    ));
+                }
+            }
+            crate::model::PracticeAssertionDocument::IndexExists { index } => {
+                if index.trim().is_empty() {
+                    errors.push(format!(
+                        "practice '{}' contains an empty index assertion",
+                        practice.key
+                    ));
+                }
+            }
+            crate::model::PracticeAssertionDocument::ScalarEquals { sql, .. }
+            | crate::model::PracticeAssertionDocument::RowCountEquals { sql, .. } => {
+                if sql.trim().is_empty() {
+                    errors.push(format!(
+                        "practice '{}' contains an assertion with empty SQL",
+                        practice.key
+                    ));
+                }
+            }
+        }
+    }
+
+    if let Some(explanation) = &practice.solution_explanation
+        && explanation.trim().is_empty()
+    {
+        errors.push(format!(
+            "practice '{}' solution_explanation must not be empty when present",
+            practice.key
+        ));
+    }
+
+    for hint in &practice.hints {
+        if hint.trim().is_empty() {
+            errors.push(format!(
+                "practice '{}' contains an empty hint",
+                practice.key
+            ));
+        }
+    }
+
+    for rule in &practice.rules {
+        match rule {
+            crate::model::PracticeRuleDocument::RequireKeyword { keyword }
+            | crate::model::PracticeRuleDocument::ForbidKeyword { keyword } => {
+                if keyword.trim().is_empty() {
+                    errors.push(format!(
+                        "practice '{}' contains an empty rule keyword",
+                        practice.key
+                    ));
+                }
+            }
+            crate::model::PracticeRuleDocument::ForbidSelectStar => {}
+        }
+    }
+
+    for assertion in &practice.assertions {
+        match assertion {
+            crate::model::PracticeAssertionDocument::ResultEqualsSolution => {}
+            crate::model::PracticeAssertionDocument::TableExists { table } => {
+                if table.trim().is_empty() {
+                    errors.push(format!(
+                        "practice '{}' contains an empty table assertion",
+                        practice.key
+                    ));
+                }
+            }
+            crate::model::PracticeAssertionDocument::IndexExists { index } => {
+                if index.trim().is_empty() {
+                    errors.push(format!(
+                        "practice '{}' contains an empty index assertion",
+                        practice.key
+                    ));
+                }
+            }
+            crate::model::PracticeAssertionDocument::ScalarEquals { sql, .. }
+            | crate::model::PracticeAssertionDocument::RowCountEquals { sql, .. } => {
+                if sql.trim().is_empty() {
+                    errors.push(format!(
+                        "practice '{}' contains an assertion with empty SQL",
+                        practice.key
+                    ));
+                }
+            }
+        }
+    }
+
+    if let Some(explanation) = &practice.solution_explanation
+        && explanation.trim().is_empty()
+    {
+        errors.push(format!(
+            "practice '{}' solution_explanation must not be empty when present",
+            practice.key
+        ));
+    }
+
     if setup_sql.trim().is_empty() {
         errors.push(format!(
             "practice '{}' must have non-empty setup.sql",

@@ -10,7 +10,8 @@ use crate::app::App;
 use super::common::{render_message, vertical_chunks};
 
 pub fn render(frame: &mut Frame, app: &App) {
-    if app.practice_tasks.is_empty() {
+    let tasks = app.practice_tasks_for_selected_category();
+    if tasks.is_empty() {
         render_message(
             frame,
             app.strings().practice_title,
@@ -29,14 +30,33 @@ pub fn render(frame: &mut Frame, app: &App) {
         ],
     );
 
-    let header = Paragraph::new(app.strings().practice_title)
+    let title = app
+        .selected_practice_category
+        .as_deref()
+        .map(|category| format!("{} — {category}", app.strings().practice_title))
+        .unwrap_or_else(|| app.strings().practice_title.to_string());
+    let header = Paragraph::new(title)
         .alignment(Alignment::Center)
         .block(Block::default().borders(Borders::ALL));
 
-    let items = app
-        .practice_tasks
+    let items = tasks
         .iter()
-        .map(|task| ListItem::new(format!("[{}] {}", task.category, task.title)))
+        .map(|task| {
+            let progress = app.progress_for_practice_task(task.id);
+            let marker = match progress {
+                Some(progress) if progress.solved => "✓",
+                Some(progress) if progress.is_started() => "•",
+                _ => " ",
+            };
+            let difficulty = app.strings().practice_difficulty(task.difficulty);
+            let attempts = progress.map_or(0, |progress| progress.attempts);
+            ListItem::new(format!(
+                "{marker} {:<8} {}  ·  {} {attempts}",
+                difficulty,
+                task.title,
+                app.strings().practice_attempts,
+            ))
+        })
         .collect::<Vec<_>>();
 
     let list = List::new(items)

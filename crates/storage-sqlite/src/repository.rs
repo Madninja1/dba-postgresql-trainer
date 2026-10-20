@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::{collections::BTreeMap, path::Path};
 
 use dba_trainer_application::{
     LabRepository, LearningHistoryRepository, PracticeRepository, RepositoryError,
@@ -7,11 +7,13 @@ use dba_trainer_application::{
 
 use dba_trainer_domain::{
     ActivityStats, AnswerOption, AnswerOptionId, AnswerResult, CourseProgress, DailyActivity, Lab,
-    PracticeComparison, PracticeKind, PracticeTask, Question, QuestionAttemptHistory, QuestionId,
-    QuestionLimit, QuestionMistakeDetail, QuestionMistakeSummary, QuestionType, QuizScope,
-    QuizSession, STUDY_DAY_QUESTION_TARGET, SessionConfig, SessionId, SessionProgress, Source,
-    SourceId, SourceKind, StatisticsFilter, StatisticsLimit, StatisticsScope, Topic, TopicId,
-    TopicMasteryStats, TrainingStats, pass_threshold_percent_for_requested_count,
+    PracticeAssertion, PracticeCategoryStats, PracticeComparison, PracticeDifficulty, PracticeKind,
+    PracticeRule, PracticeStats, PracticeTask, PracticeTaskProgress, Question,
+    QuestionAttemptHistory, QuestionId, QuestionLimit, QuestionMistakeDetail,
+    QuestionMistakeSummary, QuestionType, QuizScope, QuizSession, STUDY_DAY_QUESTION_TARGET,
+    SessionConfig, SessionId, SessionProgress, Source, SourceId, SourceKind, StatisticsFilter,
+    StatisticsLimit, StatisticsScope, Topic, TopicId, TopicMasteryStats, TrainingStats,
+    pass_threshold_percent_for_requested_count,
 };
 
 use rusqlite::{Connection, OptionalExtension, params};
@@ -1494,6 +1496,14 @@ impl SessionRepository for SqliteRepository {
             .execute("DELETE FROM daily_activity", [])
             .map_err(repository_error)?;
 
+        transaction
+            .execute("DELETE FROM practice_attempts", [])
+            .map_err(repository_error)?;
+
+        transaction
+            .execute("DELETE FROM practice_progress", [])
+            .map_err(repository_error)?;
+
         transaction.commit().map_err(repository_error)?;
 
         Ok(())
@@ -1517,7 +1527,9 @@ impl PracticeRepository for SqliteRepository {
                     starter_sql,
                     setup_sql,
                     solution_sql,
-                    sort_order
+                    sort_order,
+                    difficulty,
+                    solution_explanation
                 FROM practice_tasks
                 WHERE is_active = 1
                 ORDER BY category, sort_order, id
@@ -1529,12 +1541,18 @@ impl PracticeRepository for SqliteRepository {
             .query_map([], practice_task_from_row)
             .map_err(repository_error)?;
 
-        rows.collect::<rusqlite::Result<Vec<_>>>()
-            .map_err(repository_error)
+        let mut tasks = rows
+            .collect::<rusqlite::Result<Vec<_>>>()
+            .map_err(repository_error)?;
+        for task in &mut tasks {
+            hydrate_practice_task(&self.connection, task)?;
+        }
+        Ok(tasks)
     }
 
     fn practice_task(&self, key: &str) -> Result<PracticeTask, RepositoryError> {
-        self.connection
+        let mut task = self
+            .connection
             .query_row(
                 "
                 SELECT
@@ -1548,7 +1566,9 @@ impl PracticeRepository for SqliteRepository {
                     starter_sql,
                     setup_sql,
                     solution_sql,
-                    sort_order
+                    sort_order,
+                    difficulty,
+                    solution_explanation
                 FROM practice_tasks
                 WHERE content_key = ?1
                   AND is_active = 1
@@ -1558,13 +1578,153 @@ impl PracticeRepository for SqliteRepository {
             )
             .optional()
             .map_err(repository_error)?
-            .ok_or(RepositoryError::NotFound)
+            .ok_or(RepositoryError::NotFound)?;
+        hydrate_practice_task(&self.connection, &mut task)?;
+        Ok(task)
+    }
+
+    fn practice_progress(&self) -> Result<Vec<PracticeTaskProgress>, RepositoryError> {
+        let mut statement = self
+            .connection
+            .prepare(
+                "
+                SELECT task_id, last_sql, attempts, solved, solved_attempt, updated_at
+                FROM practice_progress
+                ORDER BY updated_at DESC, task_id
+                ",
+            )
+            .map_err(repository_error)?;
+        let rows = statement
+            .query_map([], |row| {
+                Ok(PracticeTaskProgress {
+                    task_id: row.get(0)?,
+                    last_sql: row.get(1)?,
+                    attempts: row.get::<_, i64>(2)?.max(0) as usize,
+                    solved: row.get::<_, i64>(3)? != 0,
+                    solved_attempt: row
+                        .get::<_, Option<i64>>(4)?
+                        .map(|value| value.max(0) as usize),
+                    updated_at: row.get(5)?,
+                })
+            })
+            .map_err(repository_error)?;
+        rows.collect::<rusqlite::Result<Vec<_>>>()
+            .map_err(repository_error)
+    }
+
+    fn save_practice_draft(&mut self, task_id: i64, sql: &str) -> Result<(), RepositoryError> {
+        self.connection
+            .execute(
+                "
+                INSERT INTO practice_progress (task_id, last_sql, updated_at)
+                VALUES (?1, ?2, CURRENT_TIMESTAMP)
+                ON CONFLICT(task_id) DO UPDATE SET
+                    last_sql = excluded.last_sql,
+                    updated_at = CURRENT_TIMESTAMP
+                ",
+                params![task_id, sql],
+            )
+            .map_err(repository_error)?;
+        Ok(())
+    }
+
+    fn record_practice_attempt(
+        &mut self,
+        task_id: i64,
+        sql: &str,
+        success: bool,
+    ) -> Result<(), RepositoryError> {
+        let success_value = if success { 1_i64 } else { 0_i64 };
+        let transaction = self.connection.transaction().map_err(repository_error)?;
+        transaction
+            .execute(
+                "INSERT INTO practice_attempts (task_id, submitted_sql, success) VALUES (?1, ?2, ?3)",
+                params![task_id, sql, success_value],
+            )
+            .map_err(repository_error)?;
+        transaction
+            .execute(
+                "
+                INSERT INTO practice_progress (
+                    task_id, last_sql, attempts, solved, solved_attempt, updated_at
+                )
+                VALUES (?1, ?2, 1, ?3, CASE WHEN ?3 = 1 THEN 1 ELSE NULL END, CURRENT_TIMESTAMP)
+                ON CONFLICT(task_id) DO UPDATE SET
+                    last_sql = excluded.last_sql,
+                    attempts = practice_progress.attempts + 1,
+                    solved = CASE
+                        WHEN practice_progress.solved = 1 OR excluded.solved = 1 THEN 1
+                        ELSE 0
+                    END,
+                    solved_attempt = CASE
+                        WHEN practice_progress.solved_attempt IS NOT NULL THEN practice_progress.solved_attempt
+                        WHEN excluded.solved = 1 THEN practice_progress.attempts + 1
+                        ELSE NULL
+                    END,
+                    updated_at = CURRENT_TIMESTAMP
+                ",
+                params![task_id, sql, success_value],
+            )
+            .map_err(repository_error)?;
+        transaction.commit().map_err(repository_error)?;
+        Ok(())
+    }
+
+    fn practice_stats(&self) -> Result<PracticeStats, RepositoryError> {
+        let tasks = self.practice_tasks()?;
+        let progress = self.practice_progress()?;
+        let progress_by_task = progress
+            .iter()
+            .map(|item| (item.task_id, item))
+            .collect::<std::collections::HashMap<_, _>>();
+
+        let mut categories: BTreeMap<String, PracticeCategoryStats> = BTreeMap::new();
+        let mut stats = PracticeStats {
+            total_tasks: tasks.len(),
+            ..PracticeStats::default()
+        };
+
+        for task in &tasks {
+            let category =
+                categories
+                    .entry(task.category.clone())
+                    .or_insert_with(|| PracticeCategoryStats {
+                        category: task.category.clone(),
+                        total_tasks: 0,
+                        started_tasks: 0,
+                        solved_tasks: 0,
+                        total_attempts: 0,
+                        solved_first_try: 0,
+                    });
+            category.total_tasks += 1;
+
+            if let Some(item) = progress_by_task.get(&task.id) {
+                if item.is_started() {
+                    stats.started_tasks += 1;
+                    category.started_tasks += 1;
+                }
+                stats.total_attempts += item.attempts;
+                category.total_attempts += item.attempts;
+                if item.solved {
+                    stats.solved_tasks += 1;
+                    category.solved_tasks += 1;
+                }
+                if item.solved_attempt == Some(1) {
+                    stats.solved_first_try += 1;
+                    category.solved_first_try += 1;
+                }
+            }
+        }
+
+        stats.categories = categories.into_values().collect();
+        Ok(stats)
     }
 }
 
 fn practice_task_from_row(row: &rusqlite::Row<'_>) -> rusqlite::Result<PracticeTask> {
     let practice_type = row.get::<_, String>(5)?;
     let comparison = row.get::<_, String>(6)?;
+    let difficulty = row.get::<_, String>(11)?;
 
     Ok(PracticeTask {
         id: row.get(0)?,
@@ -1577,14 +1737,9 @@ fn practice_task_from_row(row: &rusqlite::Row<'_>) -> rusqlite::Result<PracticeT
             "fix_query" => PracticeKind::FixQuery,
             "find_logical_error" => PracticeKind::FindLogicalError,
             other => {
-                return Err(rusqlite::Error::FromSqlConversionFailure(
+                return Err(invalid_practice_value(
                     5,
-                    rusqlite::types::Type::Text,
-                    std::io::Error::new(
-                        std::io::ErrorKind::InvalidData,
-                        format!("unknown practice type: {other}"),
-                    )
-                    .into(),
+                    format!("unknown practice type: {other}"),
                 ));
             }
         },
@@ -1594,22 +1749,115 @@ fn practice_task_from_row(row: &rusqlite::Row<'_>) -> rusqlite::Result<PracticeT
             "scalar" => PracticeComparison::Scalar,
             "row_count" => PracticeComparison::RowCount,
             other => {
-                return Err(rusqlite::Error::FromSqlConversionFailure(
+                return Err(invalid_practice_value(
                     6,
-                    rusqlite::types::Type::Text,
-                    std::io::Error::new(
-                        std::io::ErrorKind::InvalidData,
-                        format!("unknown practice comparison: {other}"),
-                    )
-                    .into(),
+                    format!("unknown practice comparison: {other}"),
+                ));
+            }
+        },
+        difficulty: match difficulty.as_str() {
+            "easy" => PracticeDifficulty::Easy,
+            "medium" => PracticeDifficulty::Medium,
+            "hard" => PracticeDifficulty::Hard,
+            other => {
+                return Err(invalid_practice_value(
+                    11,
+                    format!("unknown practice difficulty: {other}"),
                 ));
             }
         },
         starter_sql: row.get(7)?,
         setup_sql: row.get(8)?,
         solution_sql: row.get(9)?,
+        solution_explanation: row.get(12)?,
+        hints: Vec::new(),
+        rules: Vec::new(),
+        assertions: Vec::new(),
         sort_order: row.get(10)?,
     })
+}
+
+fn hydrate_practice_task(
+    connection: &Connection,
+    task: &mut PracticeTask,
+) -> Result<(), RepositoryError> {
+    let mut hints_statement = connection
+        .prepare("SELECT text FROM practice_hints WHERE task_id = ?1 ORDER BY position")
+        .map_err(repository_error)?;
+    task.hints = hints_statement
+        .query_map(params![task.id], |row| row.get::<_, String>(0))
+        .map_err(repository_error)?
+        .collect::<rusqlite::Result<Vec<_>>>()
+        .map_err(repository_error)?;
+
+    let mut rules_statement = connection
+        .prepare("SELECT rule_type, value FROM practice_rules WHERE task_id = ?1 ORDER BY position")
+        .map_err(repository_error)?;
+    task.rules = rules_statement
+        .query_map(params![task.id], |row| {
+            let rule_type: String = row.get(0)?;
+            let value: Option<String> = row.get(1)?;
+            match rule_type.as_str() {
+                "require_keyword" => Ok(PracticeRule::RequireKeyword(value.unwrap_or_default())),
+                "forbid_keyword" => Ok(PracticeRule::ForbidKeyword(value.unwrap_or_default())),
+                "forbid_select_star" => Ok(PracticeRule::ForbidSelectStar),
+                other => Err(invalid_practice_value(
+                    0,
+                    format!("unknown practice rule: {other}"),
+                )),
+            }
+        })
+        .map_err(repository_error)?
+        .collect::<rusqlite::Result<Vec<_>>>()
+        .map_err(repository_error)?;
+
+    let mut assertions_statement = connection
+        .prepare(
+            "
+            SELECT assertion_type, name, sql, expected_text, expected_int
+            FROM practice_assertions
+            WHERE task_id = ?1
+            ORDER BY position
+            ",
+        )
+        .map_err(repository_error)?;
+    task.assertions = assertions_statement
+        .query_map(params![task.id], |row| {
+            let assertion_type: String = row.get(0)?;
+            let name: Option<String> = row.get(1)?;
+            let sql: Option<String> = row.get(2)?;
+            let expected_text: Option<String> = row.get(3)?;
+            let expected_int: Option<i64> = row.get(4)?;
+            match assertion_type.as_str() {
+                "result_equals_solution" => Ok(PracticeAssertion::ResultEqualsSolution),
+                "table_exists" => Ok(PracticeAssertion::TableExists(name.unwrap_or_default())),
+                "index_exists" => Ok(PracticeAssertion::IndexExists(name.unwrap_or_default())),
+                "scalar_equals" => Ok(PracticeAssertion::ScalarEquals {
+                    sql: sql.unwrap_or_default(),
+                    expected: expected_text.unwrap_or_default(),
+                }),
+                "row_count_equals" => Ok(PracticeAssertion::RowCountEquals {
+                    sql: sql.unwrap_or_default(),
+                    expected: expected_int.unwrap_or_default().max(0) as usize,
+                }),
+                other => Err(invalid_practice_value(
+                    0,
+                    format!("unknown practice assertion: {other}"),
+                )),
+            }
+        })
+        .map_err(repository_error)?
+        .collect::<rusqlite::Result<Vec<_>>>()
+        .map_err(repository_error)?;
+    Ok(())
+}
+
+fn invalid_practice_value(index: usize, message: String) -> rusqlite::Error {
+    rusqlite::Error::FromSqlConversionFailure(
+        index,
+        rusqlite::types::Type::Text,
+        std::io::Error::new(std::io::ErrorKind::InvalidData, message).into(),
+    )
 }
 
 #[cfg(test)]
@@ -1730,6 +1978,74 @@ mod tests {
         assert_eq!(tasks[0].key, "practice-demo");
         assert_eq!(tasks[0].kind, PracticeKind::WriteQuery);
         assert_eq!(tasks[0].comparison, PracticeComparison::Unordered);
+    }
+
+    #[test]
+    fn practice_progress_tracks_draft_attempts_and_stats() {
+        let mut repository = seeded_repository();
+        repository
+            .connection
+            .execute(
+                "
+                INSERT INTO practice_tasks (
+                    content_key, category, title, description, practice_type, comparison,
+                    starter_sql, setup_sql, solution_sql, sort_order, difficulty
+                )
+                VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)
+                ",
+                params![
+                    "practice-progress",
+                    "joins",
+                    "Progress demo",
+                    "Return one row",
+                    "write_query",
+                    "unordered",
+                    "SELECT ",
+                    "CREATE TABLE demo (id INTEGER); INSERT INTO demo VALUES (1);",
+                    "SELECT id FROM demo;",
+                    1_i64,
+                    "easy",
+                ],
+            )
+            .expect("practice task should be inserted");
+        let task_id = repository
+            .connection
+            .query_row(
+                "SELECT id FROM practice_tasks WHERE content_key = 'practice-progress'",
+                [],
+                |row| row.get::<_, i64>(0),
+            )
+            .expect("practice id should load");
+
+        repository
+            .save_practice_draft(task_id, "SELECT id FROM demo")
+            .expect("draft should save");
+        repository
+            .record_practice_attempt(task_id, "SELECT id FROM demo", false)
+            .expect("failed attempt should save");
+        repository
+            .record_practice_attempt(task_id, "SELECT id FROM demo;", true)
+            .expect("successful attempt should save");
+
+        let progress = repository
+            .practice_progress()
+            .expect("progress should load");
+        let item = progress
+            .iter()
+            .find(|item| item.task_id == task_id)
+            .expect("task progress should exist");
+        assert_eq!(item.attempts, 2);
+        assert!(item.solved);
+        assert_eq!(item.solved_attempt, Some(2));
+
+        let stats = repository
+            .practice_stats()
+            .expect("practice stats should load");
+        assert_eq!(stats.total_tasks, 1);
+        assert_eq!(stats.started_tasks, 1);
+        assert_eq!(stats.solved_tasks, 1);
+        assert_eq!(stats.total_attempts, 2);
+        assert_eq!(stats.solved_first_try, 0);
     }
 
     #[test]

@@ -1,11 +1,11 @@
-use dba_trainer_application::{PracticeEngine, RepositoryError, TrainerService};
+use dba_trainer_application::{PracticeEngine, PracticeError, RepositoryError, TrainerService};
 
 use dba_trainer_domain::{
     ActivityStats, AnswerOptionId, AnswerResult, Lab, PracticeCheckResult, PracticeExecutionResult,
-    PracticeTask, Question, QuestionId, QuestionLimit, QuestionMistakeDetail,
-    QuestionMistakeSummary, QuestionType, QuizScope, SessionConfig, SessionId, SessionProgress,
-    StatisticsFilter, StatisticsLimit, StatisticsScope, Topic, TopicId, TopicMasteryStats,
-    TrainingStats,
+    PracticeSchema, PracticeStats, PracticeTableData, PracticeTask, PracticeTaskProgress, Question,
+    QuestionId, QuestionLimit, QuestionMistakeDetail, QuestionMistakeSummary, QuestionType,
+    QuizScope, SessionConfig, SessionId, SessionProgress, StatisticsFilter, StatisticsLimit,
+    StatisticsScope, Topic, TopicId, TopicMasteryStats, TrainingStats,
 };
 
 use dba_trainer_storage_sqlite::{SqlitePracticeEngine, SqliteRepository};
@@ -27,6 +27,7 @@ pub enum Screen {
     Labs,
     LabDetail,
 
+    PracticeCategories,
     PracticeTasks,
     PracticeEditor,
 
@@ -59,6 +60,31 @@ pub enum Action {
     PracticeRun,
     PracticeCheck,
     PracticeReset,
+    PracticeNextPane,
+    PracticeHint,
+    PracticeSolution,
+    PracticeNextTask,
+    PracticePageUp,
+    PracticePageDown,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PracticePane {
+    Editor,
+    Schema,
+    Data,
+    Result,
+}
+
+impl PracticePane {
+    fn next(self) -> Self {
+        match self {
+            Self::Editor => Self::Schema,
+            Self::Schema => Self::Data,
+            Self::Data => Self::Result,
+            Self::Result => Self::Editor,
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -78,6 +104,7 @@ pub enum StatisticsView {
         topic_id: TopicId,
     },
     MistakeDetail,
+    Practice,
     Activity,
     Detail {
         filter: StatisticsFilter,
@@ -149,12 +176,26 @@ pub struct App {
     pub lab_scroll: u16,
 
     pub practice_tasks: Vec<PracticeTask>,
+    pub practice_progress: Vec<PracticeTaskProgress>,
+    pub practice_stats: PracticeStats,
+    pub practice_category_selected: usize,
+    pub selected_practice_category: Option<String>,
     pub practice_selected: usize,
     pub current_practice_task: Option<PracticeTask>,
     pub practice_sql: String,
     pub practice_cursor: usize,
     pub practice_output: Option<PracticeExecutionResult>,
     pub practice_check: Option<PracticeCheckResult>,
+    pub practice_pane: PracticePane,
+    pub practice_schema: PracticeSchema,
+    pub practice_schema_selected: usize,
+    pub practice_table_data: Option<PracticeTableData>,
+    pub practice_scroll: usize,
+    pub practice_horizontal_scroll: usize,
+    pub practice_hint_count: usize,
+    pub practice_show_solution: bool,
+    pub practice_message: Option<String>,
+    pub practice_error: Option<String>,
 
     pub quiz_scope: QuizScope,
 
@@ -223,6 +264,8 @@ impl App {
         let topics = service.topics()?;
         let labs = service.labs()?;
         let practice_tasks = service.practice_tasks()?;
+        let practice_progress = service.practice_progress()?;
+        let practice_stats = service.practice_stats()?;
         let activity_stats = Some(service.activity_stats()?);
 
         let resume_session = service.active_session()?;
@@ -269,12 +312,26 @@ impl App {
             lab_scroll: 0,
 
             practice_tasks,
+            practice_progress,
+            practice_stats,
+            practice_category_selected: 0,
+            selected_practice_category: None,
             practice_selected: 0,
             current_practice_task: None,
             practice_sql: String::new(),
             practice_cursor: 0,
             practice_output: None,
             practice_check: None,
+            practice_pane: PracticePane::Editor,
+            practice_schema: PracticeSchema::default(),
+            practice_schema_selected: 0,
+            practice_table_data: None,
+            practice_scroll: 0,
+            practice_horizontal_scroll: 0,
+            practice_hint_count: 0,
+            practice_show_solution: false,
+            practice_message: None,
+            practice_error: None,
 
             quiz_scope: QuizScope::AllTopics,
 
@@ -344,8 +401,13 @@ impl App {
 
     pub fn handle_action(&mut self, action: Action) {
         if action == Action::Quit {
+            if self.screen == Screen::PracticeEditor
+                && let Err(error) = self.persist_practice_draft()
+            {
+                self.error_message = Some(error.to_string());
+                return;
+            }
             self.should_quit = true;
-
             return;
         }
 
@@ -367,6 +429,8 @@ impl App {
             Screen::Labs => self.handle_labs_action(action),
 
             Screen::LabDetail => self.handle_lab_detail_action(action),
+
+            Screen::PracticeCategories => self.handle_practice_categories_action(action),
 
             Screen::PracticeTasks => self.handle_practice_tasks_action(action),
 
@@ -423,13 +487,12 @@ impl App {
                 }
 
                 HomeItem::Practice => {
+                    self.refresh_practice_state()?;
+                    self.practice_category_selected = 0;
                     self.practice_selected = 0;
-                    self.current_practice_task = None;
-                    self.practice_sql.clear();
-                    self.practice_cursor = 0;
-                    self.practice_output = None;
-                    self.practice_check = None;
-                    self.screen = Screen::PracticeTasks;
+                    self.selected_practice_category = None;
+                    self.clear_practice_editor_state();
+                    self.screen = Screen::PracticeCategories;
                 }
 
                 HomeItem::Statistics => {
@@ -450,6 +513,8 @@ impl App {
                     self.topics = self.service.topics()?;
                     self.labs = self.service.labs()?;
                     self.practice_tasks = self.service.practice_tasks()?;
+                    self.practice_progress = self.service.practice_progress()?;
+                    self.practice_stats = self.service.practice_stats()?;
                     self.topic_course_selected = self
                         .topic_course_selected
                         .min(self.course_codes().len().saturating_sub(1));
@@ -646,27 +711,34 @@ impl App {
         Ok(())
     }
 
-    fn handle_practice_tasks_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+    fn handle_practice_categories_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        let count = self.practice_category_item_count();
         match action {
             Action::Up => {
-                self.practice_selected =
-                    previous_index(self.practice_selected, self.practice_tasks.len());
+                self.practice_category_selected =
+                    previous_index(self.practice_category_selected, count);
             }
             Action::Down => {
-                self.practice_selected =
-                    next_index(self.practice_selected, self.practice_tasks.len());
+                self.practice_category_selected =
+                    next_index(self.practice_category_selected, count);
             }
             Action::Confirm => {
-                if let Some(task) = self.practice_tasks.get(self.practice_selected).cloned() {
-                    self.practice_engine
-                        .load_task(&task)
-                        .map_err(|error| RepositoryError::Storage(error.to_string()))?;
-                    self.practice_sql = task.starter_sql.clone();
-                    self.practice_cursor = self.practice_sql.len();
-                    self.current_practice_task = Some(task);
-                    self.practice_output = None;
-                    self.practice_check = None;
-                    self.screen = Screen::PracticeEditor;
+                let resume_task_id = self.resumable_practice_task_id();
+                if resume_task_id.is_some() && self.practice_category_selected == 0 {
+                    if let Some(task_id) = resume_task_id {
+                        self.open_practice_task_by_id(task_id)?;
+                    }
+                } else {
+                    let offset = usize::from(resume_task_id.is_some());
+                    if let Some(category) = self
+                        .practice_categories()
+                        .get(self.practice_category_selected.saturating_sub(offset))
+                        .cloned()
+                    {
+                        self.selected_practice_category = Some(category);
+                        self.practice_selected = 0;
+                        self.screen = Screen::PracticeTasks;
+                    }
                 }
             }
             Action::Back => {
@@ -674,98 +746,438 @@ impl App {
             }
             _ => {}
         }
+        Ok(())
+    }
 
+    fn handle_practice_tasks_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        let visible_task_ids = self
+            .practice_tasks_for_selected_category()
+            .into_iter()
+            .map(|task| task.id)
+            .collect::<Vec<_>>();
+        match action {
+            Action::Up => {
+                self.practice_selected =
+                    previous_index(self.practice_selected, visible_task_ids.len());
+            }
+            Action::Down => {
+                self.practice_selected = next_index(self.practice_selected, visible_task_ids.len());
+            }
+            Action::Confirm => {
+                if let Some(task_id) = visible_task_ids.get(self.practice_selected).copied() {
+                    self.open_practice_task_by_id(task_id)?;
+                }
+            }
+            Action::Back => {
+                self.screen = Screen::PracticeCategories;
+            }
+            _ => {}
+        }
         Ok(())
     }
 
     fn handle_practice_editor_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        self.practice_message = None;
         match action {
-            Action::EditorChar(character) => {
+            Action::EditorChar(character) if self.practice_pane == PracticePane::Editor => {
                 self.practice_sql.insert(self.practice_cursor, character);
                 self.practice_cursor += character.len_utf8();
                 self.practice_check = None;
+                self.practice_error = None;
             }
-            Action::EditorBackspace => {
+            Action::EditorBackspace if self.practice_pane == PracticePane::Editor => {
                 if let Some(previous) =
                     previous_char_boundary(&self.practice_sql, self.practice_cursor)
                 {
                     self.practice_sql.drain(previous..self.practice_cursor);
                     self.practice_cursor = previous;
                     self.practice_check = None;
+                    self.practice_error = None;
                 }
             }
-            Action::EditorNewline => {
+            Action::EditorNewline if self.practice_pane == PracticePane::Editor => {
                 self.practice_sql.insert(self.practice_cursor, '\n');
                 self.practice_cursor += 1;
                 self.practice_check = None;
+                self.practice_error = None;
             }
-            Action::EditorTab => {
+            Action::EditorNewline if self.practice_pane == PracticePane::Schema => {
+                self.load_selected_practice_table()?;
+            }
+            Action::EditorTab if self.practice_pane == PracticePane::Editor => {
                 self.practice_sql.insert_str(self.practice_cursor, "    ");
                 self.practice_cursor += 4;
                 self.practice_check = None;
+                self.practice_error = None;
             }
-            Action::EditorLeft => {
-                if let Some(previous) =
-                    previous_char_boundary(&self.practice_sql, self.practice_cursor)
-                {
-                    self.practice_cursor = previous;
+            Action::EditorLeft => match self.practice_pane {
+                PracticePane::Editor => {
+                    if let Some(previous) =
+                        previous_char_boundary(&self.practice_sql, self.practice_cursor)
+                    {
+                        self.practice_cursor = previous;
+                    }
                 }
-            }
-            Action::EditorRight => {
-                if let Some(next) = next_char_boundary(&self.practice_sql, self.practice_cursor) {
-                    self.practice_cursor = next;
+                _ => {
+                    self.practice_horizontal_scroll =
+                        self.practice_horizontal_scroll.saturating_sub(1);
                 }
+            },
+            Action::EditorRight => match self.practice_pane {
+                PracticePane::Editor => {
+                    if let Some(next) = next_char_boundary(&self.practice_sql, self.practice_cursor)
+                    {
+                        self.practice_cursor = next;
+                    }
+                }
+                _ => {
+                    self.practice_horizontal_scroll =
+                        self.practice_horizontal_scroll.saturating_add(1);
+                }
+            },
+            Action::EditorUp => match self.practice_pane {
+                PracticePane::Editor => {
+                    self.practice_cursor =
+                        vertical_cursor_target(&self.practice_sql, self.practice_cursor, -1);
+                }
+                PracticePane::Schema => {
+                    self.practice_schema_selected = previous_index(
+                        self.practice_schema_selected,
+                        self.practice_schema.tables.len(),
+                    );
+                }
+                PracticePane::Data | PracticePane::Result => {
+                    self.practice_scroll = self.practice_scroll.saturating_sub(1);
+                }
+            },
+            Action::EditorDown => match self.practice_pane {
+                PracticePane::Editor => {
+                    self.practice_cursor =
+                        vertical_cursor_target(&self.practice_sql, self.practice_cursor, 1);
+                }
+                PracticePane::Schema => {
+                    self.practice_schema_selected = next_index(
+                        self.practice_schema_selected,
+                        self.practice_schema.tables.len(),
+                    );
+                }
+                PracticePane::Data | PracticePane::Result => {
+                    self.practice_scroll = self.practice_scroll.saturating_add(1);
+                }
+            },
+            Action::PracticePageUp => {
+                self.practice_scroll = self.practice_scroll.saturating_sub(10);
             }
-            Action::EditorUp => {
-                self.practice_cursor =
-                    vertical_cursor_target(&self.practice_sql, self.practice_cursor, -1);
+            Action::PracticePageDown => {
+                self.practice_scroll = self.practice_scroll.saturating_add(10);
             }
-            Action::EditorDown => {
-                self.practice_cursor =
-                    vertical_cursor_target(&self.practice_sql, self.practice_cursor, 1);
+            Action::PracticeNextPane => {
+                self.practice_pane = self.practice_pane.next();
+                self.practice_scroll = 0;
+                self.practice_horizontal_scroll = 0;
             }
             Action::PracticeRun => {
-                let result = self
-                    .practice_engine
-                    .execute(&self.practice_sql)
-                    .map_err(|error| RepositoryError::Storage(error.to_string()))?;
-                self.practice_output = Some(result);
-                self.practice_check = None;
+                self.persist_practice_draft()?;
+                match self.practice_engine.execute(&self.practice_sql) {
+                    Ok(result) => {
+                        self.practice_output = Some(result);
+                        self.practice_check = None;
+                        self.practice_error = None;
+                        self.practice_schema = self
+                            .practice_engine
+                            .schema()
+                            .map_err(|error| RepositoryError::Storage(error.to_string()))?;
+                        self.practice_table_data = None;
+                        self.practice_pane = PracticePane::Result;
+                        self.practice_scroll = 0;
+                    }
+                    Err(error) => {
+                        self.practice_error =
+                            Some(format_practice_error(&self.practice_sql, &error));
+                    }
+                }
             }
             Action::PracticeCheck => {
-                let task = self.current_practice_task.as_ref().ok_or_else(|| {
+                let task = self.current_practice_task.clone().ok_or_else(|| {
                     RepositoryError::InvalidState(String::from("practice task is not selected"))
                 })?;
-                let result = self
-                    .practice_engine
-                    .check(task, &self.practice_sql)
-                    .map_err(|error| RepositoryError::Storage(error.to_string()))?;
-                self.practice_check = Some(result);
+                self.persist_practice_draft()?;
+                match self.practice_engine.check(&task, &self.practice_sql) {
+                    Ok(result) => {
+                        self.service.record_practice_attempt(
+                            task.id,
+                            &self.practice_sql,
+                            result.is_correct,
+                        )?;
+                        if !result.is_correct && self.practice_hint_count < task.hints.len() {
+                            self.practice_hint_count += 1;
+                        }
+                        self.practice_check = Some(result);
+                        self.practice_error = None;
+                        self.refresh_practice_state()?;
+                        self.practice_pane = PracticePane::Result;
+                    }
+                    Err(error) => {
+                        self.practice_error =
+                            Some(format_practice_error(&self.practice_sql, &error));
+                    }
+                }
             }
             Action::PracticeReset => {
-                let task = self.current_practice_task.as_ref().ok_or_else(|| {
+                let task = self.current_practice_task.clone().ok_or_else(|| {
                     RepositoryError::InvalidState(String::from("practice task is not selected"))
                 })?;
                 self.practice_engine
-                    .reset(task)
+                    .reset(&task)
                     .map_err(|error| RepositoryError::Storage(error.to_string()))?;
                 self.practice_sql = task.starter_sql.clone();
                 self.practice_cursor = self.practice_sql.len();
                 self.practice_output = None;
                 self.practice_check = None;
+                self.practice_error = None;
+                self.practice_show_solution = false;
+                self.practice_schema = self
+                    .practice_engine
+                    .schema()
+                    .map_err(|error| RepositoryError::Storage(error.to_string()))?;
+                self.practice_table_data = None;
+                self.practice_pane = PracticePane::Editor;
+                self.persist_practice_draft()?;
+            }
+            Action::PracticeHint => {
+                if let Some((task_id, hints_len)) = self
+                    .current_practice_task
+                    .as_ref()
+                    .map(|task| (task.id, task.hints.len()))
+                {
+                    let attempts = self
+                        .progress_for_practice_task(task_id)
+                        .map_or(0, |progress| progress.attempts);
+                    let unlocked = (attempts + 1).min(hints_len);
+                    if self.practice_hint_count < unlocked {
+                        self.practice_hint_count += 1;
+                    } else if self.practice_hint_count >= hints_len {
+                        self.practice_message =
+                            Some(self.strings().practice_no_more_hints.to_string());
+                    } else {
+                        self.practice_message =
+                            Some(self.strings().practice_hint_locked.to_string());
+                    }
+                }
+            }
+            Action::PracticeSolution => {
+                let Some((task_id, hints_len)) = self
+                    .current_practice_task
+                    .as_ref()
+                    .map(|task| (task.id, task.hints.len()))
+                else {
+                    return Ok(());
+                };
+                let attempts = self
+                    .progress_for_practice_task(task_id)
+                    .map_or(0, |progress| progress.attempts);
+                if attempts >= 3 || (hints_len > 0 && self.practice_hint_count >= hints_len) {
+                    self.practice_show_solution = !self.practice_show_solution;
+                } else {
+                    self.practice_message =
+                        Some(self.strings().practice_solution_locked.to_string());
+                }
+            }
+            Action::PracticeNextTask => {
+                self.open_next_practice_task()?;
             }
             Action::Back => {
-                self.current_practice_task = None;
-                self.practice_sql.clear();
-                self.practice_cursor = 0;
-                self.practice_output = None;
-                self.practice_check = None;
+                self.persist_practice_draft()?;
+                self.clear_practice_editor_state();
                 self.screen = Screen::PracticeTasks;
             }
             _ => {}
         }
-
         Ok(())
+    }
+
+    fn refresh_practice_state(&mut self) -> Result<(), RepositoryError> {
+        self.practice_tasks = self.service.practice_tasks()?;
+        self.practice_progress = self.service.practice_progress()?;
+        self.practice_stats = self.service.practice_stats()?;
+        Ok(())
+    }
+
+    pub fn practice_categories(&self) -> Vec<String> {
+        let mut categories = self
+            .practice_tasks
+            .iter()
+            .map(|task| task.category.clone())
+            .collect::<Vec<_>>();
+        categories.sort();
+        categories.dedup();
+        categories
+    }
+
+    fn practice_category_item_count(&self) -> usize {
+        self.practice_categories().len() + usize::from(self.resumable_practice_task_id().is_some())
+    }
+
+    pub fn resumable_practice_task_id(&self) -> Option<i64> {
+        self.practice_progress
+            .iter()
+            .find(|progress| !progress.solved && progress.is_started())
+            .map(|progress| progress.task_id)
+    }
+
+    pub fn resumable_practice_task(&self) -> Option<&PracticeTask> {
+        let task_id = self.resumable_practice_task_id()?;
+        self.practice_tasks.iter().find(|task| task.id == task_id)
+    }
+
+    pub fn practice_tasks_for_selected_category(&self) -> Vec<&PracticeTask> {
+        let Some(category) = self.selected_practice_category.as_deref() else {
+            return Vec::new();
+        };
+        self.practice_tasks
+            .iter()
+            .filter(|task| task.category == category)
+            .collect()
+    }
+
+    pub fn progress_for_practice_task(&self, task_id: i64) -> Option<&PracticeTaskProgress> {
+        self.practice_progress
+            .iter()
+            .find(|progress| progress.task_id == task_id)
+    }
+
+    pub fn practice_category_stats(
+        &self,
+        category: &str,
+    ) -> Option<&dba_trainer_domain::PracticeCategoryStats> {
+        self.practice_stats
+            .categories
+            .iter()
+            .find(|stats| stats.category == category)
+    }
+
+    pub fn practice_solution_available(&self) -> bool {
+        let Some(task) = self.current_practice_task.as_ref() else {
+            return false;
+        };
+        let attempts = self
+            .progress_for_practice_task(task.id)
+            .map_or(0, |progress| progress.attempts);
+        attempts >= 3 || (!task.hints.is_empty() && self.practice_hint_count >= task.hints.len())
+    }
+
+    fn open_practice_task_by_id(&mut self, task_id: i64) -> Result<(), RepositoryError> {
+        let task = self
+            .practice_tasks
+            .iter()
+            .find(|task| task.id == task_id)
+            .cloned()
+            .ok_or(RepositoryError::NotFound)?;
+        self.practice_engine
+            .load_task(&task)
+            .map_err(|error| RepositoryError::Storage(error.to_string()))?;
+        self.practice_schema = self
+            .practice_engine
+            .schema()
+            .map_err(|error| RepositoryError::Storage(error.to_string()))?;
+
+        let progress = self.progress_for_practice_task(task.id).cloned();
+        self.practice_sql = progress
+            .as_ref()
+            .filter(|progress| !progress.last_sql.trim().is_empty())
+            .map(|progress| progress.last_sql.clone())
+            .unwrap_or_else(|| task.starter_sql.clone());
+        self.practice_cursor = self.practice_sql.len();
+        self.practice_hint_count = progress
+            .as_ref()
+            .map_or(0, |progress| progress.attempts.min(task.hints.len()));
+        self.selected_practice_category = Some(task.category.clone());
+        let task_ids = self
+            .practice_tasks_for_selected_category()
+            .into_iter()
+            .map(|candidate| candidate.id)
+            .collect::<Vec<_>>();
+        self.practice_selected = task_ids.iter().position(|id| *id == task.id).unwrap_or(0);
+        self.current_practice_task = Some(task);
+        self.practice_output = None;
+        self.practice_check = None;
+        self.practice_pane = PracticePane::Editor;
+        self.practice_schema_selected = 0;
+        self.practice_table_data = None;
+        self.practice_scroll = 0;
+        self.practice_horizontal_scroll = 0;
+        self.practice_show_solution = false;
+        self.practice_message = None;
+        self.practice_error = None;
+        self.screen = Screen::PracticeEditor;
+        Ok(())
+    }
+
+    fn persist_practice_draft(&mut self) -> Result<(), RepositoryError> {
+        if let Some(task_id) = self.current_practice_task.as_ref().map(|task| task.id) {
+            self.service
+                .save_practice_draft(task_id, &self.practice_sql)?;
+        }
+        Ok(())
+    }
+
+    fn load_selected_practice_table(&mut self) -> Result<(), RepositoryError> {
+        let Some(table) = self
+            .practice_schema
+            .tables
+            .get(self.practice_schema_selected)
+            .map(|table| table.name.clone())
+        else {
+            return Ok(());
+        };
+        self.practice_table_data = Some(
+            self.practice_engine
+                .table_data(&table, 200, 0)
+                .map_err(|error| RepositoryError::Storage(error.to_string()))?,
+        );
+        self.practice_pane = PracticePane::Data;
+        self.practice_scroll = 0;
+        self.practice_horizontal_scroll = 0;
+        Ok(())
+    }
+
+    fn open_next_practice_task(&mut self) -> Result<(), RepositoryError> {
+        let Some(current_id) = self.current_practice_task.as_ref().map(|task| task.id) else {
+            return Ok(());
+        };
+        self.persist_practice_draft()?;
+        let ids = self
+            .practice_tasks_for_selected_category()
+            .into_iter()
+            .map(|task| task.id)
+            .collect::<Vec<_>>();
+        let Some(position) = ids.iter().position(|id| *id == current_id) else {
+            return Ok(());
+        };
+        if let Some(next_id) = ids.get(position + 1).copied() {
+            self.open_practice_task_by_id(next_id)?;
+        } else {
+            self.practice_message = Some(self.strings().practice_last_task.to_string());
+        }
+        Ok(())
+    }
+
+    fn clear_practice_editor_state(&mut self) {
+        self.current_practice_task = None;
+        self.practice_sql.clear();
+        self.practice_cursor = 0;
+        self.practice_output = None;
+        self.practice_check = None;
+        self.practice_pane = PracticePane::Editor;
+        self.practice_schema = PracticeSchema::default();
+        self.practice_schema_selected = 0;
+        self.practice_table_data = None;
+        self.practice_scroll = 0;
+        self.practice_horizontal_scroll = 0;
+        self.practice_hint_count = 0;
+        self.practice_show_solution = false;
+        self.practice_message = None;
+        self.practice_error = None;
     }
 
     fn handle_quiz_setup_action(&mut self, action: Action) -> Result<(), RepositoryError> {
@@ -946,7 +1358,7 @@ impl App {
     fn handle_statistics_action(&mut self, action: Action) -> Result<(), RepositoryError> {
         let scrollable = matches!(
             &self.statistics_view,
-            StatisticsView::MistakeDetail | StatisticsView::Activity
+            StatisticsView::MistakeDetail | StatisticsView::Practice | StatisticsView::Activity
         );
 
         match action {
@@ -982,6 +1394,8 @@ impl App {
                 self.mistake_summaries.clear();
                 self.mistake_detail = None;
                 self.activity_stats = Some(self.service.activity_stats()?);
+                self.practice_progress = self.service.practice_progress()?;
+                self.practice_stats = self.service.practice_stats()?;
                 self.statistics = None;
                 self.statistics_view = StatisticsView::Root;
                 self.statistics_history.clear();
@@ -1015,6 +1429,11 @@ impl App {
                     self.open_statistics_view(StatisticsView::Mistakes);
                 }
                 4 => {
+                    self.practice_progress = self.service.practice_progress()?;
+                    self.practice_stats = self.service.practice_stats()?;
+                    self.open_statistics_view(StatisticsView::Practice);
+                }
+                5 => {
                     self.activity_stats = Some(self.service.activity_stats()?);
                     self.open_statistics_view(StatisticsView::Activity);
                 }
@@ -1157,6 +1576,7 @@ impl App {
             }
 
             StatisticsView::MistakeDetail
+            | StatisticsView::Practice
             | StatisticsView::Activity
             | StatisticsView::Detail { .. } => {
                 self.back_statistics();
@@ -1209,7 +1629,7 @@ impl App {
 
     fn statistics_item_count(&self) -> usize {
         match &self.statistics_view {
-            StatisticsView::Root => 5,
+            StatisticsView::Root => 6,
             StatisticsView::Courses => self.statistics_course_codes().len(),
             StatisticsView::Course(course_code) => {
                 1 + self.statistics_topics_for_course(course_code).len()
@@ -1230,6 +1650,7 @@ impl App {
                 1 + self.mistakes_for_topic(*topic_id).len()
             }
             StatisticsView::MistakeDetail
+            | StatisticsView::Practice
             | StatisticsView::Activity
             | StatisticsView::Detail { .. } => 0,
         }
@@ -1715,6 +2136,24 @@ impl App {
         self.total_questions = 0;
 
         self.error_message = None;
+    }
+}
+
+fn format_practice_error(sql: &str, error: &PracticeError) -> String {
+    match error {
+        PracticeError::Execution {
+            message,
+            line: Some(line),
+            column,
+        } => {
+            let source_line = sql.lines().nth(line.saturating_sub(1)).unwrap_or_default();
+            let caret_column = column.unwrap_or(1).saturating_sub(1);
+            format!(
+                "{message}\n\n{line:>3} | {source_line}\n    | {}^",
+                " ".repeat(caret_column)
+            )
+        }
+        _ => error.to_string(),
     }
 }
 

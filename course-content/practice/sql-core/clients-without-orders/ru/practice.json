@@ -7,5 +7,25 @@
   "type": "write_query",
   "comparison": "unordered",
   "starter_sql": "SELECT c.id, c.name\nFROM customers AS c\n",
-  "sort_order": 10
+  "sort_order": 10,
+  "difficulty": "easy",
+  "hints": [
+    "Начните с LEFT JOIN: он сохраняет строки из левой таблицы.",
+    "После соединения найдите строки, для которых заказ не нашёлся."
+  ],
+  "solution_explanation": "LEFT JOIN сохраняет всех клиентов, а условие o.id IS NULL оставляет только клиентов без совпавших заказов.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    },
+    {
+      "type": "forbid_select_star"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ]
 }

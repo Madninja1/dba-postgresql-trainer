@@ -1,4 +1,6 @@
-use dba_trainer_domain::{ProgressLevel, QuestionLimit, StatisticsLimit, TopicMasteryStats};
+use dba_trainer_domain::{
+    PracticeDifficulty, ProgressLevel, QuestionLimit, StatisticsLimit, TopicMasteryStats,
+};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum UiLanguage {
@@ -56,6 +58,24 @@ pub struct UiStrings {
     pub practice_empty: &'static str,
     pub practice_missing: &'static str,
     pub practice_category: &'static str,
+    pub practice_categories: &'static str,
+    pub practice_continue: &'static str,
+    pub practice_progress: &'static str,
+    pub practice_solved: &'static str,
+    pub practice_started: &'static str,
+    pub practice_attempts: &'static str,
+    pub practice_first_try: &'static str,
+    pub practice_difficulty: &'static str,
+    pub practice_schema: &'static str,
+    pub practice_data: &'static str,
+    pub practice_hints: &'static str,
+    pub practice_solution: &'static str,
+    pub practice_solution_locked: &'static str,
+    pub practice_no_more_hints: &'static str,
+    pub practice_hint_locked: &'static str,
+    pub practice_last_task: &'static str,
+    pub practice_failed_checks: &'static str,
+    pub practice_enter_table: &'static str,
     pub sql_editor: &'static str,
     pub practice_output: &'static str,
     pub practice_check: &'static str,
@@ -188,6 +208,18 @@ impl UiStrings {
             StatisticsLimit::Twenty => self.twenty_questions,
             StatisticsLimit::Fifty => self.fifty_questions,
             StatisticsLimit::AllQuestions => self.all_questions,
+        }
+    }
+
+    pub fn practice_difficulty(&self, difficulty: PracticeDifficulty) -> &'static str {
+        let english = self.main_menu == "Main menu";
+        match (english, difficulty) {
+            (true, PracticeDifficulty::Easy) => "Easy",
+            (true, PracticeDifficulty::Medium) => "Medium",
+            (true, PracticeDifficulty::Hard) => "Hard",
+            (false, PracticeDifficulty::Easy) => "Лёгкая",
+            (false, PracticeDifficulty::Medium) => "Средняя",
+            (false, PracticeDifficulty::Hard) => "Сложная",
         }
     }
 
@@ -336,6 +368,24 @@ static ENGLISH: UiStrings = UiStrings {
     practice_empty: "No SQL practice tasks are loaded yet.",
     practice_missing: "Practice task is not loaded.",
     practice_category: "Category",
+    practice_categories: "Practice categories",
+    practice_continue: "Continue last task",
+    practice_progress: "Progress",
+    practice_solved: "Solved",
+    practice_started: "Started",
+    practice_attempts: "Attempts",
+    practice_first_try: "First try",
+    practice_difficulty: "Difficulty",
+    practice_schema: "Schema",
+    practice_data: "Table data",
+    practice_hints: "Hints",
+    practice_solution: "Solution",
+    practice_solution_locked: "Solution unlocks after 3 attempts or after all hints are opened.",
+    practice_no_more_hints: "No more hints are available.",
+    practice_hint_locked: "The next hint unlocks after another failed attempt.",
+    practice_last_task: "This is the last task in the category.",
+    practice_failed_checks: "Failed checks",
+    practice_enter_table: "Enter — inspect selected table",
     sql_editor: "SQL editor",
     practice_output: "Result",
     practice_check: "Check",
@@ -442,7 +492,7 @@ static ENGLISH: UiStrings = UiStrings {
     footer_labs: "↑/↓ or j/k — select | Enter — open | Esc/Backspace — back | q — quit",
     footer_lab_detail: "↑/↓ or j/k — scroll | Esc/Backspace — back | q — quit",
     footer_practice_tasks: "↑/↓ or j/k — select | Enter — open | Esc/Backspace — back | q — quit",
-    footer_practice_editor: "Arrows — cursor | F5 — run | F7/Ctrl+Enter — check | F6 — reset | Esc — back",
+    footer_practice_editor: "F2 pane | F3 hint | F4 solution | F5 run | F6 reset | F7 check | F8 next | PgUp/PgDn scroll | Esc back",
     footer_back: "Esc/Backspace — back | q — quit",
 };
 
@@ -472,6 +522,24 @@ static RUSSIAN: UiStrings = UiStrings {
     practice_empty: "Задания по SQL пока не загружены.",
     practice_missing: "Задание практики не загружено.",
     practice_category: "Раздел",
+    practice_categories: "Разделы практики",
+    practice_continue: "Продолжить последнее задание",
+    practice_progress: "Прогресс",
+    practice_solved: "Решено",
+    practice_started: "Начато",
+    practice_attempts: "Попыток",
+    practice_first_try: "С первой попытки",
+    practice_difficulty: "Сложность",
+    practice_schema: "Схема",
+    practice_data: "Данные таблицы",
+    practice_hints: "Подсказки",
+    practice_solution: "Решение",
+    practice_solution_locked: "Решение откроется после 3 попыток или после просмотра всех подсказок.",
+    practice_no_more_hints: "Больше подсказок нет.",
+    practice_hint_locked: "Следующая подсказка откроется после ещё одной неудачной попытки.",
+    practice_last_task: "Это последнее задание в разделе.",
+    practice_failed_checks: "Не пройдены проверки",
+    practice_enter_table: "Enter — открыть выбранную таблицу",
     sql_editor: "SQL редактор",
     practice_output: "Результат",
     practice_check: "Проверка",
@@ -578,6 +646,6 @@ static RUSSIAN: UiStrings = UiStrings {
     footer_labs: "↑/↓ или j/k — выбор | Enter — открыть | Esc/Backspace — назад | q — выход",
     footer_lab_detail: "↑/↓ или j/k — прокрутка | Esc/Backspace — назад | q — выход",
     footer_practice_tasks: "↑/↓ или j/k — выбор | Enter — открыть | Esc/Backspace — назад | q — выход",
-    footer_practice_editor: "Стрелки — курсор | F5 — выполнить | F7/Ctrl+Enter — проверить | F6 — сброс | Esc — назад",
+    footer_practice_editor: "F2 панель | F3 подсказка | F4 решение | F5 выполнить | F6 сброс | F7 проверить | F8 далее | PgUp/PgDn прокрутка | Esc назад",
     footer_back: "Esc/Backspace — назад | q — выход",
 };

@@ -279,12 +279,15 @@ fn validate_localized_practice_compatibility(
                 || reference.bundle.practice.practice_type
                     != candidate.bundle.practice.practice_type
                 || reference.bundle.practice.comparison != candidate.bundle.practice.comparison
+                || reference.bundle.practice.difficulty != candidate.bundle.practice.difficulty
+                || reference.bundle.practice.rules != candidate.bundle.practice.rules
+                || reference.bundle.practice.assertions != candidate.bundle.practice.assertions
                 || reference.bundle.practice.sort_order != candidate.bundle.practice.sort_order
                 || reference.bundle.setup_sql != candidate.bundle.setup_sql
                 || reference.bundle.solution_sql != candidate.bundle.solution_sql
             {
                 errors.push(format!(
-                    "localized practice '{practice_key}' must keep key, category, type, comparison, sort_order, setup.sql and solution.sql compatible in '{}' and '{}'",
+                    "localized practice '{practice_key}' must keep key, category, type, comparison, difficulty, rules, assertions, sort_order, setup.sql and solution.sql compatible in '{}' and '{}'",
                     reference.locale, candidate.locale
                 ));
             }

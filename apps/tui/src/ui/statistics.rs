@@ -23,6 +23,7 @@ pub fn render(frame: &mut Frame, app: &App) {
                 strings.by_courses_topics.to_string(),
                 strings.by_modes.to_string(),
                 strings.mistakes.to_string(),
+                strings.practice.to_string(),
                 strings.activity.to_string(),
             ],
             app.statistics_selected,
@@ -131,6 +132,8 @@ pub fn render(frame: &mut Frame, app: &App) {
         } => render_mistake_topic(frame, app, course_code, *topic_id),
 
         StatisticsView::MistakeDetail => render_mistake_detail(frame, app),
+
+        StatisticsView::Practice => render_practice_stats(frame, app),
 
         StatisticsView::Activity => render_activity(frame, app),
 
@@ -360,6 +363,45 @@ fn render_mistake_detail(frame: &mut Frame, app: &App) {
         frame,
         strings.mistakes,
         &message,
+        strings.footer_statistics_scroll,
+        app.statistics_scroll,
+    );
+}
+
+fn render_practice_stats(frame: &mut Frame, app: &App) {
+    let strings = app.strings();
+    let stats = &app.practice_stats;
+    let mut lines = vec![
+        format!(
+            "{}: {}/{} ({:.1}%)",
+            strings.practice_solved,
+            stats.solved_tasks,
+            stats.total_tasks,
+            stats.solved_percent()
+        ),
+        format!("{}: {}", strings.practice_started, stats.started_tasks),
+        format!("{}: {}", strings.practice_attempts, stats.total_attempts),
+        format!("{}: {}", strings.practice_first_try, stats.solved_first_try),
+        String::new(),
+    ];
+
+    for category in &stats.categories {
+        lines.push(format!(
+            "{}: {}/{} · {} {} · {} {}",
+            category.category,
+            category.solved_tasks,
+            category.total_tasks,
+            strings.practice_started,
+            category.started_tasks,
+            strings.practice_attempts,
+            category.total_attempts,
+        ));
+    }
+
+    render_message_with_footer(
+        frame,
+        strings.practice_title,
+        &lines.join("\n"),
         strings.footer_statistics_scroll,
         app.statistics_scroll,
     );

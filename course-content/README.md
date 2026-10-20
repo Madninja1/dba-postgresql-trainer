@@ -119,3 +119,144 @@ course-content/
 ```
 
 Adding a translation requires only adding the matching files to the reserved locale directory while preserving the logical keys described above. No SQLite schema migration is required for a new translation.
+
+## SQL practice
+
+Local SQL tasks live separately from quizzes and labs:
+
+```text
+course-content/
+└── practice/
+    └── <collection>/
+        └── <task>/
+            ├── en/
+            │   ├── practice.json
+            │   ├── setup.sql
+            │   └── solution.sql
+            └── ru/
+                ├── practice.json
+                ├── setup.sql
+                └── solution.sql
+```
+
+`setup.sql` creates an isolated SQLite sandbox, `solution.sql` contains the reference solution, and `practice.json` describes the learning metadata and evaluator rules.
+
+Supported `practice.json` fields:
+
+- `category` — practice section;
+- `type` — `write_query`, `fix_query` or `find_logical_error`;
+- `comparison` — `ordered`, `unordered`, `scalar` or `row_count`;
+- `difficulty` — `easy`, `medium` or `hard`;
+- `starter_sql` — initial editor contents;
+- `hints` — progressive hints;
+- `solution_explanation` — explanation of the reference solution;
+- `rules` — solution constraints (`require_keyword`, `forbid_keyword`, `forbid_select_star`);
+- `assertions` — extra result or sandbox-state checks.
+
+Available assertions:
+
+```json
+{"type": "result_equals_solution"}
+{"type": "table_exists", "table": "users"}
+{"type": "index_exists", "index": "idx_users_email"}
+{"type": "scalar_equals", "sql": "SELECT COUNT(*) FROM users", "expected": "3"}
+{"type": "row_count_equals", "sql": "SELECT * FROM users", "expected": 3}
+```
+
+If `assertions` is omitted, `result_equals_solution` is used automatically.
+
+SQLite is only the local offline engine. The task format and the application `PracticeEngine` boundary intentionally remain engine-neutral so PostgreSQL can be added later without redesigning the TUI or the task bank.
+
+## SQL practice
+
+Local SQL tasks live separately from quizzes and labs:
+
+```text
+course-content/
+└── practice/
+    └── <collection>/
+        └── <task>/
+            ├── en/
+            │   ├── practice.json
+            │   ├── setup.sql
+            │   └── solution.sql
+            └── ru/
+                ├── practice.json
+                ├── setup.sql
+                └── solution.sql
+```
+
+`setup.sql` creates an isolated SQLite sandbox, `solution.sql` contains the reference solution, and `practice.json` describes the learning metadata and evaluator rules.
+
+Supported `practice.json` fields:
+
+- `category` — practice section;
+- `type` — `write_query`, `fix_query` or `find_logical_error`;
+- `comparison` — `ordered`, `unordered`, `scalar` or `row_count`;
+- `difficulty` — `easy`, `medium` or `hard`;
+- `starter_sql` — initial editor contents;
+- `hints` — progressive hints;
+- `solution_explanation` — explanation of the reference solution;
+- `rules` — solution constraints (`require_keyword`, `forbid_keyword`, `forbid_select_star`);
+- `assertions` — extra result or sandbox-state checks.
+
+Available assertions:
+
+```json
+{"type": "result_equals_solution"}
+{"type": "table_exists", "table": "users"}
+{"type": "index_exists", "index": "idx_users_email"}
+{"type": "scalar_equals", "sql": "SELECT COUNT(*) FROM users", "expected": "3"}
+{"type": "row_count_equals", "sql": "SELECT * FROM users", "expected": 3}
+```
+
+If `assertions` is omitted, `result_equals_solution` is used automatically.
+
+SQLite is only the local offline engine. The task format and the application `PracticeEngine` boundary intentionally remain engine-neutral so PostgreSQL can be added later without redesigning the TUI or the task bank.
+
+## SQL practice
+
+Local SQL tasks live separately from quizzes and labs:
+
+```text
+course-content/
+└── practice/
+    └── <collection>/
+        └── <task>/
+            ├── en/
+            │   ├── practice.json
+            │   ├── setup.sql
+            │   └── solution.sql
+            └── ru/
+                ├── practice.json
+                ├── setup.sql
+                └── solution.sql
+```
+
+`setup.sql` creates an isolated SQLite sandbox, `solution.sql` contains the reference solution, and `practice.json` describes the learning metadata and evaluator rules.
+
+Supported `practice.json` fields:
+
+- `category` — practice section;
+- `type` — `write_query`, `fix_query` or `find_logical_error`;
+- `comparison` — `ordered`, `unordered`, `scalar` or `row_count`;
+- `difficulty` — `easy`, `medium` or `hard`;
+- `starter_sql` — initial editor contents;
+- `hints` — progressive hints;
+- `solution_explanation` — explanation of the reference solution;
+- `rules` — solution constraints (`require_keyword`, `forbid_keyword`, `forbid_select_star`);
+- `assertions` — extra result or sandbox-state checks.
+
+Available assertions:
+
+```json
+{"type": "result_equals_solution"}
+{"type": "table_exists", "table": "users"}
+{"type": "index_exists", "index": "idx_users_email"}
+{"type": "scalar_equals", "sql": "SELECT COUNT(*) FROM users", "expected": "3"}
+{"type": "row_count_equals", "sql": "SELECT * FROM users", "expected": 3}
+```
+
+If `assertions` is omitted, `result_equals_solution` is used automatically.
+
+SQLite is only the local offline engine. The task format and the application `PracticeEngine` boundary intentionally remain engine-neutral so PostgreSQL can be added later without redesigning the TUI or the task bank.

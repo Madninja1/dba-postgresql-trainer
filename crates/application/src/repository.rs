@@ -1,7 +1,8 @@
 use dba_trainer_domain::{
-    ActivityStats, AnswerOptionId, AnswerResult, Lab, PracticeTask, Question, QuestionId,
-    QuestionMistakeDetail, QuestionMistakeSummary, QuizSession, SessionConfig, SessionId,
-    SessionProgress, StatisticsFilter, Topic, TopicId, TopicMasteryStats, TrainingStats,
+    ActivityStats, AnswerOptionId, AnswerResult, Lab, PracticeStats, PracticeTask,
+    PracticeTaskProgress, Question, QuestionId, QuestionMistakeDetail, QuestionMistakeSummary,
+    QuizSession, SessionConfig, SessionId, SessionProgress, StatisticsFilter, Topic, TopicId,
+    TopicMasteryStats, TrainingStats,
 };
 
 use crate::RepositoryError;
@@ -33,6 +34,19 @@ pub trait PracticeRepository {
     fn practice_tasks(&self) -> Result<Vec<PracticeTask>, RepositoryError>;
 
     fn practice_task(&self, key: &str) -> Result<PracticeTask, RepositoryError>;
+
+    fn practice_progress(&self) -> Result<Vec<PracticeTaskProgress>, RepositoryError>;
+
+    fn save_practice_draft(&mut self, task_id: i64, sql: &str) -> Result<(), RepositoryError>;
+
+    fn record_practice_attempt(
+        &mut self,
+        task_id: i64,
+        sql: &str,
+        success: bool,
+    ) -> Result<(), RepositoryError>;
+
+    fn practice_stats(&self) -> Result<PracticeStats, RepositoryError>;
 }
 
 pub trait ContentLocaleRepository {

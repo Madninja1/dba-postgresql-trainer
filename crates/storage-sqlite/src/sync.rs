@@ -1,10 +1,10 @@
 use dba_trainer_application::{ContentLocaleRepository, RepositoryError};
 use dba_trainer_content::{
-    AnswerDocument, ContentBundle, LabBundle, LabDocument, PracticeBundle,
-    PracticeComparisonDocument, PracticeDocument, PracticeKindDocument, QuestionDocument,
-    QuestionTypeDocument, SourceDocument, SourceKindDocument, TopicDocument,
-    load_builtin_bundles_for_locale, load_builtin_labs_for_locale,
-    load_builtin_practice_for_locale,
+    AnswerDocument, ContentBundle, LabBundle, LabDocument, PracticeAssertionDocument,
+    PracticeBundle, PracticeComparisonDocument, PracticeDifficultyDocument, PracticeDocument,
+    PracticeKindDocument, PracticeRuleDocument, QuestionDocument, QuestionTypeDocument,
+    SourceDocument, SourceKindDocument, TopicDocument, load_builtin_bundles_for_locale,
+    load_builtin_labs_for_locale, load_builtin_practice_for_locale,
 };
 
 use rusqlite::{Transaction, params};
@@ -168,6 +168,12 @@ fn sync_practice_document(
         PracticeComparisonDocument::RowCount => "row_count",
     };
 
+    let difficulty = match practice.difficulty {
+        PracticeDifficultyDocument::Easy => "easy",
+        PracticeDifficultyDocument::Medium => "medium",
+        PracticeDifficultyDocument::Hard => "hard",
+    };
+
     transaction.execute(
         "
         INSERT INTO practice_tasks (
@@ -181,9 +187,11 @@ fn sync_practice_document(
             setup_sql,
             solution_sql,
             sort_order,
-            is_active
+            is_active,
+            difficulty,
+            solution_explanation
         )
-        VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, 1)
+        VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, 1, ?11, ?12)
         ON CONFLICT(content_key)
         DO UPDATE SET
             category = excluded.category,
@@ -195,7 +203,9 @@ fn sync_practice_document(
             setup_sql = excluded.setup_sql,
             solution_sql = excluded.solution_sql,
             sort_order = excluded.sort_order,
-            is_active = 1
+            is_active = 1,
+            difficulty = excluded.difficulty,
+            solution_explanation = excluded.solution_explanation
         ",
         params![
             practice.key,
@@ -208,8 +218,93 @@ fn sync_practice_document(
             setup_sql,
             solution_sql,
             practice.sort_order,
+            difficulty,
+            practice.solution_explanation,
         ],
     )?;
+
+    let task_id: i64 = transaction.query_row(
+        "SELECT id FROM practice_tasks WHERE content_key = ?1",
+        params![practice.key],
+        |row| row.get(0),
+    )?;
+
+    transaction.execute(
+        "DELETE FROM practice_hints WHERE task_id = ?1",
+        params![task_id],
+    )?;
+    for (position, hint) in practice.hints.iter().enumerate() {
+        transaction.execute(
+            "INSERT INTO practice_hints (task_id, position, text) VALUES (?1, ?2, ?3)",
+            params![task_id, position as i64, hint],
+        )?;
+    }
+
+    transaction.execute(
+        "DELETE FROM practice_rules WHERE task_id = ?1",
+        params![task_id],
+    )?;
+    for (position, rule) in practice.rules.iter().enumerate() {
+        let (rule_type, value): (&str, Option<&str>) = match rule {
+            PracticeRuleDocument::RequireKeyword { keyword } => ("require_keyword", Some(keyword)),
+            PracticeRuleDocument::ForbidKeyword { keyword } => ("forbid_keyword", Some(keyword)),
+            PracticeRuleDocument::ForbidSelectStar => ("forbid_select_star", None),
+        };
+        transaction.execute(
+            "INSERT INTO practice_rules (task_id, position, rule_type, value) VALUES (?1, ?2, ?3, ?4)",
+            params![task_id, position as i64, rule_type, value],
+        )?;
+    }
+
+    transaction.execute(
+        "DELETE FROM practice_assertions WHERE task_id = ?1",
+        params![task_id],
+    )?;
+    for (position, assertion) in practice.assertions.iter().enumerate() {
+        let (assertion_type, name, sql, expected_text, expected_int): (
+            &str,
+            Option<&str>,
+            Option<&str>,
+            Option<&str>,
+            Option<i64>,
+        ) = match assertion {
+            PracticeAssertionDocument::ResultEqualsSolution => {
+                ("result_equals_solution", None, None, None, None)
+            }
+            PracticeAssertionDocument::TableExists { table } => {
+                ("table_exists", Some(table), None, None, None)
+            }
+            PracticeAssertionDocument::IndexExists { index } => {
+                ("index_exists", Some(index), None, None, None)
+            }
+            PracticeAssertionDocument::ScalarEquals { sql, expected } => {
+                ("scalar_equals", None, Some(sql), Some(expected), None)
+            }
+            PracticeAssertionDocument::RowCountEquals { sql, expected } => (
+                "row_count_equals",
+                None,
+                Some(sql),
+                None,
+                Some(*expected as i64),
+            ),
+        };
+        transaction.execute(
+            "
+            INSERT INTO practice_assertions (
+                task_id, position, assertion_type, name, sql, expected_text, expected_int
+            ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
+            ",
+            params![
+                task_id,
+                position as i64,
+                assertion_type,
+                name,
+                sql,
+                expected_text,
+                expected_int,
+            ],
+        )?;
+    }
 
     Ok(())
 }

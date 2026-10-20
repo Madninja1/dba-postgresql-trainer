@@ -15,7 +15,9 @@ pub use error::ContentError;
 pub use loader::{load_bundle, load_bundle_from_dir, load_lab, load_practice};
 
 pub use model::{
-    AnswerDocument, CONTENT_SCHEMA_VERSION, ContentBundle, LabBundle, LabDocument, PracticeBundle,
-    PracticeComparisonDocument, PracticeDocument, PracticeKindDocument, QuestionDocument,
-    QuestionTypeDocument, QuestionsDocument, SourceDocument, SourceKindDocument, TopicDocument,
+    AnswerDocument, CONTENT_SCHEMA_VERSION, ContentBundle, LabBundle, LabDocument,
+    PracticeAssertionDocument, PracticeBundle, PracticeComparisonDocument,
+    PracticeDifficultyDocument, PracticeDocument, PracticeKindDocument, PracticeRuleDocument,
+    QuestionDocument, QuestionTypeDocument, QuestionsDocument, SourceDocument, SourceKindDocument,
+    TopicDocument,
 };

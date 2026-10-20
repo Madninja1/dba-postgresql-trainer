@@ -119,3 +119,144 @@ course-content/
 ```
 
 Чтобы добавить перевод, достаточно положить соответствующие файлы в зарезервированный языковой каталог и сохранить логические ключи по правилам выше. Новая миграция SQLite для добавления перевода не требуется.
+
+## Практика SQL
+
+Локальные SQL-задачи хранятся отдельно от тестов и лабораторных:
+
+```text
+course-content/
+└── practice/
+    └── <collection>/
+        └── <task>/
+            ├── en/
+            │   ├── practice.json
+            │   ├── setup.sql
+            │   └── solution.sql
+            └── ru/
+                ├── practice.json
+                ├── setup.sql
+                └── solution.sql
+```
+
+`setup.sql` создаёт изолированную SQLite-песочницу задания, `solution.sql` содержит эталонное решение, а `practice.json` описывает учебную часть и правила проверки.
+
+Поддерживаемые поля `practice.json`:
+
+- `category` — раздел практики;
+- `type` — `write_query`, `fix_query` или `find_logical_error`;
+- `comparison` — `ordered`, `unordered`, `scalar` или `row_count`;
+- `difficulty` — `easy`, `medium` или `hard`;
+- `starter_sql` — стартовый текст редактора;
+- `hints` — последовательные подсказки;
+- `solution_explanation` — объяснение эталонного решения;
+- `rules` — ограничения решения (`require_keyword`, `forbid_keyword`, `forbid_select_star`);
+- `assertions` — дополнительные проверки состояния песочницы и результата.
+
+Доступные assertions:
+
+```json
+{"type": "result_equals_solution"}
+{"type": "table_exists", "table": "users"}
+{"type": "index_exists", "index": "idx_users_email"}
+{"type": "scalar_equals", "sql": "SELECT COUNT(*) FROM users", "expected": "3"}
+{"type": "row_count_equals", "sql": "SELECT * FROM users", "expected": 3}
+```
+
+Если `assertions` не заданы, автоматически применяется `result_equals_solution`.
+
+SQLite используется только как локальный offline-движок. Формат задания и прикладной интерфейс `PracticeEngine` не привязаны к SQLite, чтобы позднее можно было добавить PostgreSQL-движок без изменения TUI и банка заданий.
+
+## Практика SQL
+
+Локальные SQL-задачи хранятся отдельно от тестов и лабораторных:
+
+```text
+course-content/
+└── practice/
+    └── <collection>/
+        └── <task>/
+            ├── en/
+            │   ├── practice.json
+            │   ├── setup.sql
+            │   └── solution.sql
+            └── ru/
+                ├── practice.json
+                ├── setup.sql
+                └── solution.sql
+```
+
+`setup.sql` создаёт изолированную SQLite-песочницу задания, `solution.sql` содержит эталонное решение, а `practice.json` описывает учебную часть и правила проверки.
+
+Поддерживаемые поля `practice.json`:
+
+- `category` — раздел практики;
+- `type` — `write_query`, `fix_query` или `find_logical_error`;
+- `comparison` — `ordered`, `unordered`, `scalar` или `row_count`;
+- `difficulty` — `easy`, `medium` или `hard`;
+- `starter_sql` — стартовый текст редактора;
+- `hints` — последовательные подсказки;
+- `solution_explanation` — объяснение эталонного решения;
+- `rules` — ограничения решения (`require_keyword`, `forbid_keyword`, `forbid_select_star`);
+- `assertions` — дополнительные проверки состояния песочницы и результата.
+
+Доступные assertions:
+
+```json
+{"type": "result_equals_solution"}
+{"type": "table_exists", "table": "users"}
+{"type": "index_exists", "index": "idx_users_email"}
+{"type": "scalar_equals", "sql": "SELECT COUNT(*) FROM users", "expected": "3"}
+{"type": "row_count_equals", "sql": "SELECT * FROM users", "expected": 3}
+```
+
+Если `assertions` не заданы, автоматически применяется `result_equals_solution`.
+
+SQLite используется только как локальный offline-движок. Формат задания и прикладной интерфейс `PracticeEngine` не привязаны к SQLite, чтобы позднее можно было добавить PostgreSQL-движок без изменения TUI и банка заданий.
+
+## Практика SQL
+
+Локальные SQL-задачи хранятся отдельно от тестов и лабораторных:
+
+```text
+course-content/
+└── practice/
+    └── <collection>/
+        └── <task>/
+            ├── en/
+            │   ├── practice.json
+            │   ├── setup.sql
+            │   └── solution.sql
+            └── ru/
+                ├── practice.json
+                ├── setup.sql
+                └── solution.sql
+```
+
+`setup.sql` создаёт изолированную SQLite-песочницу задания, `solution.sql` содержит эталонное решение, а `practice.json` описывает учебную часть и правила проверки.
+
+Поддерживаемые поля `practice.json`:
+
+- `category` — раздел практики;
+- `type` — `write_query`, `fix_query` или `find_logical_error`;
+- `comparison` — `ordered`, `unordered`, `scalar` или `row_count`;
+- `difficulty` — `easy`, `medium` или `hard`;
+- `starter_sql` — стартовый текст редактора;
+- `hints` — последовательные подсказки;
+- `solution_explanation` — объяснение эталонного решения;
+- `rules` — ограничения решения (`require_keyword`, `forbid_keyword`, `forbid_select_star`);
+- `assertions` — дополнительные проверки состояния песочницы и результата.
+
+Доступные assertions:
+
+```json
+{"type": "result_equals_solution"}
+{"type": "table_exists", "table": "users"}
+{"type": "index_exists", "index": "idx_users_email"}
+{"type": "scalar_equals", "sql": "SELECT COUNT(*) FROM users", "expected": "3"}
+{"type": "row_count_equals", "sql": "SELECT * FROM users", "expected": 3}
+```
+
+Если `assertions` не заданы, автоматически применяется `result_equals_solution`.
+
+SQLite используется только как локальный offline-движок. Формат задания и прикладной интерфейс `PracticeEngine` не привязаны к SQLite, чтобы позднее можно было добавить PostgreSQL-движок без изменения TUI и банка заданий.
