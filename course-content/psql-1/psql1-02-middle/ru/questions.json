@@ -1,0 +1,669 @@
+{
+  "schema_version": 1,
+  "topic": "psql1-middle",
+  "questions": [
+    {
+      "type": "single_choice",
+      "text": "Что делает `\\copy` в отличие от серверного COPY с файлом?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Передаёт данные через клиент psql и использует доступ к локальной файловой системе клиента",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Всегда читает файл правами серверного postgres",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только показывает синтаксис COPY",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Создаёт таблицу",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\copy` выполняет COPY, но файл/программа обслуживается клиентом psql.",
+      "source": {
+        "key": "psql1-middle-copy",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\copy",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-middle-001"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что делает `\\timing`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Включает или выключает показ времени выполнения SQL-команд",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Меняет timezone базы",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Выводит uptime сервера",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Запускает EXPLAIN",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\timing` показывает время выполнения каждого SQL-оператора.",
+      "source": {
+        "key": "psql1-middle-timing",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\timing",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-middle-002"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что делает `\\x`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Переключает расширенный режим вывода",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Удаляет текущий запрос",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Закрывает транзакцию",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Включает CSV",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\x` эквивалентен `\\pset expanded`.",
+      "source": {
+        "key": "psql1-middle-expanded",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\x",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-middle-003"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что делает `\\i файл`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Читает и выполняет команды из файла как введённые с клавиатуры",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только выводит имя файла",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Импортирует binary backup",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Создаёт индекс",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\i` / `\\include` включает файл команд.",
+      "source": {
+        "key": "psql1-middle-include",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\i / \\include",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-middle-004"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что делает `\\o файл`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Перенаправляет результаты запросов в файл",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Перенаправляет только ошибки сервера",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Меняет current directory",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Открывает курсор",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\o` / `\\out` задаёт направление обычного вывода результатов.",
+      "source": {
+        "key": "psql1-middle-output",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\o / \\out",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-middle-005"
+    },
+    {
+      "type": "single_choice",
+      "text": "Как установить переменную psql?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Метакомандой \\set",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "SET ROLE только",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "\\unset",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "\\bind обязательно",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\set имя значение` создаёт/изменяет переменную psql.",
+      "source": {
+        "key": "psql1-middle-set",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Переменные",
+        "locator": "\\set",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-middle-006"
+    },
+    {
+      "type": "single_choice",
+      "text": "Как подставить значение переменной psql `foo` в обычном контексте?",
+      "answers": [
+        {
+          "key": "a",
+          "text": ":foo",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "$foo",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "@foo",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "${foo} только",
+          "correct": false
+        }
+      ],
+      "explanation": "Двоеточие перед именем вызывает подстановку переменной.",
+      "source": {
+        "key": "psql1-middle-interpolation",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Переменные",
+        "locator": ":имя",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-middle-007"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что делает `\\gset`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Выполняет запрос и сохраняет столбцы единственной строки результата в переменные psql",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Создаёт серверный GUC",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Переключает expanded output",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Показывает план",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\gset` требует ровно одну строку и создаёт переменные по именам столбцов.",
+      "source": {
+        "key": "psql1-middle-gset",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\gset",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-middle-008"
+    },
+    {
+      "type": "single_choice",
+      "text": "Для чего служит `\\watch`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Повторно выполнять текущий/последний запрос с заданным интервалом",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Следить за файлом журнала ОС",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Перезапускать PostgreSQL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Менять search_path",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\watch` циклически выполняет запрос, пока не будет остановлен или не достигнут count.",
+      "source": {
+        "key": "psql1-middle-watch",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\watch",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-middle-009"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о форматировании вывода psql?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "-A включает unaligned output",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "--csv включает CSV",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "-x включает expanded output",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "-t скрывает заголовки столбцов и строку количества записей",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "-U включает unaligned output",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация связывает параметры командной строки с соответствующими режимами/метакомандами.",
+      "source": {
+        "key": "psql1-middle-formats",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Параметры",
+        "locator": "-A, --csv, -x, -t",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-middle-010"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о `\\copy`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Файлы читаются/пишутся psql-клиентом",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Используются привилегии локального пользователя",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Для доступа к локальному файлу не нужны серверные superuser file privileges",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Данные не проходят между клиентом и сервером",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация подчёркивает клиентскую природу `\\copy` и передачу данных между клиентом и сервером.",
+      "source": {
+        "key": "psql1-middle-copy-rules",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\copy и локальная файловая система",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-middle-011"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о переменных psql?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Это пары имя/значение",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Значением может быть строка",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "\\unset удаляет обычную переменную",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "\\set без аргументов показывает переменные",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Имя переменной обязано начинаться с PG_",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел «Переменные» описывает установку, просмотр и удаление значений.",
+      "source": {
+        "key": "psql1-middle-variables",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Переменные",
+        "locator": "\\set / \\unset",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-middle-012"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие метакоманды работают с текущим query buffer?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\p выводит буфер",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\r очищает буфер",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "\\g отправляет буфер серверу",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "\\w записывает буфер в файл или pipe",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "\\du очищает буфер",
+          "correct": false
+        }
+      ],
+      "explanation": "Несколько метакоманд psql управляют ещё не отправленным SQL в query buffer.",
+      "source": {
+        "key": "psql1-middle-query-buffer",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\p, \\r, \\g, \\w",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-middle-013"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что верно о `\\g`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Отправляет текущий query buffer серверу; без аргументов по сути подобна завершающей точке с запятой; может одноразово направить результат в файл или pipe",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Всегда меняет формат вывода навсегда",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\g` выполняет буфер и может временно задать параметры вывода или направление результата.",
+      "source": {
+        "key": "psql1-middle-g",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\g",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-middle-014"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о `\\gx`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Она работает как \\g",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для текущего запроса принудительно включает expanded output",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Она удаляет индекс",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Она устанавливает AUTOCOMMIT off",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\gx` — вариант `\\g` с expanded=on для этого выполнения.",
+      "source": {
+        "key": "psql1-middle-gx",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\gx",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-middle-015"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие элементы условных блоков поддерживает psql?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\if",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\elif",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "\\else",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "\\endif",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "\\switch",
+          "correct": false
+        }
+      ],
+      "explanation": "psql поддерживает вложенные условные блоки из этих метакоманд.",
+      "source": {
+        "key": "psql1-middle-conditions",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\if / \\elif / \\else / \\endif",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-middle-016"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о шаблонах `\\d*`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`*` соответствует любому количеству символов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`?` соответствует одному символу",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`*.*` помогает увидеть объекты независимо от видимости в search_path",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Двойные кавычки отключают специальное значение wildcard-символов внутри кавычек",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Шаблоны всегда чувствительны к регистру и никогда не приводятся к lower case",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел «Шаблоны поиска» описывает wildcard и правила кавычек.",
+      "source": {
+        "key": "psql1-middle-patterns",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Шаблоны поиска",
+        "locator": "*, ?, *.* и кавычки",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-middle-017"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о `\\d+`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Похожа на \\d",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Показывает дополнительную информацию по объекту",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Всегда включает системные объекты без шаблона",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Удаляет комментарии",
+          "correct": false
+        }
+      ],
+      "explanation": "Модификатор `+` у `\\d` расширяет отображаемую информацию.",
+      "source": {
+        "key": "psql1-middle-dplus",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\d+",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-middle-018"
+    }
+  ]
+}

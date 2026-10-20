@@ -1,23 +1,25 @@
 use ratatui::{
     Frame,
-    layout::{Alignment, Constraint, Direction, Layout},
+    layout::{Alignment, Constraint},
     style::{Modifier, Style},
     widgets::{Block, Borders, List, ListItem, Paragraph, Wrap},
 };
 
 use crate::app::App;
 
+use super::common::vertical_chunks;
+
 pub fn render(frame: &mut Frame, app: &App) {
     let strings = app.strings();
 
-    let areas = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints([
+    let areas = vertical_chunks(
+        frame.area(),
+        &[
             Constraint::Length(6),
             Constraint::Min(4),
             Constraint::Length(3),
-        ])
-        .split(frame.area());
+        ],
+    );
 
     let warning = Paragraph::new(strings.cancel_warning)
         .alignment(Alignment::Center)

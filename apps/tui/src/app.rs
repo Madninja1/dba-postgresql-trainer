@@ -57,6 +57,11 @@ pub enum StatisticsView {
     },
     Modes,
     Mistakes,
+    MistakeCourse(String),
+    MistakeTopic {
+        course_code: String,
+        topic_id: TopicId,
+    },
     MistakeDetail,
     Activity,
     Detail {
@@ -189,6 +194,7 @@ impl App {
         service.record_app_open()?;
         let topics = service.topics()?;
         let labs = service.labs()?;
+        let activity_stats = Some(service.activity_stats()?);
 
         let resume_session = service.active_session()?;
 
@@ -269,7 +275,7 @@ impl App {
 
             mistake_detail: None,
 
-            activity_stats: None,
+            activity_stats,
 
             statistics_course_summaries: Vec::new(),
 
@@ -380,7 +386,6 @@ impl App {
                     self.statistics_scroll = 0;
                     self.mistake_summaries.clear();
                     self.mistake_detail = None;
-                    self.activity_stats = None;
                     self.statistics_history.clear();
                     self.screen = Screen::Statistics;
                 }
@@ -606,7 +611,9 @@ impl App {
                     QuizScope::Topic(_) => Screen::Topics,
                     QuizScope::Course(_) => Screen::Courses,
                     QuizScope::AllTopics => Screen::Home,
-                    QuizScope::Mistakes => Screen::Statistics,
+                    QuizScope::Mistakes
+                    | QuizScope::MistakesCourse(_)
+                    | QuizScope::MistakesTopic(_) => Screen::Statistics,
                 };
             }
 
@@ -686,14 +693,14 @@ impl App {
 
     fn handle_results_action(&mut self, action: Action) -> Result<(), RepositoryError> {
         if matches!(action, Action::Confirm | Action::Back) {
-            let was_mistake_review = matches!(&self.quiz_scope, QuizScope::Mistakes);
+            let was_mistake_review = self.quiz_scope.is_review();
 
+            self.activity_stats = Some(self.service.activity_stats()?);
             self.reset_quiz();
 
             if was_mistake_review {
                 self.mistake_summaries = self.service.mistake_summaries()?;
                 self.mistake_detail = None;
-                self.statistics_view = StatisticsView::Mistakes;
                 self.statistics_selected = 0;
                 self.statistics_scroll = 0;
                 self.screen = Screen::Statistics;
@@ -742,6 +749,7 @@ impl App {
                     })?;
 
                     self.service.cancel_session(session_id)?;
+                    self.activity_stats = Some(self.service.activity_stats()?);
 
                     self.reset_quiz();
 
@@ -797,7 +805,7 @@ impl App {
                 self.zero_statistics_summaries();
                 self.mistake_summaries.clear();
                 self.mistake_detail = None;
-                self.activity_stats = None;
+                self.activity_stats = Some(self.service.activity_stats()?);
                 self.statistics = None;
                 self.statistics_view = StatisticsView::Root;
                 self.statistics_history.clear();
@@ -922,9 +930,47 @@ impl App {
                     self.limit_selected = 0;
                     self.screen = Screen::QuizSetup;
                 } else {
+                    let course_code = self
+                        .mistake_course_codes()
+                        .get(self.statistics_selected - 1)
+                        .cloned();
+
+                    if let Some(course_code) = course_code {
+                        self.open_statistics_view(StatisticsView::MistakeCourse(course_code));
+                    }
+                }
+            }
+
+            StatisticsView::MistakeCourse(course_code) => {
+                if self.statistics_selected == 0 {
+                    self.quiz_scope = QuizScope::MistakesCourse(course_code);
+                    self.limit_selected = 0;
+                    self.screen = Screen::QuizSetup;
+                } else {
+                    let topic_index = self.statistics_selected - 1;
+                    let topic_id = self
+                        .mistake_topics_for_course(&course_code)
+                        .get(topic_index)
+                        .map(|topic| topic.id);
+
+                    if let Some(topic_id) = topic_id {
+                        self.open_statistics_view(StatisticsView::MistakeTopic {
+                            course_code,
+                            topic_id,
+                        });
+                    }
+                }
+            }
+
+            StatisticsView::MistakeTopic { topic_id, .. } => {
+                if self.statistics_selected == 0 {
+                    self.quiz_scope = QuizScope::MistakesTopic(topic_id);
+                    self.limit_selected = 0;
+                    self.screen = Screen::QuizSetup;
+                } else {
                     let question_id = self
-                        .mistake_summaries
-                        .get(self.statistics_selected.saturating_sub(1))
+                        .mistakes_for_topic(topic_id)
+                        .get(self.statistics_selected - 1)
                         .map(|summary| summary.question_id);
 
                     if let Some(question_id) = question_id {
@@ -998,8 +1044,14 @@ impl App {
                 if self.mistake_summaries.is_empty() {
                     0
                 } else {
-                    1 + self.mistake_summaries.len()
+                    1 + self.mistake_course_codes().len()
                 }
+            }
+            StatisticsView::MistakeCourse(course_code) => {
+                1 + self.mistake_topics_for_course(course_code).len()
+            }
+            StatisticsView::MistakeTopic { topic_id, .. } => {
+                1 + self.mistakes_for_topic(*topic_id).len()
             }
             StatisticsView::MistakeDetail
             | StatisticsView::Activity
@@ -1074,6 +1126,56 @@ impl App {
             .iter()
             .filter(|lab| lab.course_code == course_code)
             .collect()
+    }
+
+    pub fn mistake_course_codes(&self) -> Vec<String> {
+        let mut course_codes = self
+            .mistake_summaries
+            .iter()
+            .map(|summary| summary.course_code.clone())
+            .collect::<Vec<_>>();
+
+        course_codes.sort();
+        course_codes.dedup();
+        course_codes
+    }
+
+    pub fn mistake_count_for_course(&self, course_code: &str) -> usize {
+        self.mistake_summaries
+            .iter()
+            .filter(|summary| summary.course_code == course_code)
+            .count()
+    }
+
+    pub fn mistake_topics_for_course(&self, course_code: &str) -> Vec<&Topic> {
+        self.topics
+            .iter()
+            .filter(|topic| {
+                topic.course_code == course_code
+                    && self
+                        .mistake_summaries
+                        .iter()
+                        .any(|summary| summary.topic_id == topic.id)
+            })
+            .collect()
+    }
+
+    pub fn mistake_count_for_topic(&self, topic_id: TopicId) -> usize {
+        self.mistake_summaries
+            .iter()
+            .filter(|summary| summary.topic_id == topic_id)
+            .count()
+    }
+
+    pub fn mistakes_for_topic(&self, topic_id: TopicId) -> Vec<&QuestionMistakeSummary> {
+        self.mistake_summaries
+            .iter()
+            .filter(|summary| summary.topic_id == topic_id)
+            .collect()
+    }
+
+    pub fn topic_by_id(&self, topic_id: TopicId) -> Option<&Topic> {
+        self.topics.iter().find(|topic| topic.id == topic_id)
     }
 
     pub fn statistics_course_codes(&self) -> Vec<String> {
@@ -1237,6 +1339,7 @@ impl App {
             })?;
 
         self.service.cancel_session(session_id)?;
+        self.activity_stats = Some(self.service.activity_stats()?);
 
         self.resume_session = None;
 
@@ -1255,6 +1358,10 @@ impl App {
         self.session_id = Some(progress.id);
 
         self.quiz_scope = progress.scope;
+        self.limit_selected = QUESTION_LIMITS
+            .iter()
+            .position(|limit| *limit == progress.limit)
+            .unwrap_or(0);
 
         self.total_questions = progress.total_questions;
 

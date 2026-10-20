@@ -1,0 +1,654 @@
+{
+  "schema_version": 1,
+  "topic": "plpgsql1-strong",
+  "questions": [
+    {
+      "type": "single_choice",
+      "text": "Что происходит с планом команды, выполняемой через динамический EXECUTE?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "План строится заново при каждом выполнении",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Всегда используется один кешированный generic plan",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "План запрещён",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "План строит psql-клиент",
+          "correct": false
+        }
+      ],
+      "explanation": "EXECUTE не кеширует план; это может быть полезно, когда оптимальный план сильно зависит от параметров.",
+      "source": {
+        "key": "plpgsql1-strong-execute-plan",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.4. Выполнение динамически формируемых команд",
+        "locator": "Планирование EXECUTE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-strong-001"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какой спецификатор `format()` предназначен для SQL-идентификатора?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "%I",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "%L",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "%s только",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "%Q",
+          "correct": false
+        }
+      ],
+      "explanation": "`%I` эквивалентен quote_ident; `%L` эквивалентен quote_nullable.",
+      "source": {
+        "key": "plpgsql1-strong-format-i",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.4. Выполнение динамически формируемых команд",
+        "locator": "format %I / %L",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-strong-002"
+    },
+    {
+      "type": "single_choice",
+      "text": "Меняет ли обычный EXECUTE специальную переменную FOUND?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Нет",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Всегда устанавливает true",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Всегда устанавливает false",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только при DDL",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация статуса выполнения подчёркивает: EXECUTE меняет данные GET DIAGNOSTICS, но не FOUND.",
+      "source": {
+        "key": "plpgsql1-strong-execute-found",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.5. Статус выполнения команды",
+        "locator": "EXECUTE и FOUND",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-strong-003"
+    },
+    {
+      "type": "single_choice",
+      "text": "Для чего используется GET STACKED DIAGNOSTICS?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Получить информацию об ошибке внутри обработчика EXCEPTION",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Получить список таблиц",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Изменить plan cache",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Открыть cursor",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел 43.6.8.1 описывает диагностику текущего перехваченного исключения.",
+      "source": {
+        "key": "plpgsql1-strong-stacked",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.6.8.1. Получение информации об ошибке",
+        "locator": "GET STACKED DIAGNOSTICS",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-control-structures"
+      },
+      "key": "plpgsql1-strong-004"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что представляет собой NEW в row-level trigger function?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Запись новой строки для INSERT/UPDATE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Имя схемы",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "PID backend",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Курсор",
+          "correct": false
+        }
+      ],
+      "explanation": "Триггерные функции получают специальные переменные NEW/OLD в зависимости от события.",
+      "source": {
+        "key": "plpgsql1-strong-trigger-new",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.10.1. Триггеры при изменении данных",
+        "locator": "NEW и OLD",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-trigger"
+      },
+      "key": "plpgsql1-strong-005"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какой результат должен вернуть BEFORE row trigger, чтобы пропустить операцию для этой строки?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "NULL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "TRUE",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "OLD всегда",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "0",
+          "correct": false
+        }
+      ],
+      "explanation": "Для BEFORE row trigger возврат NULL сообщает trigger manager пропустить оставшуюся операцию для строки.",
+      "source": {
+        "key": "plpgsql1-strong-trigger-return",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.10.1. Триггеры при изменении данных",
+        "locator": "Возвращаемое значение BEFORE trigger",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-trigger"
+      },
+      "key": "plpgsql1-strong-006"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что делает COMMIT AND CHAIN в PL/pgSQL-процедуре?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Фиксирует текущую транзакцию и начинает новую с характеристиками предыдущей",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Фиксирует только savepoint",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Завершает сервер",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Разрешён в любой функции без ограничений",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел управления транзакциями описывает COMMIT/ROLLBACK и варианты AND CHAIN.",
+      "source": {
+        "key": "plpgsql1-strong-chain",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.8. Управление транзакциями",
+        "locator": "COMMIT AND CHAIN",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-transactions"
+      },
+      "key": "plpgsql1-strong-007"
+    },
+    {
+      "type": "single_choice",
+      "text": "Как PL/pgSQL разрешает неоднозначность между именем переменной и столбца по умолчанию?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Неоднозначная ссылка вызывает ошибку, если не изменена настройка разрешения конфликтов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Всегда выбирается переменная",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Всегда выбирается столбец",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Случайно",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел подстановки переменных описывает конфликты имён и способы явной квалификации/настройки.",
+      "source": {
+        "key": "plpgsql1-strong-ambiguity",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.11.1. Подстановка переменных",
+        "locator": "Неоднозначные имена",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-implementation"
+      },
+      "key": "plpgsql1-strong-008"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что кеширует PL/pgSQL для статических SQL-команд и выражений?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Подготовленные планы выполнения, которые могут переиспользоваться",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Снимки файловой системы",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только текст сообщений RAISE",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Пароли psql",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел 43.11.2 посвящён кешированию планов для выражений и SQL в PL/pgSQL.",
+      "source": {
+        "key": "plpgsql1-strong-plan-cache",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.11.2. Кеширование плана",
+        "locator": "Кеширование планов",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-implementation"
+      },
+      "key": "plpgsql1-strong-009"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие практики безопасного dynamic SQL поддерживает документация?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Передавать data values через USING",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Формировать идентификаторы через format(%I) или quote_ident",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Использовать quote_nullable/%L для текстовой вставки значения, которое может быть NULL",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Вставлять неизвестный текст между $$...$$ в динамической строке",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация прямо предупреждает, что dollar quoting не подходит для заранее неизвестного динамического значения.",
+      "source": {
+        "key": "plpgsql1-strong-dynamic-safety",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.4. Выполнение динамически формируемых команд",
+        "locator": "Безопасное построение dynamic SQL",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-strong-010"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о параметрах `$1`, `$2` в EXECUTE ... USING?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Они подставляют значения данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Они сохраняют нативные типы без преобразования в текст",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Они применимы только там, где SQL-команда принимает query parameters",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Ими можно напрямую параметризовать имя таблицы",
+          "correct": false
+        }
+      ],
+      "explanation": "Имена таблиц/столбцов требуется вставлять как текст, а data values лучше передавать USING.",
+      "source": {
+        "key": "plpgsql1-strong-execute-params",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.4. Выполнение динамически формируемых команд",
+        "locator": "Параметры $1 и USING",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-strong-011"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие сведения можно получать через диагностику PL/pgSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "ROW_COUNT через GET DIAGNOSTICS",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "PG_CONTEXT для текущего call stack",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Данные о перехваченном исключении через GET STACKED DIAGNOSTICS",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Содержимое WAL-файла напрямую",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава 43 описывает текущую и stacked diagnostics.",
+      "source": {
+        "key": "plpgsql1-strong-diagnostics",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.5 и 43.6.8.1",
+        "locator": "GET DIAGNOSTICS / GET STACKED DIAGNOSTICS",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-strong-012"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о trigger functions?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Они получают специальные переменные о событии trigger",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "NEW и OLD зависят от типа операции",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Row-level и statement-level triggers имеют различную доступность строковых значений",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Триггерная функция вызывается только вручную SELECT",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел 43.10 описывает контекст trigger function и специальные переменные.",
+      "source": {
+        "key": "plpgsql1-strong-trigger-context",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.10.1. Триггеры при изменении данных",
+        "locator": "Контекст trigger function",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-trigger"
+      },
+      "key": "plpgsql1-strong-013"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о транзакционном управлении в PL/pgSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Процедуры, вызываемые через CALL, и DO могут в допустимом контексте выполнять COMMIT/ROLLBACK",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "После COMMIT/ROLLBACK автоматически начинается новая транзакция",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "AND CHAIN позволяет сохранить характеристики транзакции",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Обычная PL/pgSQL-функция всегда может выполнять COMMIT внутри SELECT",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел 43.8 описывает ограничения и поведение transaction control в процедурах/DO.",
+      "source": {
+        "key": "plpgsql1-strong-transaction-control",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.8. Управление транзакциями",
+        "locator": "COMMIT / ROLLBACK / AND CHAIN",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-transactions"
+      },
+      "key": "plpgsql1-strong-014"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о plan caching и EXECUTE?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Статические выражения/SQL могут использовать кешированный план",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Dynamic EXECUTE строит план при каждом выполнении",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "EXECUTE может быть полезен, когда выбор оптимального плана сильно зависит от текущих parameter values",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "EXECUTE гарантирует использование одного generic plan",
+          "correct": false
+        }
+      ],
+      "explanation": "Разделы 43.5.4 и 43.11.2 противопоставляют dynamic planning и кеширование статических команд.",
+      "source": {
+        "key": "plpgsql1-strong-planning",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.11.2. Кеширование плана",
+        "locator": "Статический план и EXECUTE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-implementation"
+      },
+      "key": "plpgsql1-strong-015"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие способы помогают устранить конфликт имён переменных и столбцов?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Квалифицировать столбец именем таблицы/alias",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Квалифицировать переменную меткой блока или именем функции",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Выбирать соглашения об именах",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Всегда переименовывать системный каталог",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел реализации рассматривает неоднозначные ссылки и способы сделать намерение явным.",
+      "source": {
+        "key": "plpgsql1-strong-name-conflicts",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.11.1. Подстановка переменных",
+        "locator": "Конфликты имён",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-implementation"
+      },
+      "key": "plpgsql1-strong-016"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно об exception block?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Блок EXCEPTION создаёт дополнительную стоимость входа/выхода",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Изменения persistent database state внутри ошибочной части блока откатываются",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Переменные PL/pgSQL сохраняют свои значения на момент ошибки",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "EXCEPTION фиксирует внутренние изменения перед обработчиком",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел 43.6.8 описывает семантику и стоимость блока обработки ошибок.",
+      "source": {
+        "key": "plpgsql1-strong-exception-state",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.6.8. Обработка ошибок",
+        "locator": "Состояние после ошибки",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-control-structures"
+      },
+      "key": "plpgsql1-strong-017"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие рекомендации по кавычкам следуют из документации PL/pgSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Тело функции удобно заключать в dollar quotes",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Dollar quoting хорошо подходит для фиксированного текста тела функции",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Для неизвестных динамических значений нужно использовать параметры/quote-функции, а не просто обрамлять их $$",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Любой пользовательский ввод безопасно вставлять между $$ без проверки",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация отдельно различает dollar quoting тела функции и экранирование dynamic SQL.",
+      "source": {
+        "key": "plpgsql1-strong-quoting",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.12.1. Обработка кавычек",
+        "locator": "Dollar quoting и dynamic values",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-development-tips"
+      },
+      "key": "plpgsql1-strong-018"
+    }
+  ]
+}

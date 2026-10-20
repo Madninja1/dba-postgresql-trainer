@@ -13,7 +13,8 @@ pub struct Topic {
     pub description: Option<String>,
 }
 
-/// A topic is considered passed when a completed topic quiz reaches this accuracy.
+/// Compatibility value for clients that still expose a single threshold.
+/// New code should use `QuestionLimit::pass_threshold_percent()`.
 pub const TOPIC_PASS_THRESHOLD_PERCENT: f64 = 85.0;
 
 #[derive(Debug, Clone, PartialEq, Eq)]

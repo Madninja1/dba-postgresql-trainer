@@ -2,14 +2,14 @@ use dba_trainer_domain::QuestionType;
 
 use ratatui::{
     Frame,
-    layout::{Alignment, Constraint, Direction, Layout},
+    layout::{Alignment, Constraint},
     style::{Modifier, Style},
     widgets::{Block, Borders, List, ListItem, Paragraph, Wrap},
 };
 
 use crate::app::App;
 
-use super::common::render_message;
+use super::common::{render_message, vertical_chunks};
 
 pub fn render(frame: &mut Frame, app: &App) {
     let Some(question) = app.current_question.as_ref() else {
@@ -23,15 +23,15 @@ pub fn render(frame: &mut Frame, app: &App) {
         return;
     };
 
-    let areas = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints([
+    let areas = vertical_chunks(
+        frame.area(),
+        &[
             Constraint::Length(3),
             Constraint::Length(6),
             Constraint::Min(6),
             Constraint::Length(3),
-        ])
-        .split(frame.area());
+        ],
+    );
 
     let header = Paragraph::new(format!(
         "{} {}/{}",
@@ -100,10 +100,7 @@ pub fn render(frame: &mut Frame, app: &App) {
         .block(Block::default().borders(Borders::ALL));
 
     frame.render_widget(header, areas[0]);
-
     frame.render_widget(question_text, areas[1]);
-
     frame.render_widget(answers, areas[2]);
-
     frame.render_widget(footer, areas[3]);
 }

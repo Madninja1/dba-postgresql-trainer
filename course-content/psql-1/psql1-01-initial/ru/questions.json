@@ -1,0 +1,659 @@
+{
+  "schema_version": 1,
+  "topic": "psql1-initial",
+  "questions": [
+    {
+      "type": "single_choice",
+      "text": "Что такое psql согласно документации?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Терминальный клиент PostgreSQL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Серверный процесс PostgreSQL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Формат хранения таблиц",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Планировщик запросов",
+          "correct": false
+        }
+      ],
+      "explanation": "psql позволяет интерактивно выполнять запросы, читать их из файлов и использовать метакоманды.",
+      "source": {
+        "key": "psql1-initial-overview",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Описание",
+        "locator": "Назначение psql",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-initial-001"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какой параметр задаёт имя базы данных для подключения?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "-d",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "-h",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "-p",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "-U",
+          "correct": false
+        }
+      ],
+      "explanation": "`-d` / `--dbname` задаёт базу данных или строку подключения.",
+      "source": {
+        "key": "psql1-initial-connect-options",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Подключение к базе данных",
+        "locator": "-d / -h / -p / -U",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-initial-002"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какой параметр задаёт имя пользователя базы данных?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "-U",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "-d",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "-l",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "-x",
+          "correct": false
+        }
+      ],
+      "explanation": "`-U` / `--username` задаёт имя пользователя для подключения.",
+      "source": {
+        "key": "psql1-initial-username",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Параметры",
+        "locator": "-U / --username",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-initial-003"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какая метакоманда показывает информацию о текущем подключении?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\conninfo",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\copy",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "\\timing",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "\\reset",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\conninfo` выводит сведения о текущем соединении.",
+      "source": {
+        "key": "psql1-initial-conninfo",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\conninfo",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-initial-004"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какая метакоманда устанавливает новое подключение?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\c или \\connect",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\d",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "\\o",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "\\w",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\connect` меняет соединение и принимает базу, пользователя, host, port или conninfo.",
+      "source": {
+        "key": "psql1-initial-connect",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\c / \\connect",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-initial-005"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какая метакоманда показывает список баз данных?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\l или \\list",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\dt",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "\\du",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "\\dx",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\l` / `\\list` выводит список доступных баз данных.",
+      "source": {
+        "key": "psql1-initial-list-dbs",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\l / \\list",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-initial-006"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какая метакоманда выводит список таблиц?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\dt",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\du",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "\\df",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "\\dn",
+          "correct": false
+        }
+      ],
+      "explanation": "Группа `\\dE/\\di/\\dm/\\ds/\\dt/\\dv` фильтрует отношения по типу; `t` означает table.",
+      "source": {
+        "key": "psql1-initial-dt",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\dt",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-initial-007"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какая метакоманда завершает psql?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\q или \\quit",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\r",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "\\p",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "\\g",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\q` завершает интерактивный терминал.",
+      "source": {
+        "key": "psql1-initial-quit",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\q / \\quit",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-initial-008"
+    },
+    {
+      "type": "single_choice",
+      "text": "Когда обычная многострочная SQL-команда обычно отправляется серверу из psql?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Когда встречается завершающая точка с запятой",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "После каждого перевода строки",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только после \\q",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только после COMMIT",
+          "correct": false
+        }
+      ],
+      "explanation": "Конец строки сам по себе обычно не завершает SQL-команду в psql.",
+      "source": {
+        "key": "psql1-initial-sql-input",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Ввод SQL-команд",
+        "locator": "Точка с запятой",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-initial-009"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие параметры подключения перечислены в документации psql?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "-d — база данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "-h — host",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "-p — порт",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "-U — пользователь",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "-x — host",
+          "correct": false
+        }
+      ],
+      "explanation": "Для подключения используются -d, -h, -p и -U.",
+      "source": {
+        "key": "psql1-initial-connection-params",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Подключение к базе данных",
+        "locator": "Параметры подключения",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-initial-010"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о метакомандах psql?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Начинаются с обратной косой черты",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Обрабатываются самим psql",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Полезны для администрирования и скриптов",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Всегда отправляются серверу как SQL",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация определяет некавыченный ввод с `\\` как метакоманды psql.",
+      "source": {
+        "key": "psql1-initial-meta",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "Общий формат метакоманд",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-initial-011"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что показывает `\\d` для отношения?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Столбцы и типы; NOT NULL и значения по умолчанию; связанные индексы и ограничения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только текущий PID shell",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\d` описывает отношение и связанные свойства/объекты.",
+      "source": {
+        "key": "psql1-initial-describe",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\d[S+]",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-initial-012"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие метакоманды относятся к базовой навигации и объектам?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\l — базы данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\dn — схемы",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "\\du — роли",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "\\dt — таблицы",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "\\timing — удалить таблицу",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация содержит специализированные `\\d*` команды и `\\list`.",
+      "source": {
+        "key": "psql1-initial-basic-meta",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\l, \\dn, \\du, \\dt",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-initial-013"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о `-f файл`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "psql читает команды из файла",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Параметр можно повторять",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Его можно комбинировать с -c",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Он всегда равнозначен shell-перенаправлению во всех деталях",
+          "correct": false
+        }
+      ],
+      "explanation": "`-f` читает файл и даёт дополнительные возможности вроде номеров строк в сообщениях об ошибках.",
+      "source": {
+        "key": "psql1-initial-file",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Параметры",
+        "locator": "-f / --file",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-initial-014"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о `-c команда`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Передаёт psql команду для выполнения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Параметр можно повторять",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Его можно комбинировать с -f",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Один -c позволяет смешивать SQL и psql-метакоманды в одной строке без ограничений",
+          "correct": false
+        }
+      ],
+      "explanation": "`-c` принимает серверную командную строку или одиночную backslash-команду; для смешивания используют несколько -c или ввод.",
+      "source": {
+        "key": "psql1-initial-command",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Параметры",
+        "locator": "-c / --command",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-initial-015"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие варианты справки предоставляет `psql --help[=тема]`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "options",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "commands",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "variables",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "indexes",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация перечисляет темы options, commands и variables.",
+      "source": {
+        "key": "psql1-initial-help",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Параметры",
+        "locator": "--help=тема",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-initial-016"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о `\\?`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Показывает справку psql",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "По умолчанию тема commands",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Можно запросить options или variables",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Это SQL-оператор PostgreSQL",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\? [тема]` предоставляет справочную информацию по psql.",
+      "source": {
+        "key": "psql1-initial-question-help",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\? [тема]",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-initial-017"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие параметры окружения можно использовать для значений подключения по умолчанию?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "PGDATABASE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "PGHOST",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "PGPORT",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "PGUSER",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "PGTABLE",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация psql прямо перечисляет эти переменные среды подключения.",
+      "source": {
+        "key": "psql1-initial-env-connect",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Подключение к базе данных",
+        "locator": "PGDATABASE/PGHOST/PGPORT/PGUSER",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-initial-018"
+    }
+  ]
+}

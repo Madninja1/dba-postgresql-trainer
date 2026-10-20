@@ -1,0 +1,694 @@
+{
+  "schema_version": 1,
+  "topic": "plpgsql1-initial",
+  "questions": [
+    {
+      "type": "single_choice",
+      "text": "Для чего предназначен PL/pgSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для создания серверных функций, процедур и триггеров с управляющими структурами поверх SQL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только для форматирования psql",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только для создания индексов",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Для управления systemd",
+          "correct": false
+        }
+      ],
+      "explanation": "Обзор PL/pgSQL описывает процедурный язык, который расширяет SQL управляющими конструкциями и выполняется на сервере.",
+      "source": {
+        "key": "plpgsql1-initial-overview",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.1. Обзор",
+        "locator": "Назначение PL/pgSQL",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-overview#PLPGSQL-ADVANTAGES"
+      },
+      "key": "plpgsql1-initial-001"
+    },
+    {
+      "type": "single_choice",
+      "text": "Из каких основных секций состоит блок PL/pgSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Необязательный DECLARE и обязательный BEGIN ... END",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "FROM ... WHERE",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "TRY ... CATCH только",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "CLASS ... METHOD",
+          "correct": false
+        }
+      ],
+      "explanation": "PL/pgSQL — блочно-структурированный язык с DECLARE и выполняемой секцией BEGIN/END.",
+      "source": {
+        "key": "plpgsql1-initial-block",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.2. Структура PL/pgSQL",
+        "locator": "DECLARE / BEGIN / END",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-structure"
+      },
+      "key": "plpgsql1-initial-002"
+    },
+    {
+      "type": "single_choice",
+      "text": "Где объявляются обычные локальные переменные блока?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В секции DECLARE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "В WHERE",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "После END",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только в CREATE TABLE",
+          "correct": false
+        }
+      ],
+      "explanation": "Все переменные блока, кроме специальных автоматически создаваемых, объявляются в DECLARE.",
+      "source": {
+        "key": "plpgsql1-initial-declare",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.3. Объявления",
+        "locator": "DECLARE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-declarations"
+      },
+      "key": "plpgsql1-initial-003"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какое значение получает переменная без DEFAULT при входе в блок?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "NULL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "0",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Пустую строку",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Случайное значение",
+          "correct": false
+        }
+      ],
+      "explanation": "Если DEFAULT отсутствует, переменная инициализируется SQL-значением NULL.",
+      "source": {
+        "key": "plpgsql1-initial-default-null",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.3. Объявления",
+        "locator": "Начальное значение переменной",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-declarations"
+      },
+      "key": "plpgsql1-initial-004"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какие операторы присваивания допускаются в PL/pgSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": ":= и =",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "<- только",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "== только",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "SET исключительно",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация допускает `:=` и `=` для присваивания переменным.",
+      "source": {
+        "key": "plpgsql1-initial-assignment",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.1. Присваивания",
+        "locator": "переменная := выражение",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-initial-005"
+    },
+    {
+      "type": "single_choice",
+      "text": "Как выполнить SELECT, результат которого не нужен, но важны побочные эффекты?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Использовать PERFORM",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Использовать DROP RESULT",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Использовать RETURN QUERY всегда",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Использовать VACUUM",
+          "correct": false
+        }
+      ],
+      "explanation": "PERFORM выполняет запрос и отбрасывает его результат.",
+      "source": {
+        "key": "plpgsql1-initial-perform",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.2. Выполнение команд SQL",
+        "locator": "PERFORM",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-initial-006"
+    },
+    {
+      "type": "single_choice",
+      "text": "Как получить одну строку SELECT в переменную PL/pgSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Использовать SELECT ... INTO цель",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Использовать SELECT TABLE",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Использовать \\gset",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только через курсор",
+          "correct": false
+        }
+      ],
+      "explanation": "PL/pgSQL использует INTO для захвата результата SQL-команды в record/row/scalar targets.",
+      "source": {
+        "key": "plpgsql1-initial-select-into",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.3. Выполнение команды, возвращающей одну строку",
+        "locator": "SELECT ... INTO",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-initial-007"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какое значение имеет FOUND сразу при входе в PL/pgSQL-функцию?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "false",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "true",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "NULL всегда",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Число обработанных строк",
+          "correct": false
+        }
+      ],
+      "explanation": "FOUND — специальная boolean-переменная, инициализируемая false при вызове функции.",
+      "source": {
+        "key": "plpgsql1-initial-found",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.5. Статус выполнения команды",
+        "locator": "FOUND",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-initial-008"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какая команда завершает функцию, возвращающую одиночное значение, и отдаёт результат вызывающему коду?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "RETURN выражение",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "RAISE NOTICE",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "CONTINUE",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "PERFORM",
+          "correct": false
+        }
+      ],
+      "explanation": "RETURN выражение прекращает выполнение функции и возвращает значение.",
+      "source": {
+        "key": "plpgsql1-initial-return",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.6.1.1. RETURN",
+        "locator": "RETURN выражение",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-control-structures"
+      },
+      "key": "plpgsql1-initial-009"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие возможности PL/pgSQL перечислены в обзоре?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Создание функций, процедур и триггеров",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Управляющие структуры поверх SQL",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Сложные вычисления",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Использование типов, функций и операторов SQL",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Замена операционной системы",
+          "correct": false
+        }
+      ],
+      "explanation": "Обзор перечисляет эти цели и преимущества языка.",
+      "source": {
+        "key": "plpgsql1-initial-advantages",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.1. Обзор",
+        "locator": "Возможности PL/pgSQL",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-overview#PLPGSQL-ADVANTAGES"
+      },
+      "key": "plpgsql1-initial-010"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о блоках PL/pgSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Операторы обычно завершаются `;`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Блоки можно вкладывать",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "BEGIN/END группируют операторы PL/pgSQL и не равны SQL BEGIN/COMMIT",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Точка с запятой сразу после BEGIN обязательна",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация отдельно предупреждает не путать блочные BEGIN/END с управлением транзакциями.",
+      "source": {
+        "key": "plpgsql1-initial-block-rules",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.2. Структура PL/pgSQL",
+        "locator": "Правила блока",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-structure"
+      },
+      "key": "plpgsql1-initial-011"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что можно задать в объявлении переменной?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "DEFAULT или :=/= для начального значения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "CONSTANT",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "NOT NULL",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "COLLATE",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "ORDER BY",
+          "correct": false
+        }
+      ],
+      "explanation": "Общий синтаксис объявления включает эти модификаторы.",
+      "source": {
+        "key": "plpgsql1-initial-variable-decl",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.3. Объявления",
+        "locator": "Синтаксис переменной",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-declarations"
+      },
+      "key": "plpgsql1-initial-012"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о параметрах функции?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Их можно обозначать как $1, $2 и т. д.",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Имена можно дать прямо в CREATE FUNCTION",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Можно объявить ALIAS FOR $n",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Параметры доступны только через environment variables",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел 43.3.1 описывает цифровые имена и псевдонимы параметров.",
+      "source": {
+        "key": "plpgsql1-initial-params",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.3.1. Объявление параметров функции",
+        "locator": "$1 и ALIAS",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-declarations"
+      },
+      "key": "plpgsql1-initial-013"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие формы условной логики поддерживает PL/pgSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "IF ... THEN",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "IF ... THEN ... ELSE",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "IF ... ELSIF ... ELSE",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "CASE",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "switch как обязательное ключевое слово",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел управляющих структур перечисляет формы IF и CASE.",
+      "source": {
+        "key": "plpgsql1-initial-conditionals",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.6.4. Условные операторы",
+        "locator": "IF и CASE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-control-structures"
+      },
+      "key": "plpgsql1-initial-014"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие циклы рассматриваются в PL/pgSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "LOOP",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "WHILE",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "FOR по диапазону",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "FOR по результатам запроса",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "FOREACH по массиву",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "GOTO LOOP как единственная форма",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава 43.6 перечисляет простые циклы, цикл по результату и FOREACH.",
+      "source": {
+        "key": "plpgsql1-initial-loops",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.6.5–43.6.7",
+        "locator": "Циклы",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-control-structures"
+      },
+      "key": "plpgsql1-initial-015"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о PERFORM?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Выполняет запрос и отбрасывает результат",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Использует синтаксис запроса как SELECT, но ключевое слово SELECT заменяется на PERFORM",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Может изменять FOUND в зависимости от наличия строк",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "PERFORM разрешён только для DDL",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел основных операторов описывает PERFORM и влияние на FOUND.",
+      "source": {
+        "key": "plpgsql1-initial-perform-rules",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.2. Выполнение команд SQL",
+        "locator": "PERFORM и FOUND",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-initial-016"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие операции меняют FOUND по документации?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "SELECT INTO",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "PERFORM",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "INSERT/UPDATE/DELETE/MERGE",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "FETCH",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "MOVE",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "RETURN QUERY",
+          "correct": true
+        },
+        {
+          "key": "g",
+          "text": "Обычный EXECUTE всегда меняет FOUND",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация перечисляет операторы, меняющие FOUND, и отдельно отмечает, что EXECUTE его не меняет.",
+      "source": {
+        "key": "plpgsql1-initial-found-rules",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.5. Статус выполнения команды",
+        "locator": "Операторы, меняющие FOUND",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-initial-017"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о RETURN NEXT и RETURN QUERY?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Они добавляют строки в результирующее множество",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Они не завершают функцию немедленно",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Их можно комбинировать в одной set-returning функции",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Каждый RETURN NEXT закрывает транзакцию",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел 43.6.1.2 описывает накопление результирующего множества.",
+      "source": {
+        "key": "plpgsql1-initial-return-set",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.6.1.2. RETURN NEXT и RETURN QUERY",
+        "locator": "Накопление результата",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-control-structures"
+      },
+      "key": "plpgsql1-initial-018"
+    }
+  ]
+}

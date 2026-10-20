@@ -1,0 +1,674 @@
+{
+  "schema_version": 1,
+  "topic": "psql1-strong",
+  "questions": [
+    {
+      "type": "single_choice",
+      "text": "Что делает параметр `-1` / `--single-transaction`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Оборачивает обработку всех -c/-f в одну транзакцию",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Открывает одно соединение без транзакций",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Ограничивает вывод одной строкой",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Выполняет только первый -c",
+          "correct": false
+        }
+      ],
+      "explanation": "psql выполняет BEGIN перед первым -c/-f и COMMIT после последнего; с ON_ERROR_STOP ошибка приводит к ROLLBACK.",
+      "source": {
+        "key": "psql1-strong-single-transaction",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Параметры",
+        "locator": "-1 / --single-transaction",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-001"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какой exit code возвращает psql при ошибке в скрипте с установленным ON_ERROR_STOP?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "3",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "0",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "1",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "2",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация кодов завершения выделяет код 3 для ошибки скрипта при ON_ERROR_STOP.",
+      "source": {
+        "key": "psql1-strong-exit-code",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Код завершения",
+        "locator": "Код 3",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-002"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что делает ON_ERROR_STOP?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Останавливает обработку скрипта при ошибке вместо обычного продолжения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Отключает stderr",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Останавливает сервер PostgreSQL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Автоматически игнорирует SQLSTATE",
+          "correct": false
+        }
+      ],
+      "explanation": "ON_ERROR_STOP меняет поведение psql при ошибках скрипта и влияет на exit code.",
+      "source": {
+        "key": "psql1-strong-on-error-stop",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Переменные",
+        "locator": "ON_ERROR_STOP",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-003"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что делает `\\gexec`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Выполняет каждое непустое поле результата запроса как SQL-команду",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Сохраняет результат в переменные",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Показывает только описание результата",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Выполняет shell-команду",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\gexec` сначала выполняет query buffer, затем воспринимает поля результата как SQL для выполнения.",
+      "source": {
+        "key": "psql1-strong-gexec",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\gexec",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-004"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что делает `\\bind`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Задаёт параметры для следующего выполнения запроса и использует extended query protocol",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Создаёт серверный prepared statement навсегда",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Связывает роль и пользователя",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Меняет search_path",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\bind` задаёт значения `$1` и т. п. для следующего выполнения запроса.",
+      "source": {
+        "key": "psql1-strong-bind",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\bind",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-005"
+    },
+    {
+      "type": "single_choice",
+      "text": "Для чего служит `\\errverbose`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Повторить последнее серверное сообщение об ошибке с максимальной детализацией",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Показать все запросы из history",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Включить EXPLAIN VERBOSE",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Изменить client_encoding",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\errverbose` повторяет последнюю серверную ошибку как при VERBOSITY=verbose и SHOW_CONTEXT=always.",
+      "source": {
+        "key": "psql1-strong-errverbose",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\errverbose",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-006"
+    },
+    {
+      "type": "single_choice",
+      "text": "Как безопасно подставить переменную psql как SQL-литерал?",
+      "answers": [
+        {
+          "key": "a",
+          "text": ":'имя_переменной'",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": ":имя_переменной без кавычек всегда безопасно для литерала",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "@имя",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "${имя}",
+          "correct": false
+        }
+      ],
+      "explanation": "Форма `:'name'` экранирует значение как SQL literal; для идентификатора используется `:\"name\"`.",
+      "source": {
+        "key": "psql1-strong-safe-interpolation",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Интерполяция SQL",
+        "locator": "Кавычки при подстановке переменных",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-007"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что означает ECHO_HIDDEN=on?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Перед метакомандой, обращающейся к БД, показывать нижележащий SQL-запрос",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Скрывать все ошибки",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Не выполнять запросы вообще",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Печатать только shell-команды",
+          "correct": false
+        }
+      ],
+      "explanation": "ECHO_HIDDEN помогает изучать SQL, который psql генерирует для backslash-команд.",
+      "source": {
+        "key": "psql1-strong-echo-hidden",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Переменные",
+        "locator": "ECHO_HIDDEN",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-008"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что означает FETCH_COUNT > 0?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Результаты SELECT извлекаются и отображаются порциями заданного размера",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "LIMIT автоматически добавляется в SQL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Включается server-side pagination API",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Запрос всегда возвращает не больше FETCH_COUNT строк",
+          "correct": false
+        }
+      ],
+      "explanation": "FETCH_COUNT ограничивает память клиента, отображая результат группами строк.",
+      "source": {
+        "key": "psql1-strong-fetch-count",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Переменные",
+        "locator": "FETCH_COUNT",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-009"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о `-1` и ON_ERROR_STOP?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "-1 работает с одним или несколькими -c/-f",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "psql посылает BEGIN перед первым и COMMIT после последнего",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "При ошибке и ON_ERROR_STOP вместо COMMIT посылается ROLLBACK",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "-1 гарантированно работает как задумано, даже если скрипт сам содержит BEGIN/COMMIT/ROLLBACK",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация отдельно предупреждает про явные transaction-control statements внутри скрипта.",
+      "source": {
+        "key": "psql1-strong-single-transaction-rules",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Параметры",
+        "locator": "-1 вместе с ON_ERROR_STOP",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-010"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие exit codes psql перечислены?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "0 — нормальное завершение",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "1 — критическая ошибка самого psql",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "2 — неудачное соединение неинтерактивного сеанса",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "3 — ошибка скрипта при ON_ERROR_STOP",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "255 — единственный нормальный код",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел «Код завершения» документирует эти четыре значения.",
+      "source": {
+        "key": "psql1-strong-exit-codes",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Код завершения",
+        "locator": "0, 1, 2, 3",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-011"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о `\\gexec`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "NULL-поля результата игнорируются",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Сгенерированные SQL выполняются по порядку строк, слева направо по столбцам",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "При ошибке выполнение остальных продолжается, если ON_ERROR_STOP не установлен",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Сгенерированные значения интерпретируются как psql-метакоманды",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\gexec` передаёт поля результата серверу буквально как SQL-команды.",
+      "source": {
+        "key": "psql1-strong-gexec-rules",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "Поведение \\gexec",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-012"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о `\\gset`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Запрос должен вернуть ровно одну строку",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Каждый столбец сохраняется в отдельную psql-переменную",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Можно задать префикс имён переменных",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Если столбец NULL, соответствующая переменная удаляется",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Если запрос возвращает много строк, psql автоматически берёт последнюю",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация `\\gset` задаёт строгие правила одной строки результата.",
+      "source": {
+        "key": "psql1-strong-gset-rules",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "Поведение \\gset",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-013"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие формы подстановки переменной psql описаны для SQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": ":name",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": ":'name'",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": ":\"name\"",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": ":{?name}",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "${name} является основной SQL-формой psql",
+          "correct": false
+        }
+      ],
+      "explanation": "psql поддерживает обычную подстановку, literal/identifier quoting и проверку существования переменной.",
+      "source": {
+        "key": "psql1-strong-interpolation-forms",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Интерполяция SQL",
+        "locator": "Формы :name",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-014"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о AUTOCOMMIT?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "on является значением по умолчанию",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "При on успешная команда обычно фиксируется автоматически",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "При off psql не фиксирует изменения до явного COMMIT/END",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "При off psql может неявно начать транзакцию перед подходящей командой",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "При off выход без COMMIT всё равно сохраняет изменения",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел специальных переменных описывает поведение AUTOCOMMIT и потерю незафиксированных изменений при выходе.",
+      "source": {
+        "key": "psql1-strong-autocommit",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Переменные",
+        "locator": "AUTOCOMMIT",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-015"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о шаблонах `\\d*` для опытного использования?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Точка разделяет шаблон схемы и объекта",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`*.*` показывает объекты независимо от текущей видимости",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Поддерживаются элементы регулярных выражений вроде классов символов",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Шаблон с точкой никогда не относится к схеме",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел поиска объясняет схему.объект и расширенный pattern matching.",
+      "source": {
+        "key": "psql1-strong-advanced-patterns",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Шаблоны поиска",
+        "locator": "schema.object и regexp элементы",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-016"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о `\\watch`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Повторяет текущий query buffer",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "По умолчанию ждёт 2 секунды между выполнениями",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Можно ограничить количество выполнений параметром count",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Она работает только с SELECT без параметров",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация `\\watch` описывает interval и count.",
+      "source": {
+        "key": "psql1-strong-watch-rules",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Метакоманды",
+        "locator": "\\watch interval/count",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-017"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о `-c` с несколькими SQL-командами в одной строке?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Одна строка -c передаётся серверу как один запрос",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Несколько SQL-команд внутри такой строки сервер обычно выполняет в одной транзакции, если нет явных BEGIN/COMMIT, разделяющих её",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Чтобы избежать такого объединения, можно использовать несколько -c",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Каждая точка с запятой внутри одного -c гарантированно создаёт отдельное клиентское соединение",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация `-c` отдельно описывает транзакционное поведение строки из нескольких SQL-команд.",
+      "source": {
+        "key": "psql1-strong-command-transaction",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Параметры",
+        "locator": "Транзакционное поведение -c",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-018"
+    }
+  ]
+}

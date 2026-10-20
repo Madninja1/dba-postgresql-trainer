@@ -2,13 +2,13 @@ use dba_trainer_domain::{AnswerOptionId, Question, Source, SourceKind};
 
 use ratatui::{
     Frame,
-    layout::{Alignment, Constraint, Direction, Layout},
+    layout::{Alignment, Constraint},
     widgets::{Block, Borders, Paragraph, Wrap},
 };
 
 use crate::{app::App, localization::UiStrings};
 
-use super::common::render_message;
+use super::common::{render_message, vertical_chunks};
 
 pub fn render(frame: &mut Frame, app: &App) {
     let strings = app.strings();
@@ -25,10 +25,7 @@ pub fn render(frame: &mut Frame, app: &App) {
         return;
     };
 
-    let areas = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints([Constraint::Min(3), Constraint::Length(3)])
-        .split(frame.area());
+    let areas = vertical_chunks(frame.area(), &[Constraint::Min(3), Constraint::Length(3)]);
 
     let selected = format_options(strings, question, &result.selected_option_ids);
     let correct = format_options(strings, question, &result.correct_option_ids);

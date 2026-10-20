@@ -1,0 +1,659 @@
+{
+  "schema_version": 1,
+  "topic": "sql1-strong",
+  "questions": [
+    {
+      "type": "single_choice",
+      "text": "Для чего используется LATERAL у подзапроса в FROM?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Чтобы подзапрос мог ссылаться на столбцы предшествующих элементов FROM",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Чтобы автоматически материализовать CTE",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Чтобы запретить корреляцию",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Чтобы создать индекс",
+          "correct": false
+        }
+      ],
+      "explanation": "Без LATERAL подзапрос FROM выполняется независимо от соседних элементов; LATERAL разрешает корреляцию с предыдущими элементами.",
+      "source": {
+        "key": "sql1-strong-lateral",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "7.2.1.5. Подзапросы LATERAL",
+        "locator": "LATERAL",
+        "url": null
+      },
+      "key": "sql1-strong-001"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что добавляет WITH ORDINALITY к результату табличной функции?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Столбец bigint с нумерацией строк начиная с 1",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "UUID каждой строки",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "OID таблицы",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Текущий transaction id",
+          "correct": false
+        }
+      ],
+      "explanation": "WITH ORDINALITY добавляет порядковый столбец к результату табличной функции.",
+      "source": {
+        "key": "sql1-strong-ordinality",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "7.2.1.4. Табличные функции",
+        "locator": "WITH ORDINALITY",
+        "url": null
+      },
+      "key": "sql1-strong-002"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что делают GROUPING SETS, CUBE и ROLLUP?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Позволяют вычислять несколько вариантов группировки в одном запросе",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Создают физические секции таблицы",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Меняют уровень изоляции",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Включают parallel query",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел 7.2.4 описывает более сложные операции группировки через наборы группирования.",
+      "source": {
+        "key": "sql1-strong-grouping-sets",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "7.2.4. GROUPING SETS, CUBE и ROLLUP",
+        "locator": "Наборы группирования",
+        "url": null
+      },
+      "key": "sql1-strong-003"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что делает WITH RECURSIVE?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Позволяет CTE ссылаться на собственный результат через рекурсивную схему вычисления",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Превращает любой SELECT в триггер",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Запрещает UNION",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Создаёт физическую таблицу навсегда",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел 7.8.2 посвящён рекурсивным запросам WITH.",
+      "source": {
+        "key": "sql1-strong-recursive-cte",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "7.8.2. Рекурсивные запросы",
+        "locator": "WITH RECURSIVE",
+        "url": null
+      },
+      "key": "sql1-strong-004"
+    },
+    {
+      "type": "single_choice",
+      "text": "Где непосредственно разрешены вызовы оконных функций по материалу?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В списке SELECT и в ORDER BY",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "В WHERE и GROUP BY",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только в HAVING",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Только в FROM",
+          "correct": false
+        }
+      ],
+      "explanation": "Оконные функции вычисляются после WHERE/GROUP BY/HAVING, поэтому напрямую разрешены в SELECT и ORDER BY.",
+      "source": {
+        "key": "sql1-strong-window-placement",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "3.5. Оконные функции",
+        "locator": "Размещение оконных функций",
+        "url": null
+      },
+      "key": "sql1-strong-005"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что даёт индекс по выражению?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Индексирует результат выражения, а не только исходное значение столбца",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Автоматически создаёт materialized view",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Меняет тип столбца",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Отключает planner",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава 11 отдельно рассматривает индексы по выражениям.",
+      "source": {
+        "key": "sql1-strong-expression-index",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "11.7. Индексы по выражениям",
+        "locator": "Индекс по выражению",
+        "url": null
+      },
+      "key": "sql1-strong-006"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что характеризует частичный индекс?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он содержит записи только для строк, удовлетворяющих условию предиката",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он индексирует только половину столбцов по позиции",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Он существует только внутри транзакции",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Он запрещает WHERE",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел 11.8 описывает индексы, покрывающие подмножество строк.",
+      "source": {
+        "key": "sql1-strong-partial-index",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "11.8. Частичные индексы",
+        "locator": "Предикат частичного индекса",
+        "url": null
+      },
+      "key": "sql1-strong-007"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что означает `EXPLAIN ANALYZE` по сравнению с обычным EXPLAIN?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Запрос реально выполняется и выводятся фактические времена/строки вместе с планом",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Он только парсит SQL без планирования",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Он автоматически создаёт индекс",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Он всегда откатывает DML",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел 14.1.2 описывает выполнение запроса для получения фактических характеристик.",
+      "source": {
+        "key": "sql1-strong-explain-analyze",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "14.1.2. EXPLAIN ANALYZE",
+        "locator": "Фактическое выполнение",
+        "url": null
+      },
+      "key": "sql1-strong-008"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какой уровень изоляции является уровнем по умолчанию PostgreSQL согласно главе о конкурентном доступе?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Read Committed",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Serializable",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Read Uncommitted",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Repeatable Read всегда",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава 13.2.1 рассматривает Read Committed как стандартный уровень PostgreSQL по умолчанию.",
+      "source": {
+        "key": "sql1-strong-read-committed",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "13.2.1. Уровень изоляции Read Committed",
+        "locator": "Уровень по умолчанию",
+        "url": null
+      },
+      "key": "sql1-strong-009"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие утверждения о LATERAL верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Подзапрос LATERAL может ссылаться на предшествующие элементы FROM",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для табличной функции ключевое слово LATERAL необязательно, если её аргументы уже ссылаются на предыдущие элементы",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "LEFT JOIN LATERAL полезен, когда нужно сохранить исходную строку даже при пустом результате правой стороны",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "LATERAL запрещён внутри дерева JOIN",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел 7.2.1.5 описывает коррелированные элементы FROM и примеры LEFT JOIN LATERAL.",
+      "source": {
+        "key": "sql1-strong-lateral-rules",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "7.2.1.5. Подзапросы LATERAL",
+        "locator": "Правила LATERAL",
+        "url": null
+      },
+      "key": "sql1-strong-010"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о рамке окна?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Рамка может быть меньше всего раздела",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "При наличии ORDER BY рамка по умолчанию идёт от начала раздела до текущей строки и равных ей peers",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Без ORDER BY рамка по умолчанию включает все строки раздела",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "PARTITION BY всегда делает рамку ровно из одной строки",
+          "correct": false
+        }
+      ],
+      "explanation": "Введение в оконные функции отдельно объясняет рамку окна и её значения по умолчанию.",
+      "source": {
+        "key": "sql1-strong-window-frame",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "3.5. Оконные функции",
+        "locator": "Рамка окна по умолчанию",
+        "url": null
+      },
+      "key": "sql1-strong-011"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие темы относятся к индексам PostgreSQL в главе 11?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Составные индексы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Индексы по выражениям",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Частичные индексы",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Index-only scan / покрывающие индексы",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "SAVEPOINT",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава 11 содержит отдельные разделы для этих возможностей.",
+      "source": {
+        "key": "sql1-strong-index-topics",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "11. Индексы",
+        "locator": "Составные, выражения, частичные и покрывающие индексы",
+        "url": null
+      },
+      "key": "sql1-strong-012"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о планах EXPLAIN?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Planner может выбрать Seq Scan, Index Scan или Bitmap Scan в зависимости от стоимости",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Условие, не поддерживаемое выбранным индексом, может применяться как Filter",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "ORDER BY иногда может быть удовлетворён порядком индекса без отдельной Sort",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Наличие индекса заставляет planner всегда использовать его",
+          "correct": false
+        }
+      ],
+      "explanation": "Примеры EXPLAIN показывают выбор между различными scan nodes, Filter и использование порядка индекса.",
+      "source": {
+        "key": "sql1-strong-explain-plans",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "14.1.1. Азы EXPLAIN",
+        "locator": "Scan, Filter и ORDER BY",
+        "url": null
+      },
+      "key": "sql1-strong-013"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно об изоляции и блокировках?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Read Committed, Repeatable Read и Serializable рассматриваются как уровни изоляции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "PostgreSQL поддерживает явные блокировки таблиц и строк",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Взаимоблокировки рассматриваются отдельно",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Любая блокировка автоматически означает deadlock",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава 13 разделяет уровни изоляции, явные блокировки и взаимоблокировки.",
+      "source": {
+        "key": "sql1-strong-concurrency",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "13. Управление конкурентным доступом",
+        "locator": "Изоляция и явные блокировки",
+        "url": null
+      },
+      "key": "sql1-strong-014"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие утверждения о рекурсивных CTE соответствуют главе 7?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Они записываются через WITH RECURSIVE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Глава отдельно рассматривает порядок поиска",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Глава отдельно рассматривает выявление циклов",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Рекурсивный CTE обязан изменять данные",
+          "correct": false
+        }
+      ],
+      "explanation": "В подразделах 7.8.2.1 и 7.8.2.2 отдельно рассматриваются порядок поиска и циклы.",
+      "source": {
+        "key": "sql1-strong-recursive-details",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "7.8.2. Рекурсивные запросы",
+        "locator": "Порядок поиска и выявление циклов",
+        "url": null
+      },
+      "key": "sql1-strong-015"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о материализации CTE?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Документация рассматривает материализацию общих табличных выражений отдельно",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Выбор материализации может влиять на возможность совместной оптимизации CTE и внешнего запроса",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Любой CTE всегда физически сохраняется навсегда",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "WITH запрещает optimizer",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел 7.8.3 посвящён материализации CTE и её влиянию на оптимизацию.",
+      "source": {
+        "key": "sql1-strong-cte-materialization",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "7.8.3. Материализация общих табличных выражений",
+        "locator": "Материализация CTE",
+        "url": null
+      },
+      "key": "sql1-strong-016"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие операции могут использовать `ONLY` в контексте наследования, согласно введению?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "SELECT",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "UPDATE",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "DELETE",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "COMMIT",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал про наследование указывает, что SELECT, UPDATE и DELETE поддерживают ONLY для ограничения родительской таблицей.",
+      "source": {
+        "key": "sql1-strong-only",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "3.6. Наследование",
+        "locator": "ONLY",
+        "url": null
+      },
+      "key": "sql1-strong-017"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно об EXPLAIN ANALYZE при изменяющих командах?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Команда фактически выполняется",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Если нельзя допустить сохранение изменений, безопасный шаблон требует явной транзакции и последующего ROLLBACK",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "EXPLAIN ANALYZE автоматически делает ROLLBACK любой команды",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "EXPLAIN ANALYZE никогда не выполняет триггеры",
+          "correct": false
+        }
+      ],
+      "explanation": "Так как ANALYZE реально выполняет оператор, изменяющие команды требуют осторожности.",
+      "source": {
+        "key": "sql1-strong-explain-dml",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "14.1.2. EXPLAIN ANALYZE",
+        "locator": "Осторожность с командами изменения",
+        "url": null
+      },
+      "key": "sql1-strong-018"
+    }
+  ]
+}

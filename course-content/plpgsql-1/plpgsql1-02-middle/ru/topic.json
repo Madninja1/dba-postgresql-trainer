@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "plpgsql-1",
+  "slug": "plpgsql1-middle",
+  "notes_part": 2,
+  "topic_number": 2,
+  "title": "Middle — уверенный PL/pgSQL",
+  "description": "Прикладной PL/pgSQL PostgreSQL 16: %TYPE/%ROWTYPE/RECORD, STRICT, dynamic EXECUTE, diagnostics, exceptions и курсоры.",
+  "sort_order": 20
+}

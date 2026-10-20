@@ -1,0 +1,664 @@
+{
+  "schema_version": 1,
+  "topic": "plpgsql1-middle",
+  "questions": [
+    {
+      "type": "single_choice",
+      "text": "Что даёт `%TYPE` в объявлении переменной?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Наследует тип данных указанной переменной или столбца",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Копирует значение столбца",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Создаёт новый domain",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Возвращает OID типа",
+          "correct": false
+        }
+      ],
+      "explanation": "`%TYPE` позволяет не дублировать тип и автоматически следовать его изменению.",
+      "source": {
+        "key": "plpgsql1-middle-type",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.3.3. Наследование типов данных",
+        "locator": "%TYPE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-declarations"
+      },
+      "key": "plpgsql1-middle-001"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что даёт `%ROWTYPE`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Тип строки существующей таблицы или представления",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Только тип одного столбца",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Тип массива",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Тип курсора",
+          "correct": false
+        }
+      ],
+      "explanation": "`table%ROWTYPE` объявляет переменную-кортеж со структурой строки таблицы/представления.",
+      "source": {
+        "key": "plpgsql1-middle-rowtype",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.3.4. Типы кортежей",
+        "locator": "%ROWTYPE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-declarations"
+      },
+      "key": "plpgsql1-middle-002"
+    },
+    {
+      "type": "single_choice",
+      "text": "Чем RECORD отличается от `%ROWTYPE`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "RECORD не имеет заранее фиксированной структуры и получает её при присваивании строки",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "RECORD всегда равен строке pg_class",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "RECORD нельзя менять",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "RECORD — синоним integer",
+          "correct": false
+        }
+      ],
+      "explanation": "Переменная RECORD приобретает структуру динамически и до первого присваивания её поля недоступны.",
+      "source": {
+        "key": "plpgsql1-middle-record",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.3.5. Тип record",
+        "locator": "RECORD",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-declarations"
+      },
+      "key": "plpgsql1-middle-003"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что означает `INTO STRICT`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Команда должна вернуть ровно одну строку, иначе будет ошибка",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Команда должна вернуть минимум две строки",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Результат всегда игнорируется",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "SQL выполняется в Serializable",
+          "correct": false
+        }
+      ],
+      "explanation": "STRICT приводит к NO_DATA_FOUND при 0 строк и TOO_MANY_ROWS при более чем одной.",
+      "source": {
+        "key": "plpgsql1-middle-strict",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.3. Выполнение команды, возвращающей одну строку",
+        "locator": "INTO STRICT",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-middle-004"
+    },
+    {
+      "type": "single_choice",
+      "text": "Для чего используется EXECUTE в PL/pgSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для выполнения динамически сформированной команды",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для вызова psql-метакоманд",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только для COMMIT",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Для создания переменной",
+          "correct": false
+        }
+      ],
+      "explanation": "EXECUTE принимает строку команды и строит план при каждом выполнении.",
+      "source": {
+        "key": "plpgsql1-middle-execute",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.4. Выполнение динамически формируемых команд",
+        "locator": "EXECUTE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-middle-005"
+    },
+    {
+      "type": "single_choice",
+      "text": "Как безопаснее передавать значения данных в динамический EXECUTE?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Через параметры $1, $2 и предложение USING",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Конкатенировать любые значения без экранирования",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Использовать только dollar quoting неизвестных значений",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Через psql :variables",
+          "correct": false
+        }
+      ],
+      "explanation": "USING сохраняет типы данных и исключает необходимость текстового quoting для значений.",
+      "source": {
+        "key": "plpgsql1-middle-execute-using",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.4. Выполнение динамически формируемых команд",
+        "locator": "EXECUTE ... USING",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-middle-006"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что получает `GET DIAGNOSTICS x = ROW_COUNT`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Число строк, обработанных последней SQL-командой",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Текст последней ошибки",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "PID backend",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Количество аргументов функции",
+          "correct": false
+        }
+      ],
+      "explanation": "ROW_COUNT имеет тип bigint и возвращает число обработанных строк.",
+      "source": {
+        "key": "plpgsql1-middle-row-count",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.5. Статус выполнения команды",
+        "locator": "GET DIAGNOSTICS ROW_COUNT",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-middle-007"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какой оператор открывает обработчик ошибок блока?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "EXCEPTION",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "CATCH",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "ON ERROR",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "RESCUE",
+          "correct": false
+        }
+      ],
+      "explanation": "Блок с EXCEPTION перехватывает заданные условия ошибок.",
+      "source": {
+        "key": "plpgsql1-middle-exception",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.6.8. Обработка ошибок",
+        "locator": "EXCEPTION",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-control-structures"
+      },
+      "key": "plpgsql1-middle-008"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какой тип переменной используется для курсора?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "refcursor",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "jsonb",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "oidvector",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "cstring",
+          "correct": false
+        }
+      ],
+      "explanation": "Курсорные переменные в PL/pgSQL имеют тип refcursor.",
+      "source": {
+        "key": "plpgsql1-middle-refcursor",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.7.1. Объявление курсорных переменных",
+        "locator": "refcursor",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-cursors"
+      },
+      "key": "plpgsql1-middle-009"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о `%TYPE` и `%ROWTYPE`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "%TYPE наследует тип столбца/переменной",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "%ROWTYPE задаёт структуру строки таблицы/представления",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Они уменьшают дублирование типов в функции",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "%ROWTYPE хранит только имя таблицы строкой",
+          "correct": false
+        }
+      ],
+      "explanation": "Обе конструкции связывают объявления PL/pgSQL со схемой данных.",
+      "source": {
+        "key": "plpgsql1-middle-type-rowtype",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.3.3–43.3.4",
+        "locator": "%TYPE и %ROWTYPE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-declarations"
+      },
+      "key": "plpgsql1-middle-010"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что происходит при SELECT ... INTO без STRICT?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Берётся первая строка результата",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Если строк нет, целевые значения становятся NULL",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "FOUND показывает, была ли получена строка",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Более одной строки всегда вызывает TOO_MANY_ROWS",
+          "correct": false
+        }
+      ],
+      "explanation": "Без STRICT остальные строки после первой отбрасываются; наличие строки можно проверить через FOUND.",
+      "source": {
+        "key": "plpgsql1-middle-into-nonstrict",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.3. Выполнение команды, возвращающей одну строку",
+        "locator": "INTO без STRICT",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-middle-011"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие условия ошибок связаны с INTO STRICT?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "NO_DATA_FOUND при отсутствии строк",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "TOO_MANY_ROWS при более чем одной строке",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "DUPLICATE_DATABASE всегда",
+          "correct": false
+        }
+      ],
+      "explanation": "STRICT требует ровно одну строку.",
+      "source": {
+        "key": "plpgsql1-middle-strict-errors",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.3. Выполнение команды, возвращающей одну строку",
+        "locator": "NO_DATA_FOUND / TOO_MANY_ROWS",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-middle-012"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о EXECUTE?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Текст команды вычисляется как text",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "План создаётся при каждом выполнении",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "INTO может принять результат",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "USING передаёт значения параметров",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "EXECUTE всегда использует ранее кешированный generic plan",
+          "correct": false
+        }
+      ],
+      "explanation": "Динамический EXECUTE отличается отсутствием кеширования плана и поддерживает INTO/USING.",
+      "source": {
+        "key": "plpgsql1-middle-execute-rules",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.4. Выполнение динамически формируемых команд",
+        "locator": "EXECUTE INTO USING",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-middle-013"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие функции/форматы рекомендуются для динамических идентификаторов и значений?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "format с %I для идентификаторов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "format с %L для значений при текстовой вставке",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "quote_ident для идентификаторов",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "quote_nullable для значений, которые могут быть NULL",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Неэкранированная конкатенация пользовательского ввода",
+          "correct": false
+        }
+      ],
+      "explanation": "Документация динамического SQL описывает format/quote_* и отдельно рекомендует USING для data values.",
+      "source": {
+        "key": "plpgsql1-middle-dynamic-quoting",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.4. Выполнение динамически формируемых команд",
+        "locator": "format / quote_ident / quote_nullable",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-middle-014"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно об обработчике EXCEPTION?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Если оператор в блоке вызывает ошибку, последующие операторы этого блока пропускаются",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Управление передаётся подходящему WHEN",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Изменения данных внутри блока с ошибкой откатываются, а локальные переменные сохраняют значения",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Любой EXCEPTION завершает всю сессию PostgreSQL",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел обработки ошибок описывает семантику блока и откат изменений.",
+      "source": {
+        "key": "plpgsql1-middle-exception-rules",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.6.8. Обработка ошибок",
+        "locator": "EXCEPTION WHEN",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-control-structures"
+      },
+      "key": "plpgsql1-middle-015"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие операции предусмотрены для курсоров?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "OPEN",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "FETCH",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "MOVE",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "CLOSE",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "VACUUM CURSOR",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава 43.7 разбирает открытие, выборку, перемещение и закрытие курсоров.",
+      "source": {
+        "key": "plpgsql1-middle-cursor-ops",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.7. Использование курсоров",
+        "locator": "OPEN/FETCH/MOVE/CLOSE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-cursors"
+      },
+      "key": "plpgsql1-middle-016"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о RETURN QUERY?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Добавляет строки результата запроса в результирующее множество функции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Имеет вариант RETURN QUERY EXECUTE для динамического запроса",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Может влиять на FOUND",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Всегда немедленно завершает функцию",
+          "correct": false
+        }
+      ],
+      "explanation": "RETURN QUERY накапливает строки и выполнение продолжается.",
+      "source": {
+        "key": "plpgsql1-middle-return-query",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.6.1.2. RETURN NEXT и RETURN QUERY",
+        "locator": "RETURN QUERY / EXECUTE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-control-structures"
+      },
+      "key": "plpgsql1-middle-017"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о RAISE?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Используется для сообщений и ошибок",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Поддерживает разные уровни сообщений",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "RAISE EXCEPTION вызывает ошибку",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "RAISE выполняет COMMIT автоматически",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава 43.9 посвящена сообщениям и ошибкам PL/pgSQL.",
+      "source": {
+        "key": "plpgsql1-middle-raise",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.9.1. Вывод сообщений и ошибок",
+        "locator": "RAISE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-errors-and-messages"
+      },
+      "key": "plpgsql1-middle-018"
+    }
+  ]
+}

@@ -1,0 +1,669 @@
+{
+  "schema_version": 1,
+  "topic": "sql1-initial",
+  "questions": [
+    {
+      "type": "single_choice",
+      "text": "Что в PostgreSQL представляет собой отношение (relation) в базовом объяснении SQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Таблицу",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Индекс",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Транзакцию",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Схему",
+          "correct": false
+        }
+      ],
+      "explanation": "В учебном введении отношение используется как математически точное обозначение таблицы.",
+      "source": {
+        "key": "sql1-initial-relations",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "2.2. Основные понятия",
+        "locator": "Отношение и таблица",
+        "url": null
+      },
+      "key": "sql1-initial-001"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какой оператор создаёт таблицу?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "CREATE TABLE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "INSERT INTO",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "SELECT TABLE",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "ALTER ROW",
+          "correct": false
+        }
+      ],
+      "explanation": "Таблица создаётся командой CREATE TABLE с именами столбцов и их типами.",
+      "source": {
+        "key": "sql1-initial-create-table",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "2.3. Создание таблицы",
+        "locator": "CREATE TABLE",
+        "url": null
+      },
+      "key": "sql1-initial-002"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какой оператор добавляет строки в таблицу?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "INSERT",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "UPDATE",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "SELECT",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "DROP",
+          "correct": false
+        }
+      ],
+      "explanation": "Для добавления строк используется INSERT; список столбцов можно указать явно.",
+      "source": {
+        "key": "sql1-initial-insert",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "2.4. Добавление строк в таблицу",
+        "locator": "INSERT INTO",
+        "url": null
+      },
+      "key": "sql1-initial-003"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что означает `*` в `SELECT * FROM weather`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Все столбцы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Все таблицы базы",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Только первый столбец",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Уникальные строки",
+          "correct": false
+        }
+      ],
+      "explanation": "`*` является краткой записью выбора всех столбцов.",
+      "source": {
+        "key": "sql1-initial-select-star",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "2.5. Выполнение запроса",
+        "locator": "SELECT *",
+        "url": null
+      },
+      "key": "sql1-initial-004"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какое предложение фильтрует отдельные строки до попадания в результат?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "WHERE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "HAVING",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "ORDER BY",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "AS",
+          "correct": false
+        }
+      ],
+      "explanation": "WHERE проверяет логическое условие для строк и оставляет строки, для которых условие истинно.",
+      "source": {
+        "key": "sql1-initial-where",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "2.5. Выполнение запроса",
+        "locator": "WHERE",
+        "url": null
+      },
+      "key": "sql1-initial-005"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какое предложение задаёт порядок строк результата?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "ORDER BY",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "GROUP BY",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "DISTINCT",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "RETURNING",
+          "correct": false
+        }
+      ],
+      "explanation": "ORDER BY используется для явного задания порядка результата.",
+      "source": {
+        "key": "sql1-initial-order-by",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "2.5. Выполнение запроса",
+        "locator": "ORDER BY",
+        "url": null
+      },
+      "key": "sql1-initial-006"
+    },
+    {
+      "type": "single_choice",
+      "text": "Как убрать дублирующиеся строки из результата SELECT?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Использовать DISTINCT",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Использовать DELETE",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Использовать ONLY",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Использовать SAVEPOINT",
+          "correct": false
+        }
+      ],
+      "explanation": "DISTINCT удаляет дубликаты из результата; порядок при этом сам по себе не гарантируется.",
+      "source": {
+        "key": "sql1-initial-distinct",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "2.5. Выполнение запроса",
+        "locator": "DISTINCT",
+        "url": null
+      },
+      "key": "sql1-initial-007"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что происходит с несовпавшими строками левой таблицы при LEFT OUTER JOIN?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Они остаются в результате, а столбцы правой стороны заполняются NULL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Они всегда удаляются",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Они превращаются в дубликаты",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "JOIN завершается ошибкой",
+          "correct": false
+        }
+      ],
+      "explanation": "Левое внешнее соединение сохраняет все строки левой стороны.",
+      "source": {
+        "key": "sql1-initial-left-join",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "2.6. Соединения таблиц",
+        "locator": "LEFT OUTER JOIN",
+        "url": null
+      },
+      "key": "sql1-initial-008"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какая агрегатная функция считает количество строк?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "count",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "avg",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "max",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "sum",
+          "correct": false
+        }
+      ],
+      "explanation": "Введение перечисляет count, sum, avg, max и min как агрегатные функции.",
+      "source": {
+        "key": "sql1-initial-aggregates",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "2.7. Агрегатные функции",
+        "locator": "count",
+        "url": null
+      },
+      "key": "sql1-initial-009"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие утверждения об INSERT поддерживаются материалом?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Можно явно перечислить столбцы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Столбцы можно перечислять в другом порядке",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Можно опустить некоторые столбцы, если это допустимо",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "INSERT всегда требует перечислять все столбцы по физическому порядку",
+          "correct": false
+        }
+      ],
+      "explanation": "Явный список столбцов делает INSERT менее зависимым от порядка столбцов таблицы.",
+      "source": {
+        "key": "sql1-initial-insert-columns",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "2.4. Добавление строк в таблицу",
+        "locator": "Явный список столбцов",
+        "url": null
+      },
+      "key": "sql1-initial-010"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие утверждения о COPY из вводной главы верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "COPY подходит для загрузки большого объёма данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "COPY обычно быстрее INSERT для такой загрузки",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Путь к файлу в показанном примере относится к компьютеру, где работает серверный процесс",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Показанный COPY всегда читает файл с компьютера psql-клиента",
+          "correct": false
+        }
+      ],
+      "explanation": "В примере COPY читает серверный файл и описывается как оптимизированный способ массовой загрузки.",
+      "source": {
+        "key": "sql1-initial-copy",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "2.4. Добавление строк в таблицу",
+        "locator": "COPY FROM файла",
+        "url": null
+      },
+      "key": "sql1-initial-011"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о JOIN в базовом материале?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "JOIN может обращаться к нескольким таблицам",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Self JOIN использует несколько экземпляров одной таблицы",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Для повторяющихся имён столбцов полезно квалифицировать имя таблицей",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Любой JOIN обязан использовать SELECT *",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал показывает обычные JOIN, внешнее соединение и self join с псевдонимами.",
+      "source": {
+        "key": "sql1-initial-joins",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "2.6. Соединения таблиц",
+        "locator": "JOIN и self join",
+        "url": null
+      },
+      "key": "sql1-initial-012"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие агрегаты прямо перечислены в вводной главе?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "count",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "sum",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "avg",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "max",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "min",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "median",
+          "correct": false
+        }
+      ],
+      "explanation": "Эти пять агрегатных функций приведены как базовые примеры.",
+      "source": {
+        "key": "sql1-initial-aggregate-list",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "2.7. Агрегатные функции",
+        "locator": "Список агрегатных функций",
+        "url": null
+      },
+      "key": "sql1-initial-013"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о WHERE и HAVING?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "WHERE фильтрует строки до группировки",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "HAVING фильтрует группы после группировки и вычисления агрегатов",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Условие по неагрегируемому столбцу обычно выгоднее применять в WHERE",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "WHERE предназначен только для фильтрации уже вычисленных агрегатов",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал отдельно объясняет порядок и назначение WHERE и HAVING.",
+      "source": {
+        "key": "sql1-initial-where-having",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "2.7. Агрегатные функции",
+        "locator": "WHERE и HAVING",
+        "url": null
+      },
+      "key": "sql1-initial-014"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие операции изменения данных показаны в вводном материале?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "INSERT",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "UPDATE",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "DELETE",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "VACUUM",
+          "correct": false
+        }
+      ],
+      "explanation": "Главы 2.4, 2.8 и 2.9 показывают добавление, изменение и удаление строк.",
+      "source": {
+        "key": "sql1-initial-dml",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "2.4, 2.8, 2.9",
+        "locator": "INSERT / UPDATE / DELETE",
+        "url": null
+      },
+      "key": "sql1-initial-015"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о транзакции в вводной главе?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "BEGIN начинает явный блок транзакции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "COMMIT фиксирует его изменения",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "ROLLBACK отменяет изменения текущей транзакции",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "SAVEPOINT позволяет откатить часть работы",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "COMMIT отменяет все изменения",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал описывает принцип «всё или ничего», BEGIN/COMMIT/ROLLBACK и точки сохранения.",
+      "source": {
+        "key": "sql1-initial-transactions",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "3.4. Транзакции",
+        "locator": "BEGIN, COMMIT, ROLLBACK, SAVEPOINT",
+        "url": null
+      },
+      "key": "sql1-initial-016"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие утверждения об идентификаторах SQL в PostgreSQL верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Идентификаторы без кавычек приводятся к нижнему регистру",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Двойные кавычки сохраняют регистр идентификатора",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Ключевые слова без кавычек регистронезависимы",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Одинарные кавычки используются для обычного имени таблицы с сохранением регистра",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава синтаксиса различает некавыченные и двойным образом кавыченные идентификаторы.",
+      "source": {
+        "key": "sql1-initial-identifiers",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "4.1.1. Идентификаторы и ключевые слова",
+        "locator": "Регистр и двойные кавычки",
+        "url": null
+      },
+      "key": "sql1-initial-017"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о DELETE без WHERE?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Он удаляет все строки таблицы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Система не обязана просить подтверждение",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Он эквивалентен DROP TABLE",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Он удаляет только первую строку",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал прямо предупреждает, что DELETE FROM table без условия полностью очищает строки таблицы.",
+      "source": {
+        "key": "sql1-initial-delete-all",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "2.9. Удаление данных",
+        "locator": "DELETE без WHERE",
+        "url": null
+      },
+      "key": "sql1-initial-018"
+    }
+  ]
+}

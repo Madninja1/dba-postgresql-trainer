@@ -1,13 +1,13 @@
 use ratatui::{
     Frame,
-    layout::{Alignment, Constraint, Direction, Layout},
+    layout::{Alignment, Constraint},
     style::{Modifier, Style},
     widgets::{Block, Borders, List, ListItem, ListState, Paragraph},
 };
 
 use crate::app::App;
 
-use super::common::render_message;
+use super::common::{render_message, vertical_chunks};
 
 pub fn render(frame: &mut Frame, app: &App) {
     let labs = app.labs_for_selected_course();
@@ -22,14 +22,14 @@ pub fn render(frame: &mut Frame, app: &App) {
         return;
     }
 
-    let areas = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints([
+    let areas = vertical_chunks(
+        frame.area(),
+        &[
             Constraint::Length(3),
             Constraint::Min(5),
             Constraint::Length(3),
-        ])
-        .split(frame.area());
+        ],
+    );
 
     let title = match app.selected_lab_course.as_deref() {
         Some(course) => format!("{} → {}", app.strings().labs_title, course.to_uppercase()),

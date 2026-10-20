@@ -1,13 +1,13 @@
 use ratatui::{
     Frame,
-    layout::{Alignment, Constraint, Direction, Layout},
+    layout::{Alignment, Constraint},
     style::{Modifier, Style},
     widgets::{Block, Borders, List, ListItem, Paragraph},
 };
 
 use crate::app::App;
 
-use super::common::render_message;
+use super::common::{render_message, vertical_chunks};
 
 pub fn render(frame: &mut Frame, app: &App) {
     let courses = app.course_codes();
@@ -22,14 +22,14 @@ pub fn render(frame: &mut Frame, app: &App) {
         return;
     }
 
-    let areas = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints([
+    let areas = vertical_chunks(
+        frame.area(),
+        &[
             Constraint::Length(3),
             Constraint::Min(5),
             Constraint::Length(3),
-        ])
-        .split(frame.area());
+        ],
+    );
 
     let header = Paragraph::new(app.strings().choose_topic_course)
         .alignment(Alignment::Center)

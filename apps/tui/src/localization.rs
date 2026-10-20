@@ -1,6 +1,4 @@
-use dba_trainer_domain::{
-    ProgressLevel, QuestionLimit, StatisticsLimit, TOPIC_PASS_THRESHOLD_PERCENT, TopicMasteryStats,
-};
+use dba_trainer_domain::{ProgressLevel, QuestionLimit, StatisticsLimit, TopicMasteryStats};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum UiLanguage {
@@ -85,6 +83,11 @@ pub struct UiStrings {
     pub result_title: &'static str,
     pub correct_answers_count: &'static str,
     pub result: &'static str,
+    pub pass_criteria: &'static str,
+    pub pass_threshold: &'static str,
+    pub pass_status: &'static str,
+    pub passed: &'static str,
+    pub not_passed: &'static str,
 
     pub overall: &'static str,
     pub overall_statistics: &'static str,
@@ -102,6 +105,8 @@ pub struct UiStrings {
     pub accuracy: &'static str,
     pub mistakes: &'static str,
     pub work_on_mistakes: &'static str,
+    pub review_course_mistakes: &'static str,
+    pub review_topic_mistakes: &'static str,
     pub no_mistakes: &'static str,
     pub last_error: &'static str,
     pub mistake_history: &'static str,
@@ -245,11 +250,18 @@ impl UiStrings {
             return String::new();
         };
 
+        let targets = format!(
+            "{:.0}/{:.0}/{:.0}%",
+            QuestionLimit::Twenty.pass_threshold_percent(),
+            QuestionLimit::Fifty.pass_threshold_percent(),
+            QuestionLimit::All.pass_threshold_percent(),
+        );
+
         if stats.completed_attempts == 0 {
             return if self.main_menu == "Main menu" {
-                format!("no attempts · target {:.0}%", TOPIC_PASS_THRESHOLD_PERCENT)
+                format!("no attempts · targets 20/50/all: {targets}")
             } else {
-                format!("нет попыток · цель {:.0}%", TOPIC_PASS_THRESHOLD_PERCENT)
+                format!("нет попыток · цели 20/50/все: {targets}")
             };
         }
 
@@ -263,12 +275,12 @@ impl UiStrings {
                 format!("лучший {best:.1}% · пройдено с попытки №{attempt}")
             }
             None if self.main_menu == "Main menu" => format!(
-                "best {best:.1}% · {} attempts · target {:.0}%",
-                stats.completed_attempts, TOPIC_PASS_THRESHOLD_PERCENT
+                "best {best:.1}% · {} attempts · targets {targets}",
+                stats.completed_attempts
             ),
             None => format!(
-                "лучший {best:.1}% · попыток {} · цель {:.0}%",
-                stats.completed_attempts, TOPIC_PASS_THRESHOLD_PERCENT
+                "лучший {best:.1}% · попыток {} · цели {targets}",
+                stats.completed_attempts
             ),
         }
     }
@@ -334,6 +346,11 @@ static ENGLISH: UiStrings = UiStrings {
     result_title: "Quiz result",
     correct_answers_count: "Correct answers",
     result: "Result",
+    pass_criteria: "Pass criteria",
+    pass_threshold: "Pass threshold",
+    pass_status: "Status",
+    passed: "Passed",
+    not_passed: "Not passed",
 
     overall: "Overall",
     overall_statistics: "Overall statistics",
@@ -350,7 +367,9 @@ static ENGLISH: UiStrings = UiStrings {
     incorrect_answers_count: "Incorrect answers",
     accuracy: "Accuracy",
     mistakes: "Mistakes",
-    work_on_mistakes: "Work on mistakes",
+    work_on_mistakes: "Review all mistakes",
+    review_course_mistakes: "Review this course section",
+    review_topic_mistakes: "Review this topic",
     no_mistakes: "No mistakes have been recorded yet.",
     last_error: "Last error",
     mistake_history: "Attempt history",
@@ -446,6 +465,11 @@ static RUSSIAN: UiStrings = UiStrings {
     result_title: "Результат теста",
     correct_answers_count: "Правильных ответов",
     result: "Результат",
+    pass_criteria: "Критерий прохождения",
+    pass_threshold: "Проходной порог",
+    pass_status: "Статус",
+    passed: "Пройдено",
+    not_passed: "Не пройдено",
 
     overall: "Общая",
     overall_statistics: "Общая статистика",
@@ -462,7 +486,9 @@ static RUSSIAN: UiStrings = UiStrings {
     incorrect_answers_count: "Неправильных ответов",
     accuracy: "Точность",
     mistakes: "Ошибки",
-    work_on_mistakes: "Работа над ошибками",
+    work_on_mistakes: "Пройти все ошибки",
+    review_course_mistakes: "Пройти ошибки раздела",
+    review_topic_mistakes: "Пройти ошибки темы",
     no_mistakes: "Ошибок пока нет.",
     last_error: "Последняя ошибка",
     mistake_history: "История попыток",

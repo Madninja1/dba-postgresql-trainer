@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "psql-1",
+  "slug": "psql1-strong",
+  "notes_part": 3,
+  "topic_number": 3,
+  "title": "Strong — продвинутый psql",
+  "description": "Продвинутый psql PostgreSQL 16: ON_ERROR_STOP, single-transaction, exit codes, безопасная интерполяция, \\gexec, \\bind и автоматизация.",
+  "sort_order": 30
+}

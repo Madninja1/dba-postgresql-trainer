@@ -1,0 +1,679 @@
+{
+  "schema_version": 1,
+  "topic": "sql1-middle",
+  "questions": [
+    {
+      "type": "single_choice",
+      "text": "Для чего предназначено предложение RETURNING в командах изменения данных?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Вернуть данные из строк, затронутых INSERT/UPDATE/DELETE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Начать транзакцию",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Переименовать таблицу",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Создать индекс",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел 6.4 описывает возврат данных из изменённых строк через RETURNING.",
+      "source": {
+        "key": "sql1-middle-returning",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "6.4. Возврат данных из изменённых строк",
+        "locator": "RETURNING",
+        "url": null
+      },
+      "key": "sql1-middle-001"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что делает внешний ключ?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Поддерживает ссылочную целостность между связанными таблицами",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Автоматически сортирует строки",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Заменяет первичный ключ",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Создаёт представление",
+          "correct": false
+        }
+      ],
+      "explanation": "Внешний ключ запрещает ссылку на отсутствующую строку родительской таблицы согласно заданным правилам.",
+      "source": {
+        "key": "sql1-middle-foreign-key",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "5.4.5. Внешние ключи",
+        "locator": "REFERENCES",
+        "url": null
+      },
+      "key": "sql1-middle-002"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какой объект позволяет присвоить имя запросу и обращаться к нему подобно таблице?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Представление (VIEW)",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "SAVEPOINT",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "DOMAIN",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "SEQUENCE",
+          "correct": false
+        }
+      ],
+      "explanation": "CREATE VIEW создаёт представление на основе запроса.",
+      "source": {
+        "key": "sql1-middle-view",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "3.2. Представления",
+        "locator": "CREATE VIEW",
+        "url": null
+      },
+      "key": "sql1-middle-003"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что отличает оконную функцию от обычной агрегатной в показанном введении?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Оконная функция не схлопывает строки группы в одну выходную строку",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Оконная функция всегда изменяет данные",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Оконная функция запрещает ORDER BY",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Она может работать только без OVER",
+          "correct": false
+        }
+      ],
+      "explanation": "Оконные функции выполняют вычисления по связанному набору строк, сохраняя отдельные строки результата.",
+      "source": {
+        "key": "sql1-middle-window",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "3.5. Оконные функции",
+        "locator": "OVER",
+        "url": null
+      },
+      "key": "sql1-middle-004"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какой оператор проверяет существование хотя бы одной строки в результате подзапроса?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "EXISTS",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "ONLY",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "COALESCE",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "CAST",
+          "correct": false
+        }
+      ],
+      "explanation": "EXISTS относится к выражениям подзапросов и проверяет наличие строк.",
+      "source": {
+        "key": "sql1-middle-exists",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "9.23.1. EXISTS",
+        "locator": "EXISTS",
+        "url": null
+      },
+      "key": "sql1-middle-005"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какая конструкция объединяет результаты совместимых запросов, удаляя дубликаты по умолчанию?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "UNION",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "JOIN",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "LATERAL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "WINDOW",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел 7.4 рассматривает UNION, INTERSECT и EXCEPT как операции сочетания запросов.",
+      "source": {
+        "key": "sql1-middle-setops",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "7.4. Сочетание запросов",
+        "locator": "UNION",
+        "url": null
+      },
+      "key": "sql1-middle-006"
+    },
+    {
+      "type": "single_choice",
+      "text": "Что задаёт PARTITION BY внутри OVER?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Разделение строк на группы-разделы для оконной функции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Физическое секционирование таблицы",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Точку сохранения",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Схему поиска",
+          "correct": false
+        }
+      ],
+      "explanation": "PARTITION BY определяет разделы строк, внутри которых вычисляется оконная функция.",
+      "source": {
+        "key": "sql1-middle-partition-by",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "3.5. Оконные функции",
+        "locator": "PARTITION BY",
+        "url": null
+      },
+      "key": "sql1-middle-007"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какой тип PostgreSQL хранит данные JSON в бинарном декомпозированном представлении и поддерживает индексирование операций JSON?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "jsonb",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "varchar",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "xml только",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "record",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел 8.14 различает json и jsonb; jsonb ориентирован на обработку и индексирование.",
+      "source": {
+        "key": "sql1-middle-jsonb",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "8.14. Типы JSON",
+        "locator": "jsonb",
+        "url": null
+      },
+      "key": "sql1-middle-008"
+    },
+    {
+      "type": "single_choice",
+      "text": "Какая конструкция выбирает первое не-NULL значение из списка выражений?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "COALESCE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "NULLIF",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "GREATEST",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "FILTER",
+          "correct": false
+        }
+      ],
+      "explanation": "COALESCE возвращает первое не-NULL значение среди аргументов.",
+      "source": {
+        "key": "sql1-middle-coalesce",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "9.18.2. COALESCE",
+        "locator": "COALESCE",
+        "url": null
+      },
+      "key": "sql1-middle-009"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие ограничения данных рассматриваются в главе 5?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "CHECK",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "NOT NULL",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "UNIQUE",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "PRIMARY KEY",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "FOREIGN KEY",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "EXCLUDE",
+          "correct": true
+        },
+        {
+          "key": "g",
+          "text": "ORDER BY",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава 5 перечисляет эти типы ограничений целостности.",
+      "source": {
+        "key": "sql1-middle-constraints",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "5.4. Ограничения",
+        "locator": "Типы ограничений",
+        "url": null
+      },
+      "key": "sql1-middle-010"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о SAVEPOINT?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "SAVEPOINT создаётся внутри блока транзакции",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "ROLLBACK TO может отменить изменения после точки сохранения",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "После ROLLBACK TO сама точка сохранения продолжает существовать",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "SAVEPOINT немедленно фиксирует всю транзакцию",
+          "correct": false
+        }
+      ],
+      "explanation": "Вводная глава транзакций описывает частичный откат и повторное использование точки сохранения.",
+      "source": {
+        "key": "sql1-middle-savepoint",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "3.4. Транзакции",
+        "locator": "SAVEPOINT и ROLLBACK TO",
+        "url": null
+      },
+      "key": "sql1-middle-011"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие утверждения об оконных функциях верны?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Вызов оконной функции содержит OVER",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "ORDER BY внутри OVER задаёт порядок обработки строк окна",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "PARTITION BY можно опустить, образовав один раздел",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Оконные функции разрешены непосредственно в WHERE",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел 3.5 описывает OVER, PARTITION BY и ORDER BY окна; фильтрация по результату окна требует вложенного запроса.",
+      "source": {
+        "key": "sql1-middle-window-rules",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "3.5. Оконные функции",
+        "locator": "OVER / PARTITION BY / ORDER BY",
+        "url": null
+      },
+      "key": "sql1-middle-012"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о подзапросах в FROM?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Они образуют табличные выражения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Подзапрос в FROM заключается в скобки",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Ему можно назначить псевдоним",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Он обязан возвращать ровно одну строку",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел 7.2.1.3 описывает табличные подзапросы в FROM.",
+      "source": {
+        "key": "sql1-middle-from-subquery",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "7.2.1.3. Подзапросы",
+        "locator": "Подзапрос в FROM",
+        "url": null
+      },
+      "key": "sql1-middle-013"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о массивах PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для типа можно объявлять столбцы-массивы",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "К элементам массива можно обращаться по индексам",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Массивы поддерживают операции изменения",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Массив всегда обязан иметь ровно один элемент",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава 8.15 рассматривает объявление, ввод, обращение и изменение массивов.",
+      "source": {
+        "key": "sql1-middle-arrays",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "8.15. Массивы",
+        "locator": "Объявление и обращение к массивам",
+        "url": null
+      },
+      "key": "sql1-middle-014"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие условные выражения перечислены в разделе 9.18?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "CASE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "COALESCE",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "NULLIF",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "GREATEST",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "LEAST",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "VACUUM",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел 9.18 содержит эти условные выражения PostgreSQL.",
+      "source": {
+        "key": "sql1-middle-conditional",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "9.18. Условные выражения",
+        "locator": "CASE, COALESCE, NULLIF, GREATEST, LEAST",
+        "url": null
+      },
+      "key": "sql1-middle-015"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о схемах и search_path?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Схемы образуют пространства имён",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "search_path определяет поиск не полностью квалифицированных имён",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Одинаковые имена объектов могут существовать в разных схемах",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Схема всегда равна отдельной базе данных",
+          "correct": false
+        }
+      ],
+      "explanation": "Глава 5.9 рассматривает схемы и путь поиска.",
+      "source": {
+        "key": "sql1-middle-schemas",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "5.9. Схемы",
+        "locator": "Схемы и путь поиска",
+        "url": null
+      },
+      "key": "sql1-middle-016"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Какие операции сочетания запросов рассматриваются вместе?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "UNION",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "INTERSECT",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "EXCEPT",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "UPDATE",
+          "correct": false
+        }
+      ],
+      "explanation": "Раздел 7.4 посвящён UNION, INTERSECT и EXCEPT.",
+      "source": {
+        "key": "sql1-middle-setops-list",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "7.4. Сочетание запросов",
+        "locator": "UNION / INTERSECT / EXCEPT",
+        "url": null
+      },
+      "key": "sql1-middle-017"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Что верно о `FILTER (WHERE ...)` у агрегата?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Фильтр применяется только к входным строкам конкретного агрегата",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Другие агрегаты в том же SELECT могут видеть другой набор строк",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "FILTER заменяет WHERE всего запроса",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "FILTER допустим только у DELETE",
+          "correct": false
+        }
+      ],
+      "explanation": "В примере count с FILTER считает только часть строк, тогда как max продолжает видеть все строки группы.",
+      "source": {
+        "key": "sql1-middle-aggregate-filter",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — Язык SQL",
+        "section": "2.7. Агрегатные функции",
+        "locator": "FILTER (WHERE ...)",
+        "url": null
+      },
+      "key": "sql1-middle-018"
+    }
+  ]
+}

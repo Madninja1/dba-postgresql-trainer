@@ -2,14 +2,14 @@ use dba_trainer_domain::{ActivityStats, Source, SourceKind, StatisticsLimit, Tra
 
 use ratatui::{
     Frame,
-    layout::{Alignment, Constraint, Direction, Layout},
+    layout::{Alignment, Constraint},
     style::{Modifier, Style},
     widgets::{Block, Borders, List, ListItem, ListState, Paragraph, Wrap},
 };
 
 use crate::app::{App, StatisticsView};
 
-use super::common::topic_display_number;
+use super::common::{content_area, topic_display_number, vertical_chunks};
 
 pub fn render(frame: &mut Frame, app: &App) {
     let strings = app.strings();
@@ -121,6 +121,15 @@ pub fn render(frame: &mut Frame, app: &App) {
 
         StatisticsView::Mistakes => render_mistakes(frame, app),
 
+        StatisticsView::MistakeCourse(course_code) => {
+            render_mistake_course(frame, app, course_code)
+        }
+
+        StatisticsView::MistakeTopic {
+            course_code,
+            topic_id,
+        } => render_mistake_topic(frame, app, course_code, *topic_id),
+
         StatisticsView::MistakeDetail => render_mistake_detail(frame, app),
 
         StatisticsView::Activity => render_activity(frame, app),
@@ -144,10 +153,7 @@ fn render_menu(
     selected: usize,
     footer_text: &str,
 ) {
-    let areas = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints([Constraint::Min(5), Constraint::Length(3)])
-        .split(frame.area());
+    let areas = vertical_chunks(frame.area(), &[Constraint::Min(5), Constraint::Length(3)]);
 
     let items = labels
         .iter()
@@ -192,28 +198,98 @@ fn render_mistakes(frame: &mut Frame, app: &App) {
         return;
     }
 
-    let mut labels = Vec::with_capacity(app.mistake_summaries.len() + 1);
+    let course_codes = app.mistake_course_codes();
+    let mut labels = Vec::with_capacity(course_codes.len() + 1);
     labels.push(format!(
         "{} ({})",
         strings.work_on_mistakes,
         app.mistake_summaries.len()
     ));
 
-    labels.extend(app.mistake_summaries.iter().map(|summary| {
+    labels.extend(course_codes.iter().map(|course_code| {
         format!(
-            "{} / {} · {:.1}%    [{}] {} — {}",
-            summary.incorrect_attempts,
-            summary.total_attempts,
-            summary.error_rate_percent(),
-            summary.course_code.to_uppercase(),
-            summary.topic_title,
-            summary.question_text,
+            "{} ({})",
+            course_code.to_uppercase(),
+            app.mistake_count_for_course(course_code),
         )
     }));
 
     render_menu(
         frame,
         strings.mistakes,
+        &labels,
+        app.statistics_selected,
+        strings.footer_statistics,
+    );
+}
+
+fn render_mistake_course(frame: &mut Frame, app: &App, course_code: &str) {
+    let strings = app.strings();
+    let topics = app.mistake_topics_for_course(course_code);
+    let mut labels = Vec::with_capacity(topics.len() + 1);
+
+    labels.push(format!(
+        "{} ({})",
+        strings.review_course_mistakes,
+        app.mistake_count_for_course(course_code),
+    ));
+
+    labels.extend(topics.iter().enumerate().map(|(index, topic)| {
+        let display_number = topic_display_number(&topics, index);
+        format!(
+            "{display_number}. {} ({})",
+            topic.title,
+            app.mistake_count_for_topic(topic.id),
+        )
+    }));
+
+    render_menu(
+        frame,
+        &format!("{} → {}", strings.mistakes, course_code.to_uppercase()),
+        &labels,
+        app.statistics_selected,
+        strings.footer_statistics,
+    );
+}
+
+fn render_mistake_topic(
+    frame: &mut Frame,
+    app: &App,
+    course_code: &str,
+    topic_id: dba_trainer_domain::TopicId,
+) {
+    let strings = app.strings();
+    let summaries = app.mistakes_for_topic(topic_id);
+    let topic_title = app
+        .topic_by_id(topic_id)
+        .map(|topic| topic.title.as_str())
+        .unwrap_or(strings.topic);
+
+    let mut labels = Vec::with_capacity(summaries.len() + 1);
+    labels.push(format!(
+        "{} ({})",
+        strings.review_topic_mistakes,
+        summaries.len()
+    ));
+
+    labels.extend(summaries.iter().map(|summary| {
+        format!(
+            "{} / {} · {:.1}% — {}",
+            summary.incorrect_attempts,
+            summary.total_attempts,
+            summary.error_rate_percent(),
+            summary.question_text.replace('\n', " "),
+        )
+    }));
+
+    render_menu(
+        frame,
+        &format!(
+            "{} → {} → {}",
+            strings.mistakes,
+            course_code.to_uppercase(),
+            topic_title,
+        ),
         &labels,
         app.statistics_selected,
         strings.footer_statistics,
@@ -419,10 +495,7 @@ fn render_message_with_footer(
     footer_text: &str,
     scroll: u16,
 ) {
-    let areas = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints([Constraint::Min(5), Constraint::Length(3)])
-        .split(frame.area());
+    let areas = vertical_chunks(frame.area(), &[Constraint::Min(5), Constraint::Length(3)]);
 
     let body = Paragraph::new(message)
         .wrap(Wrap { trim: false })
@@ -445,14 +518,11 @@ fn render_detail(frame: &mut Frame, app: &App, title: &str) {
             .alignment(Alignment::Center)
             .block(Block::default().title(title).borders(Borders::ALL));
 
-        frame.render_widget(paragraph, frame.area());
+        frame.render_widget(paragraph, content_area(frame.area()));
         return;
     };
 
-    let areas = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints([Constraint::Min(8), Constraint::Length(3)])
-        .split(frame.area());
+    let areas = vertical_chunks(frame.area(), &[Constraint::Min(8), Constraint::Length(3)]);
 
     let message = format!(
         "{}: {}\n{}: {}\n\n{}: {}\n{}: {}\n{}: {}\n\n{}: {:.1}%",

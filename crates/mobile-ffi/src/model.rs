@@ -334,6 +334,8 @@ impl From<SessionProgress> for MobileSessionProgress {
             QuizScope::Course(course_code) => (None, Some(course_code), false),
             QuizScope::AllTopics => (None, None, false),
             QuizScope::Mistakes => (None, None, true),
+            QuizScope::MistakesCourse(course_code) => (None, Some(course_code), true),
+            QuizScope::MistakesTopic(topic_id) => (Some(topic_id.0), None, true),
         };
 
         Self {

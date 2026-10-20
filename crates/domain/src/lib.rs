@@ -20,6 +20,7 @@ pub use progress::{
 pub use session::{
     AnswerResult, QuestionLimit, QuizScope, QuizSession, SessionConfig, SessionProgress,
     StatisticsFilter, StatisticsLimit, StatisticsScope, TrainingStats,
+    pass_threshold_percent_for_requested_count,
 };
 
 pub use source::{Source, SourceKind};

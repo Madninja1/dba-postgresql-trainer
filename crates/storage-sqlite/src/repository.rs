@@ -6,11 +6,11 @@ use dba_trainer_application::{
 
 use dba_trainer_domain::{
     ActivityStats, AnswerOption, AnswerOptionId, AnswerResult, CourseProgress, DailyActivity, Lab,
-    Question, QuestionAttemptHistory, QuestionId, QuestionMistakeDetail, QuestionMistakeSummary,
-    QuestionType, QuizScope, QuizSession, STUDY_DAY_QUESTION_TARGET, SessionConfig, SessionId,
-    SessionProgress, Source, SourceId, SourceKind, StatisticsFilter, StatisticsLimit,
-    StatisticsScope, TOPIC_PASS_THRESHOLD_PERCENT, Topic, TopicId, TopicMasteryStats,
-    TrainingStats,
+    Question, QuestionAttemptHistory, QuestionId, QuestionLimit, QuestionMistakeDetail,
+    QuestionMistakeSummary, QuestionType, QuizScope, QuizSession, STUDY_DAY_QUESTION_TARGET,
+    SessionConfig, SessionId, SessionProgress, Source, SourceId, SourceKind, StatisticsFilter,
+    StatisticsLimit, StatisticsScope, Topic, TopicId, TopicMasteryStats, TrainingStats,
+    pass_threshold_percent_for_requested_count,
 };
 
 use rusqlite::{Connection, OptionalExtension, params};
@@ -227,6 +227,7 @@ impl TopicRepository for SqliteRepository {
                 "
                 SELECT
                     s.id,
+                    s.requested_count,
                     COUNT(a.id),
                     COALESCE(SUM(a.is_correct), 0)
                 FROM quiz_sessions s
@@ -236,7 +237,8 @@ impl TopicRepository for SqliteRepository {
                   AND s.topic_id = ?1
                   AND s.finished_at IS NOT NULL
                   AND s.cancelled_at IS NULL
-                GROUP BY s.id
+                  AND s.is_review = 0
+                GROUP BY s.id, s.requested_count
                 ORDER BY s.finished_at, s.id
                 ",
             )
@@ -246,8 +248,9 @@ impl TopicRepository for SqliteRepository {
             .query_map(params![topic_id.0], |row| {
                 Ok((
                     row.get::<_, i64>(0)?,
-                    row.get::<_, i64>(1)?,
+                    row.get::<_, Option<i64>>(1)?,
                     row.get::<_, i64>(2)?,
+                    row.get::<_, i64>(3)?,
                 ))
             })
             .map_err(repository_error)?;
@@ -260,7 +263,8 @@ impl TopicRepository for SqliteRepository {
         let mut best_answered_questions = 0usize;
         let mut attempts_to_pass = None;
 
-        for (index, (_, answered, correct)) in attempts.iter().enumerate() {
+        for (index, (_, requested_count, answered, correct)) in attempts.iter().enumerate() {
+            let requested_count = requested_count.map(|value| value as usize);
             let answered = *answered as usize;
             let correct = *correct as usize;
 
@@ -274,7 +278,8 @@ impl TopicRepository for SqliteRepository {
 
             if attempts_to_pass.is_none()
                 && answered > 0
-                && (correct as f64 / answered as f64) * 100.0 >= TOPIC_PASS_THRESHOLD_PERCENT
+                && (correct as f64 / answered as f64) * 100.0
+                    >= pass_threshold_percent_for_requested_count(requested_count)
             {
                 attempts_to_pass = Some(index + 1);
             }
@@ -704,12 +709,22 @@ impl LearningHistoryRepository for SqliteRepository {
                           AND s.is_review = 0
                           AND t.is_active = 1
                           AND t.course_code = ?1
-                        GROUP BY s.id, s.topic_id
+                        GROUP BY s.id, s.topic_id, s.requested_count
                         HAVING COUNT(a.id) > 0
-                           AND (SUM(a.is_correct) * 100.0 / COUNT(a.id)) >= ?2
+                           AND (SUM(a.is_correct) * 100.0 / COUNT(a.id)) >= CASE
+                               WHEN s.requested_count = 20 THEN ?2
+                               WHEN s.requested_count = 50 THEN ?3
+                               WHEN s.requested_count IS NULL THEN ?4
+                               ELSE ?2
+                           END
                     ) passed_sessions
                     ",
-                    params![course_code, TOPIC_PASS_THRESHOLD_PERCENT],
+                    params![
+                        course_code,
+                        QuestionLimit::Twenty.pass_threshold_percent(),
+                        QuestionLimit::Fifty.pass_threshold_percent(),
+                        QuestionLimit::All.pass_threshold_percent(),
+                    ],
                     |row| row.get::<_, i64>(0),
                 )
                 .map_err(repository_error)?;
@@ -768,6 +783,12 @@ impl SessionRepository for SqliteRepository {
             QuizScope::AllTopics => ("all", None, None, false),
 
             QuizScope::Mistakes => ("all", None, None, true),
+
+            QuizScope::MistakesCourse(course_code) => {
+                ("all", None, Some(course_code.as_str()), true)
+            }
+
+            QuizScope::MistakesTopic(topic_id) => ("topic", Some(topic_id.0), None, true),
         };
 
         let requested_count = config.limit.as_limit().map(|value| value as i64);
@@ -1196,6 +1217,7 @@ impl SessionRepository for SqliteRepository {
                 s.topic_id,
                 s.course_code,
                 s.is_review,
+                s.requested_count,
                 s.current_index,
 
                 (
@@ -1236,10 +1258,11 @@ impl SessionRepository for SqliteRepository {
                         row.get::<_, Option<i64>>(2)?,
                         row.get::<_, Option<String>>(3)?,
                         row.get::<_, i64>(4)? != 0,
-                        row.get::<_, i64>(5)?,
+                        row.get::<_, Option<i64>>(5)?,
                         row.get::<_, i64>(6)?,
                         row.get::<_, i64>(7)?,
                         row.get::<_, i64>(8)?,
+                        row.get::<_, i64>(9)?,
                     ))
                 },
             )
@@ -1252,6 +1275,7 @@ impl SessionRepository for SqliteRepository {
             topic_id,
             course_code,
             is_review,
+            requested_count,
             current_index,
             total_questions,
             answered_questions,
@@ -1261,28 +1285,33 @@ impl SessionRepository for SqliteRepository {
             return Ok(None);
         };
 
-        let scope = if is_review {
-            QuizScope::Mistakes
-        } else {
-            match scope.as_str() {
-                "topic" => {
-                    let topic_id = topic_id.ok_or_else(|| {
-                        RepositoryError::InvalidState(String::from("topic session has no topic_id"))
-                    })?;
+        let scope = match (is_review, scope.as_str(), topic_id, course_code) {
+            (true, "topic", Some(topic_id), _) => QuizScope::MistakesTopic(TopicId(topic_id)),
+            (true, "all", _, Some(course_code)) => QuizScope::MistakesCourse(course_code),
+            (true, "all", _, None) => QuizScope::Mistakes,
+            (false, "topic", Some(topic_id), _) => QuizScope::Topic(TopicId(topic_id)),
+            (false, "all", _, Some(course_code)) => QuizScope::Course(course_code),
+            (false, "all", _, None) => QuizScope::AllTopics,
+            (_, "topic", None, _) => {
+                return Err(RepositoryError::InvalidState(String::from(
+                    "topic session has no topic_id",
+                )));
+            }
+            (_, other, _, _) => {
+                return Err(RepositoryError::InvalidState(format!(
+                    "unknown session scope: {other}"
+                )));
+            }
+        };
 
-                    QuizScope::Topic(TopicId(topic_id))
-                }
-
-                "all" => match course_code {
-                    Some(course_code) => QuizScope::Course(course_code),
-                    None => QuizScope::AllTopics,
-                },
-
-                other => {
-                    return Err(RepositoryError::InvalidState(format!(
-                        "unknown session scope: {other}"
-                    )));
-                }
+        let limit = match requested_count {
+            Some(20) => QuestionLimit::Twenty,
+            Some(50) => QuestionLimit::Fifty,
+            None => QuestionLimit::All,
+            Some(other) => {
+                return Err(RepositoryError::InvalidState(format!(
+                    "unknown requested question count: {other}"
+                )));
             }
         };
 
@@ -1290,6 +1319,8 @@ impl SessionRepository for SqliteRepository {
             id: SessionId(session_id),
 
             scope,
+
+            limit,
 
             current_index: current_index as usize,
 
@@ -1634,6 +1665,7 @@ mod tests {
             .expect("active session should exist");
 
         assert_eq!(active.scope, QuizScope::Course(String::from("dba-1")));
+        assert_eq!(active.limit, QuestionLimit::All);
     }
 
     #[test]
@@ -1902,6 +1934,92 @@ mod tests {
     }
 
     #[test]
+    fn topic_mastery_uses_threshold_for_each_quiz_mode() {
+        let mut repository = seeded_repository();
+
+        repository
+            .connection
+            .execute_batch(
+                "
+                INSERT INTO questions (
+                    id,
+                    topic_id,
+                    source_id,
+                    text,
+                    explanation
+                )
+                VALUES
+                    (2, 1, 1, 'Question 2?', 'Explanation 2'),
+                    (3, 1, 1, 'Question 3?', 'Explanation 3'),
+                    (4, 1, 1, 'Question 4?', 'Explanation 4'),
+                    (5, 1, 1, 'Question 5?', 'Explanation 5');
+
+                INSERT INTO answer_options (
+                    id,
+                    question_id,
+                    text,
+                    is_correct,
+                    sort_order
+                )
+                VALUES
+                    (3, 2, 'Correct 2', 1, 1),
+                    (4, 2, 'Incorrect 2', 0, 2),
+                    (5, 3, 'Correct 3', 1, 1),
+                    (6, 3, 'Incorrect 3', 0, 2),
+                    (7, 4, 'Correct 4', 1, 1),
+                    (8, 4, 'Incorrect 4', 0, 2),
+                    (9, 5, 'Correct 5', 1, 1),
+                    (10, 5, 'Incorrect 5', 0, 2);
+                ",
+            )
+            .expect("additional questions should be inserted");
+
+        for (attempt_index, limit) in [QuestionLimit::Twenty, QuestionLimit::All]
+            .into_iter()
+            .enumerate()
+        {
+            let session = repository
+                .start_session(&SessionConfig {
+                    scope: QuizScope::Topic(TopicId(1)),
+                    limit,
+                })
+                .expect("topic session should start");
+
+            for answer_index in 0..5 {
+                let question = repository
+                    .current_question(session.id)
+                    .expect("question should load")
+                    .expect("question should exist");
+                let correct_option_id = question.id.0 * 2 - 1;
+                let incorrect_option_id = question.id.0 * 2;
+                let selected_option_id = if answer_index < 3 {
+                    correct_option_id
+                } else {
+                    incorrect_option_id
+                };
+
+                repository
+                    .submit_answer(
+                        session.id,
+                        question.id,
+                        &[AnswerOptionId(selected_option_id)],
+                    )
+                    .expect("answer should be accepted");
+            }
+
+            let mastery = repository
+                .topic_mastery(TopicId(1))
+                .expect("mastery should load");
+
+            if attempt_index == 0 {
+                assert_eq!(mastery.attempts_to_pass, None);
+            } else {
+                assert_eq!(mastery.attempts_to_pass, Some(2));
+            }
+        }
+    }
+
+    #[test]
     fn mistake_history_can_start_review_without_changing_main_statistics() {
         let mut repository = seeded_repository();
         let config = SessionConfig {
@@ -1963,6 +2081,60 @@ mod tests {
         assert_eq!(detail.attempts.len(), 2);
         assert_eq!(detail.summary.incorrect_attempts, 1);
         assert_eq!(detail.summary.total_attempts, 2);
+    }
+
+    #[test]
+    fn filtered_mistake_review_preserves_scope_when_resumed() {
+        let mut repository = seeded_repository();
+        let session = repository
+            .start_session(&SessionConfig {
+                scope: QuizScope::Topic(TopicId(1)),
+                limit: QuestionLimit::Twenty,
+            })
+            .expect("topic session should start");
+
+        repository
+            .submit_answer(session.id, QuestionId(1), &[AnswerOptionId(2)])
+            .expect("wrong answer should create mistake history");
+
+        let course_review = repository
+            .start_session(&SessionConfig {
+                scope: QuizScope::MistakesCourse(String::from("dba-1")),
+                limit: QuestionLimit::Fifty,
+            })
+            .expect("course mistake review should start");
+
+        let active = repository
+            .active_session()
+            .expect("active review should load")
+            .expect("active review should exist");
+        assert_eq!(
+            active.scope,
+            QuizScope::MistakesCourse(String::from("dba-1"))
+        );
+        assert_eq!(active.limit, QuestionLimit::Fifty);
+
+        repository
+            .cancel_session(course_review.id)
+            .expect("course review should cancel");
+
+        let topic_review = repository
+            .start_session(&SessionConfig {
+                scope: QuizScope::MistakesTopic(TopicId(1)),
+                limit: QuestionLimit::All,
+            })
+            .expect("topic mistake review should start");
+
+        let active = repository
+            .active_session()
+            .expect("active topic review should load")
+            .expect("active topic review should exist");
+        assert_eq!(active.scope, QuizScope::MistakesTopic(TopicId(1)));
+        assert_eq!(active.limit, QuestionLimit::All);
+
+        repository
+            .cancel_session(topic_review.id)
+            .expect("topic review should cancel");
     }
 
     #[test]
