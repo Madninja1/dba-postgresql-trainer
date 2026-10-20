@@ -703,7 +703,11 @@ internal object IntegrityCheckingUniffiLib {
     ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_start_course_session(
     ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_start_mistake_course_session(
+    ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_start_mistake_session(
+    ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_start_mistake_topic_session(
     ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_start_topic_session(
     ): Int
@@ -769,11 +773,11 @@ internal object UniffiLib {
     ): RustBuffer.ByValue
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_start_course_session(`ptr`: Long,`courseCode`: RustBuffer.ByValue,`limit`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_start_mistake_course_session(`ptr`: Long,`courseCode`: RustBuffer.ByValue,`limit`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_start_mistake_session(`ptr`: Long,`limit`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_start_mistake_course_session(`ptr`: Long,`courseCode`: RustBuffer.ByValue,`limit`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus,
-    ): RustBuffer.ByValue
-    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_start_mistake_topic_session(`ptr`: Long,`topicId`: Long,`limit`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus,
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_start_mistake_topic_session(`ptr`: Long,`topicId`: Long,`limit`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_start_topic_session(`ptr`: Long,`topicId`: Long,`limit`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
@@ -951,7 +955,13 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
     if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_start_course_session() and 0xFFFF) != 62481) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_start_mistake_course_session() and 0xFFFF) != 59940) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_start_mistake_session() and 0xFFFF) != 53929) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_start_mistake_topic_session() and 0xFFFF) != 8022) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_start_topic_session() and 0xFFFF) != 24608) {
@@ -1404,12 +1414,12 @@ public interface MobileTrainerInterface {
     
     fun `startCourseSession`(`courseCode`: kotlin.String, `limit`: MobileQuestionLimit): MobileQuizSession
     
+    fun `startMistakeCourseSession`(`courseCode`: kotlin.String, `limit`: MobileQuestionLimit): MobileQuizSession
+    
     fun `startMistakeSession`(`limit`: MobileQuestionLimit): MobileQuizSession
     
-    fun `startMistakeCourseSession`(`courseCode`: kotlin.String, `limit`: MobileQuestionLimit): MobileQuizSession
-
     fun `startMistakeTopicSession`(`topicId`: kotlin.Long, `limit`: MobileQuestionLimit): MobileQuizSession
-
+    
     fun `startTopicSession`(`topicId`: kotlin.Long, `limit`: MobileQuestionLimit): MobileQuizSession
     
     fun `statisticsAll`(`limit`: MobileStatisticsLimit): MobileTrainingStats
@@ -1696,6 +1706,22 @@ open class MobileTrainer: Disposable, AutoCloseable, MobileTrainerInterface
     
 
     
+    @Throws(MobileException::class)override fun `startMistakeCourseSession`(`courseCode`: kotlin.String, `limit`: MobileQuestionLimit): MobileQuizSession {
+            return FfiConverterTypeMobileQuizSession.lift(
+    callWithHandle {
+    uniffiRustCallWithError(MobileException) { _status ->
+    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_start_mistake_course_session(
+        it,
+        
+        FfiConverterString.lower(`courseCode`),
+        FfiConverterTypeMobileQuestionLimit.lower(`limit`),_status)
+}
+    }
+    )
+    }
+    
+
+    
     @Throws(MobileException::class)override fun `startMistakeSession`(`limit`: MobileQuestionLimit): MobileQuizSession {
             return FfiConverterTypeMobileQuizSession.lift(
     callWithHandle {
@@ -1711,38 +1737,22 @@ open class MobileTrainer: Disposable, AutoCloseable, MobileTrainerInterface
     
 
     
-    @Throws(MobileException::class)override fun `startMistakeCourseSession`(`courseCode`: kotlin.String, `limit`: MobileQuestionLimit): MobileQuizSession {
-            return FfiConverterTypeMobileQuizSession.lift(
-    callWithHandle {
-    uniffiRustCallWithError(MobileException) { _status ->
-    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_start_mistake_course_session(
-        it,
-
-        FfiConverterString.lower(`courseCode`),
-        FfiConverterTypeMobileQuestionLimit.lower(`limit`),_status)
-}
-    }
-    )
-    }
-
-
-
     @Throws(MobileException::class)override fun `startMistakeTopicSession`(`topicId`: kotlin.Long, `limit`: MobileQuestionLimit): MobileQuizSession {
             return FfiConverterTypeMobileQuizSession.lift(
     callWithHandle {
     uniffiRustCallWithError(MobileException) { _status ->
     UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_start_mistake_topic_session(
         it,
-
+        
         FfiConverterLong.lower(`topicId`),
         FfiConverterTypeMobileQuestionLimit.lower(`limit`),_status)
 }
     }
     )
     }
+    
 
-
-
+    
     @Throws(MobileException::class)override fun `startTopicSession`(`topicId`: kotlin.Long, `limit`: MobileQuestionLimit): MobileQuizSession {
             return FfiConverterTypeMobileQuizSession.lift(
     callWithHandle {
