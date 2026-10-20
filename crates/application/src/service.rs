@@ -62,6 +62,10 @@ where
             .submit_answer(session_id, question_id, answer_option_ids)
     }
 
+    pub fn unfinished_sessions(&self) -> Result<Vec<SessionProgress>, RepositoryError> {
+        self.repository.unfinished_sessions()
+    }
+
     pub fn active_session(&self) -> Result<Option<SessionProgress>, RepositoryError> {
         self.repository.active_session()
     }
@@ -221,8 +225,8 @@ mod tests {
             })
         }
 
-        fn active_session(&self) -> Result<Option<SessionProgress>, RepositoryError> {
-            Ok(None)
+        fn unfinished_sessions(&self) -> Result<Vec<SessionProgress>, RepositoryError> {
+            Ok(Vec::new())
         }
 
         fn cancel_session(&mut self, _session_id: SessionId) -> Result<(), RepositoryError> {

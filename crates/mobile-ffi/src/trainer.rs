@@ -255,6 +255,15 @@ impl MobileTrainer {
             .map_err(to_mobile_error)
     }
 
+    pub fn unfinished_sessions(&self) -> Result<Vec<MobileSessionProgress>, MobileError> {
+        let service = self.service()?;
+
+        service
+            .unfinished_sessions()
+            .map(|sessions| sessions.into_iter().map(MobileSessionProgress::from).collect())
+            .map_err(to_mobile_error)
+    }
+
     pub fn active_session(&self) -> Result<Option<MobileSessionProgress>, MobileError> {
         let service = self.service()?;
 

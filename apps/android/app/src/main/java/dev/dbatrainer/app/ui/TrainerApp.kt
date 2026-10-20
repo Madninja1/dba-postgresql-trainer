@@ -1,22 +1,30 @@
 package dev.dbatrainer.app.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -35,6 +43,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -54,6 +63,7 @@ import dev.dbatrainer.ffi.MobileLab
 import dev.dbatrainer.ffi.MobileQuestion
 import dev.dbatrainer.ffi.MobileQuestionLimit
 import dev.dbatrainer.ffi.MobileQuestionMistakeSummary
+import dev.dbatrainer.ffi.MobileSessionProgress
 import dev.dbatrainer.ffi.MobileQuestionType
 import dev.dbatrainer.ffi.MobileSource
 import dev.dbatrainer.ffi.MobileTopic
@@ -88,6 +98,7 @@ fun TrainerApp(controller: TrainerController) {
         ) {
             when (controller.screen) {
                 AppScreen.Home -> HomeScreen(controller)
+                AppScreen.UnfinishedQuizzes -> UnfinishedQuizzesScreen(controller)
                 AppScreen.TopicCourses -> TopicCoursesScreen(controller)
                 AppScreen.Topics -> TopicsScreen(controller)
                 AppScreen.Courses -> CoursesScreen(controller)
@@ -106,37 +117,6 @@ fun TrainerApp(controller: TrainerController) {
         }
     }
 
-    controller.resumeSession?.let { progress ->
-        AlertDialog(
-            onDismissRequest = {},
-            title = {
-                Text(strings.unfinishedQuiz)
-            },
-            text = {
-                Text(
-                    strings.resumeMessage(
-                        progress.answeredQuestions,
-                        progress.totalQuestions,
-                    ),
-                )
-            },
-            confirmButton = {
-                Button(
-                    onClick = controller::continueSavedSession,
-                ) {
-                    Text(strings.continueQuiz)
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = controller::discardSavedSession,
-                ) {
-                    Text(strings.cancelQuiz)
-                }
-            },
-        )
-    }
-
     if (controller.showCancelDialog) {
         AlertDialog(
             onDismissRequest = controller::dismissCancelDialog,
@@ -148,16 +128,53 @@ fun TrainerApp(controller: TrainerController) {
             },
             confirmButton = {
                 Button(
-                    onClick = controller::confirmCancelQuiz,
+                    onClick = controller::saveAndExitQuiz,
+                ) {
+                    Text(strings.saveAndExitQuiz)
+                }
+            },
+            dismissButton = {
+                Column(
+                    horizontalAlignment = Alignment.End,
+                ) {
+                    TextButton(
+                        onClick = controller::confirmCancelQuiz,
+                    ) {
+                        Text(strings.cancelQuiz)
+                    }
+                    TextButton(
+                        onClick = controller::dismissCancelDialog,
+                    ) {
+                        Text(strings.stayInQuiz)
+                    }
+                }
+            },
+        )
+    }
+
+    controller.pendingDiscardSession?.let { session ->
+        AlertDialog(
+            onDismissRequest = controller::dismissDiscardSavedSession,
+            title = {
+                Text(strings.cancelQuiz)
+            },
+            text = {
+                Text(
+                    "${strings.interruptQuizMessage}\n\n${controller.sessionTitle(session)}",
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = controller::confirmDiscardSavedSession,
                 ) {
                     Text(strings.cancelQuiz)
                 }
             },
             dismissButton = {
                 TextButton(
-                    onClick = controller::dismissCancelDialog,
+                    onClick = controller::dismissDiscardSavedSession,
                 ) {
-                    Text(strings.continueQuiz)
+                    Text(strings.back)
                 }
             },
         )
@@ -190,8 +207,11 @@ private fun HomeScreen(controller: TrainerController) {
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(24.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        contentPadding = PaddingValues(
+            horizontal = LayoutSpacing.screenHorizontal,
+            vertical = LayoutSpacing.screenVertical,
+        ),
+        verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
     ) {
         item {
             Text(
@@ -233,6 +253,17 @@ private fun HomeScreen(controller: TrainerController) {
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(strings.generalQuiz)
+            }
+        }
+
+        if (controller.unfinishedSessions.isNotEmpty()) {
+            item {
+                OutlinedButton(
+                    onClick = controller::openUnfinishedQuizzes,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text("${strings.unfinishedQuizzes} (${controller.unfinishedSessions.size})")
+                }
             }
         }
 
@@ -301,6 +332,89 @@ private fun HomeScreen(controller: TrainerController) {
 }
 
 @Composable
+private fun UnfinishedQuizzesScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
+    val sessions = controller.unfinishedSessions
+
+    TrainerScaffold(
+        title = strings.unfinishedQuizzes,
+        onBack = controller::back,
+    ) { modifier ->
+        if (sessions.isEmpty()) {
+            EmptyMessage(
+                text = strings.noUnfinishedQuizzes,
+                modifier = modifier,
+            )
+            return@TrainerScaffold
+        }
+
+        LazyColumn(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
+        ) {
+            items(
+                items = sessions,
+                key = { session -> session.id },
+            ) { session ->
+                UnfinishedQuizCard(
+                    controller = controller,
+                    session = session,
+                    onContinue = { controller.continueSavedSession(session) },
+                    onCancel = { controller.requestDiscardSavedSession(session) },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun UnfinishedQuizCard(
+    controller: TrainerController,
+    session: MobileSessionProgress,
+    onContinue: () -> Unit,
+    onCancel: () -> Unit,
+) {
+    val strings = LocalUiStrings.current
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(
+            modifier = Modifier.padding(LayoutSpacing.card),
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
+        ) {
+            Text(
+                text = controller.sessionTitle(session),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = "${strings.answeredQuestions}: ${session.answeredQuestions} / ${session.totalQuestions} · ${controller.questionLimitTitle(session.questionLimit)}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            LinearProgressIndicator(
+                progress = {
+                    if (session.totalQuestions == 0UL) 0f
+                    else session.answeredQuestions.toFloat() / session.totalQuestions.toFloat()
+                },
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
+            ) {
+                Button(onClick = onContinue) {
+                    Text(strings.continueQuiz)
+                }
+                TextButton(onClick = onCancel) {
+                    Text(strings.cancelQuiz)
+                }
+            }
+        }
+    }
+}
+
+@Composable
 private fun LanguageButton(
     text: String,
     selected: Boolean,
@@ -354,29 +468,22 @@ private fun TopicsScreen(controller: TrainerController) {
 
         LazyColumn(
             modifier = modifier,
-            contentPadding = PaddingValues(vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
         ) {
             itemsIndexed(
                 items = topics,
                 key = { _, topic -> topic.id },
             ) { index, topic ->
-                Column {
-                    if (startsNewTopicBlock(topics, index)) {
-                        Spacer(Modifier.height(12.dp))
-                    }
-
-                    TopicCard(
-                        topic = topic,
-                        displayNumber = topicDisplayNumber(topics, index),
-                        masterySummary = strings.topicMasterySummary(
-                            controller.topicMasteryFor(topic.id),
-                        ),
-                        onClick = {
-                            controller.chooseTopic(topic)
-                        },
-                    )
-                }
+                TopicCard(
+                    topic = topic,
+                    displayNumber = topicDisplayNumber(topics, index),
+                    masterySummary = strings.topicMasterySummary(
+                        controller.topicMasteryFor(topic.id),
+                    ),
+                    onClick = {
+                        controller.chooseTopic(topic)
+                    },
+                )
             }
         }
     }
@@ -417,7 +524,7 @@ private fun CourseSelectionScreen(
 
         LazyColumn(
             modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
         ) {
             item {
                 Text(
@@ -436,7 +543,7 @@ private fun CourseSelectionScreen(
                         .clickable { onChoose(courseCode) },
                 ) {
                     Column(
-                        modifier = Modifier.padding(20.dp),
+                        modifier = Modifier.padding(LayoutSpacing.card),
                     ) {
                         Text(
                             text = courseCode.uppercase(),
@@ -474,7 +581,7 @@ private fun TopicCard(
             .clickable(onClick = onClick),
     ) {
         Column(
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier.padding(LayoutSpacing.card),
         ) {
             Text(
                 text = topic.courseCode.uppercase(),
@@ -528,8 +635,7 @@ private fun LabCoursesScreen(controller: TrainerController) {
 
         LazyColumn(
             modifier = modifier,
-            contentPadding = PaddingValues(vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
         ) {
             item {
                 Text(
@@ -547,7 +653,7 @@ private fun LabCoursesScreen(controller: TrainerController) {
                         .fillMaxWidth()
                         .clickable { controller.chooseLabCourse(courseCode) },
                 ) {
-                    Column(Modifier.padding(20.dp)) {
+                    Column(Modifier.padding(LayoutSpacing.card)) {
                         Text(
                             text = courseCode.uppercase(),
                             style = MaterialTheme.typography.titleLarge,
@@ -594,8 +700,7 @@ private fun LabsScreen(controller: TrainerController) {
 
         LazyColumn(
             modifier = modifier,
-            contentPadding = PaddingValues(vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
         ) {
             items(
                 items = labs,
@@ -620,7 +725,7 @@ private fun LabCard(
             .fillMaxWidth()
             .clickable(onClick = onClick),
     ) {
-        Column(Modifier.padding(20.dp)) {
+        Column(Modifier.padding(LayoutSpacing.card)) {
             Text(
                 text = "${lab.labNumber}. ${lab.title}",
                 style = MaterialTheme.typography.titleMedium,
@@ -643,6 +748,7 @@ private fun LabCard(
 private fun LabDetailScreen(controller: TrainerController) {
     val strings = LocalUiStrings.current
     val lab = controller.selectedLab
+    val scrollState = rememberScrollState()
 
     TrainerScaffold(
         title = lab?.let { "${it.labNumber}. ${it.title}" } ?: strings.labs,
@@ -656,17 +762,71 @@ private fun LabDetailScreen(controller: TrainerController) {
             return@TrainerScaffold
         }
 
-        LazyColumn(
-            modifier = modifier,
-            contentPadding = PaddingValues(vertical = 12.dp),
-        ) {
-            item {
+        Box(modifier = modifier) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(vertical = 12.dp, end = 12.dp),
+            ) {
                 LabMarkdownContent(
                     markdown = lab.body,
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
+
+            LabScrollPositionIndicator(
+                scrollState = scrollState,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+                    .padding(vertical = 4.dp),
+            )
         }
+    }
+}
+
+@Composable
+private fun LabScrollPositionIndicator(
+    scrollState: ScrollState,
+    modifier: Modifier = Modifier,
+) {
+    if (scrollState.maxValue <= 0) {
+        return
+    }
+
+    BoxWithConstraints(
+        modifier = modifier.width(5.dp),
+    ) {
+        val density = LocalDensity.current
+        val viewportPixels = with(density) { maxHeight.toPx() }
+        val contentPixels = viewportPixels + scrollState.maxValue.toFloat()
+        val visibleFraction =
+            if (contentPixels <= 0f) 1f else (viewportPixels / contentPixels).coerceIn(0f, 1f)
+        val thumbHeight = minOf(maxHeight, maxOf(32.dp, maxHeight * visibleFraction))
+        val travel = maxHeight - thumbHeight
+        val progress =
+            (scrollState.value.toFloat() / scrollState.maxValue.toFloat()).coerceIn(0f, 1f)
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                    shape = RoundedCornerShape(4.dp),
+                ),
+        )
+
+        Box(
+            modifier = Modifier
+                .offset(y = travel * progress)
+                .fillMaxWidth()
+                .height(thumbHeight)
+                .background(
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.75f),
+                    shape = RoundedCornerShape(4.dp),
+                ),
+        )
     }
 }
 
@@ -695,8 +855,17 @@ private fun LimitScreen(controller: TrainerController) {
     ) { modifier ->
         Column(
             modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
         ) {
+            controller.unfinishedSessionsForPendingQuiz.forEach { session ->
+                UnfinishedQuizCard(
+                    controller = controller,
+                    session = session,
+                    onContinue = { controller.continueSavedSession(session) },
+                    onCancel = { controller.requestDiscardSavedSession(session) },
+                )
+            }
+
             Text(
                 text = strings.questionCount,
                 style = MaterialTheme.typography.titleLarge,
@@ -778,7 +947,7 @@ private fun QuizScreen(controller: TrainerController) {
     ) { modifier ->
         LazyColumn(
             modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
         ) {
             item {
                 LinearProgressIndicator(
@@ -901,7 +1070,7 @@ private fun FeedbackScreen(controller: TrainerController) {
     ) { modifier ->
         LazyColumn(
             modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
         ) {
             item {
                 FeedbackAnswers(
@@ -947,7 +1116,7 @@ private fun FeedbackAnswers(
     val strings = LocalUiStrings.current
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
     ) {
         Text(
             text = strings.yourAnswer,
@@ -1008,7 +1177,7 @@ private fun InfoCard(
         modifier = Modifier.fillMaxWidth(),
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(LayoutSpacing.card),
         ) {
             Text(
                 text = title,
@@ -1040,8 +1209,11 @@ private fun ResultsScreen(controller: TrainerController) {
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        contentPadding = PaddingValues(
+            horizontal = LayoutSpacing.screenHorizontal,
+            vertical = LayoutSpacing.screenVertical,
+        ),
+        verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
@@ -1125,7 +1297,7 @@ private fun StatisticsRootScreen(controller: TrainerController) {
     ) { modifier ->
         LazyColumn(
             modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
         ) {
             item {
                 StatisticsNavigationCard(
@@ -1182,7 +1354,6 @@ private fun StatisticsRootScreen(controller: TrainerController) {
             }
 
             item {
-                Spacer(Modifier.height(8.dp))
                 OutlinedButton(
                     onClick = controller::clearStatistics,
                     modifier = Modifier.fillMaxWidth(),
@@ -1212,7 +1383,7 @@ private fun StatisticsCoursesScreen(controller: TrainerController) {
 
         LazyColumn(
             modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
         ) {
             items(
                 items = controller.courseStatistics,
@@ -1262,8 +1433,7 @@ private fun StatisticsTopicsScreen(controller: TrainerController) {
 
         LazyColumn(
             modifier = modifier,
-            contentPadding = PaddingValues(vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
         ) {
             item {
                 StatisticsNavigationCard(
@@ -1278,19 +1448,13 @@ private fun StatisticsTopicsScreen(controller: TrainerController) {
                 items = rows,
                 key = { _, row -> row.topic.id },
             ) { index, row ->
-                Column {
-                    if (startsNewTopicBlock(topics, index)) {
-                        Spacer(Modifier.height(12.dp))
-                    }
-
-                    TopicStatisticsCard(
-                        row = row,
-                        displayNumber = topicDisplayNumber(topics, index),
-                        onClick = {
-                            controller.openTopicModes(row.topic)
-                        },
-                    )
-                }
+                TopicStatisticsCard(
+                    row = row,
+                    displayNumber = topicDisplayNumber(topics, index),
+                    onClick = {
+                        controller.openTopicModes(row.topic)
+                    },
+                )
             }
         }
     }
@@ -1348,7 +1512,7 @@ private fun StatisticsModesList(
 ) {
     LazyColumn(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
     ) {
         items(
             items = rows,
@@ -1384,7 +1548,7 @@ private fun StatisticsMistakesScreen(controller: TrainerController) {
 
         LazyColumn(
             modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
         ) {
             item {
                 Button(
@@ -1423,7 +1587,7 @@ private fun StatisticsMistakeTopicsScreen(controller: TrainerController) {
     ) { modifier ->
         LazyColumn(
             modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
         ) {
             item {
                 Button(
@@ -1463,7 +1627,7 @@ private fun StatisticsMistakeQuestionsScreen(controller: TrainerController) {
     ) { modifier ->
         LazyColumn(
             modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
         ) {
             item {
                 Button(
@@ -1499,7 +1663,7 @@ private fun MistakeGroupCard(
             .clickable(onClick = onClick),
     ) {
         Row(
-            modifier = Modifier.padding(18.dp),
+            modifier = Modifier.padding(LayoutSpacing.card),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
@@ -1530,7 +1694,7 @@ private fun MistakeSummaryCard(
             .clickable(onClick = onClick),
     ) {
         Column(
-            modifier = Modifier.padding(18.dp),
+            modifier = Modifier.padding(LayoutSpacing.card),
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             Text(
@@ -1576,12 +1740,12 @@ private fun StatisticsMistakeDetailScreen(controller: TrainerController) {
 
         LazyColumn(
             modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
         ) {
             item {
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Column(
-                        modifier = Modifier.padding(18.dp),
+                        modifier = Modifier.padding(LayoutSpacing.card),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         Text(
@@ -1610,7 +1774,7 @@ private fun StatisticsMistakeDetailScreen(controller: TrainerController) {
             item {
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Column(
-                        modifier = Modifier.padding(18.dp),
+                        modifier = Modifier.padding(LayoutSpacing.card),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         Text(
@@ -1650,7 +1814,7 @@ private fun StatisticsMistakeDetailScreen(controller: TrainerController) {
             ) { index, attempt ->
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Column(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(LayoutSpacing.card),
                         verticalArrangement = Arrangement.spacedBy(6.dp),
                     ) {
                         Text(
@@ -1703,12 +1867,12 @@ private fun StatisticsActivityScreen(controller: TrainerController) {
 
         LazyColumn(
             modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
         ) {
             item {
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Column(
-                        modifier = Modifier.padding(20.dp),
+                        modifier = Modifier.padding(LayoutSpacing.card),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         Text(
@@ -1753,7 +1917,7 @@ private fun StatisticsActivityScreen(controller: TrainerController) {
             ) { progress ->
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Column(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(LayoutSpacing.card),
                         verticalArrangement = Arrangement.spacedBy(6.dp),
                     ) {
                         Text(
@@ -1776,7 +1940,7 @@ private fun StatisticsActivityScreen(controller: TrainerController) {
             item {
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Column(
-                        modifier = Modifier.padding(18.dp),
+                        modifier = Modifier.padding(LayoutSpacing.card),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         Text(
@@ -1848,7 +2012,7 @@ private fun StatisticsDetailScreen(controller: TrainerController) {
 
         LazyColumn(
             modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
         ) {
             item {
                 StatisticsCard(
@@ -1874,7 +2038,7 @@ private fun StatisticsNavigationCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(18.dp),
+                .padding(LayoutSpacing.card),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -1919,7 +2083,7 @@ private fun StatisticsCard(
         modifier = Modifier.fillMaxWidth(),
     ) {
         Column(
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier.padding(LayoutSpacing.card),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
@@ -2002,7 +2166,10 @@ private fun TrainerScaffold(
             Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .padding(
+                    horizontal = LayoutSpacing.screenHorizontal,
+                    vertical = LayoutSpacing.screenVertical,
+                ),
         )
     }
 }
@@ -2045,13 +2212,6 @@ private fun topicDisplayNumber(
 
     return "${topic.notesPart}.$subtopicNumber"
 }
-
-private fun startsNewTopicBlock(
-    topics: List<MobileTopic>,
-    index: Int,
-): Boolean =
-    index > 0 &&
-        topics[index - 1].notesPart != topics[index].notesPart
 
 private fun statsPercent(stats: MobileTrainingStats?): String =
     if (stats == null || stats.answeredQuestions == 0UL) {

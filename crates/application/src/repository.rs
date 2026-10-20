@@ -56,7 +56,11 @@ pub trait ContentLocaleRepository {
 pub trait SessionRepository {
     fn start_session(&mut self, config: &SessionConfig) -> Result<QuizSession, RepositoryError>;
 
-    fn active_session(&self) -> Result<Option<SessionProgress>, RepositoryError>;
+    fn unfinished_sessions(&self) -> Result<Vec<SessionProgress>, RepositoryError>;
+
+    fn active_session(&self) -> Result<Option<SessionProgress>, RepositoryError> {
+        Ok(self.unfinished_sessions()?.into_iter().next())
+    }
 
     fn cancel_session(&mut self, session_id: SessionId) -> Result<(), RepositoryError>;
 

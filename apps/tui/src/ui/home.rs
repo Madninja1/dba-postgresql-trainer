@@ -5,7 +5,7 @@ use ratatui::{
     widgets::{Block, Borders, List, ListItem, ListState, Paragraph},
 };
 
-use crate::app::{App, HOME_ITEMS};
+use crate::app::{App, HomeItem, HOME_ITEMS};
 
 use super::common::vertical_chunks;
 
@@ -36,7 +36,19 @@ pub fn render(frame: &mut Frame, app: &App) {
 
     let items = HOME_ITEMS
         .iter()
-        .map(|item| ListItem::new(item.label(app.strings(), app.language)))
+        .map(|item| {
+            let label = if *item == HomeItem::UnfinishedQuizzes {
+                format!(
+                    "{} ({})",
+                    item.label(app.strings(), app.language),
+                    app.unfinished_sessions.len()
+                )
+            } else {
+                item.label(app.strings(), app.language)
+            };
+
+            ListItem::new(label)
+        })
         .collect::<Vec<_>>();
 
     let menu = List::new(items)

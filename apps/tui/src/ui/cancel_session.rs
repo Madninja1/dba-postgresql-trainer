@@ -16,7 +16,7 @@ pub fn render(frame: &mut Frame, app: &App) {
         frame.area(),
         &[
             Constraint::Length(6),
-            Constraint::Min(4),
+            Constraint::Min(5),
             Constraint::Length(3),
         ],
     );
@@ -30,7 +30,11 @@ pub fn render(frame: &mut Frame, app: &App) {
                 .borders(Borders::ALL),
         );
 
-    let labels = [strings.continue_quiz, strings.cancel_quiz];
+    let labels = [
+        strings.save_and_exit_quiz,
+        strings.cancel_quiz,
+        strings.stay_in_quiz,
+    ];
 
     let items = labels
         .iter()

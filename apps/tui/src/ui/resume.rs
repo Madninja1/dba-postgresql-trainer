@@ -2,7 +2,7 @@ use ratatui::{
     Frame,
     layout::{Alignment, Constraint},
     style::{Modifier, Style},
-    widgets::{Block, Borders, List, ListItem, Paragraph},
+    widgets::{Block, Borders, List, ListItem, ListState, Paragraph},
 };
 
 use crate::app::App;
@@ -10,66 +10,68 @@ use crate::app::App;
 use super::common::vertical_chunks;
 
 pub fn render(frame: &mut Frame, app: &App) {
-    let Some(session) = app.resume_session.as_ref() else {
-        return;
-    };
-
     let strings = app.strings();
 
     let areas = vertical_chunks(
         frame.area(),
-        &[
-            Constraint::Length(6),
-            Constraint::Min(4),
-            Constraint::Length(3),
-        ],
+        &[Constraint::Length(3), Constraint::Min(5), Constraint::Length(3)],
     );
 
-    let next_question = session
-        .answered_questions
-        .saturating_add(1)
-        .min(session.total_questions);
-
-    let progress = Paragraph::new(format!(
-        "{}\n{}: {} / {}\n{}: {}",
-        strings.resume_found,
-        strings.answered,
-        session.answered_questions,
-        session.total_questions,
-        strings.next_question,
-        next_question,
+    let summary = Paragraph::new(format!(
+        "{}: {}",
+        strings.resume_title,
+        app.unfinished_sessions.len()
     ))
     .alignment(Alignment::Center)
-    .block(
-        Block::default()
-            .title(strings.resume_title)
-            .borders(Borders::ALL),
-    );
+    .block(Block::default().borders(Borders::ALL));
 
-    let labels = [strings.continue_quiz, strings.cancel_quiz];
+    if app.unfinished_sessions.is_empty() {
+        let empty = Paragraph::new(strings.no_unfinished_quizzes)
+            .alignment(Alignment::Center)
+            .block(
+                Block::default()
+                    .title(strings.resume_title)
+                    .borders(Borders::ALL),
+            );
+        frame.render_widget(summary, areas[0]);
+        frame.render_widget(empty, areas[1]);
+    } else {
+        let items = app
+            .unfinished_sessions
+            .iter()
+            .map(|session| {
+                ListItem::new(format!(
+                    "{} | {}: {} / {} | {}",
+                    app.session_title(session),
+                    strings.answered,
+                    session.answered_questions,
+                    session.total_questions,
+                    app.session_limit_label(session.limit),
+                ))
+            })
+            .collect::<Vec<_>>();
 
-    let items = labels
-        .iter()
-        .enumerate()
-        .map(|(index, label)| {
-            let style = if index == app.decision_selected {
-                Style::default().add_modifier(Modifier::REVERSED)
-            } else {
-                Style::default()
-            };
+        let list = List::new(items)
+            .highlight_style(Style::default().add_modifier(Modifier::REVERSED))
+            .block(
+                Block::default()
+                    .title(strings.continue_quiz)
+                    .borders(Borders::ALL),
+            );
 
-            ListItem::new(*label).style(style)
-        })
-        .collect::<Vec<_>>();
+        let mut state = ListState::default();
+        state.select(Some(
+            app.resume_selected
+                .min(app.unfinished_sessions.len().saturating_sub(1)),
+        ));
 
-    let actions =
-        List::new(items).block(Block::default().title(strings.action).borders(Borders::ALL));
+        frame.render_widget(summary, areas[0]);
+        frame.render_stateful_widget(list, areas[1], &mut state);
+    }
 
     let footer = Paragraph::new(strings.footer_resume)
         .alignment(Alignment::Center)
         .block(Block::default().borders(Borders::ALL));
 
-    frame.render_widget(progress, areas[0]);
-    frame.render_widget(actions, areas[1]);
     frame.render_widget(footer, areas[2]);
 }

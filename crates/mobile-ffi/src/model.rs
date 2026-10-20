@@ -306,6 +306,7 @@ pub struct MobileSessionProgress {
     pub topic_id: Option<i64>,
     pub course_code: Option<String>,
     pub is_review: bool,
+    pub question_limit: MobileQuestionLimit,
     pub current_index: u64,
     pub total_questions: u64,
     pub answered_questions: u64,
@@ -501,6 +502,16 @@ impl From<PracticeTableData> for MobilePracticeTableData {
     }
 }
 
+impl From<QuestionLimit> for MobileQuestionLimit {
+    fn from(value: QuestionLimit) -> Self {
+        match value {
+            QuestionLimit::Twenty => Self::Twenty,
+            QuestionLimit::Fifty => Self::Fifty,
+            QuestionLimit::All => Self::All,
+        }
+    }
+}
+
 impl From<MobileQuestionLimit> for QuestionLimit {
     fn from(value: MobileQuestionLimit) -> Self {
         match value {
@@ -640,6 +651,7 @@ impl From<SessionProgress> for MobileSessionProgress {
             topic_id,
             course_code,
             is_review,
+            question_limit: value.limit.into(),
             current_index: value.current_index as u64,
             total_questions: value.total_questions as u64,
             answered_questions: value.answered_questions as u64,

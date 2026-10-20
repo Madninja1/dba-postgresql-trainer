@@ -5,7 +5,6 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -65,8 +64,7 @@ fun PracticeCategoriesScreen(controller: TrainerController) {
         val stats = controller.practiceStats
         LazyColumn(
             modifier = modifier,
-            contentPadding = PaddingValues(vertical = 4.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
         ) {
             item {
                 Text(
@@ -82,7 +80,7 @@ fun PracticeCategoriesScreen(controller: TrainerController) {
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Column(
-                            modifier = Modifier.padding(16.dp),
+                            modifier = Modifier.padding(LayoutSpacing.card),
                             verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
                             Text(
@@ -148,7 +146,7 @@ fun PracticeCategoriesScreen(controller: TrainerController) {
                         .clickable { controller.choosePracticeCategory(category) },
                 ) {
                     Column(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(LayoutSpacing.card),
                         verticalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
                         Text(
@@ -191,8 +189,7 @@ fun PracticeTasksScreen(controller: TrainerController) {
 
         LazyColumn(
             modifier = modifier,
-            contentPadding = PaddingValues(vertical = 4.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
         ) {
             item {
                 Text(
@@ -218,7 +215,7 @@ fun PracticeTasksScreen(controller: TrainerController) {
                         .clickable { controller.openPracticeTask(task) },
                 ) {
                     Column(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(LayoutSpacing.card),
                         verticalArrangement = Arrangement.spacedBy(6.dp),
                     ) {
                         Text(
@@ -275,15 +272,14 @@ fun PracticeWorkbenchScreen(controller: TrainerController) {
     ) { modifier ->
         LazyColumn(
             modifier = modifier,
-            contentPadding = PaddingValues(bottom = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
         ) {
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Column(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(LayoutSpacing.card),
                         verticalArrangement = Arrangement.spacedBy(6.dp),
                     ) {
                         Text(
@@ -388,7 +384,7 @@ private fun PracticeSchemaPane(controller: TrainerController) {
     }
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
     ) {
         tables.forEach { table ->
             PracticeTableCard(
@@ -410,7 +406,7 @@ private fun PracticeTableCard(
         modifier = Modifier.fillMaxWidth(),
     ) {
         Column(
-            modifier = Modifier.padding(14.dp),
+            modifier = Modifier.padding(LayoutSpacing.card),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(
@@ -453,7 +449,7 @@ private fun PracticeDataPane(controller: TrainerController) {
     }
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
     ) {
         Text(
             text = "${strings.practiceData}: ${data.table}",
@@ -488,14 +484,14 @@ private fun PracticeResultPane(controller: TrainerController) {
     val strings = controller.strings
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
     ) {
         controller.practiceCheck?.let { check ->
             Card(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Column(
-                    modifier = Modifier.padding(14.dp),
+                    modifier = Modifier.padding(LayoutSpacing.card),
                     verticalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
                     Text(
@@ -542,14 +538,14 @@ private fun PracticeLearningPane(controller: TrainerController) {
     val task = controller.currentPracticeTask ?: return
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
     ) {
         if (task.rules.isNotEmpty()) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Column(
-                    modifier = Modifier.padding(14.dp),
+                    modifier = Modifier.padding(LayoutSpacing.card),
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
@@ -568,7 +564,7 @@ private fun PracticeLearningPane(controller: TrainerController) {
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Column(
-                    modifier = Modifier.padding(14.dp),
+                    modifier = Modifier.padding(LayoutSpacing.card),
                     verticalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
                     Text(
@@ -589,7 +585,7 @@ private fun PracticeLearningPane(controller: TrainerController) {
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Column(
-                    modifier = Modifier.padding(14.dp),
+                    modifier = Modifier.padding(LayoutSpacing.card),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Text(
@@ -626,7 +622,7 @@ private fun PracticeLearningPane(controller: TrainerController) {
             ) {
                 Text(
                     text = error,
-                    modifier = Modifier.padding(14.dp),
+                    modifier = Modifier.padding(LayoutSpacing.card),
                     fontFamily = FontFamily.Monospace,
                     color = MaterialTheme.colorScheme.error,
                 )
@@ -786,7 +782,10 @@ private fun PracticeScaffold(
             Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .padding(
+                    horizontal = LayoutSpacing.screenHorizontal,
+                    vertical = LayoutSpacing.screenVertical,
+                ),
         )
     }
 }
@@ -828,14 +827,14 @@ fun PracticeStatisticsScreen(controller: TrainerController) {
 
         LazyColumn(
             modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
         ) {
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Column(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(LayoutSpacing.card),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         Text(
@@ -867,7 +866,7 @@ fun PracticeStatisticsScreen(controller: TrainerController) {
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Column(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(LayoutSpacing.card),
                         verticalArrangement = Arrangement.spacedBy(5.dp),
                     ) {
                         Text(

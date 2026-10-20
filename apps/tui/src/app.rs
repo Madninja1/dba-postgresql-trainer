@@ -127,6 +127,7 @@ pub enum StatisticsView {
 pub enum HomeItem {
     Topics,
     GeneralQuiz,
+    UnfinishedQuizzes,
     Labs,
     Practice,
     Statistics,
@@ -139,6 +140,7 @@ impl HomeItem {
         match self {
             Self::Topics => strings.topic_quiz.to_string(),
             Self::GeneralQuiz => strings.general_quiz.to_string(),
+            Self::UnfinishedQuizzes => strings.resume_title.to_string(),
             Self::Labs => strings.labs.to_string(),
             Self::Practice => strings.practice.to_string(),
             Self::Statistics => strings.statistics.to_string(),
@@ -148,9 +150,10 @@ impl HomeItem {
     }
 }
 
-pub const HOME_ITEMS: [HomeItem; 7] = [
+pub const HOME_ITEMS: [HomeItem; 8] = [
     HomeItem::Topics,
     HomeItem::GeneralQuiz,
+    HomeItem::UnfinishedQuizzes,
     HomeItem::Labs,
     HomeItem::Practice,
     HomeItem::Statistics,
@@ -226,7 +229,9 @@ pub struct App {
 
     pub error_message: Option<String>,
 
-    pub resume_session: Option<SessionProgress>,
+    pub unfinished_sessions: Vec<SessionProgress>,
+
+    pub resume_selected: usize,
 
     pub decision_selected: usize,
 
@@ -279,13 +284,9 @@ impl App {
         let practice_stats = service.practice_stats()?;
         let activity_stats = Some(service.activity_stats()?);
 
-        let resume_session = service.active_session()?;
+        let unfinished_sessions = service.unfinished_sessions()?;
 
-        let screen = if resume_session.is_some() {
-            Screen::ResumeSession
-        } else {
-            Screen::Home
-        };
+        let screen = Screen::Home;
 
         Ok(Self {
             screen,
@@ -364,7 +365,9 @@ impl App {
 
             session_id: None,
 
-            resume_session,
+            unfinished_sessions,
+
+            resume_selected: 0,
 
             decision_selected: 0,
 
@@ -408,6 +411,42 @@ impl App {
 
     pub fn selected_limit(&self) -> QuestionLimit {
         QUESTION_LIMITS[self.limit_selected]
+    }
+
+    pub fn session_title(&self, session: &SessionProgress) -> String {
+        let scope_title = match &session.scope {
+            QuizScope::Topic(topic_id) | QuizScope::MistakesTopic(topic_id) => self
+                .topics
+                .iter()
+                .find(|topic| topic.id == *topic_id)
+                .map(|topic| {
+                    format!(
+                        "{} → {}. {}",
+                        topic.course_code.to_uppercase(),
+                        topic.topic_number,
+                        topic.title
+                    )
+                })
+                .unwrap_or_else(|| format!("{} {}", self.strings().topic, topic_id.0)),
+            QuizScope::Course(course_code) | QuizScope::MistakesCourse(course_code) => {
+                course_code.to_uppercase()
+            }
+            QuizScope::AllTopics | QuizScope::Mistakes => self.strings().general_quiz.to_string(),
+        };
+
+        if session.scope.is_review() {
+            format!("{}: {scope_title}", self.strings().mistakes)
+        } else {
+            scope_title
+        }
+    }
+
+    pub fn session_limit_label(&self, limit: QuestionLimit) -> &'static str {
+        match limit {
+            QuestionLimit::Twenty => self.strings().twenty_questions,
+            QuestionLimit::Fifty => self.strings().fifty_questions,
+            QuestionLimit::All => self.strings().all_questions,
+        }
     }
 
     pub fn handle_action(&mut self, action: Action) {
@@ -488,6 +527,16 @@ impl App {
                     self.screen = Screen::Courses;
                 }
 
+                HomeItem::UnfinishedQuizzes => {
+                    self.unfinished_sessions = self.service.unfinished_sessions()?;
+                    self.resume_selected = 0;
+                    if self.unfinished_sessions.is_empty() {
+                        self.error_message = Some(self.strings().no_unfinished_quizzes.to_string());
+                    } else {
+                        self.screen = Screen::ResumeSession;
+                    }
+                }
+
                 HomeItem::Labs => {
                     self.lab_course_selected = 0;
                     self.lab_selected = 0;
@@ -526,6 +575,7 @@ impl App {
                     self.practice_tasks = self.service.practice_tasks()?;
                     self.practice_progress = self.service.practice_progress()?;
                     self.practice_stats = self.service.practice_stats()?;
+                    self.unfinished_sessions = self.service.unfinished_sessions()?;
                     self.topic_course_selected = self
                         .topic_course_selected
                         .min(self.course_codes().len().saturating_sub(1));
@@ -1321,6 +1371,7 @@ impl App {
             let was_mistake_review = self.quiz_scope.is_review();
 
             self.activity_stats = Some(self.service.activity_stats()?);
+            self.unfinished_sessions = self.service.unfinished_sessions()?;
             self.reset_quiz();
 
             if was_mistake_review {
@@ -1338,20 +1389,24 @@ impl App {
     }
 
     fn handle_resume_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        let count = self.unfinished_sessions.len();
+
         match action {
-            Action::Up | Action::Down => {
-                self.decision_selected = if self.decision_selected == 0 { 1 } else { 0 };
+            Action::Up => {
+                self.resume_selected = previous_index(self.resume_selected, count);
             }
 
-            Action::Confirm => match self.decision_selected {
-                0 => {
-                    self.resume_quiz()?;
-                }
+            Action::Down => {
+                self.resume_selected = next_index(self.resume_selected, count);
+            }
 
-                _ => {
-                    self.cancel_saved_quiz()?;
-                }
-            },
+            Action::Confirm => {
+                self.resume_quiz()?;
+            }
+
+            Action::Back => {
+                self.screen = Screen::Home;
+            }
 
             _ => {}
         }
@@ -1361,26 +1416,35 @@ impl App {
 
     fn handle_cancel_action(&mut self, action: Action) -> Result<(), RepositoryError> {
         match action {
-            Action::Up | Action::Down => {
-                self.decision_selected = if self.decision_selected == 0 { 1 } else { 0 };
+            Action::Up => {
+                self.decision_selected = previous_index(self.decision_selected, 3);
             }
 
-            Action::Confirm => {
-                if self.decision_selected == 0 {
-                    self.screen = self.cancel_return_screen;
-                } else {
+            Action::Down => {
+                self.decision_selected = next_index(self.decision_selected, 3);
+            }
+
+            Action::Confirm => match self.decision_selected {
+                0 => {
+                    self.save_current_quiz_and_exit()?;
+                }
+
+                1 => {
                     let session_id = self.session_id.ok_or_else(|| {
                         RepositoryError::InvalidState(String::from("active session is missing"))
                     })?;
 
                     self.service.cancel_session(session_id)?;
                     self.activity_stats = Some(self.service.activity_stats()?);
-
+                    self.unfinished_sessions = self.service.unfinished_sessions()?;
                     self.reset_quiz();
-
                     self.screen = Screen::Home;
                 }
-            }
+
+                _ => {
+                    self.screen = self.cancel_return_screen;
+                }
+            },
 
             Action::Back => {
                 self.screen = self.cancel_return_screen;
@@ -1963,50 +2027,39 @@ impl App {
         }
     }
 
-    fn cancel_saved_quiz(&mut self) -> Result<(), RepositoryError> {
-        let session_id = self
-            .resume_session
-            .as_ref()
-            .map(|session| session.id)
-            .ok_or_else(|| {
-                RepositoryError::InvalidState(String::from("resume session is missing"))
-            })?;
+    fn save_current_quiz_and_exit(&mut self) -> Result<(), RepositoryError> {
+        if self.session_id.is_none() {
+            return Err(RepositoryError::InvalidState(String::from(
+                "active session is missing",
+            )));
+        }
 
-        self.service.cancel_session(session_id)?;
-        self.activity_stats = Some(self.service.activity_stats()?);
-
-        self.resume_session = None;
-
+        self.unfinished_sessions = self.service.unfinished_sessions()?;
         self.reset_quiz();
-
         self.screen = Screen::Home;
 
         Ok(())
     }
 
     fn resume_quiz(&mut self) -> Result<(), RepositoryError> {
-        let progress = self.resume_session.clone().ok_or_else(|| {
-            RepositoryError::InvalidState(String::from("resume session is missing"))
-        })?;
+        let progress = self
+            .unfinished_sessions
+            .get(self.resume_selected)
+            .cloned()
+            .ok_or_else(|| {
+                RepositoryError::InvalidState(String::from("unfinished session is missing"))
+            })?;
 
         self.session_id = Some(progress.id);
-
         self.quiz_scope = progress.scope;
         self.limit_selected = QUESTION_LIMITS
             .iter()
             .position(|limit| *limit == progress.limit)
             .unwrap_or(0);
-
         self.total_questions = progress.total_questions;
-
         self.answered_questions = progress.answered_questions;
-
         self.correct_answers = progress.correct_answers;
-
         self.feedback = None;
-
-        self.resume_session = None;
-
         self.load_current_question()
     }
 

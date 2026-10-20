@@ -172,6 +172,74 @@ fn parse_question_type(value: &str) -> Result<QuestionType, RepositoryError> {
     }
 }
 
+type SessionProgressRow = (
+    i64,
+    String,
+    Option<i64>,
+    Option<String>,
+    bool,
+    Option<i64>,
+    i64,
+    i64,
+    i64,
+    i64,
+);
+
+fn build_session_progress(row: SessionProgressRow) -> Result<SessionProgress, RepositoryError> {
+    let (
+        session_id,
+        scope,
+        topic_id,
+        course_code,
+        is_review,
+        requested_count,
+        current_index,
+        total_questions,
+        answered_questions,
+        correct_answers,
+    ) = row;
+
+    let scope = match (is_review, scope.as_str(), topic_id, course_code) {
+        (true, "topic", Some(topic_id), _) => QuizScope::MistakesTopic(TopicId(topic_id)),
+        (true, "all", _, Some(course_code)) => QuizScope::MistakesCourse(course_code),
+        (true, "all", _, None) => QuizScope::Mistakes,
+        (false, "topic", Some(topic_id), _) => QuizScope::Topic(TopicId(topic_id)),
+        (false, "all", _, Some(course_code)) => QuizScope::Course(course_code),
+        (false, "all", _, None) => QuizScope::AllTopics,
+        (_, "topic", None, _) => {
+            return Err(RepositoryError::InvalidState(String::from(
+                "topic session has no topic_id",
+            )));
+        }
+        (_, other, _, _) => {
+            return Err(RepositoryError::InvalidState(format!(
+                "unknown session scope: {other}"
+            )));
+        }
+    };
+
+    let limit = match requested_count {
+        Some(20) => QuestionLimit::Twenty,
+        Some(50) => QuestionLimit::Fifty,
+        None => QuestionLimit::All,
+        Some(other) => {
+            return Err(RepositoryError::InvalidState(format!(
+                "unknown requested question count: {other}"
+            )));
+        }
+    };
+
+    Ok(SessionProgress {
+        id: SessionId(session_id),
+        scope,
+        limit,
+        current_index: current_index.max(0) as usize,
+        total_questions: total_questions.max(0) as usize,
+        answered_questions: answered_questions.max(0) as usize,
+        correct_answers: correct_answers.max(0) as usize,
+    })
+}
+
 fn parse_source_kind(value: &str) -> Result<SourceKind, RepositoryError> {
     match value {
         "course_material" => Ok(SourceKind::CourseMaterial),
@@ -800,30 +868,6 @@ impl SessionRepository for SqliteRepository {
 
         let transaction = self.connection.transaction().map_err(repository_error)?;
 
-        let has_active_session = transaction
-            .query_row(
-                "
-            SELECT EXISTS(
-                SELECT 1
-                FROM quiz_sessions
-                WHERE finished_at
-                    IS NULL
-                  AND cancelled_at
-                    IS NULL
-            )
-            ",
-                [],
-                |row| row.get::<_, i64>(0),
-            )
-            .map_err(repository_error)?
-            != 0;
-
-        if has_active_session {
-            return Err(RepositoryError::InvalidState(String::from(
-                "unfinished quiz session already exists",
-            )));
-        }
-
         let question_ids = {
             let mut statement = transaction
                 .prepare(
@@ -1209,130 +1253,61 @@ impl SessionRepository for SqliteRepository {
         })
     }
 
-    fn active_session(&self) -> Result<Option<SessionProgress>, RepositoryError> {
-        let row = self
+    fn unfinished_sessions(&self) -> Result<Vec<SessionProgress>, RepositoryError> {
+        let mut statement = self
             .connection
-            .query_row(
+            .prepare(
                 "
-            SELECT
-                s.id,
-                s.scope,
-                s.topic_id,
-                s.course_code,
-                s.is_review,
-                s.requested_count,
-                s.current_index,
-
-                (
-                    SELECT COUNT(*)
-                    FROM session_questions sq
-                    WHERE sq.session_id = s.id
-                ),
-
-                (
-                    SELECT COUNT(*)
-                    FROM attempts a
-                    WHERE a.session_id = s.id
-                ),
-
-                (
-                    SELECT COALESCE(
-                        SUM(a.is_correct),
-                        0
+                SELECT
+                    s.id,
+                    s.scope,
+                    s.topic_id,
+                    s.course_code,
+                    s.is_review,
+                    s.requested_count,
+                    s.current_index,
+                    (
+                        SELECT COUNT(*)
+                        FROM session_questions sq
+                        WHERE sq.session_id = s.id
+                    ),
+                    (
+                        SELECT COUNT(*)
+                        FROM attempts a
+                        WHERE a.session_id = s.id
+                    ),
+                    (
+                        SELECT COALESCE(SUM(a.is_correct), 0)
+                        FROM attempts a
+                        WHERE a.session_id = s.id
                     )
-                    FROM attempts a
-                    WHERE a.session_id = s.id
-                )
-
-            FROM quiz_sessions s
-
-            WHERE s.finished_at IS NULL
-              AND s.cancelled_at IS NULL
-
-            ORDER BY s.id DESC
-
-            LIMIT 1
-            ",
-                [],
-                |row| {
-                    Ok((
-                        row.get::<_, i64>(0)?,
-                        row.get::<_, String>(1)?,
-                        row.get::<_, Option<i64>>(2)?,
-                        row.get::<_, Option<String>>(3)?,
-                        row.get::<_, i64>(4)? != 0,
-                        row.get::<_, Option<i64>>(5)?,
-                        row.get::<_, i64>(6)?,
-                        row.get::<_, i64>(7)?,
-                        row.get::<_, i64>(8)?,
-                        row.get::<_, i64>(9)?,
-                    ))
-                },
+                FROM quiz_sessions s
+                WHERE s.finished_at IS NULL
+                  AND s.cancelled_at IS NULL
+                ORDER BY s.id DESC
+                ",
             )
-            .optional()
             .map_err(repository_error)?;
 
-        let Some((
-            session_id,
-            scope,
-            topic_id,
-            course_code,
-            is_review,
-            requested_count,
-            current_index,
-            total_questions,
-            answered_questions,
-            correct_answers,
-        )) = row
-        else {
-            return Ok(None);
-        };
+        let rows = statement
+            .query_map([], |row| {
+                Ok((
+                    row.get::<_, i64>(0)?,
+                    row.get::<_, String>(1)?,
+                    row.get::<_, Option<i64>>(2)?,
+                    row.get::<_, Option<String>>(3)?,
+                    row.get::<_, i64>(4)? != 0,
+                    row.get::<_, Option<i64>>(5)?,
+                    row.get::<_, i64>(6)?,
+                    row.get::<_, i64>(7)?,
+                    row.get::<_, i64>(8)?,
+                    row.get::<_, i64>(9)?,
+                ))
+            })
+            .map_err(repository_error)?;
 
-        let scope = match (is_review, scope.as_str(), topic_id, course_code) {
-            (true, "topic", Some(topic_id), _) => QuizScope::MistakesTopic(TopicId(topic_id)),
-            (true, "all", _, Some(course_code)) => QuizScope::MistakesCourse(course_code),
-            (true, "all", _, None) => QuizScope::Mistakes,
-            (false, "topic", Some(topic_id), _) => QuizScope::Topic(TopicId(topic_id)),
-            (false, "all", _, Some(course_code)) => QuizScope::Course(course_code),
-            (false, "all", _, None) => QuizScope::AllTopics,
-            (_, "topic", None, _) => {
-                return Err(RepositoryError::InvalidState(String::from(
-                    "topic session has no topic_id",
-                )));
-            }
-            (_, other, _, _) => {
-                return Err(RepositoryError::InvalidState(format!(
-                    "unknown session scope: {other}"
-                )));
-            }
-        };
-
-        let limit = match requested_count {
-            Some(20) => QuestionLimit::Twenty,
-            Some(50) => QuestionLimit::Fifty,
-            None => QuestionLimit::All,
-            Some(other) => {
-                return Err(RepositoryError::InvalidState(format!(
-                    "unknown requested question count: {other}"
-                )));
-            }
-        };
-
-        Ok(Some(SessionProgress {
-            id: SessionId(session_id),
-
-            scope,
-
-            limit,
-
-            current_index: current_index as usize,
-
-            total_questions: total_questions as usize,
-
-            answered_questions: answered_questions as usize,
-
-            correct_answers: correct_answers as usize,
-        }))
+        rows.map(|row| build_session_progress(row.map_err(repository_error)?))
+            .collect()
     }
 
     fn cancel_session(&mut self, session_id: SessionId) -> Result<(), RepositoryError> {
@@ -2213,24 +2188,34 @@ mod tests {
     }
 
     #[test]
-    fn rejects_second_active_session() {
+    fn allows_multiple_unfinished_sessions() {
         let mut repository = seeded_repository();
 
         let config = SessionConfig {
             scope: QuizScope::Topic(TopicId(1)),
-
             limit: QuestionLimit::All,
         };
 
-        repository
+        let first = repository
             .start_session(&config)
             .expect("first session should start");
-
-        let error = repository
+        let second = repository
             .start_session(&config)
-            .expect_err("second active session must be rejected");
+            .expect("second session should start");
 
-        assert!(matches!(error, RepositoryError::InvalidState(_)));
+        let unfinished = repository
+            .unfinished_sessions()
+            .expect("unfinished sessions should load");
+
+        assert_eq!(unfinished.len(), 2);
+        assert_eq!(unfinished[0].id, second.id);
+        assert_eq!(unfinished[1].id, first.id);
+
+        let latest = repository
+            .active_session()
+            .expect("latest unfinished session should load")
+            .expect("latest unfinished session should exist");
+        assert_eq!(latest.id, second.id);
     }
 
     #[test]

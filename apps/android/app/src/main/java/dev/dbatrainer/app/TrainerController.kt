@@ -31,6 +31,7 @@ import java.io.File
 
 enum class AppScreen {
     Home,
+    UnfinishedQuizzes,
     TopicCourses,
     Topics,
     Courses,
@@ -136,7 +137,7 @@ class TrainerController(context: Context) {
     var feedback by mutableStateOf<MobileAnswerResult?>(null)
         private set
 
-    var resumeSession by mutableStateOf<MobileSessionProgress?>(null)
+    var unfinishedSessions by mutableStateOf<List<MobileSessionProgress>>(emptyList())
         private set
 
     var answeredQuestions by mutableStateOf(0)
@@ -161,6 +162,9 @@ class TrainerController(context: Context) {
         private set
 
     var showCancelDialog by mutableStateOf(false)
+        private set
+
+    var pendingDiscardSession by mutableStateOf<MobileSessionProgress?>(null)
         private set
 
     val selectedOptionIds = mutableStateListOf<Long>()
@@ -272,11 +276,7 @@ class TrainerController(context: Context) {
             labs = requireTrainer().labs()
             refreshPracticeState()
             activityStats = requireTrainer().activityStats()
-            resumeSession = requireTrainer().activeSession()
-
-            if (resumeSession != null && activeQuestionLimit == null) {
-                activeQuestionLimit = inferQuestionLimit(resumeSession!!.totalQuestions)
-            }
+            unfinishedSessions = requireTrainer().unfinishedSessions()
         }
     }
 
@@ -285,6 +285,13 @@ class TrainerController(context: Context) {
             MobileQuestionLimit.TWENTY -> 85
             MobileQuestionLimit.FIFTY -> 70
             MobileQuestionLimit.ALL -> 60
+        }
+
+    fun questionLimitTitle(limit: MobileQuestionLimit): String =
+        when (limit) {
+            MobileQuestionLimit.TWENTY -> strings.twentyQuestions
+            MobileQuestionLimit.FIFTY -> strings.fiftyQuestions
+            MobileQuestionLimit.ALL -> strings.allQuestions
         }
 
     fun requiredCorrectAnswers(limit: MobileQuestionLimit, total: Int): Int {
@@ -729,40 +736,83 @@ class TrainerController(context: Context) {
         }
     }
 
-    fun continueSavedSession() {
-        val progress = resumeSession ?: return
+    fun openUnfinishedQuizzes() {
+        runCoreAction {
+            unfinishedSessions = requireTrainer().unfinishedSessions()
+            screen = AppScreen.UnfinishedQuizzes
+        }
+    }
 
+    fun continueSavedSession(progress: MobileSessionProgress) {
         runCoreAction {
             pendingMistakeReview = progress.isReview
-            pendingCourse = if (progress.isReview) progress.courseCode else null
-            pendingTopic = if (progress.isReview) {
-                progress.topicId?.let { topicId ->
-                    topics.firstOrNull { topic -> topic.id == topicId }
-                }
-            } else {
-                null
+            pendingCourse = progress.courseCode
+            pendingTopic = progress.topicId?.let { topicId ->
+                topics.firstOrNull { topic -> topic.id == topicId }
             }
+
+            activeQuestionLimit = progress.questionLimit
+            preferences
+                .edit()
+                .putString("active_question_limit", progress.questionLimit.name)
+                .apply()
 
             sessionId = progress.id
             answeredQuestions = progress.answeredQuestions.toInt()
             correctAnswers = progress.correctAnswers.toInt()
             totalQuestions = progress.totalQuestions.toInt()
-            resumeSession = null
             feedback = null
             selectedOptionIds.clear()
             loadCurrentQuestion()
         }
     }
 
-    fun discardSavedSession() {
-        val progress = resumeSession ?: return
+    fun requestDiscardSavedSession(progress: MobileSessionProgress) {
+        pendingDiscardSession = progress
+    }
+
+    fun dismissDiscardSavedSession() {
+        pendingDiscardSession = null
+    }
+
+    fun confirmDiscardSavedSession() {
+        val progress = pendingDiscardSession ?: return
 
         runCoreAction {
             requireTrainer().cancelSession(progress.id)
             activityStats = requireTrainer().activityStats()
-            resumeSession = null
-            resetQuizState()
-            screen = AppScreen.Home
+            unfinishedSessions = requireTrainer().unfinishedSessions()
+            pendingDiscardSession = null
+            if (unfinishedSessions.isEmpty()) {
+                screen = AppScreen.Home
+            }
+        }
+    }
+
+    val unfinishedSessionsForPendingQuiz: List<MobileSessionProgress>
+        get() = unfinishedSessions.filter { progress ->
+            if (progress.isReview != pendingMistakeReview) {
+                return@filter false
+            }
+
+            when {
+                pendingTopic != null -> progress.topicId == pendingTopic!!.id
+                pendingCourse != null -> progress.topicId == null && progress.courseCode == pendingCourse
+                else -> progress.topicId == null && progress.courseCode == null
+            }
+        }
+
+    fun sessionTitle(progress: MobileSessionProgress): String {
+        val scopeTitle = progress.topicId?.let { topicId ->
+            topics.firstOrNull { topic -> topic.id == topicId }?.let { topic ->
+                "${topic.courseCode.uppercase()} → ${topic.topicNumber}. ${topic.title}"
+            }
+        } ?: progress.courseCode?.uppercase() ?: strings.generalQuiz
+
+        return if (progress.isReview) {
+            "${strings.mistakes}: $scopeTitle"
+        } else {
+            scopeTitle
         }
     }
 
@@ -825,6 +875,20 @@ class TrainerController(context: Context) {
         }
     }
 
+    fun saveAndExitQuiz() {
+        if (sessionId == null) {
+            back()
+            return
+        }
+
+        runCoreAction {
+            showCancelDialog = false
+            resetQuizState()
+            unfinishedSessions = requireTrainer().unfinishedSessions()
+            screen = AppScreen.Home
+        }
+    }
+
     fun dismissCancelDialog() {
         showCancelDialog = false
     }
@@ -837,6 +901,7 @@ class TrainerController(context: Context) {
             activityStats = requireTrainer().activityStats()
             showCancelDialog = false
             resetQuizState()
+            unfinishedSessions = requireTrainer().unfinishedSessions()
             screen = AppScreen.Home
         }
     }
@@ -1041,6 +1106,7 @@ class TrainerController(context: Context) {
             mistakeSummaries = emptyList()
             mistakeDetail = null
             activityStats = requireTrainer().activityStats()
+            unfinishedSessions = requireTrainer().unfinishedSessions()
             refreshPracticeState()
         }
     }
@@ -1052,6 +1118,7 @@ class TrainerController(context: Context) {
     fun back() {
         when (screen) {
             AppScreen.Home -> Unit
+            AppScreen.UnfinishedQuizzes -> screen = AppScreen.Home
             AppScreen.TopicCourses -> screen = AppScreen.Home
             AppScreen.Topics -> screen = AppScreen.TopicCourses
             AppScreen.Courses -> screen = AppScreen.Home
@@ -1198,6 +1265,7 @@ class TrainerController(context: Context) {
             feedback = null
             selectedOptionIds.clear()
             activityStats = requireTrainer().activityStats()
+            unfinishedSessions = requireTrainer().unfinishedSessions()
             screen = AppScreen.Results
             return
         }
@@ -1340,13 +1408,6 @@ class TrainerController(context: Context) {
                 else -> left.compareTo(right)
             }
         }
-
-        fun inferQuestionLimit(totalQuestions: ULong): MobileQuestionLimit =
-            when (totalQuestions) {
-                20UL -> MobileQuestionLimit.TWENTY
-                50UL -> MobileQuestionLimit.FIFTY
-                else -> MobileQuestionLimit.ALL
-            }
 
         fun splitCourseCode(value: String): Pair<String, Int?> {
             val separator = value.lastIndexOf('-')

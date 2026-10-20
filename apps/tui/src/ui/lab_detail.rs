@@ -1,9 +1,9 @@
 use ratatui::{
     Frame,
-    layout::{Alignment, Constraint},
+    layout::{Alignment, Constraint, Margin},
     style::{Modifier, Style},
     text::{Line, Text},
-    widgets::{Block, Borders, Paragraph, Wrap},
+    widgets::{Block, Borders, Paragraph, Scrollbar, ScrollbarOrientation, ScrollbarState, Wrap},
 };
 
 use crate::app::App;
@@ -24,8 +24,11 @@ pub fn render(frame: &mut Frame, app: &App) {
     let areas = vertical_chunks(frame.area(), &[Constraint::Min(5), Constraint::Length(3)]);
 
     let title = format!("{}. {}", lab.lab_number, lab.title);
+    let content = markdown_to_text(&lab.body);
+    let content_length = content.lines.len().max(1);
+    let viewport_height = areas[0].height.saturating_sub(2) as usize;
 
-    let body = Paragraph::new(markdown_to_text(&lab.body))
+    let body = Paragraph::new(content)
         .wrap(Wrap { trim: false })
         .scroll((app.lab_scroll, 0))
         .block(Block::default().title(title).borders(Borders::ALL));
@@ -35,6 +38,25 @@ pub fn render(frame: &mut Frame, app: &App) {
         .block(Block::default().borders(Borders::ALL));
 
     frame.render_widget(body, areas[0]);
+
+    if content_length > viewport_height && viewport_height > 0 {
+        let scrollbar = Scrollbar::new(ScrollbarOrientation::VerticalRight)
+            .begin_symbol(None)
+            .end_symbol(None);
+        let mut scrollbar_state = ScrollbarState::new(content_length)
+            .viewport_content_length(viewport_height)
+            .position(usize::from(app.lab_scroll));
+
+        frame.render_stateful_widget(
+            scrollbar,
+            areas[0].inner(Margin {
+                vertical: 1,
+                horizontal: 0,
+            }),
+            &mut scrollbar_state,
+        );
+    }
+
     frame.render_widget(footer, areas[1]);
 }
 
