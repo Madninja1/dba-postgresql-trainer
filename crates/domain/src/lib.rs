@@ -1,5 +1,6 @@
 mod id;
 mod lab;
+mod practice;
 mod progress;
 mod question;
 mod session;
@@ -11,6 +12,11 @@ pub use id::{AnswerOptionId, QuestionId, SessionId, SourceId, TopicId};
 pub use lab::Lab;
 
 pub use question::{AnswerOption, Question, QuestionType};
+
+pub use practice::{
+    PracticeCheckResult, PracticeComparison, PracticeExecutionResult, PracticeKind, PracticeTask,
+    PracticeValue,
+};
 
 pub use progress::{
     ActivityStats, CourseProgress, DailyActivity, ProgressLevel, QuestionAttemptHistory,

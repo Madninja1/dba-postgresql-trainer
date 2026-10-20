@@ -1,8 +1,10 @@
 use dba_trainer_application::{ContentLocaleRepository, RepositoryError};
 use dba_trainer_content::{
-    AnswerDocument, ContentBundle, LabBundle, LabDocument, QuestionDocument, QuestionTypeDocument,
-    SourceDocument, SourceKindDocument, TopicDocument, load_builtin_bundles_for_locale,
-    load_builtin_labs_for_locale,
+    AnswerDocument, ContentBundle, LabBundle, LabDocument, PracticeBundle,
+    PracticeComparisonDocument, PracticeDocument, PracticeKindDocument, QuestionDocument,
+    QuestionTypeDocument, SourceDocument, SourceKindDocument, TopicDocument,
+    load_builtin_bundles_for_locale, load_builtin_labs_for_locale,
+    load_builtin_practice_for_locale,
 };
 
 use rusqlite::{Transaction, params};
@@ -19,6 +21,11 @@ pub struct ContentSyncReport {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LabSyncReport {
     pub lab_key: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct PracticeSyncReport {
+    pub practice_key: String,
 }
 
 impl SqliteRepository {
@@ -90,6 +97,28 @@ impl SqliteRepository {
     }
 }
 
+impl SqliteRepository {
+    pub fn sync_practice(
+        &mut self,
+        bundle: &PracticeBundle,
+    ) -> Result<PracticeSyncReport, StorageError> {
+        let transaction = self.connection.transaction()?;
+
+        sync_practice_document(
+            &transaction,
+            &bundle.practice,
+            &bundle.setup_sql,
+            &bundle.solution_sql,
+        )?;
+
+        transaction.commit()?;
+
+        Ok(PracticeSyncReport {
+            practice_key: bundle.practice.key.clone(),
+        })
+    }
+}
+
 impl ContentLocaleRepository for SqliteRepository {
     fn set_content_locale(&mut self, locale: &str) -> Result<(), RepositoryError> {
         let bundles = load_builtin_bundles_for_locale(locale)
@@ -108,8 +137,81 @@ impl ContentLocaleRepository for SqliteRepository {
                 .map_err(|error| RepositoryError::Storage(error.to_string()))?;
         }
 
+        let practice = load_builtin_practice_for_locale(locale)
+            .map_err(|error| RepositoryError::Storage(error.to_string()))?;
+
+        for task in &practice {
+            self.sync_practice(task)
+                .map_err(|error| RepositoryError::Storage(error.to_string()))?;
+        }
+
         Ok(())
     }
+}
+
+fn sync_practice_document(
+    transaction: &Transaction<'_>,
+    practice: &PracticeDocument,
+    setup_sql: &str,
+    solution_sql: &str,
+) -> rusqlite::Result<()> {
+    let practice_type = match practice.practice_type {
+        PracticeKindDocument::WriteQuery => "write_query",
+        PracticeKindDocument::FixQuery => "fix_query",
+        PracticeKindDocument::FindLogicalError => "find_logical_error",
+    };
+
+    let comparison = match practice.comparison {
+        PracticeComparisonDocument::Ordered => "ordered",
+        PracticeComparisonDocument::Unordered => "unordered",
+        PracticeComparisonDocument::Scalar => "scalar",
+        PracticeComparisonDocument::RowCount => "row_count",
+    };
+
+    transaction.execute(
+        "
+        INSERT INTO practice_tasks (
+            content_key,
+            category,
+            title,
+            description,
+            practice_type,
+            comparison,
+            starter_sql,
+            setup_sql,
+            solution_sql,
+            sort_order,
+            is_active
+        )
+        VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, 1)
+        ON CONFLICT(content_key)
+        DO UPDATE SET
+            category = excluded.category,
+            title = excluded.title,
+            description = excluded.description,
+            practice_type = excluded.practice_type,
+            comparison = excluded.comparison,
+            starter_sql = excluded.starter_sql,
+            setup_sql = excluded.setup_sql,
+            solution_sql = excluded.solution_sql,
+            sort_order = excluded.sort_order,
+            is_active = 1
+        ",
+        params![
+            practice.key,
+            practice.category,
+            practice.title,
+            practice.description,
+            practice_type,
+            comparison,
+            practice.starter_sql,
+            setup_sql,
+            solution_sql,
+            practice.sort_order,
+        ],
+    )?;
+
+    Ok(())
 }
 
 fn sync_lab_document(

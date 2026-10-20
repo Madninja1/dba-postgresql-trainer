@@ -1,7 +1,7 @@
 use dba_trainer_domain::{
-    ActivityStats, AnswerOptionId, AnswerResult, Lab, Question, QuestionId, QuestionMistakeDetail,
-    QuestionMistakeSummary, QuizSession, SessionConfig, SessionId, SessionProgress,
-    StatisticsFilter, Topic, TopicId, TopicMasteryStats, TrainingStats,
+    ActivityStats, AnswerOptionId, AnswerResult, Lab, PracticeTask, Question, QuestionId,
+    QuestionMistakeDetail, QuestionMistakeSummary, QuizSession, SessionConfig, SessionId,
+    SessionProgress, StatisticsFilter, Topic, TopicId, TopicMasteryStats, TrainingStats,
 };
 
 use crate::RepositoryError;
@@ -27,6 +27,12 @@ pub trait LearningHistoryRepository {
     fn activity_stats(&self) -> Result<ActivityStats, RepositoryError>;
 
     fn record_app_open(&mut self) -> Result<(), RepositoryError>;
+}
+
+pub trait PracticeRepository {
+    fn practice_tasks(&self) -> Result<Vec<PracticeTask>, RepositoryError>;
+
+    fn practice_task(&self, key: &str) -> Result<PracticeTask, RepositoryError>;
 }
 
 pub trait ContentLocaleRepository {

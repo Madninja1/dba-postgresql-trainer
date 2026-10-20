@@ -1,13 +1,14 @@
-use dba_trainer_application::{RepositoryError, TrainerService};
+use dba_trainer_application::{PracticeEngine, RepositoryError, TrainerService};
 
 use dba_trainer_domain::{
-    ActivityStats, AnswerOptionId, AnswerResult, Lab, Question, QuestionId, QuestionLimit,
-    QuestionMistakeDetail, QuestionMistakeSummary, QuestionType, QuizScope, SessionConfig,
-    SessionId, SessionProgress, StatisticsFilter, StatisticsLimit, StatisticsScope, Topic, TopicId,
-    TopicMasteryStats, TrainingStats,
+    ActivityStats, AnswerOptionId, AnswerResult, Lab, PracticeCheckResult, PracticeExecutionResult,
+    PracticeTask, Question, QuestionId, QuestionLimit, QuestionMistakeDetail,
+    QuestionMistakeSummary, QuestionType, QuizScope, SessionConfig, SessionId, SessionProgress,
+    StatisticsFilter, StatisticsLimit, StatisticsScope, Topic, TopicId, TopicMasteryStats,
+    TrainingStats,
 };
 
-use dba_trainer_storage_sqlite::SqliteRepository;
+use dba_trainer_storage_sqlite::{SqlitePracticeEngine, SqliteRepository};
 
 use crate::localization::{UiLanguage, UiStrings, ui_strings};
 
@@ -25,6 +26,9 @@ pub enum Screen {
     LabCourses,
     Labs,
     LabDetail,
+
+    PracticeTasks,
+    PracticeEditor,
 
     Quiz,
     Feedback,
@@ -44,6 +48,17 @@ pub enum Action {
     Back,
     Quit,
     ClearStatistics,
+    EditorChar(char),
+    EditorBackspace,
+    EditorNewline,
+    EditorTab,
+    EditorLeft,
+    EditorRight,
+    EditorUp,
+    EditorDown,
+    PracticeRun,
+    PracticeCheck,
+    PracticeReset,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -75,6 +90,7 @@ pub enum HomeItem {
     Topics,
     GeneralQuiz,
     Labs,
+    Practice,
     Statistics,
     Language,
     Quit,
@@ -86,6 +102,7 @@ impl HomeItem {
             Self::Topics => strings.topic_quiz.to_string(),
             Self::GeneralQuiz => strings.general_quiz.to_string(),
             Self::Labs => strings.labs.to_string(),
+            Self::Practice => strings.practice.to_string(),
             Self::Statistics => strings.statistics.to_string(),
             Self::Language => format!("{}: {}", strings.language, strings.language_name(language)),
             Self::Quit => strings.quit.to_string(),
@@ -93,10 +110,11 @@ impl HomeItem {
     }
 }
 
-pub const HOME_ITEMS: [HomeItem; 6] = [
+pub const HOME_ITEMS: [HomeItem; 7] = [
     HomeItem::Topics,
     HomeItem::GeneralQuiz,
     HomeItem::Labs,
+    HomeItem::Practice,
     HomeItem::Statistics,
     HomeItem::Language,
     HomeItem::Quit,
@@ -129,6 +147,14 @@ pub struct App {
     pub selected_lab_course: Option<String>,
     pub selected_lab: Option<Lab>,
     pub lab_scroll: u16,
+
+    pub practice_tasks: Vec<PracticeTask>,
+    pub practice_selected: usize,
+    pub current_practice_task: Option<PracticeTask>,
+    pub practice_sql: String,
+    pub practice_cursor: usize,
+    pub practice_output: Option<PracticeExecutionResult>,
+    pub practice_check: Option<PracticeCheckResult>,
 
     pub quiz_scope: QuizScope,
 
@@ -182,6 +208,8 @@ pub struct App {
 
     session_id: Option<SessionId>,
 
+    practice_engine: SqlitePracticeEngine,
+
     service: TrainerService<SqliteRepository>,
 }
 
@@ -194,6 +222,7 @@ impl App {
         service.record_app_open()?;
         let topics = service.topics()?;
         let labs = service.labs()?;
+        let practice_tasks = service.practice_tasks()?;
         let activity_stats = Some(service.activity_stats()?);
 
         let resume_session = service.active_session()?;
@@ -238,6 +267,14 @@ impl App {
             selected_lab: None,
 
             lab_scroll: 0,
+
+            practice_tasks,
+            practice_selected: 0,
+            current_practice_task: None,
+            practice_sql: String::new(),
+            practice_cursor: 0,
+            practice_output: None,
+            practice_check: None,
 
             quiz_scope: QuizScope::AllTopics,
 
@@ -291,6 +328,8 @@ impl App {
 
             cancel_return_screen: Screen::Quiz,
 
+            practice_engine: SqlitePracticeEngine::new(),
+
             service,
         })
     }
@@ -328,6 +367,10 @@ impl App {
             Screen::Labs => self.handle_labs_action(action),
 
             Screen::LabDetail => self.handle_lab_detail_action(action),
+
+            Screen::PracticeTasks => self.handle_practice_tasks_action(action),
+
+            Screen::PracticeEditor => self.handle_practice_editor_action(action),
 
             Screen::Quiz => self.handle_quiz_action(action),
 
@@ -379,6 +422,16 @@ impl App {
                     self.screen = Screen::LabCourses;
                 }
 
+                HomeItem::Practice => {
+                    self.practice_selected = 0;
+                    self.current_practice_task = None;
+                    self.practice_sql.clear();
+                    self.practice_cursor = 0;
+                    self.practice_output = None;
+                    self.practice_check = None;
+                    self.screen = Screen::PracticeTasks;
+                }
+
                 HomeItem::Statistics => {
                     self.statistics_view = StatisticsView::Root;
                     self.statistics_selected = 0;
@@ -396,6 +449,7 @@ impl App {
                     self.service.set_content_locale(language.code())?;
                     self.topics = self.service.topics()?;
                     self.labs = self.service.labs()?;
+                    self.practice_tasks = self.service.practice_tasks()?;
                     self.topic_course_selected = self
                         .topic_course_selected
                         .min(self.course_codes().len().saturating_sub(1));
@@ -410,7 +464,7 @@ impl App {
                 }
             },
 
-            Action::Back | Action::Toggle | Action::Quit | Action::ClearStatistics => {}
+            _ => {}
         }
 
         Ok(())
@@ -443,7 +497,7 @@ impl App {
                 self.screen = Screen::Home;
             }
 
-            Action::Toggle | Action::Quit | Action::ClearStatistics => {}
+            _ => {}
         }
 
         Ok(())
@@ -479,7 +533,7 @@ impl App {
                 self.screen = Screen::TopicCourses;
             }
 
-            Action::Toggle | Action::Quit | Action::ClearStatistics => {}
+            _ => {}
         }
 
         Ok(())
@@ -510,7 +564,7 @@ impl App {
                 self.screen = Screen::TopicCourses;
             }
 
-            Action::Toggle | Action::Quit | Action::ClearStatistics => {}
+            _ => {}
         }
 
         Ok(())
@@ -537,7 +591,7 @@ impl App {
                 self.selected_lab_course = None;
                 self.screen = Screen::Home;
             }
-            Action::Toggle | Action::Quit | Action::ClearStatistics => {}
+            _ => {}
         }
 
         Ok(())
@@ -568,7 +622,7 @@ impl App {
                 self.selected_lab = None;
                 self.screen = Screen::LabCourses;
             }
-            Action::Toggle | Action::Quit | Action::ClearStatistics => {}
+            _ => {}
         }
 
         Ok(())
@@ -586,7 +640,129 @@ impl App {
                 self.lab_scroll = 0;
                 self.screen = Screen::Labs;
             }
-            Action::Confirm | Action::Toggle | Action::Quit | Action::ClearStatistics => {}
+            _ => {}
+        }
+
+        Ok(())
+    }
+
+    fn handle_practice_tasks_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        match action {
+            Action::Up => {
+                self.practice_selected =
+                    previous_index(self.practice_selected, self.practice_tasks.len());
+            }
+            Action::Down => {
+                self.practice_selected =
+                    next_index(self.practice_selected, self.practice_tasks.len());
+            }
+            Action::Confirm => {
+                if let Some(task) = self.practice_tasks.get(self.practice_selected).cloned() {
+                    self.practice_engine
+                        .load_task(&task)
+                        .map_err(|error| RepositoryError::Storage(error.to_string()))?;
+                    self.practice_sql = task.starter_sql.clone();
+                    self.practice_cursor = self.practice_sql.len();
+                    self.current_practice_task = Some(task);
+                    self.practice_output = None;
+                    self.practice_check = None;
+                    self.screen = Screen::PracticeEditor;
+                }
+            }
+            Action::Back => {
+                self.screen = Screen::Home;
+            }
+            _ => {}
+        }
+
+        Ok(())
+    }
+
+    fn handle_practice_editor_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        match action {
+            Action::EditorChar(character) => {
+                self.practice_sql.insert(self.practice_cursor, character);
+                self.practice_cursor += character.len_utf8();
+                self.practice_check = None;
+            }
+            Action::EditorBackspace => {
+                if let Some(previous) =
+                    previous_char_boundary(&self.practice_sql, self.practice_cursor)
+                {
+                    self.practice_sql.drain(previous..self.practice_cursor);
+                    self.practice_cursor = previous;
+                    self.practice_check = None;
+                }
+            }
+            Action::EditorNewline => {
+                self.practice_sql.insert(self.practice_cursor, '\n');
+                self.practice_cursor += 1;
+                self.practice_check = None;
+            }
+            Action::EditorTab => {
+                self.practice_sql.insert_str(self.practice_cursor, "    ");
+                self.practice_cursor += 4;
+                self.practice_check = None;
+            }
+            Action::EditorLeft => {
+                if let Some(previous) =
+                    previous_char_boundary(&self.practice_sql, self.practice_cursor)
+                {
+                    self.practice_cursor = previous;
+                }
+            }
+            Action::EditorRight => {
+                if let Some(next) = next_char_boundary(&self.practice_sql, self.practice_cursor) {
+                    self.practice_cursor = next;
+                }
+            }
+            Action::EditorUp => {
+                self.practice_cursor =
+                    vertical_cursor_target(&self.practice_sql, self.practice_cursor, -1);
+            }
+            Action::EditorDown => {
+                self.practice_cursor =
+                    vertical_cursor_target(&self.practice_sql, self.practice_cursor, 1);
+            }
+            Action::PracticeRun => {
+                let result = self
+                    .practice_engine
+                    .execute(&self.practice_sql)
+                    .map_err(|error| RepositoryError::Storage(error.to_string()))?;
+                self.practice_output = Some(result);
+                self.practice_check = None;
+            }
+            Action::PracticeCheck => {
+                let task = self.current_practice_task.as_ref().ok_or_else(|| {
+                    RepositoryError::InvalidState(String::from("practice task is not selected"))
+                })?;
+                let result = self
+                    .practice_engine
+                    .check(task, &self.practice_sql)
+                    .map_err(|error| RepositoryError::Storage(error.to_string()))?;
+                self.practice_check = Some(result);
+            }
+            Action::PracticeReset => {
+                let task = self.current_practice_task.as_ref().ok_or_else(|| {
+                    RepositoryError::InvalidState(String::from("practice task is not selected"))
+                })?;
+                self.practice_engine
+                    .reset(task)
+                    .map_err(|error| RepositoryError::Storage(error.to_string()))?;
+                self.practice_sql = task.starter_sql.clone();
+                self.practice_cursor = self.practice_sql.len();
+                self.practice_output = None;
+                self.practice_check = None;
+            }
+            Action::Back => {
+                self.current_practice_task = None;
+                self.practice_sql.clear();
+                self.practice_cursor = 0;
+                self.practice_output = None;
+                self.practice_check = None;
+                self.screen = Screen::PracticeTasks;
+            }
+            _ => {}
         }
 
         Ok(())
@@ -617,7 +793,7 @@ impl App {
                 };
             }
 
-            Action::Toggle | Action::Quit | Action::ClearStatistics => {}
+            _ => {}
         }
 
         Ok(())
@@ -655,7 +831,7 @@ impl App {
                 self.screen = Screen::CancelSession;
             }
 
-            Action::Quit | Action::ClearStatistics => {}
+            _ => {}
         }
 
         Ok(())
@@ -685,7 +861,7 @@ impl App {
                 self.screen = Screen::CancelSession;
             }
 
-            Action::Toggle | Action::ClearStatistics | Action::Quit => {}
+            _ => {}
         }
 
         Ok(())
@@ -728,7 +904,7 @@ impl App {
                 }
             },
 
-            Action::Back | Action::Toggle | Action::Quit | Action::ClearStatistics => {}
+            _ => {}
         }
 
         Ok(())
@@ -761,7 +937,7 @@ impl App {
                 self.screen = self.cancel_return_screen;
             }
 
-            Action::Toggle | Action::Quit | Action::ClearStatistics => {}
+            _ => {}
         }
 
         Ok(())
@@ -813,7 +989,7 @@ impl App {
                 self.statistics_scroll = 0;
             }
 
-            Action::Toggle | Action::Quit => {}
+            _ => {}
         }
 
         Ok(())
@@ -1550,6 +1726,69 @@ fn statistics_limit_from_index(index: usize) -> Option<StatisticsLimit> {
         3 => Some(StatisticsLimit::AllQuestions),
         _ => None,
     }
+}
+
+fn previous_char_boundary(text: &str, cursor: usize) -> Option<usize> {
+    if cursor == 0 || cursor > text.len() {
+        return None;
+    }
+
+    text[..cursor].char_indices().last().map(|(index, _)| index)
+}
+
+fn next_char_boundary(text: &str, cursor: usize) -> Option<usize> {
+    if cursor >= text.len() {
+        return None;
+    }
+
+    text[cursor..]
+        .chars()
+        .next()
+        .map(|character| cursor + character.len_utf8())
+}
+
+fn vertical_cursor_target(text: &str, cursor: usize, direction: i8) -> usize {
+    let cursor = cursor.min(text.len());
+    let current_start = text[..cursor]
+        .rfind('\n')
+        .map(|index| index + 1)
+        .unwrap_or(0);
+    let column = text[current_start..cursor].chars().count();
+
+    let (target_start, target_end) = if direction < 0 {
+        if current_start == 0 {
+            return cursor;
+        }
+
+        let target_end = current_start - 1;
+        let target_start = text[..target_end]
+            .rfind('\n')
+            .map(|index| index + 1)
+            .unwrap_or(0);
+        (target_start, target_end)
+    } else {
+        let current_end = text[cursor..]
+            .find('\n')
+            .map(|offset| cursor + offset)
+            .unwrap_or(text.len());
+
+        if current_end == text.len() {
+            return cursor;
+        }
+
+        let target_start = current_end + 1;
+        let target_end = text[target_start..]
+            .find('\n')
+            .map(|offset| target_start + offset)
+            .unwrap_or(text.len());
+        (target_start, target_end)
+    };
+
+    text[target_start..target_end]
+        .char_indices()
+        .nth(column)
+        .map(|(offset, _)| target_start + offset)
+        .unwrap_or(target_end)
 }
 
 fn next_index(current: usize, length: usize) -> usize {

@@ -6,6 +6,8 @@ mod home;
 mod lab_courses;
 mod lab_detail;
 mod labs;
+mod practice_editor;
+mod practice_tasks;
 mod quiz;
 mod quiz_setup;
 mod results;
@@ -58,6 +60,14 @@ pub fn render(frame: &mut Frame, app: &App) {
 
         Screen::LabDetail => {
             lab_detail::render(frame, app);
+        }
+
+        Screen::PracticeTasks => {
+            practice_tasks::render(frame, app);
+        }
+
+        Screen::PracticeEditor => {
+            practice_editor::render(frame, app);
         }
 
         Screen::Quiz => {

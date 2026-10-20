@@ -1,16 +1,17 @@
 use std::path::Path;
 
 use dba_trainer_application::{
-    LabRepository, LearningHistoryRepository, RepositoryError, SessionRepository, TopicRepository,
+    LabRepository, LearningHistoryRepository, PracticeRepository, RepositoryError,
+    SessionRepository, TopicRepository,
 };
 
 use dba_trainer_domain::{
     ActivityStats, AnswerOption, AnswerOptionId, AnswerResult, CourseProgress, DailyActivity, Lab,
-    Question, QuestionAttemptHistory, QuestionId, QuestionLimit, QuestionMistakeDetail,
-    QuestionMistakeSummary, QuestionType, QuizScope, QuizSession, STUDY_DAY_QUESTION_TARGET,
-    SessionConfig, SessionId, SessionProgress, Source, SourceId, SourceKind, StatisticsFilter,
-    StatisticsLimit, StatisticsScope, Topic, TopicId, TopicMasteryStats, TrainingStats,
-    pass_threshold_percent_for_requested_count,
+    PracticeComparison, PracticeKind, PracticeTask, Question, QuestionAttemptHistory, QuestionId,
+    QuestionLimit, QuestionMistakeDetail, QuestionMistakeSummary, QuestionType, QuizScope,
+    QuizSession, STUDY_DAY_QUESTION_TARGET, SessionConfig, SessionId, SessionProgress, Source,
+    SourceId, SourceKind, StatisticsFilter, StatisticsLimit, StatisticsScope, Topic, TopicId,
+    TopicMasteryStats, TrainingStats, pass_threshold_percent_for_requested_count,
 };
 
 use rusqlite::{Connection, OptionalExtension, params};
@@ -1499,6 +1500,118 @@ impl SessionRepository for SqliteRepository {
     }
 }
 
+impl PracticeRepository for SqliteRepository {
+    fn practice_tasks(&self) -> Result<Vec<PracticeTask>, RepositoryError> {
+        let mut statement = self
+            .connection
+            .prepare(
+                "
+                SELECT
+                    id,
+                    content_key,
+                    category,
+                    title,
+                    description,
+                    practice_type,
+                    comparison,
+                    starter_sql,
+                    setup_sql,
+                    solution_sql,
+                    sort_order
+                FROM practice_tasks
+                WHERE is_active = 1
+                ORDER BY category, sort_order, id
+                ",
+            )
+            .map_err(repository_error)?;
+
+        let rows = statement
+            .query_map([], practice_task_from_row)
+            .map_err(repository_error)?;
+
+        rows.collect::<rusqlite::Result<Vec<_>>>()
+            .map_err(repository_error)
+    }
+
+    fn practice_task(&self, key: &str) -> Result<PracticeTask, RepositoryError> {
+        self.connection
+            .query_row(
+                "
+                SELECT
+                    id,
+                    content_key,
+                    category,
+                    title,
+                    description,
+                    practice_type,
+                    comparison,
+                    starter_sql,
+                    setup_sql,
+                    solution_sql,
+                    sort_order
+                FROM practice_tasks
+                WHERE content_key = ?1
+                  AND is_active = 1
+                ",
+                params![key],
+                practice_task_from_row,
+            )
+            .optional()
+            .map_err(repository_error)?
+            .ok_or(RepositoryError::NotFound)
+    }
+}
+
+fn practice_task_from_row(row: &rusqlite::Row<'_>) -> rusqlite::Result<PracticeTask> {
+    let practice_type = row.get::<_, String>(5)?;
+    let comparison = row.get::<_, String>(6)?;
+
+    Ok(PracticeTask {
+        id: row.get(0)?,
+        key: row.get(1)?,
+        category: row.get(2)?,
+        title: row.get(3)?,
+        description: row.get(4)?,
+        kind: match practice_type.as_str() {
+            "write_query" => PracticeKind::WriteQuery,
+            "fix_query" => PracticeKind::FixQuery,
+            "find_logical_error" => PracticeKind::FindLogicalError,
+            other => {
+                return Err(rusqlite::Error::FromSqlConversionFailure(
+                    5,
+                    rusqlite::types::Type::Text,
+                    std::io::Error::new(
+                        std::io::ErrorKind::InvalidData,
+                        format!("unknown practice type: {other}"),
+                    )
+                    .into(),
+                ));
+            }
+        },
+        comparison: match comparison.as_str() {
+            "ordered" => PracticeComparison::Ordered,
+            "unordered" => PracticeComparison::Unordered,
+            "scalar" => PracticeComparison::Scalar,
+            "row_count" => PracticeComparison::RowCount,
+            other => {
+                return Err(rusqlite::Error::FromSqlConversionFailure(
+                    6,
+                    rusqlite::types::Type::Text,
+                    std::io::Error::new(
+                        std::io::ErrorKind::InvalidData,
+                        format!("unknown practice comparison: {other}"),
+                    )
+                    .into(),
+                ));
+            }
+        },
+        starter_sql: row.get(7)?,
+        setup_sql: row.get(8)?,
+        solution_sql: row.get(9)?,
+        sort_order: row.get(10)?,
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1570,6 +1683,53 @@ mod tests {
             .expect("test data should be inserted");
 
         repository
+    }
+
+    #[test]
+    fn loads_practice_tasks_from_sqlite() {
+        let repository = seeded_repository();
+
+        repository
+            .connection
+            .execute(
+                "
+                INSERT INTO practice_tasks (
+                    content_key,
+                    category,
+                    title,
+                    description,
+                    practice_type,
+                    comparison,
+                    starter_sql,
+                    setup_sql,
+                    solution_sql,
+                    sort_order
+                )
+                VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)
+                ",
+                params![
+                    "practice-demo",
+                    "select",
+                    "Demo",
+                    "Return one row",
+                    "write_query",
+                    "unordered",
+                    "SELECT ",
+                    "CREATE TABLE demo (id INTEGER); INSERT INTO demo VALUES (1);",
+                    "SELECT id FROM demo;",
+                    1_i64,
+                ],
+            )
+            .expect("practice task should be inserted");
+
+        let tasks = repository
+            .practice_tasks()
+            .expect("practice tasks should load");
+
+        assert_eq!(tasks.len(), 1);
+        assert_eq!(tasks[0].key, "practice-demo");
+        assert_eq!(tasks[0].kind, PracticeKind::WriteQuery);
+        assert_eq!(tasks[0].comparison, PracticeComparison::Unordered);
     }
 
     #[test]

@@ -1,14 +1,14 @@
 use dba_trainer_domain::{
-    ActivityStats, AnswerOptionId, AnswerResult, Lab, Question, QuestionId, QuestionMistakeDetail,
-    QuestionMistakeSummary, QuizSession, SessionConfig, SessionId, SessionProgress,
-    StatisticsFilter, Topic, TopicId, TopicMasteryStats, TrainingStats,
+    ActivityStats, AnswerOptionId, AnswerResult, Lab, PracticeTask, Question, QuestionId,
+    QuestionMistakeDetail, QuestionMistakeSummary, QuizSession, SessionConfig, SessionId,
+    SessionProgress, StatisticsFilter, Topic, TopicId, TopicMasteryStats, TrainingStats,
 };
 
 use rand::{rng, seq::SliceRandom};
 
 use crate::{
-    ContentLocaleRepository, LabRepository, LearningHistoryRepository, RepositoryError,
-    SessionRepository, TopicRepository,
+    ContentLocaleRepository, LabRepository, LearningHistoryRepository, PracticeRepository,
+    RepositoryError, SessionRepository, TopicRepository,
 };
 
 pub struct TrainerService<R> {
@@ -108,6 +108,19 @@ where
 
     pub fn record_app_open(&mut self) -> Result<(), RepositoryError> {
         self.repository.record_app_open()
+    }
+}
+
+impl<R> TrainerService<R>
+where
+    R: PracticeRepository,
+{
+    pub fn practice_tasks(&self) -> Result<Vec<PracticeTask>, RepositoryError> {
+        self.repository.practice_tasks()
+    }
+
+    pub fn practice_task(&self, key: &str) -> Result<PracticeTask, RepositoryError> {
+        self.repository.practice_task(key)
     }
 }
 

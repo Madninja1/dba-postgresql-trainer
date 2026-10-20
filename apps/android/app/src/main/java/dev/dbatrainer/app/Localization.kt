@@ -33,6 +33,11 @@ data class UiStrings(
     val twentyQuestions: String,
     val fiftyQuestions: String,
     val allQuestions: String,
+    val passCriteria: String,
+    val passThreshold: String,
+    val passStatus: String,
+    val passed: String,
+    val notPassed: String,
     val chooseAllCorrect: String,
     val chooseOne: String,
     val answer: String,
@@ -75,6 +80,8 @@ data class UiStrings(
     val accuracy: String,
     val mistakes: String,
     val workOnMistakes: String,
+    val reviewCourseMistakes: String,
+    val reviewTopicMistakes: String,
     val noMistakes: String,
     val attemptHistory: String,
     val attempts: String,
@@ -126,12 +133,12 @@ data class UiStrings(
         }
 
     fun topicMasterySummary(stats: MobileTopicMasteryStats?): String {
-        val target = stats?.passThresholdPercent?.let { "%.0f".format(it) } ?: "85"
+        val targets = "85/70/60%"
         if (stats == null || stats.completedAttempts == 0UL) {
             return if (this === ENGLISH_STRINGS) {
-                "No completed attempts · target $target%"
+                "No completed attempts · targets 20/50/all: $targets"
             } else {
-                "Нет завершённых попыток · цель $target%"
+                "Нет завершённых попыток · цели 20/50/все: $targets"
             }
         }
 
@@ -142,13 +149,13 @@ data class UiStrings(
             if (passedAttempt != null) {
                 "Best $best · passed on attempt #$passedAttempt"
             } else {
-                "Best $best · attempts ${stats.completedAttempts} · target $target%"
+                "Best $best · attempts ${stats.completedAttempts} · targets $targets"
             }
         } else {
             if (passedAttempt != null) {
                 "Лучший результат $best · пройдено с попытки №$passedAttempt"
             } else {
-                "Лучший результат $best · попыток ${stats.completedAttempts} · цель $target%"
+                "Лучший результат $best · попыток ${stats.completedAttempts} · цели $targets"
             }
         }
     }
@@ -231,6 +238,11 @@ private val ENGLISH_STRINGS = UiStrings(
     twentyQuestions = "20 questions",
     fiftyQuestions = "50 questions",
     allQuestions = "All questions",
+    passCriteria = "Pass criteria",
+    passThreshold = "Pass threshold",
+    passStatus = "Status",
+    passed = "Passed",
+    notPassed = "Not passed",
     chooseAllCorrect = "Select all correct options",
     chooseOne = "Select one option",
     answer = "Answer",
@@ -272,7 +284,9 @@ private val ENGLISH_STRINGS = UiStrings(
     incorrectAnswersCount = "Incorrect answers",
     accuracy = "Accuracy",
     mistakes = "Mistakes",
-    workOnMistakes = "Work on mistakes",
+    workOnMistakes = "Review all mistakes",
+    reviewCourseMistakes = "Review this course section",
+    reviewTopicMistakes = "Review this topic",
     noMistakes = "No mistakes have been recorded yet.",
     attemptHistory = "Attempt history",
     attempts = "Attempts",
@@ -315,6 +329,11 @@ private val RUSSIAN_STRINGS = UiStrings(
     twentyQuestions = "20 вопросов",
     fiftyQuestions = "50 вопросов",
     allQuestions = "Все вопросы",
+    passCriteria = "Критерий прохождения",
+    passThreshold = "Проходной порог",
+    passStatus = "Статус",
+    passed = "Пройдено",
+    notPassed = "Не пройдено",
     chooseAllCorrect = "Выберите все правильные варианты",
     chooseOne = "Выберите один вариант",
     answer = "Ответить",
@@ -356,7 +375,9 @@ private val RUSSIAN_STRINGS = UiStrings(
     incorrectAnswersCount = "Неправильных ответов",
     accuracy = "Точность",
     mistakes = "Ошибки",
-    workOnMistakes = "Работа над ошибками",
+    workOnMistakes = "Пройти все ошибки",
+    reviewCourseMistakes = "Пройти ошибки раздела",
+    reviewTopicMistakes = "Пройти ошибки темы",
     noMistakes = "Ошибок пока нет.",
     attemptHistory = "История попыток",
     attempts = "Попыток",

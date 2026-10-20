@@ -107,3 +107,47 @@ pub struct LabBundle {
     pub lab: LabDocument,
     pub body: String,
 }
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum PracticeKindDocument {
+    WriteQuery,
+    FixQuery,
+    FindLogicalError,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum PracticeComparisonDocument {
+    Ordered,
+    Unordered,
+    Scalar,
+    RowCount,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PracticeDocument {
+    pub schema_version: u32,
+    pub key: String,
+    pub category: String,
+    pub title: String,
+    pub description: String,
+
+    #[serde(rename = "type")]
+    pub practice_type: PracticeKindDocument,
+
+    pub comparison: PracticeComparisonDocument,
+
+    #[serde(default)]
+    pub starter_sql: String,
+
+    pub sort_order: i64,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct PracticeBundle {
+    pub practice: PracticeDocument,
+    pub setup_sql: String,
+    pub solution_sql: String,
+}

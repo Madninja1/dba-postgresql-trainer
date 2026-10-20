@@ -1,6 +1,9 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use crate::{ContentBundle, ContentError, LabBundle, QuestionDocument, load_bundle, load_lab};
+use crate::{
+    ContentBundle, ContentError, LabBundle, PracticeBundle, QuestionDocument, load_bundle,
+    load_lab, load_practice,
+};
 
 include!(concat!(env!("OUT_DIR"), "/builtin_registry.rs"));
 
@@ -12,6 +15,13 @@ struct LocalizedBundle {
     topic_key: &'static str,
     locale: &'static str,
     bundle: ContentBundle,
+}
+
+#[derive(Debug, Clone)]
+struct LocalizedPractice {
+    practice_key: &'static str,
+    locale: &'static str,
+    bundle: PracticeBundle,
 }
 
 #[derive(Debug, Clone)]
@@ -125,6 +135,61 @@ pub fn load_builtin_labs_for_locale(
     Ok(selected)
 }
 
+pub fn load_builtin_practice_for_locale(
+    requested_locale: &str,
+) -> Result<Vec<PracticeBundle>, ContentError> {
+    let localized = load_all_localized_practice()?;
+    validate_localized_practice_compatibility(&localized)?;
+
+    let requested = normalize_locale(requested_locale);
+    let base = requested.split('-').next().unwrap_or(requested.as_str());
+
+    let mut by_practice: BTreeMap<&str, Vec<&LocalizedPractice>> = BTreeMap::new();
+
+    for entry in &localized {
+        by_practice
+            .entry(entry.practice_key)
+            .or_default()
+            .push(entry);
+    }
+
+    let mut selected = Vec::with_capacity(by_practice.len());
+
+    for entries in by_practice.values() {
+        let chosen = entries
+            .iter()
+            .copied()
+            .find(|entry| entry.locale == requested)
+            .or_else(|| {
+                if base == requested {
+                    None
+                } else {
+                    entries.iter().copied().find(|entry| entry.locale == base)
+                }
+            })
+            .or_else(|| {
+                entries
+                    .iter()
+                    .copied()
+                    .find(|entry| entry.locale == FALLBACK_CONTENT_LOCALE)
+            })
+            .or_else(|| entries.first().copied())
+            .expect("localized practice group must not be empty");
+
+        selected.push(chosen.bundle.clone());
+    }
+
+    selected.sort_by_key(|bundle| {
+        (
+            bundle.practice.category.clone(),
+            bundle.practice.sort_order,
+            bundle.practice.title.clone(),
+        )
+    });
+
+    Ok(selected)
+}
+
 pub fn builtin_content_locales() -> Result<Vec<String>, ContentError> {
     let mut locales = load_all_localized_bundles()?
         .into_iter()
@@ -133,6 +198,12 @@ pub fn builtin_content_locales() -> Result<Vec<String>, ContentError> {
 
     locales.extend(
         load_all_localized_labs()?
+            .into_iter()
+            .map(|entry| entry.locale.to_owned()),
+    );
+
+    locales.extend(
+        load_all_localized_practice()?
             .into_iter()
             .map(|entry| entry.locale.to_owned()),
     );
@@ -153,6 +224,23 @@ fn load_all_localized_bundles() -> Result<Vec<LocalizedBundle>, ContentError> {
         .collect()
 }
 
+fn load_all_localized_practice() -> Result<Vec<LocalizedPractice>, ContentError> {
+    BUILTIN_PRACTICE_DOCUMENTS
+        .iter()
+        .map(
+            |(practice_key, locale, practice_json, setup_sql, solution_sql)| {
+                load_practice(practice_json, setup_sql, solution_sql).map(|bundle| {
+                    LocalizedPractice {
+                        practice_key,
+                        locale,
+                        bundle,
+                    }
+                })
+            },
+        )
+        .collect()
+}
+
 fn load_all_localized_labs() -> Result<Vec<LocalizedLab>, ContentError> {
     BUILTIN_LAB_DOCUMENTS
         .iter()
@@ -164,6 +252,50 @@ fn load_all_localized_labs() -> Result<Vec<LocalizedLab>, ContentError> {
             })
         })
         .collect()
+}
+
+fn validate_localized_practice_compatibility(
+    localized: &[LocalizedPractice],
+) -> Result<(), ContentError> {
+    let mut by_practice: BTreeMap<&str, Vec<&LocalizedPractice>> = BTreeMap::new();
+
+    for entry in localized {
+        by_practice
+            .entry(entry.practice_key)
+            .or_default()
+            .push(entry);
+    }
+
+    let mut errors = Vec::new();
+
+    for (practice_key, entries) in by_practice {
+        let Some(reference) = entries.first().copied() else {
+            continue;
+        };
+
+        for candidate in entries.iter().copied().skip(1) {
+            if reference.bundle.practice.key != candidate.bundle.practice.key
+                || reference.bundle.practice.category != candidate.bundle.practice.category
+                || reference.bundle.practice.practice_type
+                    != candidate.bundle.practice.practice_type
+                || reference.bundle.practice.comparison != candidate.bundle.practice.comparison
+                || reference.bundle.practice.sort_order != candidate.bundle.practice.sort_order
+                || reference.bundle.setup_sql != candidate.bundle.setup_sql
+                || reference.bundle.solution_sql != candidate.bundle.solution_sql
+            {
+                errors.push(format!(
+                    "localized practice '{practice_key}' must keep key, category, type, comparison, sort_order, setup.sql and solution.sql compatible in '{}' and '{}'",
+                    reference.locale, candidate.locale
+                ));
+            }
+        }
+    }
+
+    if errors.is_empty() {
+        Ok(())
+    } else {
+        Err(ContentError::Validation(errors))
+    }
 }
 
 fn validate_localized_lab_compatibility(localized: &[LocalizedLab]) -> Result<(), ContentError> {
@@ -436,6 +568,22 @@ mod tests {
     #[test]
     fn locale_normalization_accepts_region_and_underscore() {
         assert_eq!(normalize_locale("EN_us"), "en-us");
+    }
+
+    #[test]
+    fn builtin_practice_is_valid_and_localized() {
+        let practice = load_builtin_practice_for_locale("ru")
+            .expect("builtin practice content should be valid");
+
+        let task = practice
+            .iter()
+            .find(|bundle| bundle.practice.key == "sql-clients-without-orders")
+            .expect("demo practice task should exist");
+
+        assert_eq!(task.practice.category, "joins");
+        assert!(task.practice.title.contains("Клиенты"));
+        assert!(!task.setup_sql.trim().is_empty());
+        assert!(!task.solution_sql.trim().is_empty());
     }
 
     #[test]

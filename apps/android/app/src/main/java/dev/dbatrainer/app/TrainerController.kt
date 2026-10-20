@@ -43,6 +43,8 @@ enum class StatisticsPage {
     GlobalModes,
     ScopeModes,
     Mistakes,
+    MistakeTopics,
+    MistakeQuestions,
     MistakeDetail,
     Activity,
     Detail,
@@ -126,6 +128,15 @@ class TrainerController(context: Context) {
     var totalQuestions by mutableStateOf(0)
         private set
 
+    var activeQuestionLimit by mutableStateOf<MobileQuestionLimit?>(
+        preferences
+            .getString("active_question_limit", null)
+            ?.let { stored ->
+                MobileQuestionLimit.entries.firstOrNull { limit -> limit.name == stored }
+            },
+    )
+        private set
+
     var errorMessage by mutableStateOf<String?>(null)
         private set
 
@@ -164,6 +175,12 @@ class TrainerController(context: Context) {
     var mistakeDetail by mutableStateOf<MobileQuestionMistakeDetail?>(null)
         private set
 
+    var selectedMistakeCourse by mutableStateOf<String?>(null)
+        private set
+
+    var selectedMistakeTopic by mutableStateOf<MobileTopic?>(null)
+        private set
+
     var activityStats by mutableStateOf<MobileActivityStats?>(null)
         private set
 
@@ -188,9 +205,37 @@ class TrainerController(context: Context) {
             requireTrainer().setContentLocale(language.code)
             topics = requireTrainer().topics()
             labs = requireTrainer().labs()
+            activityStats = requireTrainer().activityStats()
             resumeSession = requireTrainer().activeSession()
+
+            if (resumeSession != null && activeQuestionLimit == null) {
+                activeQuestionLimit = inferQuestionLimit(resumeSession!!.totalQuestions)
+            }
         }
     }
+
+    fun passThresholdPercent(limit: MobileQuestionLimit): Int =
+        when (limit) {
+            MobileQuestionLimit.TWENTY -> 85
+            MobileQuestionLimit.FIFTY -> 70
+            MobileQuestionLimit.ALL -> 60
+        }
+
+    fun requiredCorrectAnswers(limit: MobileQuestionLimit, total: Int): Int {
+        if (total <= 0) {
+            return 0
+        }
+
+        val percent = passThresholdPercent(limit)
+        return (total * percent + 99) / 100
+    }
+
+    val resultPassed: Boolean
+        get() {
+            val limit = activeQuestionLimit ?: return false
+            return answeredQuestions > 0 &&
+                correctAnswers >= requiredCorrectAnswers(limit, answeredQuestions)
+        }
 
     val canGoBack: Boolean
         get() = screen != AppScreen.Home
@@ -223,6 +268,38 @@ class TrainerController(context: Context) {
         get() = selectedStatisticsTopic?.let { topic ->
             "${topic.courseCode.uppercase()} → ${topic.title}"
         } ?: selectedStatisticsCourse?.uppercase().orEmpty()
+
+    val mistakeCourseCodes: List<String>
+        get() = mistakeSummaries
+            .map { summary -> summary.courseCode }
+            .distinct()
+            .sortedWith(courseCodeComparator)
+
+    val mistakeTopicsForSelectedCourse: List<MobileTopic>
+        get() {
+            val courseCode = selectedMistakeCourse ?: return emptyList()
+            val topicIds = mistakeSummaries
+                .asSequence()
+                .filter { summary -> summary.courseCode == courseCode }
+                .map { summary -> summary.topicId }
+                .toSet()
+
+            return topics
+                .filter { topic -> topic.courseCode == courseCode && topic.id in topicIds }
+                .sortedBy { topic -> topic.topicNumber }
+        }
+
+    val mistakesForSelectedTopic: List<MobileQuestionMistakeSummary>
+        get() {
+            val topicId = selectedMistakeTopic?.id ?: return emptyList()
+            return mistakeSummaries.filter { summary -> summary.topicId == topicId }
+        }
+
+    fun mistakeCountForCourse(courseCode: String): Int =
+        mistakeSummaries.count { summary -> summary.courseCode == courseCode }
+
+    fun mistakeCountForTopic(topicId: Long): Int =
+        mistakeSummaries.count { summary -> summary.topicId == topicId }
 
     fun changeLanguage(language: UiLanguage) {
         if (this.language == language) {
@@ -306,6 +383,20 @@ class TrainerController(context: Context) {
     fun startQuiz(limit: MobileQuestionLimit) {
         runCoreAction {
             val session = when {
+                pendingMistakeReview && pendingTopic != null -> {
+                    requireTrainer().startMistakeTopicSession(
+                        pendingTopic!!.id,
+                        limit,
+                    )
+                }
+
+                pendingMistakeReview && pendingCourse != null -> {
+                    requireTrainer().startMistakeCourseSession(
+                        pendingCourse!!,
+                        limit,
+                    )
+                }
+
                 pendingMistakeReview -> requireTrainer().startMistakeSession(limit)
 
                 pendingTopic != null -> {
@@ -325,6 +416,12 @@ class TrainerController(context: Context) {
                 else -> requireTrainer().startAllTopicsSession(limit)
             }
 
+            activeQuestionLimit = limit
+            preferences
+                .edit()
+                .putString("active_question_limit", limit.name)
+                .apply()
+
             sessionId = session.id
             answeredQuestions = 0
             correctAnswers = 0
@@ -339,6 +436,16 @@ class TrainerController(context: Context) {
         val progress = resumeSession ?: return
 
         runCoreAction {
+            pendingMistakeReview = progress.isReview
+            pendingCourse = if (progress.isReview) progress.courseCode else null
+            pendingTopic = if (progress.isReview) {
+                progress.topicId?.let { topicId ->
+                    topics.firstOrNull { topic -> topic.id == topicId }
+                }
+            } else {
+                null
+            }
+
             sessionId = progress.id
             answeredQuestions = progress.answeredQuestions.toInt()
             correctAnswers = progress.correctAnswers.toInt()
@@ -355,6 +462,7 @@ class TrainerController(context: Context) {
 
         runCoreAction {
             requireTrainer().cancelSession(progress.id)
+            activityStats = requireTrainer().activityStats()
             resumeSession = null
             resetQuizState()
             screen = AppScreen.Home
@@ -429,6 +537,7 @@ class TrainerController(context: Context) {
 
         runCoreAction {
             requireTrainer().cancelSession(currentSessionId)
+            activityStats = requireTrainer().activityStats()
             showCancelDialog = false
             resetQuizState()
             screen = AppScreen.Home
@@ -437,6 +546,11 @@ class TrainerController(context: Context) {
 
     fun finishResults() {
         val wasMistakeReview = pendingMistakeReview
+        val mistakeReturnPage = when {
+            pendingTopic != null -> StatisticsPage.MistakeQuestions
+            pendingCourse != null -> StatisticsPage.MistakeTopics
+            else -> StatisticsPage.Mistakes
+        }
 
         resetQuizState()
 
@@ -444,7 +558,7 @@ class TrainerController(context: Context) {
             runCoreAction {
                 mistakeSummaries = requireTrainer().mistakeSummaries()
                 mistakeDetail = null
-                statisticsPage = StatisticsPage.Mistakes
+                statisticsPage = mistakeReturnPage
                 screen = AppScreen.Statistics
             }
         } else {
@@ -549,8 +663,21 @@ class TrainerController(context: Context) {
         runCoreAction {
             mistakeSummaries = requireTrainer().mistakeSummaries()
             mistakeDetail = null
+            selectedMistakeCourse = null
+            selectedMistakeTopic = null
             statisticsPage = StatisticsPage.Mistakes
         }
+    }
+
+    fun openMistakeCourse(courseCode: String) {
+        selectedMistakeCourse = courseCode
+        selectedMistakeTopic = null
+        statisticsPage = StatisticsPage.MistakeTopics
+    }
+
+    fun openMistakeTopic(topic: MobileTopic) {
+        selectedMistakeTopic = topic
+        statisticsPage = StatisticsPage.MistakeQuestions
     }
 
     fun openMistakeDetail(summary: MobileQuestionMistakeSummary) {
@@ -571,6 +698,30 @@ class TrainerController(context: Context) {
         screen = AppScreen.Limit
     }
 
+    fun openMistakeCourseReview() {
+        val courseCode = selectedMistakeCourse ?: return
+        if (mistakeCountForCourse(courseCode) == 0) {
+            return
+        }
+
+        pendingTopic = null
+        pendingCourse = courseCode
+        pendingMistakeReview = true
+        screen = AppScreen.Limit
+    }
+
+    fun openMistakeTopicReview() {
+        val topic = selectedMistakeTopic ?: return
+        if (mistakeCountForTopic(topic.id) == 0) {
+            return
+        }
+
+        pendingCourse = null
+        pendingTopic = topic
+        pendingMistakeReview = true
+        screen = AppScreen.Limit
+    }
+
     fun openActivity() {
         runCoreAction {
             activityStats = requireTrainer().activityStats()
@@ -585,7 +736,7 @@ class TrainerController(context: Context) {
             resetStatisticsNavigation()
             mistakeSummaries = emptyList()
             mistakeDetail = null
-            activityStats = null
+            activityStats = requireTrainer().activityStats()
         }
     }
 
@@ -608,8 +759,14 @@ class TrainerController(context: Context) {
             AppScreen.Limit -> {
                 screen = when {
                     pendingMistakeReview -> {
+                        statisticsPage = when {
+                            pendingTopic != null -> StatisticsPage.MistakeQuestions
+                            pendingCourse != null -> StatisticsPage.MistakeTopics
+                            else -> StatisticsPage.Mistakes
+                        }
                         pendingMistakeReview = false
-                        statisticsPage = StatisticsPage.Mistakes
+                        pendingTopic = null
+                        pendingCourse = null
                         AppScreen.Statistics
                     }
                     pendingTopic != null -> AppScreen.Topics
@@ -645,9 +802,18 @@ class TrainerController(context: Context) {
             }
 
             StatisticsPage.Mistakes -> statisticsPage = StatisticsPage.Root
+            StatisticsPage.MistakeTopics -> {
+                selectedMistakeCourse = null
+                selectedMistakeTopic = null
+                statisticsPage = StatisticsPage.Mistakes
+            }
+            StatisticsPage.MistakeQuestions -> {
+                selectedMistakeTopic = null
+                statisticsPage = StatisticsPage.MistakeTopics
+            }
             StatisticsPage.MistakeDetail -> {
                 mistakeDetail = null
-                statisticsPage = StatisticsPage.Mistakes
+                statisticsPage = StatisticsPage.MistakeQuestions
             }
             StatisticsPage.Activity -> statisticsPage = StatisticsPage.Root
             StatisticsPage.Detail -> statisticsPage = statisticsDetailReturnPage
@@ -664,6 +830,7 @@ class TrainerController(context: Context) {
             currentQuestion = null
             feedback = null
             selectedOptionIds.clear()
+            activityStats = requireTrainer().activityStats()
             screen = AppScreen.Results
             return
         }
@@ -754,7 +921,8 @@ class TrainerController(context: Context) {
         statisticsDetail = null
         statisticsDetailTitle = ""
         mistakeDetail = null
-        activityStats = null
+        selectedMistakeCourse = null
+        selectedMistakeTopic = null
         statisticsDetailReturnPage = StatisticsPage.Root
     }
 
@@ -766,6 +934,11 @@ class TrainerController(context: Context) {
         answeredQuestions = 0
         correctAnswers = 0
         totalQuestions = 0
+        activeQuestionLimit = null
+        preferences
+            .edit()
+            .remove("active_question_limit")
+            .apply()
         selectedTopicCourse = null
         pendingTopic = null
         pendingCourse = null
@@ -798,6 +971,13 @@ class TrainerController(context: Context) {
                 else -> left.compareTo(right)
             }
         }
+
+        fun inferQuestionLimit(totalQuestions: ULong): MobileQuestionLimit =
+            when (totalQuestions) {
+                20UL -> MobileQuestionLimit.TWENTY
+                50UL -> MobileQuestionLimit.FIFTY
+                else -> MobileQuestionLimit.ALL
+            }
 
         fun splitCourseCode(value: String): Pair<String, Int?> {
             val separator = value.lastIndexOf('-')

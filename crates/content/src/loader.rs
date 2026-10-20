@@ -2,8 +2,11 @@ use std::{fs, path::Path};
 
 use crate::{
     error::ContentError,
-    model::{ContentBundle, LabBundle, LabDocument, QuestionsDocument, TopicDocument},
-    validation::{validate_bundle, validate_lab},
+    model::{
+        ContentBundle, LabBundle, LabDocument, PracticeBundle, PracticeDocument, QuestionsDocument,
+        TopicDocument,
+    },
+    validation::{validate_bundle, validate_lab, validate_practice},
 };
 
 pub fn load_bundle(topic_json: &str, questions_json: &str) -> Result<ContentBundle, ContentError> {
@@ -35,6 +38,26 @@ pub fn load_lab(lab_json: &str, lab_markdown: &str) -> Result<LabBundle, Content
     Ok(LabBundle {
         lab,
         body: lab_markdown.to_owned(),
+    })
+}
+
+pub fn load_practice(
+    practice_json: &str,
+    setup_sql: &str,
+    solution_sql: &str,
+) -> Result<PracticeBundle, ContentError> {
+    let practice: PracticeDocument =
+        serde_json::from_str(practice_json).map_err(|source| ContentError::Json {
+            document: "practice.json",
+            source,
+        })?;
+
+    validate_practice(&practice, setup_sql, solution_sql).map_err(ContentError::Validation)?;
+
+    Ok(PracticeBundle {
+        practice,
+        setup_sql: setup_sql.to_owned(),
+        solution_sql: solution_sql.to_owned(),
     })
 }
 
@@ -371,6 +394,34 @@ mod tests {
         assert_eq!(bundle.lab.course, "linux-dba-1");
         assert_eq!(bundle.lab.lab_number, 23);
         assert!(bundle.body.contains("systemctl"));
+    }
+
+    #[test]
+    fn loads_valid_practice() {
+        let practice_json = r#"
+        {
+            "schema_version": 1,
+            "key": "sql-demo",
+            "category": "select",
+            "title": "Demo",
+            "description": "Return one row",
+            "type": "write_query",
+            "comparison": "unordered",
+            "starter_sql": "SELECT ",
+            "sort_order": 10
+        }
+        "#;
+
+        let bundle = load_practice(
+            practice_json,
+            "CREATE TABLE demo (id INTEGER); INSERT INTO demo VALUES (1);",
+            "SELECT id FROM demo;",
+        )
+        .expect("valid practice should load");
+
+        assert_eq!(bundle.practice.key, "sql-demo");
+        assert_eq!(bundle.practice.category, "select");
+        assert!(bundle.setup_sql.contains("CREATE TABLE"));
     }
 
     #[test]

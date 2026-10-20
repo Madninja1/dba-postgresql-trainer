@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "key": "sql-clients-without-orders",
+  "category": "joins",
+  "title": "Клиенты без заказов",
+  "description": "Верните id и name всех клиентов, у которых нет ни одного заказа. Порядок строк не важен.",
+  "type": "write_query",
+  "comparison": "unordered",
+  "starter_sql": "SELECT c.id, c.name\nFROM customers AS c\n",
+  "sort_order": 10
+}

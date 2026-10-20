@@ -131,6 +131,28 @@ impl MobileTrainer {
         })
     }
 
+    pub fn start_mistake_course_session(
+        &self,
+        course_code: String,
+        limit: MobileQuestionLimit,
+    ) -> Result<MobileQuizSession, MobileError> {
+        self.start_session(SessionConfig {
+            scope: QuizScope::MistakesCourse(course_code),
+            limit: limit.into(),
+        })
+    }
+
+    pub fn start_mistake_topic_session(
+        &self,
+        topic_id: i64,
+        limit: MobileQuestionLimit,
+    ) -> Result<MobileQuizSession, MobileError> {
+        self.start_session(SessionConfig {
+            scope: QuizScope::MistakesTopic(TopicId(topic_id)),
+            limit: limit.into(),
+        })
+    }
+
     pub fn current_question(&self, session_id: i64) -> Result<Option<MobileQuestion>, MobileError> {
         let service = self.service()?;
 

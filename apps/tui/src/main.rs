@@ -47,7 +47,7 @@ fn run(terminal: &mut DefaultTerminal, mut app: App) -> io::Result<()> {
             ui::render(frame, &app);
         })?;
 
-        if let Some(action) = event::read_action()? {
+        if let Some(action) = event::read_action(app.screen)? {
             let previous_language = app.language;
             app.handle_action(action);
 

@@ -185,92 +185,106 @@ fun TrainerApp(controller: TrainerController) {
 private fun HomeScreen(controller: TrainerController) {
     val strings = LocalUiStrings.current
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(24.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Text(
-            text = "DBA Trainer",
-            style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.Bold,
-        )
-
-        Text(
-            text = strings.appSubtitle,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-
-        Spacer(Modifier.height(32.dp))
-
-        Button(
-            onClick = controller::openTopics,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text(strings.topicQuiz)
-        }
-
-        Spacer(Modifier.height(12.dp))
-
-        OutlinedButton(
-            onClick = controller::openGeneralQuiz,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text(strings.generalQuiz)
-        }
-
-        Spacer(Modifier.height(12.dp))
-
-        OutlinedButton(
-            onClick = controller::openLabs,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text(strings.labs)
-        }
-
-        Spacer(Modifier.height(12.dp))
-
-        OutlinedButton(
-            onClick = controller::openStatistics,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text(strings.statistics)
-        }
-
-        Spacer(Modifier.height(24.dp))
-
-        Text(
-            text = strings.language,
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-
-        Spacer(Modifier.height(8.dp))
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            LanguageButton(
-                text = "EN",
-                selected = controller.language == UiLanguage.English,
-                onClick = { controller.changeLanguage(UiLanguage.English) },
-            )
-            LanguageButton(
-                text = "RU",
-                selected = controller.language == UiLanguage.Russian,
-                onClick = { controller.changeLanguage(UiLanguage.Russian) },
+        item {
+            Text(
+                text = "DBA Trainer",
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold,
             )
         }
 
-        Spacer(Modifier.height(24.dp))
+        item {
+            Text(
+                text = strings.appSubtitle,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
 
-        Text(
-            text = "${strings.rustCore} ${coreVersion()}",
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+        controller.activityStats?.let { activity ->
+            item {
+                InfoCard(
+                    title = strings.rank,
+                    text = strings.progressLevel(activity.level),
+                )
+            }
+        }
+
+        item {
+            Button(
+                onClick = controller::openTopics,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(strings.topicQuiz)
+            }
+        }
+
+        item {
+            OutlinedButton(
+                onClick = controller::openGeneralQuiz,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(strings.generalQuiz)
+            }
+        }
+
+        item {
+            OutlinedButton(
+                onClick = controller::openLabs,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(strings.labs)
+            }
+        }
+
+        item {
+            OutlinedButton(
+                onClick = controller::openStatistics,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(strings.statistics)
+            }
+        }
+
+        item {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = strings.language,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
+        item {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                LanguageButton(
+                    text = "EN",
+                    selected = controller.language == UiLanguage.English,
+                    onClick = { controller.changeLanguage(UiLanguage.English) },
+                )
+                LanguageButton(
+                    text = "RU",
+                    selected = controller.language == UiLanguage.Russian,
+                    onClick = { controller.changeLanguage(UiLanguage.Russian) },
+                )
+            }
+        }
+
+        item {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = "${strings.rustCore} ${coreVersion()}",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
     }
 }
 
@@ -635,9 +649,9 @@ private fun LabDetailScreen(controller: TrainerController) {
             contentPadding = PaddingValues(vertical = 12.dp),
         ) {
             item {
-                Text(
-                    text = lab.body,
-                    style = MaterialTheme.typography.bodyMedium,
+                LabMarkdownContent(
+                    markdown = lab.body,
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         }
@@ -648,6 +662,12 @@ private fun LabDetailScreen(controller: TrainerController) {
 private fun LimitScreen(controller: TrainerController) {
     val strings = LocalUiStrings.current
     val title = when {
+        controller.pendingMistakeReview && controller.pendingTopic != null -> {
+            "${strings.reviewTopicMistakes}: ${controller.pendingTopic!!.title}"
+        }
+        controller.pendingMistakeReview && controller.pendingCourse != null -> {
+            "${strings.reviewCourseMistakes}: ${controller.pendingCourse!!.uppercase()}"
+        }
         controller.pendingMistakeReview -> strings.workOnMistakes
         controller.pendingTopic != null -> {
             val topic = controller.pendingTopic!!
@@ -694,6 +714,17 @@ private fun LimitScreen(controller: TrainerController) {
                     controller.startQuiz(
                         MobileQuestionLimit.ALL,
                     )
+                },
+            )
+
+            Spacer(Modifier.height(4.dp))
+
+            InfoCard(
+                title = strings.passCriteria,
+                text = buildString {
+                    append("${strings.twentyQuestions}: 85% (17/20)\n")
+                    append("${strings.fiftyQuestions}: 70% (35/50)\n")
+                    append("${strings.allQuestions}: 60%")
                 },
             )
         }
@@ -992,43 +1023,63 @@ private fun ResultsScreen(controller: TrainerController) {
         controller.correctAnswers.toDouble() /
             controller.answeredQuestions.toDouble() * 100.0
     }
+    val limit = controller.activeQuestionLimit
+    val threshold = limit?.let(controller::passThresholdPercent)
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(
-            text = strings.quizCompleted,
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-        )
+        item {
+            Text(
+                text = strings.quizCompleted,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+            )
+        }
 
-        Spacer(Modifier.height(24.dp))
+        item {
+            Text(
+                text = strings.resultScore(
+                    controller.correctAnswers,
+                    controller.answeredQuestions,
+                ),
+                style = MaterialTheme.typography.displaySmall,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
 
-        Text(
-            text = strings.resultScore(
-                controller.correctAnswers,
-                controller.answeredQuestions,
-            ),
-            style = MaterialTheme.typography.displaySmall,
-            color = MaterialTheme.colorScheme.primary,
-        )
+        item {
+            Text(
+                text = strings.percentCorrect(formatPercent(accuracy)),
+                style = MaterialTheme.typography.titleMedium,
+            )
+        }
 
-        Text(
-            text = strings.percentCorrect(formatPercent(accuracy)),
-            style = MaterialTheme.typography.titleMedium,
-        )
+        if (threshold != null) {
+            item {
+                InfoCard(
+                    title = strings.passCriteria,
+                    text = buildString {
+                        append("${strings.passThreshold}: $threshold%\n")
+                        append(
+                            "${strings.passStatus}: " +
+                                if (controller.resultPassed) strings.passed else strings.notPassed,
+                        )
+                    },
+                )
+            }
+        }
 
-        Spacer(Modifier.height(32.dp))
-
-        Button(
-            onClick = controller::finishResults,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text(strings.home)
+        item {
+            Button(
+                onClick = controller::finishResults,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(strings.home)
+            }
         }
     }
 }
@@ -1042,6 +1093,8 @@ private fun StatisticsScreen(controller: TrainerController) {
         StatisticsPage.GlobalModes -> StatisticsGlobalModesScreen(controller)
         StatisticsPage.ScopeModes -> StatisticsScopeModesScreen(controller)
         StatisticsPage.Mistakes -> StatisticsMistakesScreen(controller)
+        StatisticsPage.MistakeTopics -> StatisticsMistakeTopicsScreen(controller)
+        StatisticsPage.MistakeQuestions -> StatisticsMistakeQuestionsScreen(controller)
         StatisticsPage.MistakeDetail -> StatisticsMistakeDetailScreen(controller)
         StatisticsPage.Activity -> StatisticsActivityScreen(controller)
         StatisticsPage.Detail -> StatisticsDetailScreen(controller)
@@ -1316,21 +1369,128 @@ private fun StatisticsMistakesScreen(controller: TrainerController) {
                     onClick = controller::openMistakeReview,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text(strings.workOnMistakes)
+                    Text("${strings.workOnMistakes} (${mistakes.size})")
                 }
             }
 
             items(
-                items = mistakes,
+                items = controller.mistakeCourseCodes,
+                key = { courseCode -> courseCode },
+            ) { courseCode ->
+                MistakeGroupCard(
+                    title = courseCode.uppercase(),
+                    count = controller.mistakeCountForCourse(courseCode),
+                    onClick = { controller.openMistakeCourse(courseCode) },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun StatisticsMistakeTopicsScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
+    val courseCode = controller.selectedMistakeCourse
+
+    TrainerScaffold(
+        title = buildString {
+            append(strings.mistakes)
+            courseCode?.let { append(" → ${it.uppercase()}") }
+        },
+        onBack = controller::back,
+    ) { modifier ->
+        LazyColumn(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            item {
+                Button(
+                    onClick = controller::openMistakeCourseReview,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(strings.reviewCourseMistakes)
+                }
+            }
+
+            items(
+                items = controller.mistakeTopicsForSelectedCourse,
+                key = { topic -> topic.id },
+            ) { topic ->
+                MistakeGroupCard(
+                    title = "${topic.topicNumber}. ${topic.title}",
+                    count = controller.mistakeCountForTopic(topic.id),
+                    onClick = { controller.openMistakeTopic(topic) },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun StatisticsMistakeQuestionsScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
+    val topic = controller.selectedMistakeTopic
+
+    TrainerScaffold(
+        title = buildString {
+            append(strings.mistakes)
+            controller.selectedMistakeCourse?.let { append(" → ${it.uppercase()}") }
+            topic?.let { append(" → ${it.title}") }
+        },
+        onBack = controller::back,
+    ) { modifier ->
+        LazyColumn(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            item {
+                Button(
+                    onClick = controller::openMistakeTopicReview,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(strings.reviewTopicMistakes)
+                }
+            }
+
+            items(
+                items = controller.mistakesForSelectedTopic,
                 key = { summary -> summary.questionId },
             ) { summary ->
                 MistakeSummaryCard(
                     summary = summary,
-                    onClick = {
-                        controller.openMistakeDetail(summary)
-                    },
+                    onClick = { controller.openMistakeDetail(summary) },
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun MistakeGroupCard(
+    title: String,
+    count: Int,
+    onClick: () -> Unit,
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+    ) {
+        Row(
+            modifier = Modifier.padding(18.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = title,
+                modifier = Modifier.weight(1f),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = count.toString(),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
         }
     }
 }
@@ -1820,7 +1980,7 @@ private fun TrainerScaffold(
             Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp, vertical = 12.dp),
         )
     }
 }

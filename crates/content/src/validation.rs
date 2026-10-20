@@ -353,6 +353,70 @@ pub fn validate_lab(lab: &LabDocument, body: &str) -> Result<(), Vec<String>> {
     }
 }
 
+pub fn validate_practice(
+    practice: &crate::model::PracticeDocument,
+    setup_sql: &str,
+    solution_sql: &str,
+) -> Result<(), Vec<String>> {
+    let mut errors = Vec::new();
+
+    if practice.schema_version != CONTENT_SCHEMA_VERSION {
+        errors.push(format!(
+            "unsupported practice schema_version {}, expected {}",
+            practice.schema_version, CONTENT_SCHEMA_VERSION
+        ));
+    }
+
+    if !valid_key(&practice.key) {
+        errors.push(format!("invalid practice key '{}'", practice.key));
+    }
+
+    if !valid_key(&practice.category) {
+        errors.push(format!("invalid practice category '{}'", practice.category));
+    }
+
+    if practice.title.trim().is_empty() {
+        errors.push(format!(
+            "practice '{}' must have a non-empty title",
+            practice.key
+        ));
+    }
+
+    if practice.description.trim().is_empty() {
+        errors.push(format!(
+            "practice '{}' must have a non-empty description",
+            practice.key
+        ));
+    }
+
+    if practice.sort_order < 0 {
+        errors.push(format!(
+            "practice '{}' sort_order must not be negative",
+            practice.key
+        ));
+    }
+
+    if setup_sql.trim().is_empty() {
+        errors.push(format!(
+            "practice '{}' must have non-empty setup.sql",
+            practice.key
+        ));
+    }
+
+    if solution_sql.trim().is_empty() {
+        errors.push(format!(
+            "practice '{}' must have non-empty solution.sql",
+            practice.key
+        ));
+    }
+
+    if errors.is_empty() {
+        Ok(())
+    } else {
+        Err(errors)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::valid_course_code;

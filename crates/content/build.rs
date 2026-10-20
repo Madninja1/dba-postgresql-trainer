@@ -11,6 +11,15 @@ struct BundlePaths {
     second_path: PathBuf,
 }
 
+#[derive(Debug)]
+struct PracticeBundlePaths {
+    content_key: String,
+    locale: String,
+    document_path: PathBuf,
+    setup_path: PathBuf,
+    solution_path: PathBuf,
+}
+
 fn main() -> io::Result<()> {
     let manifest_dir =
         PathBuf::from(env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR must be set"));
@@ -19,13 +28,23 @@ fn main() -> io::Result<()> {
 
     let mut topics = Vec::new();
     let mut labs = Vec::new();
+    let mut practice = Vec::new();
 
-    collect_documents(&content_root, &content_root, &mut topics, &mut labs)?;
+    collect_documents(
+        &content_root,
+        &content_root,
+        &mut topics,
+        &mut labs,
+        &mut practice,
+    )?;
 
     topics.sort_by(|left, right| {
         (&left.content_key, &left.locale).cmp(&(&right.content_key, &right.locale))
     });
     labs.sort_by(|left, right| {
+        (&left.content_key, &left.locale).cmp(&(&right.content_key, &right.locale))
+    });
+    practice.sort_by(|left, right| {
         (&left.content_key, &left.locale).cmp(&(&right.content_key, &right.locale))
     });
 
@@ -65,6 +84,26 @@ fn main() -> io::Result<()> {
         ));
     }
 
+    generated.push_str("];\n\n");
+    generated.push_str(
+        "pub(crate) const BUILTIN_PRACTICE_DOCUMENTS: &[(&str, &str, &str, &str, &str)] = &[\n",
+    );
+
+    for bundle in practice {
+        let document_path = bundle.document_path.canonicalize()?;
+        let setup_path = bundle.setup_path.canonicalize()?;
+        let solution_path = bundle.solution_path.canonicalize()?;
+
+        generated.push_str(&format!(
+            "    ({:?}, {:?}, include_str!({:?}), include_str!({:?}), include_str!({:?})),\n",
+            bundle.content_key,
+            bundle.locale,
+            document_path.to_string_lossy(),
+            setup_path.to_string_lossy(),
+            solution_path.to_string_lossy(),
+        ));
+    }
+
     generated.push_str("];\n");
 
     fs::write(destination, generated)?;
@@ -77,6 +116,7 @@ fn collect_documents(
     directory: &Path,
     topics: &mut Vec<BundlePaths>,
     labs: &mut Vec<BundlePaths>,
+    practice: &mut Vec<PracticeBundlePaths>,
 ) -> io::Result<()> {
     if !directory.exists() {
         return Ok(());
@@ -88,11 +128,17 @@ fn collect_documents(
     let questions_path = directory.join("questions.json");
     let lab_path = directory.join("lab.json");
     let lab_markdown_path = directory.join("lab.md");
+    let practice_path = directory.join("practice.json");
+    let practice_setup_path = directory.join("setup.sql");
+    let practice_solution_path = directory.join("solution.sql");
 
     let has_topic = topic_path.is_file();
     let has_questions = questions_path.is_file();
     let has_lab = lab_path.is_file();
     let has_lab_markdown = lab_markdown_path.is_file();
+    let has_practice = practice_path.is_file();
+    let has_practice_setup = practice_setup_path.is_file();
+    let has_practice_solution = practice_solution_path.is_file();
 
     if has_topic || has_questions {
         if !(has_topic && has_questions) {
@@ -138,6 +184,28 @@ fn collect_documents(
         return Ok(());
     }
 
+    if has_practice || has_practice_setup || has_practice_solution {
+        if !(has_practice && has_practice_setup && has_practice_solution) {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidData,
+                format!(
+                    "practice locale directory {} must contain practice.json, setup.sql and solution.sql",
+                    directory.display()
+                ),
+            ));
+        }
+
+        register_practice(
+            content_root,
+            directory,
+            practice_path,
+            practice_setup_path,
+            practice_solution_path,
+            practice,
+        )?;
+        return Ok(());
+    }
+
     let mut entries = fs::read_dir(directory)?.collect::<Result<Vec<_>, _>>()?;
     entries.sort_by_key(|entry| entry.path());
 
@@ -145,7 +213,7 @@ fn collect_documents(
         let path = entry.path();
 
         if path.is_dir() {
-            collect_documents(content_root, &path, topics, labs)?;
+            collect_documents(content_root, &path, topics, labs, practice)?;
         }
     }
 
@@ -163,6 +231,48 @@ fn register_pair(
     println!("cargo:rerun-if-changed={}", first_path.display());
     println!("cargo:rerun-if-changed={}", second_path.display());
 
+    let (content_key, locale) = localized_content_key(content_root, directory, content_type)?;
+
+    output.push(BundlePaths {
+        content_key,
+        locale,
+        first_path,
+        second_path,
+    });
+
+    Ok(())
+}
+
+fn register_practice(
+    content_root: &Path,
+    directory: &Path,
+    document_path: PathBuf,
+    setup_path: PathBuf,
+    solution_path: PathBuf,
+    output: &mut Vec<PracticeBundlePaths>,
+) -> io::Result<()> {
+    println!("cargo:rerun-if-changed={}", document_path.display());
+    println!("cargo:rerun-if-changed={}", setup_path.display());
+    println!("cargo:rerun-if-changed={}", solution_path.display());
+
+    let (content_key, locale) = localized_content_key(content_root, directory, "practice")?;
+
+    output.push(PracticeBundlePaths {
+        content_key,
+        locale,
+        document_path,
+        setup_path,
+        solution_path,
+    });
+
+    Ok(())
+}
+
+fn localized_content_key(
+    content_root: &Path,
+    directory: &Path,
+    content_type: &str,
+) -> io::Result<(String, String)> {
     let locale = directory
         .file_name()
         .and_then(|value| value.to_str())
@@ -222,14 +332,7 @@ fn register_pair(
         ));
     }
 
-    output.push(BundlePaths {
-        content_key,
-        locale: locale.to_owned(),
-        first_path,
-        second_path,
-    });
-
-    Ok(())
+    Ok((content_key, locale.to_owned()))
 }
 
 fn valid_locale_code(value: &str) -> bool {

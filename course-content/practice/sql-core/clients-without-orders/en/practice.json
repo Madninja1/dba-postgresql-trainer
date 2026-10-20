@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "key": "sql-clients-without-orders",
+  "category": "joins",
+  "title": "Customers without orders",
+  "description": "Return id and name for every customer that has no orders. Row order does not matter.",
+  "type": "write_query",
+  "comparison": "unordered",
+  "starter_sql": "SELECT c.id, c.name\nFROM customers AS c\n",
+  "sort_order": 10
+}
