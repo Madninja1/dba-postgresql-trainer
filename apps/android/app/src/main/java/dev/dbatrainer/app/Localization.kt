@@ -1,8 +1,11 @@
 package dev.dbatrainer.app
 
+import dev.dbatrainer.ffi.MobileAchievementKind
+import dev.dbatrainer.ffi.MobileAchievementRarity
 import dev.dbatrainer.ffi.MobilePracticeDifficulty
-import dev.dbatrainer.ffi.MobileProgressLevel
+import dev.dbatrainer.ffi.MobileProgressRank
 import dev.dbatrainer.ffi.MobileTopicMasteryStats
+import dev.dbatrainer.ffi.MobileXpSource
 
 enum class UiLanguage(val code: String) {
     English("en"),
@@ -100,8 +103,26 @@ data class UiStrings(
     val today: String,
     val last7Days: String,
     val rank: String,
-    val careerPath: String,
-    val salaryDisclaimer: String,
+    val xp: String,
+    val nextRank: String,
+    val rankScale: String,
+    val xpRules: String,
+    val xpAvailable: String,
+    val xpOpportunities: String,
+    val xpQuestions: String,
+    val xpQuizzes: String,
+    val xpTopics: String,
+    val xpCourses: String,
+    val xpPractice: String,
+    val xpPassBonus: String,
+    val xpReceived: String,
+    val achievements: String,
+    val mastery: String,
+    val activeDays28: String,
+    val lastActivity: String,
+    val noRecentActivity: String,
+    val sqlAttempts: String,
+    val sqlSolved: String,
     val courseProgress: String,
     val recentActivity: String,
     val studyDayTarget: String,
@@ -119,6 +140,7 @@ data class UiStrings(
     val practiceStarted: String,
     val practiceAttempts: String,
     val practiceFirstTry: String,
+    val practiceNoHints: String,
     val practiceContinue: String,
     val practiceEditor: String,
     val practiceSchema: String,
@@ -205,41 +227,142 @@ data class UiStrings(
         }
     }
 
-    fun progressLevel(level: MobileProgressLevel): String =
-        when (level) {
-            MobileProgressLevel.COLD_START -> "Cold Start"
-            MobileProgressLevel.QUERY_RUNNER -> "Query Runner"
-            MobileProgressLevel.WARM_CACHE -> "Warm Cache"
-            MobileProgressLevel.BACKEND_TAMER -> "Backend Tamer"
-            MobileProgressLevel.WAL_KEEPER -> "WAL Keeper"
-            MobileProgressLevel.INCIDENT_HANDLER -> "Incident Handler"
-            MobileProgressLevel.DBA_ONE_MASTER -> "DBA-1 Master"
-            MobileProgressLevel.PRODUCTION_SURVIVOR -> "Production Survivor"
+    fun progressRank(rank: MobileProgressRank): String =
+        when (rank) {
+            MobileProgressRank.INIT -> "Init"
+            MobileProgressRank.PSQL_TRAINEE -> "PSQL Trainee"
+            MobileProgressRank.QUERY_ADEPT -> "Query Adept"
+            MobileProgressRank.SCHEMA_KEEPER -> "Schema Keeper"
+            MobileProgressRank.PLAN_READER -> "Plan Reader"
+            MobileProgressRank.WAL_OPERATOR -> "WAL Operator"
+            MobileProgressRank.POSTGRES_GUARDIAN -> "Postgres Guardian"
+            MobileProgressRank.MAD_NINJA_DBA -> "MadNinja DBA"
         }
 
-    fun progressMessage(level: MobileProgressLevel): String =
+    fun rankDescription(rank: MobileProgressRank): String =
         if (this === ENGLISH_STRINGS) {
-            when (level) {
-                MobileProgressLevel.COLD_START -> "Warm-up is over. Ten questions are enough to make today count."
-                MobileProgressLevel.QUERY_RUNNER -> "Queries are moving. Keep knowledge from turning into a cache miss."
-                MobileProgressLevel.WARM_CACHE -> "Cache is warm. Discipline is already doing more than random motivation."
-                MobileProgressLevel.BACKEND_TAMER -> "Backend tamed. Weak spots are visible now; finish them deliberately."
-                MobileProgressLevel.WAL_KEEPER -> "WAL is under watch. Keep going without magic fixes or chmod 777."
-                MobileProgressLevel.INCIDENT_HANDLER -> "Incidents look less mystical now: observe first, then fix."
-                MobileProgressLevel.DBA_ONE_MASTER -> "DBA-1 completed. Now you can at least tell what exactly broke."
-                MobileProgressLevel.PRODUCTION_SURVIVOR -> "Production Survivor. Everything currently loaded is mastered; add the next level."
+            when (rank) {
+                MobileProgressRank.INIT -> "The journey starts here. Build the first reliable habits."
+                MobileProgressRank.PSQL_TRAINEE -> "Basic SQL and quiz practice is becoming routine."
+                MobileProgressRank.QUERY_ADEPT -> "Queries are no longer random commands; you can reason about results."
+                MobileProgressRank.SCHEMA_KEEPER -> "You are building a stable picture of schemas, objects and data flow."
+                MobileProgressRank.PLAN_READER -> "You are ready to reason about execution plans and query behavior."
+                MobileProgressRank.WAL_OPERATOR -> "Operational PostgreSQL concepts are becoming part of your toolkit."
+                MobileProgressRank.POSTGRES_GUARDIAN -> "A broad part of the DBA path is under control."
+                MobileProgressRank.MAD_NINJA_DBA -> "Top rank: persistent practice across the whole trainer."
             }
         } else {
-            when (level) {
-                MobileProgressLevel.COLD_START -> "Разогрев закончен. Десять вопросов — и день уже не потерян."
-                MobileProgressLevel.QUERY_RUNNER -> "Запросы пошли. Главное — не превращать знания в cache miss."
-                MobileProgressLevel.WARM_CACHE -> "Кэш прогрет. Дисциплина уже работает лучше случайной мотивации."
-                MobileProgressLevel.BACKEND_TAMER -> "Backend приручён. Слабые места видно — добивай их осознанно."
-                MobileProgressLevel.WAL_KEEPER -> "WAL под присмотром. Продолжай без магии и без chmod 777."
-                MobileProgressLevel.INCIDENT_HANDLER -> "Инциденты уже не выглядят мистикой: сначала наблюдаем, потом чиним."
-                MobileProgressLevel.DBA_ONE_MASTER -> "DBA-1 закрыт. Теперь ты хотя бы знаешь, что именно сломалось."
-                MobileProgressLevel.PRODUCTION_SURVIVOR -> "Production Survivor. Всё загруженное освоено — пора добавлять следующий уровень."
+            when (rank) {
+                MobileProgressRank.INIT -> "Старт обучения: формируем первые устойчивые привычки."
+                MobileProgressRank.PSQL_TRAINEE -> "Базовые тесты и SQL-практика уже становятся рутиной."
+                MobileProgressRank.QUERY_ADEPT -> "Запросы уже не набор команд: ты понимаешь, почему получается результат."
+                MobileProgressRank.SCHEMA_KEEPER -> "Формируется целостное понимание схем, объектов и движения данных."
+                MobileProgressRank.PLAN_READER -> "Можно переходить к осмысленному чтению планов и поведению запросов."
+                MobileProgressRank.WAL_OPERATOR -> "Операционные механизмы PostgreSQL становятся рабочим инструментом."
+                MobileProgressRank.POSTGRES_GUARDIAN -> "Большая часть DBA-пути уже под контролем."
+                MobileProgressRank.MAD_NINJA_DBA -> "Верхний ранг: системная практика по всему тренажёру."
             }
+        }
+
+    fun achievementTitle(kind: MobileAchievementKind): String =
+        when (kind) {
+            MobileAchievementKind.FIRST_ANSWER -> if (this === ENGLISH_STRINGS) "First Blood" else "Первый ответ"
+            MobileAchievementKind.HUNDRED_ANSWERS -> "100 Questions"
+            MobileAchievementKind.PERFECT_TWENTY -> "20/20"
+            MobileAchievementKind.QUIZ_VETERAN -> if (this === ENGLISH_STRINGS) "Quiz Veteran" else "Ветеран тестов"
+            MobileAchievementKind.FIRST_SQL -> "SQL Initiate"
+            MobileAchievementKind.ONE_SHOT -> "One Shot"
+            MobileAchievementKind.QUERY_NINJA -> "Query Ninja"
+            MobileAchievementKind.SEVEN_DAY_STREAK -> "Seven Days"
+            MobileAchievementKind.THIRTY_DAY_STREAK -> "WAL Never Sleeps"
+            MobileAchievementKind.COURSE_MASTER -> if (this === ENGLISH_STRINGS) "Course Master" else "Мастер курса"
+            MobileAchievementKind.MAD_NINJA -> "MadNinja"
+        }
+
+    fun achievementDescription(kind: MobileAchievementKind): String =
+        if (this === ENGLISH_STRINGS) {
+            when (kind) {
+                MobileAchievementKind.FIRST_ANSWER -> "Answer the first quiz question."
+                MobileAchievementKind.HUNDRED_ANSWERS -> "Answer 100 quiz questions."
+                MobileAchievementKind.PERFECT_TWENTY -> "Finish a 20-question quiz with 20 correct answers."
+                MobileAchievementKind.QUIZ_VETERAN -> "Complete 10 quizzes."
+                MobileAchievementKind.FIRST_SQL -> "Solve the first SQL practice task."
+                MobileAchievementKind.ONE_SHOT -> "Solve an SQL practice task on the first check."
+                MobileAchievementKind.QUERY_NINJA -> "Solve 25 SQL practice tasks."
+                MobileAchievementKind.SEVEN_DAY_STREAK -> "Reach a 7-day study streak."
+                MobileAchievementKind.THIRTY_DAY_STREAK -> "Reach a 30-day study streak."
+                MobileAchievementKind.COURSE_MASTER -> "Master every topic in one course."
+                MobileAchievementKind.MAD_NINJA -> "Reach the MadNinja DBA rank."
+            }
+        } else {
+            when (kind) {
+                MobileAchievementKind.FIRST_ANSWER -> "Ответить на первый вопрос теста."
+                MobileAchievementKind.HUNDRED_ANSWERS -> "Ответить на 100 вопросов тестов."
+                MobileAchievementKind.PERFECT_TWENTY -> "Пройти тест из 20 вопросов без единой ошибки."
+                MobileAchievementKind.QUIZ_VETERAN -> "Завершить 10 тестов."
+                MobileAchievementKind.FIRST_SQL -> "Решить первое задание SQL-практики."
+                MobileAchievementKind.ONE_SHOT -> "Решить SQL-задачу с первой проверки."
+                MobileAchievementKind.QUERY_NINJA -> "Решить 25 SQL-задач."
+                MobileAchievementKind.SEVEN_DAY_STREAK -> "Держать учебную серию 7 дней."
+                MobileAchievementKind.THIRTY_DAY_STREAK -> "Держать учебную серию 30 дней."
+                MobileAchievementKind.COURSE_MASTER -> "Освоить все темы одного курса."
+                MobileAchievementKind.MAD_NINJA -> "Достичь ранга MadNinja DBA."
+            }
+        }
+
+    fun achievementRarity(value: MobileAchievementRarity): String =
+        if (this === ENGLISH_STRINGS) {
+            when (value) {
+                MobileAchievementRarity.COMMON -> "Common"
+                MobileAchievementRarity.RARE -> "Rare"
+                MobileAchievementRarity.EPIC -> "Epic"
+                MobileAchievementRarity.LEGENDARY -> "Legendary"
+            }
+        } else {
+            when (value) {
+                MobileAchievementRarity.COMMON -> "Обычная"
+                MobileAchievementRarity.RARE -> "Редкая"
+                MobileAchievementRarity.EPIC -> "Эпическая"
+                MobileAchievementRarity.LEGENDARY -> "Легендарная"
+            }
+        }
+
+    fun xpSource(value: MobileXpSource): String =
+        if (this === ENGLISH_STRINGS) {
+            when (value) {
+                MobileXpSource.UNIQUE_CORRECT_QUESTION -> "First correct answer to a question"
+                MobileXpSource.PASSED_TWENTY_QUIZ -> "First passed 20-question quiz for a scope"
+                MobileXpSource.PASSED_FIFTY_QUIZ -> "First passed 50-question quiz for a scope"
+                MobileXpSource.PASSED_ALL_QUESTIONS_QUIZ -> "First passed all-questions quiz for a scope"
+                MobileXpSource.MASTERED_TOPIC -> "Topic mastered for the first time"
+                MobileXpSource.COMPLETED_COURSE -> "Course completed for the first time"
+                MobileXpSource.PRACTICE_EASY -> "Solved Easy SQL task"
+                MobileXpSource.PRACTICE_MEDIUM -> "Solved Medium SQL task"
+                MobileXpSource.PRACTICE_HARD -> "Solved Hard SQL task"
+                MobileXpSource.PRACTICE_FIRST_TRY -> "SQL task solved on first check"
+                MobileXpSource.PRACTICE_NO_HINTS -> "SQL task solved without hints"
+            }
+        } else {
+            when (value) {
+                MobileXpSource.UNIQUE_CORRECT_QUESTION -> "Первый правильный ответ на вопрос"
+                MobileXpSource.PASSED_TWENTY_QUIZ -> "Первое прохождение 20 вопросов для раздела"
+                MobileXpSource.PASSED_FIFTY_QUIZ -> "Первое прохождение 50 вопросов для раздела"
+                MobileXpSource.PASSED_ALL_QUESTIONS_QUIZ -> "Первое прохождение всех вопросов для раздела"
+                MobileXpSource.MASTERED_TOPIC -> "Тема впервые освоена"
+                MobileXpSource.COMPLETED_COURSE -> "Курс впервые закрыт"
+                MobileXpSource.PRACTICE_EASY -> "Решена лёгкая SQL-задача"
+                MobileXpSource.PRACTICE_MEDIUM -> "Решена средняя SQL-задача"
+                MobileXpSource.PRACTICE_HARD -> "Решена сложная SQL-задача"
+                MobileXpSource.PRACTICE_FIRST_TRY -> "SQL-задача решена с первой проверки"
+                MobileXpSource.PRACTICE_NO_HINTS -> "SQL-задача решена без подсказок"
+            }
+        }
+
+    fun daysAgo(days: ULong): String =
+        if (this === ENGLISH_STRINGS) {
+            if (days == 0UL) "today" else "$days days ago"
+        } else {
+            if (days == 0UL) "сегодня" else "$days дн. назад"
         }
 
     fun practiceDifficulty(value: MobilePracticeDifficulty): String =
@@ -364,11 +487,29 @@ private val ENGLISH_STRINGS = UiStrings(
     today = "Today",
     last7Days = "Last 7 days",
     rank = "Rank",
-    careerPath = "Career path (game)",
-    salaryDisclaimer = "Skills are counted. Salary is not guaranteed.",
+    xp = "XP",
+    nextRank = "To next rank",
+    rankScale = "Rank scale",
+    xpRules = "How XP is earned",
+    xpAvailable = "Available XP",
+    xpOpportunities = "Where to earn XP",
+    xpQuestions = "New correct answers",
+    xpQuizzes = "Quiz completion bonuses",
+    xpTopics = "Topic mastery",
+    xpCourses = "Course completion",
+    xpPractice = "SQL Practice",
+    xpPassBonus = "pass bonus",
+    xpReceived = "XP received",
+    achievements = "Achievements",
+    mastery = "Mastery",
+    activeDays28 = "Active days in the last 28 days",
+    lastActivity = "Last activity",
+    noRecentActivity = "No learning activity in the last 28 days.",
+    sqlAttempts = "SQL attempts",
+    sqlSolved = "SQL tasks solved",
     courseProgress = "Course progress",
-    recentActivity = "Recent 28 days",
-    studyDayTarget = "A study day requires at least 10 answered questions.",
+    recentActivity = "Activity in the last 28 days",
+    studyDayTarget = "A study day is 10 answered questions or at least one solved SQL task.",
     back = "Back",
     courseMaterial = "Course material",
     postgresqlDocumentation = "PostgreSQL documentation",
@@ -383,6 +524,7 @@ private val ENGLISH_STRINGS = UiStrings(
     practiceStarted = "Started",
     practiceAttempts = "Attempts",
     practiceFirstTry = "First try",
+    practiceNoHints = "No hints",
     practiceContinue = "Continue last task",
     practiceEditor = "SQL editor",
     practiceSchema = "Schema",
@@ -492,18 +634,36 @@ private val RUSSIAN_STRINGS = UiStrings(
     attempts = "Попыток",
     lastError = "Последняя ошибка",
     activity = "Активность и прогресс",
-    activeDays = "Дней с запуском",
+    activeDays = "Активных дней",
     studyDays = "Учебных дней",
     currentStreak = "Текущая серия",
     bestStreak = "Лучшая серия",
     today = "Сегодня",
     last7Days = "За 7 дней",
     rank = "Ранг",
-    careerPath = "Путь к 500k ₽ (игровой)",
-    salaryDisclaimer = "Навыки считаем. Зарплату не гарантируем.",
+    xp = "XP",
+    nextRank = "До следующего ранга",
+    rankScale = "Шкала рангов",
+    xpRules = "За что начисляется XP",
+    xpAvailable = "Доступно XP",
+    xpOpportunities = "Где ещё заработать XP",
+    xpQuestions = "Новые правильные ответы",
+    xpQuizzes = "Бонусы за прохождение тестов",
+    xpTopics = "Освоение тем",
+    xpCourses = "Завершение курсов",
+    xpPractice = "Практика SQL",
+    xpPassBonus = "бонус за прохождение",
+    xpReceived = "XP получен",
+    achievements = "Достижения",
+    mastery = "Мастерство",
+    activeDays28 = "Активных дней за последние 28 дней",
+    lastActivity = "Последняя активность",
+    noRecentActivity = "За последние 28 дней учебной активности не было.",
+    sqlAttempts = "Попыток SQL",
+    sqlSolved = "Решено SQL-задач",
     courseProgress = "Прогресс по курсам",
-    recentActivity = "Последние 28 дней",
-    studyDayTarget = "Учебный день — минимум 10 отвеченных вопросов.",
+    recentActivity = "Активность за последние 28 дней",
+    studyDayTarget = "Учебный день — 10 отвеченных вопросов или хотя бы одна решённая SQL-задача.",
     back = "Назад",
     courseMaterial = "Материал курса",
     postgresqlDocumentation = "Документация PostgreSQL",
@@ -518,6 +678,7 @@ private val RUSSIAN_STRINGS = UiStrings(
     practiceStarted = "Начато",
     practiceAttempts = "Попыток",
     practiceFirstTry = "С первой попытки",
+    practiceNoHints = "Без подсказок",
     practiceContinue = "Продолжить последнее задание",
     practiceEditor = "SQL редактор",
     practiceSchema = "Схема",

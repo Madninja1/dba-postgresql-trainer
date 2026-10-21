@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "key": "dba-select-006",
+  "category": "SELECT / WHERE / ORDER BY",
+  "title": "Failed backup jobs",
+  "description": "Return backup jobs with status = failed. Return exactly three columns: database_name, job_id, error_code. Sort by database_name ASC, then job_id DESC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT database_name, job_id, error_code\nFROM backup_jobs\n",
+  "hints": [
+    "Match the failed status exactly; exclude all other states.",
+    "Within each database, the secondary ordering is job_id descending."
+  ],
+  "solution_explanation": "This checks basic filtering by a DBA job state and a compound ORDER BY.",
+  "rules": [
+    {
+      "type": "forbid_select_star"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 33
+}

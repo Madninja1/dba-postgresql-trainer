@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-debug-008",
+  "category": "FixQuery / FindLogicalError",
+  "title": "JOIN перемножил backup и incidents",
+  "description": "Исправьте запрос. Для каждого server_name нужно вернуть реальное число failed_backups и реальное число open_incidents. Backup связаны с сервером через databases; incident — напрямую через server_id. Несколько backup и несколько incidents одного сервера не должны перемножать друг друга. Серверы без одного из типов событий должны остаться с 0. Ровно три колонки: server_name, failed_backups, open_incidents. Сортировка: server_name ASC.",
+  "type": "find_logical_error",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "SELECT s.hostname AS server_name,\n       SUM(CASE WHEN b.status = 'failed' THEN 1 ELSE 0 END) AS failed_backups,\n       SUM(CASE WHEN i.resolved = 0 THEN 1 ELSE 0 END) AS open_incidents\nFROM servers AS s\nLEFT JOIN databases AS d ON d.server_id = s.id\nLEFT JOIN backups AS b ON b.database_id = d.id\nLEFT JOIN incidents AS i ON i.server_id = s.id\nGROUP BY s.id, s.hostname\nORDER BY s.hostname ASC;\n",
+  "hints": [
+    "Агрегируйте backup и incidents отдельно до того, как соединять их результаты с servers.",
+    "Два CTE или два агрегирующих подзапроса устраняют many-to-many умножение."
+  ],
+  "solution_explanation": "Предварительные агрегаты превращают каждый источник в максимум одну строку на сервер, после чего JOIN безопасен.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "with"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 156
+}

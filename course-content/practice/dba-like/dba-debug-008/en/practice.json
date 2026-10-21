@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-debug-008",
+  "category": "FixQuery / FindLogicalError",
+  "title": "Join multiplied backups and incidents",
+  "description": "Fix the query. For each server_name return the actual number of failed_backups and the actual number of open_incidents. Backups reach a server through databases; incidents use server_id directly. Multiple backups and incidents on one server must not multiply each other. Servers missing one event type must remain with 0. Return exactly three columns: server_name, failed_backups, open_incidents. Sort by server_name ASC.",
+  "type": "find_logical_error",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "SELECT s.hostname AS server_name,\n       SUM(CASE WHEN b.status = 'failed' THEN 1 ELSE 0 END) AS failed_backups,\n       SUM(CASE WHEN i.resolved = 0 THEN 1 ELSE 0 END) AS open_incidents\nFROM servers AS s\nLEFT JOIN databases AS d ON d.server_id = s.id\nLEFT JOIN backups AS b ON b.database_id = d.id\nLEFT JOIN incidents AS i ON i.server_id = s.id\nGROUP BY s.id, s.hostname\nORDER BY s.hostname ASC;\n",
+  "hints": [
+    "Aggregate backups and incidents separately before joining their results to servers.",
+    "Two CTEs or two aggregate subqueries remove the many-to-many multiplication."
+  ],
+  "solution_explanation": "Pre-aggregation reduces each source to at most one row per server, making the final joins safe.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "with"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 156
+}

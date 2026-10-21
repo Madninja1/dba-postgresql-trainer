@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-014",
+  "category": "JOIN",
+  "title": "Последний successful backup с контекстом",
+  "description": "Для каждой базы, у которой есть successful backup, верните только самый поздний successful backup по finished_seq. Если несколько successful backup одной базы имеют одинаковый максимальный finished_seq, выберите строку с большим backup_id. Ровно пять колонок: database_name, hostname, owner_role, finished_seq, size_mb. Сортировка: database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "SELECT d.name AS database_name, s.hostname, r.role_name AS owner_role, b.finished_seq, b.size_mb\nFROM backups AS b\n",
+  "hints": [
+    "Можно anti-join-ом проверить, что не существует более позднего successful backup той же базы.",
+    "При равном finished_seq backup с большим id считается позднее для этой задачи."
+  ],
+  "solution_explanation": "Self LEFT JOIN отбрасывает каждую successful-строку, для которой существует более поздний кандидат; остальные JOIN добавляют контекст.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 101
+}

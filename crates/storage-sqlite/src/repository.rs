@@ -1,4 +1,7 @@
-use std::{collections::BTreeMap, path::Path};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    path::Path,
+};
 
 use dba_trainer_application::{
     LabRepository, LearningHistoryRepository, PracticeRepository, RepositoryError,
@@ -6,17 +9,21 @@ use dba_trainer_application::{
 };
 
 use dba_trainer_domain::{
-    ActivityStats, AnswerOption, AnswerOptionId, AnswerResult, CourseProgress, DailyActivity, Lab,
-    PracticeAssertion, PracticeCategoryStats, PracticeComparison, PracticeDifficulty, PracticeKind,
-    PracticeRule, PracticeStats, PracticeTask, PracticeTaskProgress, Question,
-    QuestionAttemptHistory, QuestionId, QuestionLimit, QuestionMistakeDetail,
-    QuestionMistakeSummary, QuestionType, QuizScope, QuizSession, STUDY_DAY_QUESTION_TARGET,
-    SessionConfig, SessionId, SessionProgress, Source, SourceId, SourceKind, StatisticsFilter,
-    StatisticsLimit, StatisticsScope, Topic, TopicId, TopicMasteryStats, TrainingStats,
-    pass_threshold_percent_for_requested_count,
+    AchievementKind, AchievementProgress, AchievementRarity, ActivityStats, AnswerOption,
+    AnswerOptionId, AnswerResult, CourseProgress, DailyActivity, Lab, PracticeAssertion,
+    PracticeCategoryStats, PracticeComparison, PracticeDifficulty, PracticeKind, PracticeRule,
+    PracticeStats, PracticeTask, PracticeTaskProgress, PracticeXpOpportunity, ProgressRank,
+    Question, QuestionAttemptHistory, QuestionId, QuestionLimit, QuestionMistakeDetail,
+    QuestionMistakeSummary, QuestionType, QuizScope, QuizSession, QuizXpOpportunity,
+    QuizXpOpportunityScope, STUDY_DAY_QUESTION_TARGET, SessionConfig, SessionId, SessionProgress,
+    Source, SourceId, SourceKind, StatisticsFilter, StatisticsLimit, StatisticsScope, Topic,
+    TopicId, TopicMasteryStats, TrainingStats, XP_COMPLETED_COURSE, XP_MASTERED_TOPIC,
+    XP_PASSED_QUIZ_20, XP_PASSED_QUIZ_50, XP_PASSED_QUIZ_ALL, XP_PRACTICE_EASY,
+    XP_PRACTICE_FIRST_TRY, XP_PRACTICE_HARD, XP_PRACTICE_MEDIUM, XP_PRACTICE_NO_HINTS,
+    XP_UNIQUE_CORRECT_QUESTION, XpOpportunitySummary, pass_threshold_percent_for_requested_count,
 };
 
-use rusqlite::{Connection, OptionalExtension, params};
+use rusqlite::{Connection, OptionalExtension, Transaction, params};
 
 use crate::{StorageError, db};
 
@@ -238,6 +245,450 @@ fn build_session_progress(row: SessionProgressRow) -> Result<SessionProgress, Re
         answered_questions: answered_questions.max(0) as usize,
         correct_answers: correct_answers.max(0) as usize,
     })
+}
+
+fn insert_xp_event(
+    transaction: &Transaction<'_>,
+    event_key: &str,
+    points: usize,
+    reason: &str,
+) -> Result<(), RepositoryError> {
+    transaction
+        .execute(
+            "
+            INSERT OR IGNORE INTO xp_events (event_key, points, reason)
+            VALUES (?1, ?2, ?3)
+            ",
+            params![event_key, points as i64, reason],
+        )
+        .map_err(repository_error)?;
+
+    Ok(())
+}
+
+fn course_is_completed(
+    transaction: &Transaction<'_>,
+    course_code: &str,
+) -> Result<bool, RepositoryError> {
+    let (total_topics, passed_topics) = transaction
+        .query_row(
+            "
+            SELECT
+                COUNT(*),
+                COALESCE(SUM(CASE WHEN EXISTS (
+                    SELECT 1
+                    FROM quiz_sessions s
+                    JOIN attempts a ON a.session_id = s.id
+                    WHERE s.scope = 'topic'
+                      AND s.topic_id = t.id
+                      AND s.finished_at IS NOT NULL
+                      AND s.cancelled_at IS NULL
+                      AND s.is_review = 0
+                    GROUP BY s.id, s.requested_count
+                    HAVING COUNT(a.id) > 0
+                       AND (SUM(a.is_correct) * 100.0 / COUNT(a.id)) >= CASE
+                           WHEN s.requested_count = 20 THEN ?2
+                           WHEN s.requested_count = 50 THEN ?3
+                           WHEN s.requested_count IS NULL THEN ?4
+                           ELSE ?2
+                       END
+                ) THEN 1 ELSE 0 END), 0)
+            FROM topics t
+            WHERE t.is_active = 1
+              AND t.course_code = ?1
+            ",
+            params![
+                course_code,
+                QuestionLimit::Twenty.pass_threshold_percent(),
+                QuestionLimit::Fifty.pass_threshold_percent(),
+                QuestionLimit::All.pass_threshold_percent(),
+            ],
+            |row| Ok((row.get::<_, i64>(0)?, row.get::<_, i64>(1)?)),
+        )
+        .map_err(repository_error)?;
+
+    Ok(total_topics > 0 && total_topics == passed_topics)
+}
+
+fn award_completed_session_xp(
+    transaction: &Transaction<'_>,
+    session_id: SessionId,
+) -> Result<(), RepositoryError> {
+    let (scope, topic_id, course_code, requested_count, is_review) = transaction
+        .query_row(
+            "
+            SELECT scope, topic_id, course_code, requested_count, is_review
+            FROM quiz_sessions
+            WHERE id = ?1
+              AND finished_at IS NOT NULL
+              AND cancelled_at IS NULL
+            ",
+            params![session_id.0],
+            |row| {
+                Ok((
+                    row.get::<_, String>(0)?,
+                    row.get::<_, Option<i64>>(1)?,
+                    row.get::<_, Option<String>>(2)?,
+                    row.get::<_, Option<i64>>(3)?,
+                    row.get::<_, i64>(4)? != 0,
+                ))
+            },
+        )
+        .map_err(repository_error)?;
+
+    if is_review {
+        return Ok(());
+    }
+
+    let (answered, correct) = transaction
+        .query_row(
+            "
+            SELECT COUNT(*), COALESCE(SUM(is_correct), 0)
+            FROM attempts
+            WHERE session_id = ?1
+            ",
+            params![session_id.0],
+            |row| Ok((row.get::<_, i64>(0)?, row.get::<_, i64>(1)?)),
+        )
+        .map_err(repository_error)?;
+
+    if answered <= 0 {
+        return Ok(());
+    }
+
+    let threshold = pass_threshold_percent_for_requested_count(
+        requested_count.map(|value| value.max(0) as usize),
+    );
+    let accuracy = correct as f64 * 100.0 / answered as f64;
+
+    if accuracy < threshold {
+        return Ok(());
+    }
+
+    let quiz_points = match requested_count {
+        Some(20) => XP_PASSED_QUIZ_20,
+        Some(50) => XP_PASSED_QUIZ_50,
+        None => XP_PASSED_QUIZ_ALL,
+        Some(_) => XP_PASSED_QUIZ_20,
+    };
+    let limit_key = match requested_count {
+        Some(count) => count.to_string(),
+        None => String::from("all"),
+    };
+    let material_key = if scope == "topic" {
+        let topic_id = topic_id.ok_or_else(|| {
+            RepositoryError::InvalidState(String::from("topic quiz is missing topic_id"))
+        })?;
+        format!("topic:{topic_id}")
+    } else if let Some(course_code) = course_code.as_deref() {
+        format!("course:{course_code}")
+    } else {
+        String::from("all")
+    };
+
+    insert_xp_event(
+        transaction,
+        &format!("quiz:passed:{material_key}:{limit_key}"),
+        quiz_points,
+        "quiz_passed",
+    )?;
+
+    if scope != "topic" {
+        return Ok(());
+    }
+
+    let Some(topic_id) = topic_id else {
+        return Ok(());
+    };
+
+    insert_xp_event(
+        transaction,
+        &format!("topic:mastered:{topic_id}"),
+        XP_MASTERED_TOPIC,
+        "topic_mastered",
+    )?;
+
+    let course_code = transaction
+        .query_row(
+            "SELECT course_code FROM topics WHERE id = ?1",
+            params![topic_id],
+            |row| row.get::<_, String>(0),
+        )
+        .map_err(repository_error)?;
+
+    if course_is_completed(transaction, &course_code)? {
+        insert_xp_event(
+            transaction,
+            &format!("course:completed:{course_code}"),
+            XP_COMPLETED_COURSE,
+            "course_completed",
+        )?;
+    }
+
+    Ok(())
+}
+
+type LoadedXpOpportunities = (
+    XpOpportunitySummary,
+    Vec<QuestionId>,
+    Vec<QuizXpOpportunity>,
+    Vec<PracticeXpOpportunity>,
+);
+
+fn load_xp_opportunities(
+    connection: &Connection,
+) -> Result<LoadedXpOpportunities, RepositoryError> {
+    let earned_event_keys = {
+        let mut statement = connection
+            .prepare("SELECT event_key FROM xp_events")
+            .map_err(repository_error)?;
+        let rows = statement
+            .query_map([], |row| row.get::<_, String>(0))
+            .map_err(repository_error)?;
+        rows.collect::<rusqlite::Result<BTreeSet<_>>>()
+            .map_err(repository_error)?
+    };
+
+    let topics = {
+        let mut statement = connection
+            .prepare(
+                "
+                SELECT t.id, t.course_code
+                FROM topics t
+                WHERE t.is_active = 1
+                  AND EXISTS (
+                      SELECT 1
+                      FROM questions q
+                      WHERE q.topic_id = t.id
+                        AND q.is_active = 1
+                  )
+                ORDER BY t.course_code, t.id
+                ",
+            )
+            .map_err(repository_error)?;
+        let rows = statement
+            .query_map([], |row| {
+                Ok((row.get::<_, i64>(0)?, row.get::<_, String>(1)?))
+            })
+            .map_err(repository_error)?;
+        rows.collect::<rusqlite::Result<Vec<_>>>()
+            .map_err(repository_error)?
+    };
+
+    let available_questions = {
+        let mut statement = connection
+            .prepare(
+                "
+                SELECT q.id, q.topic_id
+                FROM questions q
+                JOIN topics t ON t.id = q.topic_id
+                WHERE q.is_active = 1
+                  AND t.is_active = 1
+                  AND NOT EXISTS (
+                      SELECT 1
+                      FROM xp_events x
+                      WHERE x.event_key = 'question:correct:' || q.id
+                  )
+                ORDER BY q.id
+                ",
+            )
+            .map_err(repository_error)?;
+        let rows = statement
+            .query_map([], |row| {
+                Ok((QuestionId(row.get::<_, i64>(0)?), row.get::<_, i64>(1)?))
+            })
+            .map_err(repository_error)?;
+        rows.collect::<rusqlite::Result<Vec<_>>>()
+            .map_err(repository_error)?
+    };
+
+    let available_question_ids = available_questions
+        .iter()
+        .map(|(question_id, _)| *question_id)
+        .collect::<Vec<_>>();
+    let mut question_xp_by_topic = BTreeMap::new();
+    for (_, topic_id) in &available_questions {
+        *question_xp_by_topic.entry(*topic_id).or_insert(0usize) += XP_UNIQUE_CORRECT_QUESTION;
+    }
+
+    let mut topics_by_course = BTreeMap::<String, Vec<i64>>::new();
+    for (topic_id, course_code) in &topics {
+        topics_by_course
+            .entry(course_code.clone())
+            .or_default()
+            .push(*topic_id);
+    }
+
+    let missing_quiz_bonus = |material_key: &str, limit_key: &str, points: usize| -> usize {
+        let key = format!("quiz:passed:{material_key}:{limit_key}");
+        if earned_event_keys.contains(&key) {
+            0
+        } else {
+            points
+        }
+    };
+
+    let mut quiz_opportunities = Vec::new();
+    for (topic_id, course_code) in &topics {
+        let material_key = format!("topic:{topic_id}");
+        let mastered_key = format!("topic:mastered:{topic_id}");
+        let topic_is_mastered = earned_event_keys.contains(&mastered_key);
+        let unmastered_topics = topics_by_course
+            .get(course_code)
+            .map(|course_topics| {
+                course_topics
+                    .iter()
+                    .filter(|candidate| {
+                        !earned_event_keys.contains(&format!("topic:mastered:{candidate}"))
+                    })
+                    .count()
+            })
+            .unwrap_or(0);
+        let course_key = format!("course:completed:{course_code}");
+        let course_completion_xp = if !topic_is_mastered
+            && unmastered_topics == 1
+            && !earned_event_keys.contains(&course_key)
+        {
+            XP_COMPLETED_COURSE
+        } else {
+            0
+        };
+
+        quiz_opportunities.push(QuizXpOpportunity {
+            scope: QuizXpOpportunityScope::Topic(TopicId(*topic_id)),
+            unique_question_xp: question_xp_by_topic.get(topic_id).copied().unwrap_or(0),
+            twenty_bonus_xp: missing_quiz_bonus(&material_key, "20", XP_PASSED_QUIZ_20),
+            fifty_bonus_xp: missing_quiz_bonus(&material_key, "50", XP_PASSED_QUIZ_50),
+            all_bonus_xp: missing_quiz_bonus(&material_key, "all", XP_PASSED_QUIZ_ALL),
+            mastery_xp: if topic_is_mastered {
+                0
+            } else {
+                XP_MASTERED_TOPIC
+            },
+            course_completion_xp,
+        });
+    }
+
+    for (course_code, course_topics) in &topics_by_course {
+        let material_key = format!("course:{course_code}");
+        let unique_question_xp = course_topics
+            .iter()
+            .map(|topic_id| question_xp_by_topic.get(topic_id).copied().unwrap_or(0))
+            .sum();
+        quiz_opportunities.push(QuizXpOpportunity {
+            scope: QuizXpOpportunityScope::Course(course_code.clone()),
+            unique_question_xp,
+            twenty_bonus_xp: missing_quiz_bonus(&material_key, "20", XP_PASSED_QUIZ_20),
+            fifty_bonus_xp: missing_quiz_bonus(&material_key, "50", XP_PASSED_QUIZ_50),
+            all_bonus_xp: missing_quiz_bonus(&material_key, "all", XP_PASSED_QUIZ_ALL),
+            mastery_xp: 0,
+            course_completion_xp: 0,
+        });
+    }
+
+    if !topics.is_empty() {
+        quiz_opportunities.push(QuizXpOpportunity {
+            scope: QuizXpOpportunityScope::AllTopics,
+            unique_question_xp: question_xp_by_topic.values().sum(),
+            twenty_bonus_xp: missing_quiz_bonus("all", "20", XP_PASSED_QUIZ_20),
+            fifty_bonus_xp: missing_quiz_bonus("all", "50", XP_PASSED_QUIZ_50),
+            all_bonus_xp: missing_quiz_bonus("all", "all", XP_PASSED_QUIZ_ALL),
+            mastery_xp: 0,
+            course_completion_xp: 0,
+        });
+    }
+
+    let practice_opportunities = {
+        let mut statement = connection
+            .prepare(
+                "
+                SELECT
+                    t.id,
+                    t.difficulty,
+                    COALESCE(p.attempts, 0),
+                    COALESCE(p.hints_revealed, 0),
+                    COALESCE(p.solved, 0)
+                FROM practice_tasks t
+                LEFT JOIN practice_progress p ON p.task_id = t.id
+                WHERE t.is_active = 1
+                ORDER BY t.sort_order, t.id
+                ",
+            )
+            .map_err(repository_error)?;
+        let rows = statement
+            .query_map([], |row| {
+                let task_id = row.get::<_, i64>(0)?;
+                let difficulty = row.get::<_, String>(1)?;
+                let attempts = row.get::<_, i64>(2)?.max(0) as usize;
+                let hints_revealed = row.get::<_, i64>(3)?.max(0) as usize;
+                let solved = row.get::<_, i64>(4)? != 0;
+                let solve_xp = if solved {
+                    0
+                } else {
+                    match difficulty.as_str() {
+                        "easy" => XP_PRACTICE_EASY,
+                        "hard" => XP_PRACTICE_HARD,
+                        _ => XP_PRACTICE_MEDIUM,
+                    }
+                };
+                let first_try_xp = if solved || attempts > 0 {
+                    0
+                } else {
+                    XP_PRACTICE_FIRST_TRY
+                };
+                let no_hints_xp = if solved || hints_revealed > 0 {
+                    0
+                } else {
+                    XP_PRACTICE_NO_HINTS
+                };
+                Ok(PracticeXpOpportunity {
+                    task_id,
+                    solve_xp,
+                    first_try_xp,
+                    no_hints_xp,
+                })
+            })
+            .map_err(repository_error)?;
+        rows.collect::<rusqlite::Result<Vec<_>>>()
+            .map_err(repository_error)?
+    };
+
+    let question_xp = question_xp_by_topic.values().sum::<usize>();
+    let quiz_xp = quiz_opportunities
+        .iter()
+        .map(|opportunity| {
+            opportunity.twenty_bonus_xp + opportunity.fifty_bonus_xp + opportunity.all_bonus_xp
+        })
+        .sum();
+    let mastery_xp = topics
+        .iter()
+        .filter(|(topic_id, _)| !earned_event_keys.contains(&format!("topic:mastered:{topic_id}")))
+        .count()
+        * XP_MASTERED_TOPIC;
+    let course_xp = topics_by_course
+        .keys()
+        .filter(|course_code| {
+            !earned_event_keys.contains(&format!("course:completed:{course_code}"))
+        })
+        .count()
+        * XP_COMPLETED_COURSE;
+    let practice_xp = practice_opportunities
+        .iter()
+        .map(PracticeXpOpportunity::total_available_xp)
+        .sum();
+
+    Ok((
+        XpOpportunitySummary {
+            question_xp,
+            quiz_xp,
+            mastery_xp,
+            course_xp,
+            practice_xp,
+        },
+        available_question_ids,
+        quiz_opportunities,
+        practice_opportunities,
+    ))
 }
 
 fn parse_source_kind(value: &str) -> Result<SourceKind, RepositoryError> {
@@ -567,8 +1018,15 @@ impl LearningHistoryRepository for SqliteRepository {
             .query_row(
                 "
                 SELECT
-                    COALESCE(SUM(CASE WHEN open_count > 0 THEN 1 ELSE 0 END), 0),
-                    COALESCE(SUM(CASE WHEN answered_questions >= ?1 THEN 1 ELSE 0 END), 0),
+                    COALESCE(SUM(CASE
+                        WHEN answered_questions > 0
+                          OR completed_sessions > 0
+                          OR practice_attempts > 0
+                          OR practice_solved > 0
+                        THEN 1 ELSE 0 END), 0),
+                    COALESCE(SUM(CASE
+                        WHEN answered_questions >= ?1 OR practice_solved > 0
+                        THEN 1 ELSE 0 END), 0),
                     COALESCE(SUM(answered_questions), 0)
                 FROM daily_activity
                 ",
@@ -622,17 +1080,23 @@ impl LearningHistoryRepository for SqliteRepository {
                 streak_start(day) AS (
                     SELECT CASE
                         WHEN COALESCE((
-                            SELECT answered_questions
+                            SELECT CASE
+                                WHEN answered_questions >= ?1 OR practice_solved > 0 THEN 1
+                                ELSE 0
+                            END
                             FROM daily_activity
                             WHERE activity_date = date('now', 'localtime')
-                        ), 0) >= ?1
+                        ), 0) = 1
                         THEN date('now', 'localtime')
 
                         WHEN COALESCE((
-                            SELECT answered_questions
+                            SELECT CASE
+                                WHEN answered_questions >= ?1 OR practice_solved > 0 THEN 1
+                                ELSE 0
+                            END
                             FROM daily_activity
                             WHERE activity_date = date('now', 'localtime', '-1 day')
-                        ), 0) >= ?1
+                        ), 0) = 1
                         THEN date('now', 'localtime', '-1 day')
 
                         ELSE NULL
@@ -648,10 +1112,13 @@ impl LearningHistoryRepository for SqliteRepository {
                     SELECT date(day, '-1 day'), length + 1
                     FROM streak
                     WHERE COALESCE((
-                        SELECT answered_questions
+                        SELECT CASE
+                            WHEN answered_questions >= ?1 OR practice_solved > 0 THEN 1
+                            ELSE 0
+                        END
                         FROM daily_activity
                         WHERE activity_date = date(streak.day, '-1 day')
-                    ), 0) >= ?1
+                    ), 0) = 1
                 )
                 SELECT COALESCE(MAX(length), 0)
                 FROM streak
@@ -670,7 +1137,7 @@ impl LearningHistoryRepository for SqliteRepository {
                         activity_date,
                         ROW_NUMBER() OVER (ORDER BY activity_date) AS row_number
                     FROM daily_activity
-                    WHERE answered_questions >= ?1
+                    WHERE answered_questions >= ?1 OR practice_solved > 0
                 ), grouped AS (
                     SELECT
                         activity_date,
@@ -694,25 +1161,24 @@ impl LearningHistoryRepository for SqliteRepository {
                 .connection
                 .prepare(
                     "
-                    WITH RECURSIVE days(day) AS (
-                        SELECT date('now', 'localtime', '-27 days')
-
-                        UNION ALL
-
-                        SELECT date(day, '+1 day')
-                        FROM days
-                        WHERE day < date('now', 'localtime')
-                    )
                     SELECT
-                        days.day,
-                        COALESCE(a.open_count, 0),
-                        COALESCE(a.answered_questions, 0),
-                        COALESCE(a.correct_answers, 0),
-                        COALESCE(a.completed_sessions, 0)
-                    FROM days
-                    LEFT JOIN daily_activity a
-                      ON a.activity_date = days.day
-                    ORDER BY days.day
+                        activity_date,
+                        open_count,
+                        answered_questions,
+                        correct_answers,
+                        completed_sessions,
+                        practice_attempts,
+                        practice_solved
+                    FROM daily_activity
+                    WHERE activity_date >= date('now', 'localtime', '-27 days')
+                      AND activity_date <= date('now', 'localtime')
+                      AND (
+                          answered_questions > 0
+                          OR completed_sessions > 0
+                          OR practice_attempts > 0
+                          OR practice_solved > 0
+                      )
+                    ORDER BY activity_date
                     ",
                 )
                 .map_err(repository_error)?;
@@ -721,10 +1187,12 @@ impl LearningHistoryRepository for SqliteRepository {
                 .query_map([], |row| {
                     Ok(DailyActivity {
                         date: row.get(0)?,
-                        open_count: row.get::<_, i64>(1)? as usize,
-                        answered_questions: row.get::<_, i64>(2)? as usize,
-                        correct_answers: row.get::<_, i64>(3)? as usize,
-                        completed_sessions: row.get::<_, i64>(4)? as usize,
+                        open_count: row.get::<_, i64>(1)?.max(0) as usize,
+                        answered_questions: row.get::<_, i64>(2)?.max(0) as usize,
+                        correct_answers: row.get::<_, i64>(3)?.max(0) as usize,
+                        completed_sessions: row.get::<_, i64>(4)?.max(0) as usize,
+                        practice_attempts: row.get::<_, i64>(5)?.max(0) as usize,
+                        practice_solved: row.get::<_, i64>(6)?.max(0) as usize,
                     })
                 })
                 .map_err(repository_error)?;
@@ -732,6 +1200,44 @@ impl LearningHistoryRepository for SqliteRepository {
             rows.collect::<rusqlite::Result<Vec<_>>>()
                 .map_err(repository_error)?
         };
+
+        let (last_activity_date, days_since_last_activity) = self
+            .connection
+            .query_row(
+                "
+                SELECT
+                    MAX(activity_date),
+                    CASE
+                        WHEN MAX(activity_date) IS NULL THEN NULL
+                        ELSE CAST(
+                            julianday(date('now', 'localtime')) - julianday(MAX(activity_date))
+                            AS INTEGER
+                        )
+                    END
+                FROM daily_activity
+                WHERE answered_questions > 0
+                   OR completed_sessions > 0
+                   OR practice_attempts > 0
+                   OR practice_solved > 0
+                ",
+                [],
+                |row| {
+                    Ok((
+                        row.get::<_, Option<String>>(0)?,
+                        row.get::<_, Option<i64>>(1)?,
+                    ))
+                },
+            )
+            .map_err(repository_error)?;
+
+        let xp = self
+            .connection
+            .query_row(
+                "SELECT COALESCE(SUM(points), 0) FROM xp_events",
+                [],
+                |row| row.get::<_, i64>(0),
+            )
+            .map_err(repository_error)?;
 
         let course_totals = {
             let mut statement = self
@@ -802,22 +1308,182 @@ impl LearningHistoryRepository for SqliteRepository {
 
             course_progress.push(CourseProgress {
                 course_code,
-                passed_topics: passed_topics as usize,
-                total_topics: total_topics as usize,
+                passed_topics: passed_topics.max(0) as usize,
+                total_topics: total_topics.max(0) as usize,
             });
         }
 
+        let completed_sessions = self
+            .connection
+            .query_row(
+                "
+                SELECT COUNT(*)
+                FROM quiz_sessions
+                WHERE finished_at IS NOT NULL
+                  AND cancelled_at IS NULL
+                  AND is_review = 0
+                ",
+                [],
+                |row| row.get::<_, i64>(0),
+            )
+            .map_err(repository_error)?
+            .max(0) as usize;
+
+        let perfect_twenty = self
+            .connection
+            .query_row(
+                "
+                SELECT COUNT(*)
+                FROM (
+                    SELECT s.id
+                    FROM quiz_sessions s
+                    JOIN attempts a ON a.session_id = s.id
+                    WHERE s.finished_at IS NOT NULL
+                      AND s.cancelled_at IS NULL
+                      AND s.is_review = 0
+                      AND s.requested_count = 20
+                    GROUP BY s.id
+                    HAVING COUNT(a.id) = 20
+                       AND SUM(a.is_correct) = 20
+                ) perfect_sessions
+                ",
+                [],
+                |row| row.get::<_, i64>(0),
+            )
+            .map_err(repository_error)?
+            .max(0) as usize;
+
+        let (practice_solved_tasks, practice_first_try) = self
+            .connection
+            .query_row(
+                "
+                SELECT
+                    COALESCE(SUM(CASE WHEN solved = 1 THEN 1 ELSE 0 END), 0),
+                    COALESCE(SUM(CASE
+                        WHEN solved = 1 AND solved_attempt = 1 THEN 1 ELSE 0 END
+                    ), 0)
+                FROM practice_progress
+                ",
+                [],
+                |row| Ok((row.get::<_, i64>(0)?, row.get::<_, i64>(1)?)),
+            )
+            .map_err(repository_error)?;
+
+        let completed_courses = self
+            .connection
+            .query_row(
+                "SELECT COUNT(*) FROM xp_events WHERE reason = 'course_completed'",
+                [],
+                |row| row.get::<_, i64>(0),
+            )
+            .map_err(repository_error)?
+            .max(0) as usize;
+
+        let achievement = |kind, rarity, current: usize, target: usize| -> AchievementProgress {
+            AchievementProgress {
+                kind,
+                rarity,
+                unlocked: target > 0 && current >= target,
+                current,
+                target,
+            }
+        };
+
+        let achievements = vec![
+            achievement(
+                AchievementKind::FirstAnswer,
+                AchievementRarity::Common,
+                total_answered_questions.max(0) as usize,
+                1,
+            ),
+            achievement(
+                AchievementKind::HundredAnswers,
+                AchievementRarity::Common,
+                total_answered_questions.max(0) as usize,
+                100,
+            ),
+            achievement(
+                AchievementKind::PerfectTwenty,
+                AchievementRarity::Rare,
+                perfect_twenty,
+                1,
+            ),
+            achievement(
+                AchievementKind::QuizVeteran,
+                AchievementRarity::Rare,
+                completed_sessions,
+                10,
+            ),
+            achievement(
+                AchievementKind::FirstSql,
+                AchievementRarity::Common,
+                practice_solved_tasks.max(0) as usize,
+                1,
+            ),
+            achievement(
+                AchievementKind::OneShot,
+                AchievementRarity::Rare,
+                practice_first_try.max(0) as usize,
+                1,
+            ),
+            achievement(
+                AchievementKind::QueryNinja,
+                AchievementRarity::Epic,
+                practice_solved_tasks.max(0) as usize,
+                25,
+            ),
+            achievement(
+                AchievementKind::SevenDayStreak,
+                AchievementRarity::Rare,
+                best_streak.max(0) as usize,
+                7,
+            ),
+            achievement(
+                AchievementKind::ThirtyDayStreak,
+                AchievementRarity::Epic,
+                best_streak.max(0) as usize,
+                30,
+            ),
+            achievement(
+                AchievementKind::CourseMaster,
+                AchievementRarity::Epic,
+                completed_courses,
+                1,
+            ),
+            achievement(
+                AchievementKind::MadNinja,
+                AchievementRarity::Legendary,
+                xp.max(0) as usize,
+                ProgressRank::MadNinjaDba.minimum_xp(),
+            ),
+        ];
+
+        let (
+            xp_opportunity_summary,
+            question_xp_available_ids,
+            quiz_xp_opportunities,
+            practice_xp_opportunities,
+        ) = load_xp_opportunities(&self.connection)?;
+
         Ok(ActivityStats {
-            active_days: active_days as usize,
-            study_days: study_days as usize,
-            current_streak: current_streak as usize,
-            best_streak: best_streak as usize,
-            total_answered_questions: total_answered_questions as usize,
-            today_answered_questions: today_answered_questions as usize,
-            today_correct_answers: today_correct_answers as usize,
-            last_7_days_answered_questions: last_7_days_answered_questions as usize,
+            active_days: active_days.max(0) as usize,
+            study_days: study_days.max(0) as usize,
+            current_streak: current_streak.max(0) as usize,
+            best_streak: best_streak.max(0) as usize,
+            total_answered_questions: total_answered_questions.max(0) as usize,
+            today_answered_questions: today_answered_questions.max(0) as usize,
+            today_correct_answers: today_correct_answers.max(0) as usize,
+            last_7_days_answered_questions: last_7_days_answered_questions.max(0) as usize,
+            xp: xp.max(0) as usize,
+            last_activity_date,
+            days_since_last_activity: days_since_last_activity.map(|days| days.max(0) as usize),
             recent_days,
             course_progress,
+            achievements,
+            xp_opportunity_summary,
+            question_xp_available_ids,
+            quiz_xp_opportunities,
+            practice_xp_opportunities,
         })
     }
 
@@ -1169,6 +1835,15 @@ impl SessionRepository for SqliteRepository {
 
         let attempt_id = transaction.last_insert_rowid();
 
+        if is_correct {
+            insert_xp_event(
+                &transaction,
+                &format!("question:correct:{}", question_id.0),
+                XP_UNIQUE_CORRECT_QUESTION,
+                "question_correct",
+            )?;
+        }
+
         for answer_option_id in &selected_ids {
             transaction
                 .execute(
@@ -1215,6 +1890,10 @@ impl SessionRepository for SqliteRepository {
             )
             .map_err(repository_error)?
             > 0;
+
+        if completed_session {
+            award_completed_session_xp(&transaction, session_id)?;
+        }
 
         transaction
             .execute(
@@ -1479,6 +2158,10 @@ impl SessionRepository for SqliteRepository {
             .execute("DELETE FROM practice_progress", [])
             .map_err(repository_error)?;
 
+        transaction
+            .execute("DELETE FROM xp_events", [])
+            .map_err(repository_error)?;
+
         transaction.commit().map_err(repository_error)?;
 
         Ok(())
@@ -1563,7 +2246,7 @@ impl PracticeRepository for SqliteRepository {
             .connection
             .prepare(
                 "
-                SELECT task_id, last_sql, attempts, solved, solved_attempt, updated_at
+                SELECT task_id, last_sql, attempts, hints_revealed, solved, solved_attempt, updated_at
                 FROM practice_progress
                 ORDER BY updated_at DESC, task_id
                 ",
@@ -1575,11 +2258,12 @@ impl PracticeRepository for SqliteRepository {
                     task_id: row.get(0)?,
                     last_sql: row.get(1)?,
                     attempts: row.get::<_, i64>(2)?.max(0) as usize,
-                    solved: row.get::<_, i64>(3)? != 0,
+                    hints_revealed: row.get::<_, i64>(3)?.max(0) as usize,
+                    solved: row.get::<_, i64>(4)? != 0,
                     solved_attempt: row
-                        .get::<_, Option<i64>>(4)?
+                        .get::<_, Option<i64>>(5)?
                         .map(|value| value.max(0) as usize),
-                    updated_at: row.get(5)?,
+                    updated_at: row.get(6)?,
                 })
             })
             .map_err(repository_error)?;
@@ -1603,6 +2287,22 @@ impl PracticeRepository for SqliteRepository {
         Ok(())
     }
 
+    fn record_practice_hint(&mut self, task_id: i64) -> Result<(), RepositoryError> {
+        self.connection
+            .execute(
+                "
+                INSERT INTO practice_progress (task_id, hints_revealed, updated_at)
+                VALUES (?1, 1, CURRENT_TIMESTAMP)
+                ON CONFLICT(task_id) DO UPDATE SET
+                    hints_revealed = practice_progress.hints_revealed + 1,
+                    updated_at = CURRENT_TIMESTAMP
+                ",
+                params![task_id],
+            )
+            .map_err(repository_error)?;
+        Ok(())
+    }
+
     fn record_practice_attempt(
         &mut self,
         task_id: i64,
@@ -1611,6 +2311,27 @@ impl PracticeRepository for SqliteRepository {
     ) -> Result<(), RepositoryError> {
         let success_value = if success { 1_i64 } else { 0_i64 };
         let transaction = self.connection.transaction().map_err(repository_error)?;
+
+        let (previous_attempts, hints_revealed, was_solved) = transaction
+            .query_row(
+                "
+                SELECT attempts, hints_revealed, solved
+                FROM practice_progress
+                WHERE task_id = ?1
+                ",
+                params![task_id],
+                |row| {
+                    Ok((
+                        row.get::<_, i64>(0)?,
+                        row.get::<_, i64>(1)?.max(0) as usize,
+                        row.get::<_, i64>(2)? != 0,
+                    ))
+                },
+            )
+            .optional()
+            .map_err(repository_error)?
+            .unwrap_or((0, 0, false));
+
         transaction
             .execute(
                 "INSERT INTO practice_attempts (task_id, submitted_sql, success) VALUES (?1, ?2, ?3)",
@@ -1641,6 +2362,72 @@ impl PracticeRepository for SqliteRepository {
                 params![task_id, sql, success_value],
             )
             .map_err(repository_error)?;
+
+        let newly_solved = success && !was_solved;
+        if newly_solved {
+            let difficulty = transaction
+                .query_row(
+                    "SELECT difficulty FROM practice_tasks WHERE id = ?1",
+                    params![task_id],
+                    |row| row.get::<_, String>(0),
+                )
+                .map_err(repository_error)?;
+            let points = match difficulty.as_str() {
+                "easy" => XP_PRACTICE_EASY,
+                "hard" => XP_PRACTICE_HARD,
+                _ => XP_PRACTICE_MEDIUM,
+            };
+
+            insert_xp_event(
+                &transaction,
+                &format!("practice:solved:{task_id}"),
+                points,
+                "practice_solved",
+            )?;
+
+            if previous_attempts == 0 {
+                insert_xp_event(
+                    &transaction,
+                    &format!("practice:first_try:{task_id}"),
+                    XP_PRACTICE_FIRST_TRY,
+                    "practice_first_try",
+                )?;
+            }
+
+            if hints_revealed == 0 {
+                insert_xp_event(
+                    &transaction,
+                    &format!("practice:no_hints:{task_id}"),
+                    XP_PRACTICE_NO_HINTS,
+                    "practice_no_hints",
+                )?;
+            }
+        }
+
+        transaction
+            .execute(
+                "
+                INSERT INTO daily_activity (
+                    activity_date,
+                    open_count,
+                    practice_attempts,
+                    practice_solved
+                )
+                VALUES (
+                    date('now', 'localtime'),
+                    1,
+                    1,
+                    ?1
+                )
+                ON CONFLICT(activity_date) DO UPDATE SET
+                    open_count = MAX(daily_activity.open_count, 1),
+                    practice_attempts = daily_activity.practice_attempts + 1,
+                    practice_solved = daily_activity.practice_solved + excluded.practice_solved
+                ",
+                params![newly_solved as i64],
+            )
+            .map_err(repository_error)?;
+
         transaction.commit().map_err(repository_error)?;
         Ok(())
     }
@@ -1743,6 +2530,7 @@ fn practice_task_from_row(row: &rusqlite::Row<'_>) -> rusqlite::Result<PracticeT
         },
         starter_sql: row.get(7)?,
         setup_sql: row.get(8)?,
+        hidden_case_sql: Vec::new(),
         solution_sql: row.get(9)?,
         solution_explanation: row.get(12)?,
         hints: Vec::new(),
@@ -1756,6 +2544,15 @@ fn hydrate_practice_task(
     connection: &Connection,
     task: &mut PracticeTask,
 ) -> Result<(), RepositoryError> {
+    let mut cases_statement = connection
+        .prepare("SELECT setup_sql FROM practice_hidden_cases WHERE task_id = ?1 ORDER BY position")
+        .map_err(repository_error)?;
+    task.hidden_case_sql = cases_statement
+        .query_map(params![task.id], |row| row.get::<_, String>(0))
+        .map_err(repository_error)?
+        .collect::<rusqlite::Result<Vec<_>>>()
+        .map_err(repository_error)?;
+
     let mut hints_statement = connection
         .prepare("SELECT text FROM practice_hints WHERE task_id = ?1 ORDER BY position")
         .map_err(repository_error)?;
@@ -2021,6 +2818,92 @@ mod tests {
         assert_eq!(stats.solved_tasks, 1);
         assert_eq!(stats.total_attempts, 2);
         assert_eq!(stats.solved_first_try, 0);
+    }
+
+    #[test]
+    fn xp_opportunities_track_remaining_rewards() {
+        let mut repository = seeded_repository();
+        repository
+            .connection
+            .execute(
+                "
+                INSERT INTO practice_tasks (
+                    content_key, category, title, description, practice_type, comparison,
+                    starter_sql, setup_sql, solution_sql, sort_order, difficulty
+                )
+                VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)
+                ",
+                params![
+                    "xp-practice",
+                    "select",
+                    "XP demo",
+                    "Return one row",
+                    "write_query",
+                    "unordered",
+                    "SELECT ",
+                    "CREATE TABLE demo (id INTEGER); INSERT INTO demo VALUES (1);",
+                    "SELECT id FROM demo;",
+                    1_i64,
+                    "easy",
+                ],
+            )
+            .expect("practice task should be inserted");
+        let task_id = repository
+            .connection
+            .query_row(
+                "SELECT id FROM practice_tasks WHERE content_key = 'xp-practice'",
+                [],
+                |row| row.get::<_, i64>(0),
+            )
+            .expect("practice id should load");
+
+        let before = repository.activity_stats().expect("activity should load");
+        assert_eq!(before.xp_opportunity_summary.question_xp, 1);
+        assert_eq!(before.xp_opportunity_summary.quiz_xp, 180);
+        assert_eq!(before.xp_opportunity_summary.mastery_xp, 50);
+        assert_eq!(before.xp_opportunity_summary.course_xp, 200);
+        assert_eq!(before.xp_opportunity_summary.practice_xp, 20);
+        assert_eq!(before.xp_opportunity_summary.total_available_xp(), 451);
+        assert!(before.question_xp_available(QuestionId(1)));
+        let practice_before = before
+            .practice_xp_opportunity(task_id)
+            .expect("practice XP should exist");
+        assert_eq!(practice_before.total_available_xp(), 20);
+        assert_eq!(practice_before.no_hints_xp, XP_PRACTICE_NO_HINTS);
+
+        repository
+            .record_practice_hint(task_id)
+            .expect("hint usage should save");
+        let after_hint = repository.activity_stats().expect("activity should load");
+        let practice_after_hint = after_hint
+            .practice_xp_opportunity(task_id)
+            .expect("practice XP should exist");
+        assert_eq!(practice_after_hint.no_hints_xp, 0);
+        assert_eq!(practice_after_hint.total_available_xp(), 15);
+
+        let session = repository
+            .start_session(&SessionConfig {
+                scope: QuizScope::Topic(TopicId(1)),
+                limit: QuestionLimit::Twenty,
+            })
+            .expect("session should start");
+        let question = repository
+            .current_question(session.id)
+            .expect("question should load")
+            .expect("question should exist");
+        repository
+            .submit_answer(session.id, question.id, &[AnswerOptionId(1)])
+            .expect("answer should be accepted");
+
+        let after = repository.activity_stats().expect("activity should load");
+        assert!(!after.question_xp_available(QuestionId(1)));
+        let topic = after
+            .quiz_xp_opportunity(&QuizScope::Topic(TopicId(1)))
+            .expect("topic XP should exist");
+        assert_eq!(topic.unique_question_xp, 0);
+        assert_eq!(topic.twenty_bonus_xp, 0);
+        assert_eq!(topic.mastery_xp, 0);
+        assert_eq!(topic.course_completion_xp, 0);
     }
 
     #[test]
@@ -2627,9 +3510,35 @@ mod tests {
         assert_eq!(activity.today_correct_answers, 1);
         assert_eq!(activity.total_answered_questions, 1);
         assert_eq!(activity.last_7_days_answered_questions, 1);
-        assert_eq!(activity.recent_days.len(), 28);
+        assert_eq!(activity.recent_days.len(), 1);
         assert_eq!(activity.recent_days.last().unwrap().answered_questions, 1);
         assert_eq!(activity.passed_topics(), 1);
+        assert_eq!(activity.xp, 281);
+        assert_eq!(activity.rank(), ProgressRank::PsqlTrainee);
+    }
+
+    #[test]
+    fn repeated_quiz_scope_does_not_farm_xp() {
+        let mut repository = seeded_repository();
+
+        for _ in 0..2 {
+            let session = repository
+                .start_session(&SessionConfig {
+                    scope: QuizScope::Topic(TopicId(1)),
+                    limit: QuestionLimit::All,
+                })
+                .expect("session should start");
+            let question = repository
+                .current_question(session.id)
+                .expect("question should load")
+                .expect("question should exist");
+            repository
+                .submit_answer(session.id, question.id, &[AnswerOptionId(1)])
+                .expect("answer should be recorded");
+        }
+
+        let activity = repository.activity_stats().expect("activity should load");
+        assert_eq!(activity.xp, 281);
     }
 
     #[test]

@@ -1,0 +1,2 @@
+CREATE TABLE servers(id INTEGER, hostname TEXT); CREATE TABLE databases(id INTEGER, name TEXT, server_id INTEGER); CREATE TABLE db_roles(id INTEGER, role_name TEXT); CREATE TABLE sessions(id INTEGER, database_id INTEGER, role_id INTEGER, state TEXT);
+         INSERT INTO servers VALUES (1,'a'); INSERT INTO databases VALUES (1,'core',1); INSERT INTO db_roles VALUES (1,'r'); INSERT INTO sessions VALUES (2,1,1,'active'),(1,1,1,'active');

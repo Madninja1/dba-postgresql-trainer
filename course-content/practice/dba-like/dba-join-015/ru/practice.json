@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-015",
+  "category": "JOIN",
+  "title": "Роли с доступом к нескольким серверам",
+  "description": "Для каждой роли посчитайте число различных серверов, на которых находятся базы из её grants. Оставьте роли с доступом минимум к двум различным серверам. Ровно две колонки: role_name, server_count. Повторные grants к нескольким базам одного сервера должны считать сервер один раз. Сортировка: server_count DESC, затем role_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "SELECT r.role_name\nFROM role_grants AS g\n",
+  "hints": [
+    "Цепочка идёт grants → roles и grants → databases → servers.",
+    "COUNT(DISTINCT server_id) не даёт нескольким базам одного сервера раздуть счётчик."
+  ],
+  "solution_explanation": "COUNT DISTINCT поверх нескольких JOIN измеряет охват инфраструктуры, а не число grants.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "having"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 102
+}

@@ -33,11 +33,17 @@ pub fn render(frame: &mut Frame, app: &App) {
         ],
     );
 
+    let xp = if app.question_xp_available(question.id) {
+        format!(" · +1 {}", app.strings().xp)
+    } else {
+        String::new()
+    };
     let header = Paragraph::new(format!(
-        "{} {}/{}",
+        "{} {}/{}{}",
         app.strings().question,
         app.answered_questions + 1,
         app.total_questions,
+        xp,
     ))
     .alignment(Alignment::Center)
     .block(Block::default().borders(Borders::ALL));

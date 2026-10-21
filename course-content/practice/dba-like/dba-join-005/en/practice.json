@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-005",
+  "category": "JOIN",
+  "title": "Sessions and login roles",
+  "description": "For each session return its session_id and role_name. Return exactly two columns: session_id, role_name. Sort by session_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT s.id AS session_id, r.role_name\nFROM sessions AS s\n",
+  "hints": [
+    "sessions.role_id references db_roles.id.",
+    "INNER JOIN is sufficient because every test session has a role."
+  ],
+  "solution_explanation": "This task reinforces joining a fact row to the roles lookup table.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 92
+}

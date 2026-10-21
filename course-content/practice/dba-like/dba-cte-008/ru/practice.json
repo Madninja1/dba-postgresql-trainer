@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-cte-008",
+  "category": "Subquery / CTE",
+  "title": "DBA risk score из двух агрегатов",
+  "description": "Используйте минимум два CTE: один для числа active-сессий по database_id, второй для числа failed backup по database_id. Для каждой базы вычислите risk_score = active_sessions * 2 + failed_backups * 3, считая отсутствующие значения нулём. Выведите только базы с risk_score не меньше 5. Ровно четыре колонки: database_name, active_sessions, failed_backups, risk_score. Сортировка: risk_score DESC, затем database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "WITH active AS (\n  SELECT database_id\n  FROM sessions\n),\nfailed AS (\n  SELECT database_id\n  FROM backups\n)\nSELECT\n",
+  "hints": [
+    "Каждый CTE должен агрегировать только свой тип события.",
+    "LEFT JOIN + COALESCE сохраняет базу, у которой нет одной из категорий событий."
+  ],
+  "solution_explanation": "Два предварительных агрегата предотвращают перемножение строк sessions × backups и дают корректный risk_score.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "with"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "coalesce"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 116
+}

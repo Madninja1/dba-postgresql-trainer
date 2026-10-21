@@ -63,6 +63,7 @@ import dev.dbatrainer.ffi.MobileLab
 import dev.dbatrainer.ffi.MobileQuestion
 import dev.dbatrainer.ffi.MobileQuestionLimit
 import dev.dbatrainer.ffi.MobileQuestionMistakeSummary
+import dev.dbatrainer.ffi.MobileQuizXpOpportunity
 import dev.dbatrainer.ffi.MobileSessionProgress
 import dev.dbatrainer.ffi.MobileQuestionType
 import dev.dbatrainer.ffi.MobileSource
@@ -233,10 +234,7 @@ private fun HomeScreen(controller: TrainerController) {
 
         controller.activityStats?.let { activity ->
             item {
-                InfoCard(
-                    title = strings.rank,
-                    text = strings.progressLevel(activity.level),
-                )
+                RankSummaryCard(activity)
             }
         }
 
@@ -442,6 +440,7 @@ private fun TopicCoursesScreen(controller: TrainerController) {
         title = strings.topicQuiz,
         prompt = strings.chooseTopicCourse,
         onChoose = controller::chooseTopicCourse,
+        xpForCourse = controller::topicCourseXpAvailable,
     )
 }
 
@@ -482,6 +481,7 @@ private fun TopicsScreen(controller: TrainerController) {
                     masterySummary = strings.topicMasterySummary(
                         controller.topicMasteryFor(topic.id),
                     ),
+                    xpAvailable = controller.topicXpAvailable(topic.id),
                     onClick = {
                         controller.chooseTopic(topic)
                     },
@@ -500,6 +500,7 @@ private fun CoursesScreen(controller: TrainerController) {
         title = strings.generalQuiz,
         prompt = strings.chooseCourse,
         onChoose = controller::chooseCourse,
+        xpForCourse = controller::courseXpAvailable,
     )
 }
 
@@ -509,6 +510,7 @@ private fun CourseSelectionScreen(
     title: String,
     prompt: String,
     onChoose: (String) -> Unit,
+    xpForCourse: ((String) -> ULong)?,
 ) {
     val strings = LocalUiStrings.current
 
@@ -563,6 +565,15 @@ private fun CourseSelectionScreen(
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
+
+                        xpForCourse?.invoke(courseCode)?.takeIf { xp -> xp > 0UL }?.let { xp ->
+                            Spacer(Modifier.height(4.dp))
+                            Text(
+                                text = "${strings.xpAvailable}: $xp XP",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                        }
                     }
                 }
             }
@@ -575,6 +586,7 @@ private fun TopicCard(
     topic: MobileTopic,
     displayNumber: String,
     masterySummary: String,
+    xpAvailable: ULong,
     onClick: () -> Unit,
 ) {
     Card(
@@ -606,6 +618,15 @@ private fun TopicCard(
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
             )
+
+            if (xpAvailable > 0UL) {
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = "${LocalUiStrings.current.xpAvailable}: $xpAvailable XP",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.tertiary,
+                )
+            }
 
             topic.description?.let { description ->
                 Spacer(Modifier.height(8.dp))
@@ -851,6 +872,8 @@ private fun LimitScreen(controller: TrainerController) {
         else -> strings.generalQuiz
     }
 
+    val xpOpportunity = controller.pendingQuizXpOpportunity
+
     TrainerScaffold(
         title = title,
         onBack = controller::back,
@@ -874,7 +897,11 @@ private fun LimitScreen(controller: TrainerController) {
             )
 
             LimitButton(
-                text = strings.twentyQuestions,
+                text = quizLimitLabel(
+                    strings = strings,
+                    base = strings.twentyQuestions,
+                    bonusXp = xpOpportunity?.twentyBonusXp,
+                ),
                 onClick = {
                     controller.startQuiz(
                         MobileQuestionLimit.TWENTY,
@@ -883,7 +910,11 @@ private fun LimitScreen(controller: TrainerController) {
             )
 
             LimitButton(
-                text = strings.fiftyQuestions,
+                text = quizLimitLabel(
+                    strings = strings,
+                    base = strings.fiftyQuestions,
+                    bonusXp = xpOpportunity?.fiftyBonusXp,
+                ),
                 onClick = {
                     controller.startQuiz(
                         MobileQuestionLimit.FIFTY,
@@ -892,7 +923,11 @@ private fun LimitScreen(controller: TrainerController) {
             )
 
             LimitButton(
-                text = strings.allQuestions,
+                text = quizLimitLabel(
+                    strings = strings,
+                    base = strings.allQuestions,
+                    bonusXp = xpOpportunity?.allBonusXp,
+                ),
                 onClick = {
                     controller.startQuiz(
                         MobileQuestionLimit.ALL,
@@ -910,8 +945,47 @@ private fun LimitScreen(controller: TrainerController) {
                     append("${strings.allQuestions}: 60%")
                 },
             )
+
+            xpOpportunity
+                ?.let { opportunity -> quizXpDetails(strings, opportunity) }
+                ?.takeIf { details -> details.isNotEmpty() }
+                ?.let { details ->
+                    InfoCard(
+                        title = strings.xpAvailable,
+                        text = details,
+                    )
+                }
         }
     }
+}
+
+private fun quizLimitLabel(
+    strings: UiStrings,
+    base: String,
+    bonusXp: ULong?,
+): String = when {
+    bonusXp == null -> base
+    bonusXp > 0UL -> "$base · +$bonusXp XP ${strings.xpPassBonus}"
+    else -> "$base · ${strings.xpReceived}"
+}
+
+private fun quizXpDetails(
+    strings: UiStrings,
+    opportunity: MobileQuizXpOpportunity,
+): String {
+    val lines = buildList {
+        if (opportunity.uniqueQuestionXp > 0UL) {
+            add("${strings.xpQuestions}: +${opportunity.uniqueQuestionXp} XP")
+        }
+        if (opportunity.masteryXp > 0UL) {
+            add("${strings.xpTopics}: +${opportunity.masteryXp} XP")
+        }
+        if (opportunity.courseCompletionXp > 0UL) {
+            add("${strings.xpCourses}: +${opportunity.courseCompletionXp} XP")
+        }
+    }
+
+    return lines.joinToString("\n")
 }
 
 @Composable
@@ -956,6 +1030,16 @@ private fun QuizScreen(controller: TrainerController) {
                     progress = { progress },
                     modifier = Modifier.fillMaxWidth(),
                 )
+            }
+
+            if (controller.questionXpAvailable(question.id)) {
+                item {
+                    Text(
+                        text = "+1 XP · ${strings.xpQuestions}",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.tertiary,
+                    )
+                }
             }
 
             item {
@@ -1866,11 +1950,21 @@ private fun StatisticsActivityScreen(controller: TrainerController) {
             stats.todayCorrectAnswers.toDouble() /
                 stats.todayAnsweredQuestions.toDouble() * 100.0
         }
+        val recentPracticeAttempts = stats.recentDays.fold(0UL) { total, day ->
+            total + day.practiceAttempts
+        }
+        val recentPracticeSolved = stats.recentDays.fold(0UL) { total, day ->
+            total + day.practiceSolved
+        }
 
         LazyColumn(
             modifier = modifier,
             verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
         ) {
+            item {
+                RankSummaryCard(stats)
+            }
+
             item {
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Column(
@@ -1878,26 +1972,104 @@ private fun StatisticsActivityScreen(controller: TrainerController) {
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         Text(
-                            text = "${strings.rank}: ${strings.progressLevel(stats.level)}",
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary,
+                            text = strings.rankScale,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
                         )
-                        Text(strings.progressMessage(stats.level))
+                        stats.rankDefinitions.forEach { definition ->
+                            val rank = definition.rank
+                            val threshold = definition.minimumXp
+                            val marker = when {
+                                rank == stats.rank -> "›"
+                                stats.xp >= threshold -> "✓"
+                                else -> "·"
+                            }
+                            Text(
+                                text = "$marker ${strings.progressRank(rank)} — $threshold XP",
+                                fontWeight = if (rank == stats.rank) FontWeight.SemiBold else FontWeight.Normal,
+                                color = if (rank == stats.rank) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.onSurface
+                                },
+                            )
+                        }
+                    }
+                }
+            }
+
+            item {
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        modifier = Modifier.padding(LayoutSpacing.card),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Text(
+                            text = strings.xpRules,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        stats.xpRules.forEach { rule ->
+                            Text("+${rule.points} XP · ${strings.xpSource(rule.source)}")
+                        }
+                    }
+                }
+            }
+
+            item {
+                val opportunities = stats.xpOpportunitySummary
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        modifier = Modifier.padding(LayoutSpacing.card),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Text(
+                            text = "${strings.xpOpportunities}: ${opportunities.totalAvailableXp} XP",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Text("${strings.xpQuestions}: ${opportunities.questionXp} XP")
+                        Text("${strings.xpQuizzes}: ${opportunities.quizXp} XP")
+                        Text("${strings.xpTopics}: ${opportunities.masteryXp} XP")
+                        Text("${strings.xpCourses}: ${opportunities.courseXp} XP")
+                        Text("${strings.xpPractice}: ${opportunities.practiceXp} XP")
+                    }
+                }
+            }
+
+            item {
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        modifier = Modifier.padding(LayoutSpacing.card),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Text(
+                            text = strings.mastery,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Text(
+                            text = "${stats.passedTopics}/${stats.totalTopics} · ${formatPercent(stats.overallMasteryPercent)}",
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        LinearProgressIndicator(
+                            progress = {
+                                (stats.overallMasteryPercent / 100.0)
+                                    .toFloat()
+                                    .coerceIn(0f, 1f)
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
                         HorizontalDivider()
                         Text("${strings.today}: ${stats.todayAnsweredQuestions} · ${stats.todayCorrectAnswers}/${stats.todayAnsweredQuestions} · ${formatPercent(todayAccuracy)}")
                         Text("${strings.activeDays}: ${stats.activeDays}")
                         Text("${strings.studyDays}: ${stats.studyDays}")
-                        Text("${strings.answeredQuestions}: ${stats.totalAnsweredQuestions}")
                         Text("${strings.currentStreak}: ${stats.currentStreak}")
                         Text("${strings.bestStreak}: ${stats.bestStreak}")
+                        Text("${strings.answeredQuestions}: ${stats.totalAnsweredQuestions}")
                         Text("${strings.last7Days}: ${stats.last7DaysAnsweredQuestions}")
                         Text(
-                            text = "${strings.careerPath}: ${formatPercent(stats.overallMasteryPercent)}",
-                            fontWeight = FontWeight.SemiBold,
-                        )
-                        Text(
-                            text = strings.salaryDisclaimer,
+                            text = strings.studyDayTarget,
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -1945,27 +2117,90 @@ private fun StatisticsActivityScreen(controller: TrainerController) {
                         modifier = Modifier.padding(LayoutSpacing.card),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
+                        val unlocked = stats.achievements.count { achievement -> achievement.unlocked }
+                        Text(
+                            text = "${strings.achievements}: $unlocked/${stats.achievements.size}",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        stats.achievements.forEach { achievement ->
+                            val state = if (achievement.unlocked) "✓" else "·"
+                            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                Text(
+                                    text = "$state ${strings.achievementTitle(achievement.kind)} · ${strings.achievementRarity(achievement.rarity)}",
+                                    fontWeight = if (achievement.unlocked) FontWeight.SemiBold else FontWeight.Normal,
+                                )
+                                Text(
+                                    text = strings.achievementDescription(achievement.kind),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                                if (!achievement.unlocked) {
+                                    Text(
+                                        text = "${achievement.current}/${achievement.target}",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            item {
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        modifier = Modifier.padding(LayoutSpacing.card),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
                         Text(
                             text = strings.recentActivity,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold,
                         )
-                        Text(
-                            text = activityHeatmap(stats),
-                            fontFamily = FontFamily.Monospace,
-                            style = MaterialTheme.typography.bodyLarge,
-                        )
-                        stats.recentDays.asReversed().forEach { day ->
+                        Text("${strings.activeDays28}: ${stats.recentDays.size}")
+                        if (recentPracticeAttempts > 0UL) {
+                            Text("${strings.sqlAttempts}: $recentPracticeAttempts")
+                        }
+                        if (recentPracticeSolved > 0UL) {
+                            Text("${strings.sqlSolved}: $recentPracticeSolved")
+                        }
+
+                        if (stats.recentDays.isEmpty()) {
+                            Text(strings.noRecentActivity)
+                        } else {
+                            stats.recentDays.asReversed().forEach { day ->
+                                val details = buildList {
+                                    if (day.answeredQuestions > 0UL) {
+                                        add("${strings.answeredQuestions}: ${day.answeredQuestions}")
+                                    }
+                                    if (day.practiceAttempts > 0UL) {
+                                        add("${strings.sqlAttempts}: ${day.practiceAttempts}")
+                                    }
+                                    if (day.practiceSolved > 0UL) {
+                                        add("${strings.sqlSolved}: ${day.practiceSolved}")
+                                    }
+                                }.joinToString(" · ")
+                                Text(
+                                    text = "${day.date} — $details",
+                                    style = MaterialTheme.typography.bodySmall,
+                                )
+                            }
+                        }
+
+                        stats.lastActivityDate?.let { date ->
+                            HorizontalDivider()
+                            val ago = stats.daysSinceLastActivity?.let(strings::daysAgo)
                             Text(
-                                text = "${day.date} — ${strings.answeredQuestions}: ${day.answeredQuestions} · ${strings.correctAnswersCount}: ${day.correctAnswers}",
+                                text = buildString {
+                                    append("${strings.lastActivity}: $date")
+                                    if (ago != null) append(" · $ago")
+                                },
                                 style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
-                        Text(
-                            text = strings.studyDayTarget,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
                     }
                 }
             }
@@ -1973,26 +2208,44 @@ private fun StatisticsActivityScreen(controller: TrainerController) {
     }
 }
 
-private fun activityHeatmap(stats: MobileActivityStats): String {
-    if (stats.recentDays.isEmpty()) {
-        return "—"
-    }
+@Composable
+private fun RankSummaryCard(stats: MobileActivityStats) {
+    val strings = LocalUiStrings.current
+    val nextRank = stats.nextRankXp
 
-    val rows = stats.recentDays
-        .chunked(7)
-        .joinToString("\n") { week ->
-            week.joinToString("") { day ->
-                when (day.answeredQuestions.toLong()) {
-                    0L -> "·"
-                    in 1L..9L -> "░"
-                    in 10L..24L -> "▒"
-                    in 25L..49L -> "▓"
-                    else -> "█"
-                }
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(LayoutSpacing.card),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = "${strings.rank}: ${strings.progressRank(stats.rank)}",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+            )
+            Text(strings.rankDescription(stats.rank))
+            Text(
+                text = "${strings.xp}: ${stats.xp}",
+                fontWeight = FontWeight.SemiBold,
+            )
+            LinearProgressIndicator(
+                progress = {
+                    (stats.rankProgressPercent / 100.0)
+                        .toFloat()
+                        .coerceIn(0f, 1f)
+                },
+                modifier = Modifier.fillMaxWidth(),
+            )
+            if (nextRank != null) {
+                Text(
+                    text = "${strings.nextRank}: ${nextRank - stats.xp} XP",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
-
-    return "${stats.recentDays.first().date} → ${stats.recentDays.last().date}\n$rows"
+    }
 }
 
 @Composable

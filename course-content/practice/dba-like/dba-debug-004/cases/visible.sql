@@ -1,0 +1,1 @@
+CREATE TABLE sessions(session_id INTEGER, environment TEXT, state TEXT); INSERT INTO sessions VALUES (1,'production','active'),(2,'production','idle'),(3,'staging','idle in transaction'),(4,'production','idle in transaction');

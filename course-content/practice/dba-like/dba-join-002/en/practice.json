@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-002",
+  "category": "JOIN",
+  "title": "Databases without active sessions",
+  "description": "Return exactly one column, database_name, for every database with no active sessions. Idle sessions do not count as active. Sort by database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT d.name AS database_name\nFROM databases AS d\n",
+  "hints": [
+    "LEFT JOIN must preserve the database when no matching active session exists.",
+    "Put state = active in ON, then test for NULL on the sessions side."
+  ],
+  "solution_explanation": "Putting the state filter in ON avoids turning LEFT JOIN into INNER JOIN and preserves databases without active sessions.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    },
+    {
+      "type": "forbid_select_star"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 80
+}

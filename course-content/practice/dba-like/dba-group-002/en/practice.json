@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-group-002",
+  "category": "GROUP BY / HAVING",
+  "title": "Slow databases by query statistics",
+  "description": "For each database_name with at least three measured queries, calculate average duration_ms rounded to one decimal place. Return exactly two columns: database_name, avg_duration_ms. Keep only databases with avg_duration_ms of at least 200. Sort by avg_duration_ms DESC, then database_name ASC for ties.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT database_name, ROUND(AVG(duration_ms), 1) AS avg_duration_ms\nFROM query_stats\n",
+  "hints": [
+    "Both aggregate conditions—count and average—belong in HAVING.",
+    "You can use avg_duration_ms alias in ORDER BY."
+  ],
+  "solution_explanation": "A group passes only when it has enough observations and a sufficiently high average duration.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "having"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 50
+}

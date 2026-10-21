@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-cte-002",
+  "category": "Subquery / CTE",
+  "title": "Servers above average active-session count",
+  "description": "Count active sessions for every server, including servers with zero active sessions, and include those zero counts when calculating the average across all servers. Return exactly two columns: hostname, active_sessions only for servers whose active_sessions is strictly above that average. Use a CTE. Sort by active_sessions DESC, then hostname ASC for ties.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "WITH session_counts AS (\n    SELECT s.id, s.hostname\n    FROM servers AS s\n)\n",
+  "hints": [
+    "Count active sessions in the CTE with LEFT JOIN so zero-session servers remain.",
+    "Calculate the average from the completed counts in the CTE."
+  ],
+  "solution_explanation": "The CTE first builds a complete server/count set; the outer query compares each count with that set average.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "with"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 110
+}

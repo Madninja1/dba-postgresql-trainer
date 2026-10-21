@@ -1,0 +1,2 @@
+CREATE TABLE servers(id INTEGER, hostname TEXT); CREATE TABLE db_roles(id INTEGER, role_name TEXT); CREATE TABLE databases(id INTEGER, name TEXT, server_id INTEGER, owner_role_id INTEGER); CREATE TABLE backups(id INTEGER, database_id INTEGER, status TEXT, finished_seq INTEGER, size_mb INTEGER);
+         INSERT INTO servers VALUES (1,'pg01'); INSERT INTO db_roles VALUES (1,'owner'); INSERT INTO databases VALUES (1,'app',1,1),(2,'audit',1,1); INSERT INTO backups VALUES (1,1,'success',10,100),(2,1,'success',20,110),(3,1,'failed',30,999),(4,2,'failed',5,10);

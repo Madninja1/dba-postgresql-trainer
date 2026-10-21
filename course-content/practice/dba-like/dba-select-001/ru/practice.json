@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-select-001",
+  "category": "SELECT / WHERE / ORDER BY",
+  "title": "Долгие активные сессии production",
+  "description": "Выведите ровно три колонки: database_name, role_name, duration_seconds. В результат включайте только active-сессии production длительностью не менее 300 секунд. Сортировка: duration_seconds DESC, при равенстве database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT database_name, role_name, duration_seconds\nFROM sessions\n",
+  "hints": [
+    "Отфильтруйте одновременно state, environment и минимальную длительность.",
+    "Для стабильного результата задайте два ключа ORDER BY."
+  ],
+  "solution_explanation": "WHERE оставляет только активные production-сессии нужной длительности, а ORDER BY делает порядок результата детерминированным.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "where"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "order"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 10
+}

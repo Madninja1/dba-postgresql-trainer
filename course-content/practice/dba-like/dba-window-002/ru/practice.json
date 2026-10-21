@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-window-002",
+  "category": "Window functions",
+  "title": "Рост размера backup относительно предыдущего",
+  "description": "Рассматривайте только successful backup. Для каждого backup определите предыдущий backup той же database_name в порядке finished_seq ASC, затем id ASC, используя LAG. Выведите ровно пять колонок: database_name, backup_id, size_mb, previous_size_mb, growth_mb, где growth_mb = size_mb - previous_size_mb. В результат включайте только строки с growth_mb не меньше 100. Сортировка: database_name ASC, затем backup_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "WITH history AS (\n    SELECT database_name, id AS backup_id, size_mb\n    FROM backups\n    WHERE status = 'success'\n)\n",
+  "hints": [
+    "LAG(size_mb) должен использовать PARTITION BY database_name и порядок finished_seq, id.",
+    "Разницу удобнее фильтровать уже во внешнем запросе после вычисления previous_size_mb."
+  ],
+  "solution_explanation": "LAG связывает каждую успешную копию с предыдущей внутри той же базы; CTE позволяет затем фильтровать вычисленный рост.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "over"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "lag"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 130
+}

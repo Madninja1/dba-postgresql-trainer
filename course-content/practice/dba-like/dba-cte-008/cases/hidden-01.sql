@@ -1,0 +1,1 @@
+CREATE TABLE databases(id INTEGER, name TEXT); CREATE TABLE sessions(id INTEGER, database_id INTEGER, state TEXT); CREATE TABLE backups(id INTEGER, database_id INTEGER, status TEXT); INSERT INTO databases VALUES (1,'x'),(2,'y'); INSERT INTO sessions VALUES (1,1,'active'),(2,1,'active'),(3,1,'active'),(4,2,'active'); INSERT INTO backups VALUES (1,2,'failed');

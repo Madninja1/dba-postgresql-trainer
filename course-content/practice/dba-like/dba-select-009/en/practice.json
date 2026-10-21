@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "key": "dba-select-009",
+  "category": "SELECT / WHERE / ORDER BY",
+  "title": "Active sessions currently waiting",
+  "description": "Return active sessions lasting at least 60 seconds whose wait_event is not NULL. Return exactly four columns: session_id, database_name, duration_sec, wait_event. Sort by duration_sec DESC, then session_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT session_id, database_name, duration_sec, wait_event\nFROM sessions\n",
+  "hints": [
+    "State, minimum duration, and the presence of wait_event are all required.",
+    "NULL is tested with a dedicated SQL predicate."
+  ],
+  "solution_explanation": "A session without wait_event is not considered waiting even if it is long-running and active.",
+  "rules": [
+    {
+      "type": "forbid_select_star"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 36
+}

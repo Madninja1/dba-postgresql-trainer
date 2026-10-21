@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "key": "dba-group-007",
+  "category": "GROUP BY / HAVING",
+  "title": "Active and idle sessions per database",
+  "description": "For each database_name, calculate active_sessions and idle_sessions using conditional aggregation. Only states `active` and `idle` contribute to the counters; other states contribute to neither. Keep databases with at least one active session. Return exactly three columns: database_name, active_sessions, idle_sessions. Sort by active_sessions DESC, idle_sessions DESC, database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT database_name\nFROM sessions\nGROUP BY database_name\n",
+  "hints": [
+    "SUM(CASE WHEN ... THEN 1 ELSE 0 END) can count states separately.",
+    "The same conditional aggregate can be repeated in HAVING."
+  ],
+  "solution_explanation": "Conditional aggregation creates independent counters in one row per database.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "having"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "case"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 64
+}

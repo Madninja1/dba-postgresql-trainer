@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-select-002",
+  "category": "SELECT / WHERE / ORDER BY",
+  "title": "Базы под нагрузкой",
+  "description": "Выведите ровно четыре колонки: server_name, name, size_mb, connection_usage_percent. В результат включайте только online-базы, у которых size_mb не меньше 51200 либо connection_usage_percent не меньше 80. Сортировка: connection_usage_percent DESC, затем name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT server_name, name, size_mb, connection_usage_percent\nFROM databases\n",
+  "hints": [
+    "Условия по размеру и соединениям объединяются через OR, но status должен применяться ко всей группе.",
+    "Скобки вокруг OR здесь важны."
+  ],
+  "solution_explanation": "Скобки не дают OR обойти проверку status = online.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "where"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "order"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 20
+}

@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import dev.dbatrainer.app.PracticePane
 import dev.dbatrainer.app.TrainerController
 import dev.dbatrainer.app.UiStrings
+import dev.dbatrainer.ffi.MobilePracticeDifficulty
 import dev.dbatrainer.ffi.MobilePracticeExecutionResult
 import dev.dbatrainer.ffi.MobilePracticeRule
 import dev.dbatrainer.ffi.MobilePracticeRuleKind
@@ -161,6 +162,14 @@ fun PracticeCategoriesScreen(controller: TrainerController) {
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
+                        val xpAvailable = controller.practiceCategoryXpAvailable(category)
+                        if (xpAvailable > 0UL) {
+                            Text(
+                                text = "${strings.xpAvailable}: $xpAvailable XP",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.tertiary,
+                            )
+                        }
                     }
                 }
             }
@@ -173,6 +182,11 @@ fun PracticeTasksScreen(controller: TrainerController) {
     val strings = controller.strings
     val category = controller.selectedPracticeCategory.orEmpty()
     val tasks = controller.practiceTasksForSelectedCategory
+    val difficultyOrder = listOf(
+        MobilePracticeDifficulty.EASY,
+        MobilePracticeDifficulty.MEDIUM,
+        MobilePracticeDifficulty.HARD,
+    )
 
     PracticeScaffold(
         title = "${strings.practice} → $category",
@@ -199,41 +213,107 @@ fun PracticeTasksScreen(controller: TrainerController) {
                 )
             }
 
-            items(
-                items = tasks,
-                key = { task -> task.id },
-            ) { task ->
-                val progress = controller.practiceProgressFor(task.id)
-                val marker = when {
-                    progress?.solved == true -> "✓"
-                    progress?.started == true -> "•"
-                    else -> "○"
+            difficultyOrder.forEach { difficulty ->
+                val difficultyTasks = tasks.filter { task -> task.difficulty == difficulty }
+                if (difficultyTasks.isEmpty()) {
+                    return@forEach
                 }
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { controller.openPracticeTask(task) },
-                ) {
+
+                item(key = "difficulty-${difficulty.name}") {
+                    val solvedCount = difficultyTasks.count { task ->
+                        controller.practiceProgressFor(task.id)?.solved == true
+                    }
+                    val xpAvailable = difficultyTasks.fold(0UL) { total, task ->
+                        total + controller.practiceXpAvailable(task.id)
+                    }
                     Column(
-                        modifier = Modifier.padding(LayoutSpacing.card),
-                        verticalArrangement = Arrangement.spacedBy(6.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp),
+                        verticalArrangement = Arrangement.spacedBy(2.dp),
                     ) {
                         Text(
-                            text = "$marker ${task.title}",
-                            style = MaterialTheme.typography.titleMedium,
+                            text = strings.practiceDifficulty(difficulty),
+                            style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.SemiBold,
                         )
                         Text(
-                            text = "${strings.practiceDifficulty(task.difficulty)} · " +
-                                "${strings.practiceAttempts}: ${progress?.attempts ?: 0UL}",
+                            text = buildString {
+                                append(
+                                    "${strings.practiceSolved}: $solvedCount/${difficultyTasks.size}",
+                                )
+                                if (xpAvailable > 0UL) {
+                                    append(" · ${strings.xpAvailable}: $xpAvailable XP")
+                                }
+                            },
+                            style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
-                        Text(
-                            text = task.description,
-                            maxLines = 3,
-                            overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
+                    }
+                }
+
+                items(
+                    items = difficultyTasks,
+                    key = { task -> task.id },
+                ) { task ->
+                    val progress = controller.practiceProgressFor(task.id)
+                    val xpOpportunity = controller.practiceXpOpportunityFor(task.id)
+                    val marker = when {
+                        progress?.solved == true -> "✓"
+                        progress?.started == true -> "•"
+                        else -> "○"
+                    }
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { controller.openPracticeTask(task) },
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(LayoutSpacing.card),
+                            verticalArrangement = Arrangement.spacedBy(6.dp),
+                        ) {
+                            Text(
+                                text = "$marker ${task.title}",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                            Text(
+                                text = "${strings.practiceAttempts}: ${progress?.attempts ?: 0UL}",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                            if (xpOpportunity != null && xpOpportunity.totalAvailableXp > 0UL) {
+                                val parts = buildList {
+                                    if (xpOpportunity.solveXp > 0UL) {
+                                        add("+${xpOpportunity.solveXp} XP")
+                                    }
+                                    if (xpOpportunity.firstTryXp > 0UL) {
+                                        add(
+                                            "+${xpOpportunity.firstTryXp} XP " +
+                                                strings.practiceFirstTry.lowercase(),
+                                        )
+                                    }
+                                    if (xpOpportunity.noHintsXp > 0UL) {
+                                        add(
+                                            "+${xpOpportunity.noHintsXp} XP " +
+                                                strings.practiceNoHints.lowercase(),
+                                        )
+                                    }
+                                }
+                                Text(
+                                    text =
+                                        "${strings.xpAvailable}: ${xpOpportunity.totalAvailableXp} · " +
+                                            parts.joinToString(" · "),
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                )
+                            }
+                            Text(
+                                text = task.description,
+                                maxLines = 3,
+                                overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
                     }
                 }
             }
@@ -292,6 +372,17 @@ fun PracticeWorkbenchScreen(controller: TrainerController) {
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
+                        controller.practiceXpOpportunityFor(task.id)?.let { opportunity ->
+                            Text(
+                                text = "${strings.xpAvailable}: ${opportunity.totalAvailableXp} XP",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = if (opportunity.totalAvailableXp > 0UL) {
+                                    MaterialTheme.colorScheme.tertiary
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                },
+                            )
+                        }
                     }
                 }
             }

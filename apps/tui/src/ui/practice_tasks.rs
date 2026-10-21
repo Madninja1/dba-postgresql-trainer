@@ -39,20 +39,32 @@ pub fn render(frame: &mut Frame, app: &App) {
         .alignment(Alignment::Center)
         .block(Block::default().borders(Borders::ALL));
 
+    let mut previous_difficulty = None;
     let items = tasks
         .iter()
         .map(|task| {
             let progress = app.progress_for_practice_task(task.id);
+            let xp_available = app.practice_xp_available(task.id);
             let marker = match progress {
                 Some(progress) if progress.solved => "✓",
                 Some(progress) if progress.is_started() => "•",
                 _ => " ",
             };
             let difficulty = app.strings().practice_difficulty(task.difficulty);
+            let group_header = if previous_difficulty != Some(task.difficulty) {
+                previous_difficulty = Some(task.difficulty);
+                format!("[{difficulty}]\n")
+            } else {
+                String::new()
+            };
             let attempts = progress.map_or(0, |progress| progress.attempts);
+            let xp = if xp_available > 0 {
+                format!("  ·  {}: {xp_available} XP", app.strings().xp_available)
+            } else {
+                String::new()
+            };
             ListItem::new(format!(
-                "{marker} {:<8} {}  ·  {} {attempts}",
-                difficulty,
+                "{group_header}{marker} {}  ·  {} {attempts}{xp}",
                 task.title,
                 app.strings().practice_attempts,
             ))

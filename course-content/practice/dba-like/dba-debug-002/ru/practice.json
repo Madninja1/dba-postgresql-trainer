@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-debug-002",
+  "category": "FixQuery / FindLogicalError",
+  "title": "Лишние строки из истории backup",
+  "description": "Исправьте запрос так, чтобы он возвращал ровно одну строку на каждую базу и две колонки: database_name, finished_seq. Для базы с successful backup нужен finished_seq последнего successful backup; база без successful backup должна остаться с finished_seq = NULL. Сортировка: database_name ASC.",
+  "type": "find_logical_error",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT d.name AS database_name, b.finished_seq\nFROM databases AS d\nJOIN backups AS b ON b.database_id = d.id\nWHERE b.status = 'success'\nORDER BY d.name;\n",
+  "hints": [
+    "Нужно сначала свести несколько successful backup одной базы к одному значению.",
+    "LEFT JOIN позволит сохранить базу без successful backup; MAX(finished_seq) выберет последнюю последовательность."
+  ],
+  "solution_explanation": "LEFT JOIN сохраняет все базы, а GROUP BY + MAX схлопывает историю successful backup до одной строки на базу.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 150
+}

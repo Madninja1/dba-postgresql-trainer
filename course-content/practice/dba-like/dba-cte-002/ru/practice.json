@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-cte-002",
+  "category": "Subquery / CTE",
+  "title": "Серверы выше среднего по active-сессиям",
+  "description": "Посчитайте active-сессии для каждого сервера, включая серверы с нулём active-сессий, и используйте эти значения при вычислении среднего по всем серверам. Выведите ровно две колонки: hostname, active_sessions только для серверов, где active_sessions строго больше этого среднего. Используйте CTE. Сортировка: active_sessions DESC, при равенстве hostname ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "WITH session_counts AS (\n    SELECT s.id, s.hostname\n    FROM servers AS s\n)\n",
+  "hints": [
+    "В CTE посчитайте active-сессии через LEFT JOIN, чтобы не потерять нулевые серверы.",
+    "Среднее считайте уже по готовым count из CTE."
+  ],
+  "solution_explanation": "CTE сначала формирует полный набор серверов с count, после чего внешний запрос сравнивает каждый count со средним этого набора.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "with"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 110
+}

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-debug-009",
+  "category": "FixQuery / FindLogicalError",
+  "title": "MAX picked fields from different backup rows",
+  "description": "Fix the query. For each database_name return finished_seq and size_mb from the same row: the latest successful backup by finished_seq; when finished_seq ties, choose the larger backup_id. Databases without successful backups are omitted. Return exactly three columns: database_name, finished_seq, size_mb. Sort by database_name ASC.",
+  "type": "find_logical_error",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "SELECT database_name, MAX(finished_seq) AS finished_seq, MAX(size_mb) AS size_mb\nFROM backups\nWHERE status = 'success'\nGROUP BY database_name\nORDER BY database_name ASC;\n",
+  "hints": [
+    "MAX(finished_seq) and MAX(size_mb) are independent and may come from different rows.",
+    "First select one latest row per database, for example with ROW_NUMBER(), then return its fields."
+  ],
+  "solution_explanation": "ROW_NUMBER ranks complete rows, ensuring finished_seq and size_mb come from the same selected backup.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "row_number"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "over"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 157
+}

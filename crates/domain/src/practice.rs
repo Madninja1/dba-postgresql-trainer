@@ -60,6 +60,7 @@ pub struct PracticeTask {
     pub difficulty: PracticeDifficulty,
     pub starter_sql: String,
     pub setup_sql: String,
+    pub hidden_case_sql: Vec<String>,
     pub solution_sql: String,
     pub solution_explanation: Option<String>,
     pub hints: Vec<String>,
@@ -142,6 +143,7 @@ pub struct PracticeTaskProgress {
     pub task_id: i64,
     pub last_sql: String,
     pub attempts: usize,
+    pub hints_revealed: usize,
     pub solved: bool,
     pub solved_attempt: Option<usize>,
     pub updated_at: String,
@@ -149,7 +151,7 @@ pub struct PracticeTaskProgress {
 
 impl PracticeTaskProgress {
     pub fn is_started(&self) -> bool {
-        self.attempts > 0 || !self.last_sql.trim().is_empty()
+        self.attempts > 0 || self.hints_revealed > 0 || !self.last_sql.trim().is_empty()
     }
 }
 

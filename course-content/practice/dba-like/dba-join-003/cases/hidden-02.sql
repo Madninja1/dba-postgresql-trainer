@@ -1,0 +1,2 @@
+CREATE TABLE databases (id INTEGER PRIMARY KEY, name TEXT NOT NULL); CREATE TABLE backups (id INTEGER PRIMARY KEY, database_id INTEGER NOT NULL, status TEXT NOT NULL, finished_seq INTEGER NOT NULL);
+INSERT INTO databases VALUES (1,'empty'),(2,'one'); INSERT INTO backups VALUES (1,2,'success',1);

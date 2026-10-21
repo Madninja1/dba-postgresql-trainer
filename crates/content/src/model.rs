@@ -192,4 +192,5 @@ pub struct PracticeBundle {
     pub practice: PracticeDocument,
     pub setup_sql: String,
     pub solution_sql: String,
+    pub hidden_case_sql: Vec<String>,
 }

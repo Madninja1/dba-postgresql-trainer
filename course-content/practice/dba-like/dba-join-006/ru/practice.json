@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-006",
+  "category": "JOIN",
+  "title": "Backup и имя базы",
+  "description": "Выведите только successful backup вместе с именем базы. Ровно три колонки: backup_id, database_name, size_mb. Сортировка: backup_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT b.id AS backup_id, d.name AS database_name, b.size_mb\nFROM backups AS b\n",
+  "hints": [
+    "Соедините backup с databases по database_id.",
+    "status относится к таблице backups."
+  ],
+  "solution_explanation": "Фильтрация после корректного JOIN оставляет только успешные backup.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 93
+}

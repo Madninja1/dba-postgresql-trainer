@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "key": "dba-select-007",
+  "category": "SELECT / WHERE / ORDER BY",
+  "title": "Login roles with expired validity",
+  "description": "The current checkpoint is 100. Return only roles with can_login = 1 and a non-NULL valid_until_seq below 100. Return exactly two columns: role_name, valid_until_seq. NULL means no expiration and must be excluded. Sort by valid_until_seq ASC, then role_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT role_name, valid_until_seq\nFROM db_roles\n",
+  "hints": [
+    "Comparison with 100 already excludes NULL, but can_login is still a separate condition.",
+    "Roles with the earlier validity checkpoint come first."
+  ],
+  "solution_explanation": "A NOLOGIN role or a role without an expiration is not an expired login role.",
+  "rules": [
+    {
+      "type": "forbid_select_star"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 34
+}

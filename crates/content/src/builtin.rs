@@ -2,7 +2,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use crate::{
     ContentBundle, ContentError, LabBundle, PracticeBundle, QuestionDocument, load_bundle,
-    load_lab, load_practice,
+    load_lab, load_practice_with_cases,
 };
 
 include!(concat!(env!("OUT_DIR"), "/builtin_registry.rs"));
@@ -228,14 +228,13 @@ fn load_all_localized_practice() -> Result<Vec<LocalizedPractice>, ContentError>
     BUILTIN_PRACTICE_DOCUMENTS
         .iter()
         .map(
-            |(practice_key, locale, practice_json, setup_sql, solution_sql)| {
-                load_practice(practice_json, setup_sql, solution_sql).map(|bundle| {
-                    LocalizedPractice {
+            |(practice_key, locale, practice_json, setup_sql, solution_sql, hidden_case_sql)| {
+                load_practice_with_cases(practice_json, setup_sql, solution_sql, hidden_case_sql)
+                    .map(|bundle| LocalizedPractice {
                         practice_key,
                         locale,
                         bundle,
-                    }
-                })
+                    })
             },
         )
         .collect()
@@ -285,9 +284,10 @@ fn validate_localized_practice_compatibility(
                 || reference.bundle.practice.sort_order != candidate.bundle.practice.sort_order
                 || reference.bundle.setup_sql != candidate.bundle.setup_sql
                 || reference.bundle.solution_sql != candidate.bundle.solution_sql
+                || reference.bundle.hidden_case_sql != candidate.bundle.hidden_case_sql
             {
                 errors.push(format!(
-                    "localized practice '{practice_key}' must keep key, category, type, comparison, difficulty, rules, assertions, sort_order, setup.sql and solution.sql compatible in '{}' and '{}'",
+                    "localized practice '{practice_key}' must keep key, category, type, comparison, difficulty, rules, assertions, sort_order, setup.sql, solution.sql and hidden cases compatible in '{}' and '{}'",
                     reference.locale, candidate.locale
                 ));
             }
@@ -580,13 +580,14 @@ mod tests {
 
         let task = practice
             .iter()
-            .find(|bundle| bundle.practice.key == "sql-clients-without-orders")
-            .expect("demo practice task should exist");
+            .find(|bundle| bundle.practice.key == "dba-join-002")
+            .expect("DBA-like practice task should exist");
 
-        assert_eq!(task.practice.category, "joins");
-        assert!(task.practice.title.contains("Клиенты"));
+        assert_eq!(task.practice.category, "JOIN");
+        assert!(task.practice.title.contains("активных сессий"));
         assert!(!task.setup_sql.trim().is_empty());
         assert!(!task.solution_sql.trim().is_empty());
+        assert_eq!(task.hidden_case_sql.len(), 2);
     }
 
     #[test]

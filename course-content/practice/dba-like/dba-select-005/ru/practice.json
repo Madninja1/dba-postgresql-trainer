@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "key": "dba-select-005",
+  "category": "SELECT / WHERE / ORDER BY",
+  "title": "Реплики с заметным отставанием",
+  "description": "Найдите только реплики в состоянии streaming с lag_seconds не меньше 30. Ровно три колонки: replica_name, database_name, lag_seconds. Сортировка: lag_seconds DESC, затем replica_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT replica_name, database_name, lag_seconds\nFROM replicas\n",
+  "hints": [
+    "Состояние реплики и величина lag — два обязательных условия.",
+    "Сначала сортируйте по lag, имя используйте как tie-breaker."
+  ],
+  "solution_explanation": "Фильтр не должен включать stopped/catching_up реплики даже при большом lag.",
+  "rules": [
+    {
+      "type": "forbid_select_star"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 32
+}

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-cte-005",
+  "category": "Subquery / CTE",
+  "title": "Последний backup через CTE",
+  "description": "Используйте CTE, чтобы получить максимальный finished_seq для каждой database_id среди всех backup. Затем верните соответствующие строки backup. Если несколько backup одной базы имеют одинаковый максимальный finished_seq, верните их все. Ровно три колонки: database_name, finished_seq, status. Сортировка: database_name ASC, затем status ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "WITH latest AS (\n  SELECT database_id, MAX(finished_seq) AS finished_seq\n  FROM backups\n  GROUP BY database_id\n)\nSELECT\n",
+  "hints": [
+    "CTE хранит пару database_id + max finished_seq.",
+    "Затем нужно соединить latest одновременно с backups и databases."
+  ],
+  "solution_explanation": "CTE выделяет последний timestamp/sequence, а JOIN возвращает остальные поля исходной строки.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "with"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 113
+}

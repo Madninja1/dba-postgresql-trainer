@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-debug-001",
+  "category": "FixQuery / FindLogicalError",
+  "title": "LEFT JOIN dropped databases",
+  "description": "Fix the query so the result contains exactly two columns: database_name and state. Every database must remain in the result; each matching active session should produce a row with state = active, while a database with no active sessions must appear with state = NULL. Sort by database_name ASC.",
+  "type": "fix_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT d.name AS database_name, s.state\nFROM databases AS d\nLEFT JOIN sessions AS s ON s.database_id = d.id\nWHERE s.state = 'active'\nORDER BY d.name;\n",
+  "hints": [
+    "Check whether the right-table condition is in WHERE.",
+    "Make the active condition part of ON."
+  ],
+  "solution_explanation": "WHERE on s.state removed NULL-extended rows after LEFT JOIN. Moving it into ON preserves every database.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 140
+}

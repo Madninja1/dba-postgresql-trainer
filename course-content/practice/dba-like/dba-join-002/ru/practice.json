@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-002",
+  "category": "JOIN",
+  "title": "Базы без активных сессий",
+  "description": "Выведите ровно одну колонку database_name для всех баз, у которых нет ни одной active-сессии. Idle-сессии активными не считаются. Сортировка: database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT d.name AS database_name\nFROM databases AS d\n",
+  "hints": [
+    "LEFT JOIN должен сохранять базу даже если подходящей active-сессии нет.",
+    "Условие state = active поместите в ON, затем ищите NULL со стороны sessions."
+  ],
+  "solution_explanation": "Фильтр state в ON не превращает LEFT JOIN в INNER JOIN и корректно сохраняет базы без active-сессий.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    },
+    {
+      "type": "forbid_select_star"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 80
+}

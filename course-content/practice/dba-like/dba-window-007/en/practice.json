@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-window-007",
+  "category": "Window functions",
+  "title": "Large gaps between successful backups",
+  "description": "Consider only successful backups. For each database_name derive previous_finished_seq with LAG ordered by finished_seq ASC, backup_id ASC and gap_seq = finished_seq - previous_finished_seq. Return only rows where gap_seq is at least 10. Return exactly five columns: backup_id, database_name, finished_seq, previous_finished_seq, gap_seq. Final sort: gap_seq DESC, database_name ASC, backup_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "WITH gaps AS (\n  SELECT backup_id, database_name, finished_seq\n  FROM backups\n)\nSELECT\n",
+  "hints": [
+    "A window function cannot be filtered in the WHERE of the same SELECT; use a CTE or subquery.",
+    "Failed backups must not affect previous_finished_seq."
+  ],
+  "solution_explanation": "The window first builds the successful-backup sequence, then the outer query filters the derived gap.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "lag"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "over"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 135
+}

@@ -27,8 +27,14 @@ pub fn render(frame: &mut Frame, app: &App) {
     let rank = app
         .activity_stats
         .as_ref()
-        .map(|stats| app.strings().progress_level(stats.level()))
-        .unwrap_or("—");
+        .map(|stats| {
+            format!(
+                "{} · {} XP",
+                app.strings().progress_rank(stats.rank()),
+                stats.xp,
+            )
+        })
+        .unwrap_or_else(|| String::from("—"));
 
     let rank = Paragraph::new(format!("{}: {rank}", app.strings().rank))
         .alignment(Alignment::Center)

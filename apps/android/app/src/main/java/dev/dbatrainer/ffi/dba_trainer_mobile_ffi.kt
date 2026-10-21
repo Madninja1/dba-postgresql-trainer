@@ -705,6 +705,8 @@ internal object IntegrityCheckingUniffiLib {
     ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_progress(
     ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_record_hint(
+    ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_reset(
     ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_save_draft(
@@ -797,6 +799,8 @@ internal object UniffiLib {
     ): RustBuffer.ByValue
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_progress(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_record_hint(`ptr`: Long,`taskId`: Long,uniffi_out_err: UniffiRustCallStatus, 
+    ): Unit
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_reset(`ptr`: Long,`taskId`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_save_draft(`ptr`: Long,`taskId`: Long,`sql`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
@@ -1000,6 +1004,9 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_progress() and 0xFFFF) != 6583) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_record_hint() and 0xFFFF) != 51920) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_practice_reset() and 0xFFFF) != 4151) {
@@ -1493,6 +1500,8 @@ public interface MobileTrainerInterface {
     
     fun `practiceProgress`(): List<MobilePracticeTaskProgress>
     
+    fun `practiceRecordHint`(`taskId`: kotlin.Long)
+    
     fun `practiceReset`(`taskId`: kotlin.Long): MobilePracticeSchema
     
     fun `practiceSaveDraft`(`taskId`: kotlin.Long, `sql`: kotlin.String)
@@ -1818,6 +1827,20 @@ open class MobileTrainer: Disposable, AutoCloseable, MobileTrainerInterface
     }
     )
     }
+    
+
+    
+    @Throws(MobileException::class)override fun `practiceRecordHint`(`taskId`: kotlin.Long)
+        = 
+    callWithHandle {
+    uniffiRustCallWithError(MobileException) { _status ->
+    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_practice_record_hint(
+        it,
+        
+        FfiConverterLong.lower(`taskId`),_status)
+}
+    }
+    
     
 
     
@@ -2166,6 +2189,59 @@ public object FfiConverterTypeMobileTrainer: FfiConverter<MobileTrainer, Long> {
 
 
 
+data class MobileAchievementProgress (
+    val `kind`: MobileAchievementKind
+    , 
+    val `rarity`: MobileAchievementRarity
+    , 
+    val `unlocked`: kotlin.Boolean
+    , 
+    val `current`: kotlin.ULong
+    , 
+    val `target`: kotlin.ULong
+    
+){
+    
+
+    
+
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobileAchievementProgress: FfiConverterRustBuffer<MobileAchievementProgress> {
+    override fun read(buf: ByteBuffer): MobileAchievementProgress {
+        return MobileAchievementProgress(
+            FfiConverterTypeMobileAchievementKind.read(buf),
+            FfiConverterTypeMobileAchievementRarity.read(buf),
+            FfiConverterBoolean.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: MobileAchievementProgress) = (
+            FfiConverterTypeMobileAchievementKind.allocationSize(value.`kind`) +
+            FfiConverterTypeMobileAchievementRarity.allocationSize(value.`rarity`) +
+            FfiConverterBoolean.allocationSize(value.`unlocked`) +
+            FfiConverterULong.allocationSize(value.`current`) +
+            FfiConverterULong.allocationSize(value.`target`)
+    )
+
+    override fun write(value: MobileAchievementProgress, buf: ByteBuffer) {
+            FfiConverterTypeMobileAchievementKind.write(value.`kind`, buf)
+            FfiConverterTypeMobileAchievementRarity.write(value.`rarity`, buf)
+            FfiConverterBoolean.write(value.`unlocked`, buf)
+            FfiConverterULong.write(value.`current`, buf)
+            FfiConverterULong.write(value.`target`, buf)
+    }
+}
+
+
+
 data class MobileActivityStats (
     val `activeDays`: kotlin.ULong
     , 
@@ -2191,11 +2267,37 @@ data class MobileActivityStats (
     , 
     val `overallMasteryPercent`: kotlin.Double
     , 
-    val `level`: MobileProgressLevel
+    val `xp`: kotlin.ULong
+    , 
+    val `rank`: MobileProgressRank
+    , 
+    val `rankMinXp`: kotlin.ULong
+    , 
+    val `nextRankXp`: kotlin.ULong?
+    , 
+    val `rankProgressPercent`: kotlin.Double
+    , 
+    val `lastActivityDate`: kotlin.String?
+    , 
+    val `daysSinceLastActivity`: kotlin.ULong?
     , 
     val `recentDays`: List<MobileDailyActivity>
     , 
     val `courseProgress`: List<MobileCourseProgress>
+    , 
+    val `achievements`: List<MobileAchievementProgress>
+    , 
+    val `rankDefinitions`: List<MobileRankDefinition>
+    , 
+    val `xpRules`: List<MobileXpRule>
+    , 
+    val `xpOpportunitySummary`: MobileXpOpportunitySummary
+    , 
+    val `questionXpAvailableIds`: List<kotlin.Long>
+    , 
+    val `quizXpOpportunities`: List<MobileQuizXpOpportunity>
+    , 
+    val `practiceXpOpportunities`: List<MobilePracticeXpOpportunity>
     
 ){
     
@@ -2224,9 +2326,22 @@ public object FfiConverterTypeMobileActivityStats: FfiConverterRustBuffer<Mobile
             FfiConverterULong.read(buf),
             FfiConverterULong.read(buf),
             FfiConverterDouble.read(buf),
-            FfiConverterTypeMobileProgressLevel.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterTypeMobileProgressRank.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterOptionalULong.read(buf),
+            FfiConverterDouble.read(buf),
+            FfiConverterOptionalString.read(buf),
+            FfiConverterOptionalULong.read(buf),
             FfiConverterSequenceTypeMobileDailyActivity.read(buf),
             FfiConverterSequenceTypeMobileCourseProgress.read(buf),
+            FfiConverterSequenceTypeMobileAchievementProgress.read(buf),
+            FfiConverterSequenceTypeMobileRankDefinition.read(buf),
+            FfiConverterSequenceTypeMobileXpRule.read(buf),
+            FfiConverterTypeMobileXpOpportunitySummary.read(buf),
+            FfiConverterSequenceLong.read(buf),
+            FfiConverterSequenceTypeMobileQuizXpOpportunity.read(buf),
+            FfiConverterSequenceTypeMobilePracticeXpOpportunity.read(buf),
         )
     }
 
@@ -2243,9 +2358,22 @@ public object FfiConverterTypeMobileActivityStats: FfiConverterRustBuffer<Mobile
             FfiConverterULong.allocationSize(value.`passedTopics`) +
             FfiConverterULong.allocationSize(value.`totalTopics`) +
             FfiConverterDouble.allocationSize(value.`overallMasteryPercent`) +
-            FfiConverterTypeMobileProgressLevel.allocationSize(value.`level`) +
+            FfiConverterULong.allocationSize(value.`xp`) +
+            FfiConverterTypeMobileProgressRank.allocationSize(value.`rank`) +
+            FfiConverterULong.allocationSize(value.`rankMinXp`) +
+            FfiConverterOptionalULong.allocationSize(value.`nextRankXp`) +
+            FfiConverterDouble.allocationSize(value.`rankProgressPercent`) +
+            FfiConverterOptionalString.allocationSize(value.`lastActivityDate`) +
+            FfiConverterOptionalULong.allocationSize(value.`daysSinceLastActivity`) +
             FfiConverterSequenceTypeMobileDailyActivity.allocationSize(value.`recentDays`) +
-            FfiConverterSequenceTypeMobileCourseProgress.allocationSize(value.`courseProgress`)
+            FfiConverterSequenceTypeMobileCourseProgress.allocationSize(value.`courseProgress`) +
+            FfiConverterSequenceTypeMobileAchievementProgress.allocationSize(value.`achievements`) +
+            FfiConverterSequenceTypeMobileRankDefinition.allocationSize(value.`rankDefinitions`) +
+            FfiConverterSequenceTypeMobileXpRule.allocationSize(value.`xpRules`) +
+            FfiConverterTypeMobileXpOpportunitySummary.allocationSize(value.`xpOpportunitySummary`) +
+            FfiConverterSequenceLong.allocationSize(value.`questionXpAvailableIds`) +
+            FfiConverterSequenceTypeMobileQuizXpOpportunity.allocationSize(value.`quizXpOpportunities`) +
+            FfiConverterSequenceTypeMobilePracticeXpOpportunity.allocationSize(value.`practiceXpOpportunities`)
     )
 
     override fun write(value: MobileActivityStats, buf: ByteBuffer) {
@@ -2261,9 +2389,22 @@ public object FfiConverterTypeMobileActivityStats: FfiConverterRustBuffer<Mobile
             FfiConverterULong.write(value.`passedTopics`, buf)
             FfiConverterULong.write(value.`totalTopics`, buf)
             FfiConverterDouble.write(value.`overallMasteryPercent`, buf)
-            FfiConverterTypeMobileProgressLevel.write(value.`level`, buf)
+            FfiConverterULong.write(value.`xp`, buf)
+            FfiConverterTypeMobileProgressRank.write(value.`rank`, buf)
+            FfiConverterULong.write(value.`rankMinXp`, buf)
+            FfiConverterOptionalULong.write(value.`nextRankXp`, buf)
+            FfiConverterDouble.write(value.`rankProgressPercent`, buf)
+            FfiConverterOptionalString.write(value.`lastActivityDate`, buf)
+            FfiConverterOptionalULong.write(value.`daysSinceLastActivity`, buf)
             FfiConverterSequenceTypeMobileDailyActivity.write(value.`recentDays`, buf)
             FfiConverterSequenceTypeMobileCourseProgress.write(value.`courseProgress`, buf)
+            FfiConverterSequenceTypeMobileAchievementProgress.write(value.`achievements`, buf)
+            FfiConverterSequenceTypeMobileRankDefinition.write(value.`rankDefinitions`, buf)
+            FfiConverterSequenceTypeMobileXpRule.write(value.`xpRules`, buf)
+            FfiConverterTypeMobileXpOpportunitySummary.write(value.`xpOpportunitySummary`, buf)
+            FfiConverterSequenceLong.write(value.`questionXpAvailableIds`, buf)
+            FfiConverterSequenceTypeMobileQuizXpOpportunity.write(value.`quizXpOpportunities`, buf)
+            FfiConverterSequenceTypeMobilePracticeXpOpportunity.write(value.`practiceXpOpportunities`, buf)
     }
 }
 
@@ -2418,6 +2559,10 @@ data class MobileDailyActivity (
     val `correctAnswers`: kotlin.ULong
     , 
     val `completedSessions`: kotlin.ULong
+    , 
+    val `practiceAttempts`: kotlin.ULong
+    , 
+    val `practiceSolved`: kotlin.ULong
     
 ){
     
@@ -2439,6 +2584,8 @@ public object FfiConverterTypeMobileDailyActivity: FfiConverterRustBuffer<Mobile
             FfiConverterULong.read(buf),
             FfiConverterULong.read(buf),
             FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
         )
     }
 
@@ -2447,7 +2594,9 @@ public object FfiConverterTypeMobileDailyActivity: FfiConverterRustBuffer<Mobile
             FfiConverterULong.allocationSize(value.`openCount`) +
             FfiConverterULong.allocationSize(value.`answeredQuestions`) +
             FfiConverterULong.allocationSize(value.`correctAnswers`) +
-            FfiConverterULong.allocationSize(value.`completedSessions`)
+            FfiConverterULong.allocationSize(value.`completedSessions`) +
+            FfiConverterULong.allocationSize(value.`practiceAttempts`) +
+            FfiConverterULong.allocationSize(value.`practiceSolved`)
     )
 
     override fun write(value: MobileDailyActivity, buf: ByteBuffer) {
@@ -2456,6 +2605,8 @@ public object FfiConverterTypeMobileDailyActivity: FfiConverterRustBuffer<Mobile
             FfiConverterULong.write(value.`answeredQuestions`, buf)
             FfiConverterULong.write(value.`correctAnswers`, buf)
             FfiConverterULong.write(value.`completedSessions`, buf)
+            FfiConverterULong.write(value.`practiceAttempts`, buf)
+            FfiConverterULong.write(value.`practiceSolved`, buf)
     }
 }
 
@@ -3079,6 +3230,8 @@ data class MobilePracticeTaskProgress (
     , 
     val `attempts`: kotlin.ULong
     , 
+    val `hintsRevealed`: kotlin.ULong
+    , 
     val `solved`: kotlin.Boolean
     , 
     val `solvedAttempt`: kotlin.ULong?
@@ -3105,6 +3258,7 @@ public object FfiConverterTypeMobilePracticeTaskProgress: FfiConverterRustBuffer
             FfiConverterLong.read(buf),
             FfiConverterString.read(buf),
             FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
             FfiConverterBoolean.read(buf),
             FfiConverterOptionalULong.read(buf),
             FfiConverterString.read(buf),
@@ -3116,6 +3270,7 @@ public object FfiConverterTypeMobilePracticeTaskProgress: FfiConverterRustBuffer
             FfiConverterLong.allocationSize(value.`taskId`) +
             FfiConverterString.allocationSize(value.`lastSql`) +
             FfiConverterULong.allocationSize(value.`attempts`) +
+            FfiConverterULong.allocationSize(value.`hintsRevealed`) +
             FfiConverterBoolean.allocationSize(value.`solved`) +
             FfiConverterOptionalULong.allocationSize(value.`solvedAttempt`) +
             FfiConverterString.allocationSize(value.`updatedAt`) +
@@ -3126,10 +3281,64 @@ public object FfiConverterTypeMobilePracticeTaskProgress: FfiConverterRustBuffer
             FfiConverterLong.write(value.`taskId`, buf)
             FfiConverterString.write(value.`lastSql`, buf)
             FfiConverterULong.write(value.`attempts`, buf)
+            FfiConverterULong.write(value.`hintsRevealed`, buf)
             FfiConverterBoolean.write(value.`solved`, buf)
             FfiConverterOptionalULong.write(value.`solvedAttempt`, buf)
             FfiConverterString.write(value.`updatedAt`, buf)
             FfiConverterBoolean.write(value.`started`, buf)
+    }
+}
+
+
+
+data class MobilePracticeXpOpportunity (
+    val `taskId`: kotlin.Long
+    , 
+    val `solveXp`: kotlin.ULong
+    , 
+    val `firstTryXp`: kotlin.ULong
+    , 
+    val `noHintsXp`: kotlin.ULong
+    , 
+    val `totalAvailableXp`: kotlin.ULong
+    
+){
+    
+
+    
+
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobilePracticeXpOpportunity: FfiConverterRustBuffer<MobilePracticeXpOpportunity> {
+    override fun read(buf: ByteBuffer): MobilePracticeXpOpportunity {
+        return MobilePracticeXpOpportunity(
+            FfiConverterLong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: MobilePracticeXpOpportunity) = (
+            FfiConverterLong.allocationSize(value.`taskId`) +
+            FfiConverterULong.allocationSize(value.`solveXp`) +
+            FfiConverterULong.allocationSize(value.`firstTryXp`) +
+            FfiConverterULong.allocationSize(value.`noHintsXp`) +
+            FfiConverterULong.allocationSize(value.`totalAvailableXp`)
+    )
+
+    override fun write(value: MobilePracticeXpOpportunity, buf: ByteBuffer) {
+            FfiConverterLong.write(value.`taskId`, buf)
+            FfiConverterULong.write(value.`solveXp`, buf)
+            FfiConverterULong.write(value.`firstTryXp`, buf)
+            FfiConverterULong.write(value.`noHintsXp`, buf)
+            FfiConverterULong.write(value.`totalAvailableXp`, buf)
     }
 }
 
@@ -3400,6 +3609,122 @@ public object FfiConverterTypeMobileQuizSession: FfiConverterRustBuffer<MobileQu
             FfiConverterLong.write(value.`id`, buf)
             FfiConverterULong.write(value.`currentIndex`, buf)
             FfiConverterULong.write(value.`totalQuestions`, buf)
+    }
+}
+
+
+
+data class MobileQuizXpOpportunity (
+    val `scopeKind`: MobileQuizXpScopeKind
+    , 
+    val `topicId`: kotlin.Long?
+    , 
+    val `courseCode`: kotlin.String?
+    , 
+    val `uniqueQuestionXp`: kotlin.ULong
+    , 
+    val `twentyBonusXp`: kotlin.ULong
+    , 
+    val `fiftyBonusXp`: kotlin.ULong
+    , 
+    val `allBonusXp`: kotlin.ULong
+    , 
+    val `masteryXp`: kotlin.ULong
+    , 
+    val `courseCompletionXp`: kotlin.ULong
+    , 
+    val `totalAvailableXp`: kotlin.ULong
+    
+){
+    
+
+    
+
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobileQuizXpOpportunity: FfiConverterRustBuffer<MobileQuizXpOpportunity> {
+    override fun read(buf: ByteBuffer): MobileQuizXpOpportunity {
+        return MobileQuizXpOpportunity(
+            FfiConverterTypeMobileQuizXpScopeKind.read(buf),
+            FfiConverterOptionalLong.read(buf),
+            FfiConverterOptionalString.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: MobileQuizXpOpportunity) = (
+            FfiConverterTypeMobileQuizXpScopeKind.allocationSize(value.`scopeKind`) +
+            FfiConverterOptionalLong.allocationSize(value.`topicId`) +
+            FfiConverterOptionalString.allocationSize(value.`courseCode`) +
+            FfiConverterULong.allocationSize(value.`uniqueQuestionXp`) +
+            FfiConverterULong.allocationSize(value.`twentyBonusXp`) +
+            FfiConverterULong.allocationSize(value.`fiftyBonusXp`) +
+            FfiConverterULong.allocationSize(value.`allBonusXp`) +
+            FfiConverterULong.allocationSize(value.`masteryXp`) +
+            FfiConverterULong.allocationSize(value.`courseCompletionXp`) +
+            FfiConverterULong.allocationSize(value.`totalAvailableXp`)
+    )
+
+    override fun write(value: MobileQuizXpOpportunity, buf: ByteBuffer) {
+            FfiConverterTypeMobileQuizXpScopeKind.write(value.`scopeKind`, buf)
+            FfiConverterOptionalLong.write(value.`topicId`, buf)
+            FfiConverterOptionalString.write(value.`courseCode`, buf)
+            FfiConverterULong.write(value.`uniqueQuestionXp`, buf)
+            FfiConverterULong.write(value.`twentyBonusXp`, buf)
+            FfiConverterULong.write(value.`fiftyBonusXp`, buf)
+            FfiConverterULong.write(value.`allBonusXp`, buf)
+            FfiConverterULong.write(value.`masteryXp`, buf)
+            FfiConverterULong.write(value.`courseCompletionXp`, buf)
+            FfiConverterULong.write(value.`totalAvailableXp`, buf)
+    }
+}
+
+
+
+data class MobileRankDefinition (
+    val `rank`: MobileProgressRank
+    , 
+    val `minimumXp`: kotlin.ULong
+    
+){
+    
+
+    
+
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobileRankDefinition: FfiConverterRustBuffer<MobileRankDefinition> {
+    override fun read(buf: ByteBuffer): MobileRankDefinition {
+        return MobileRankDefinition(
+            FfiConverterTypeMobileProgressRank.read(buf),
+            FfiConverterULong.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: MobileRankDefinition) = (
+            FfiConverterTypeMobileProgressRank.allocationSize(value.`rank`) +
+            FfiConverterULong.allocationSize(value.`minimumXp`)
+    )
+
+    override fun write(value: MobileRankDefinition, buf: ByteBuffer) {
+            FfiConverterTypeMobileProgressRank.write(value.`rank`, buf)
+            FfiConverterULong.write(value.`minimumXp`, buf)
     }
 }
 
@@ -3710,6 +4035,181 @@ public object FfiConverterTypeMobileTrainingStats: FfiConverterRustBuffer<Mobile
 
 
 
+data class MobileXpOpportunitySummary (
+    val `questionXp`: kotlin.ULong
+    , 
+    val `quizXp`: kotlin.ULong
+    , 
+    val `masteryXp`: kotlin.ULong
+    , 
+    val `courseXp`: kotlin.ULong
+    , 
+    val `practiceXp`: kotlin.ULong
+    , 
+    val `totalAvailableXp`: kotlin.ULong
+    
+){
+    
+
+    
+
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobileXpOpportunitySummary: FfiConverterRustBuffer<MobileXpOpportunitySummary> {
+    override fun read(buf: ByteBuffer): MobileXpOpportunitySummary {
+        return MobileXpOpportunitySummary(
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: MobileXpOpportunitySummary) = (
+            FfiConverterULong.allocationSize(value.`questionXp`) +
+            FfiConverterULong.allocationSize(value.`quizXp`) +
+            FfiConverterULong.allocationSize(value.`masteryXp`) +
+            FfiConverterULong.allocationSize(value.`courseXp`) +
+            FfiConverterULong.allocationSize(value.`practiceXp`) +
+            FfiConverterULong.allocationSize(value.`totalAvailableXp`)
+    )
+
+    override fun write(value: MobileXpOpportunitySummary, buf: ByteBuffer) {
+            FfiConverterULong.write(value.`questionXp`, buf)
+            FfiConverterULong.write(value.`quizXp`, buf)
+            FfiConverterULong.write(value.`masteryXp`, buf)
+            FfiConverterULong.write(value.`courseXp`, buf)
+            FfiConverterULong.write(value.`practiceXp`, buf)
+            FfiConverterULong.write(value.`totalAvailableXp`, buf)
+    }
+}
+
+
+
+data class MobileXpRule (
+    val `source`: MobileXpSource
+    , 
+    val `points`: kotlin.ULong
+    
+){
+    
+
+    
+
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobileXpRule: FfiConverterRustBuffer<MobileXpRule> {
+    override fun read(buf: ByteBuffer): MobileXpRule {
+        return MobileXpRule(
+            FfiConverterTypeMobileXpSource.read(buf),
+            FfiConverterULong.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: MobileXpRule) = (
+            FfiConverterTypeMobileXpSource.allocationSize(value.`source`) +
+            FfiConverterULong.allocationSize(value.`points`)
+    )
+
+    override fun write(value: MobileXpRule, buf: ByteBuffer) {
+            FfiConverterTypeMobileXpSource.write(value.`source`, buf)
+            FfiConverterULong.write(value.`points`, buf)
+    }
+}
+
+
+
+
+enum class MobileAchievementKind {
+    
+    FIRST_ANSWER,
+    HUNDRED_ANSWERS,
+    PERFECT_TWENTY,
+    QUIZ_VETERAN,
+    FIRST_SQL,
+    ONE_SHOT,
+    QUERY_NINJA,
+    SEVEN_DAY_STREAK,
+    THIRTY_DAY_STREAK,
+    COURSE_MASTER,
+    MAD_NINJA;
+
+    
+
+
+    companion object
+}
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobileAchievementKind: FfiConverterRustBuffer<MobileAchievementKind> {
+    override fun read(buf: ByteBuffer) = try {
+        MobileAchievementKind.values()[buf.getInt() - 1]
+    } catch (e: IndexOutOfBoundsException) {
+        throw RuntimeException("invalid enum value, something is very wrong!!", e)
+    }
+
+    override fun allocationSize(value: MobileAchievementKind) = 4UL
+
+    override fun write(value: MobileAchievementKind, buf: ByteBuffer) {
+        buf.putInt(value.ordinal + 1)
+    }
+}
+
+
+
+
+
+
+enum class MobileAchievementRarity {
+    
+    COMMON,
+    RARE,
+    EPIC,
+    LEGENDARY;
+
+    
+
+
+    companion object
+}
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobileAchievementRarity: FfiConverterRustBuffer<MobileAchievementRarity> {
+    override fun read(buf: ByteBuffer) = try {
+        MobileAchievementRarity.values()[buf.getInt() - 1]
+    } catch (e: IndexOutOfBoundsException) {
+        throw RuntimeException("invalid enum value, something is very wrong!!", e)
+    }
+
+    override fun allocationSize(value: MobileAchievementRarity) = 4UL
+
+    override fun write(value: MobileAchievementRarity, buf: ByteBuffer) {
+        buf.putInt(value.ordinal + 1)
+    }
+}
+
+
+
+
+
 
 
 sealed class MobileException: kotlin.Exception() {
@@ -3878,16 +4378,16 @@ public object FfiConverterTypeMobilePracticeRuleKind: FfiConverterRustBuffer<Mob
 
 
 
-enum class MobileProgressLevel {
+enum class MobileProgressRank {
     
-    COLD_START,
-    QUERY_RUNNER,
-    WARM_CACHE,
-    BACKEND_TAMER,
-    WAL_KEEPER,
-    INCIDENT_HANDLER,
-    DBA_ONE_MASTER,
-    PRODUCTION_SURVIVOR;
+    INIT,
+    PSQL_TRAINEE,
+    QUERY_ADEPT,
+    SCHEMA_KEEPER,
+    PLAN_READER,
+    WAL_OPERATOR,
+    POSTGRES_GUARDIAN,
+    MAD_NINJA_DBA;
 
     
 
@@ -3899,16 +4399,16 @@ enum class MobileProgressLevel {
 /**
  * @suppress
  */
-public object FfiConverterTypeMobileProgressLevel: FfiConverterRustBuffer<MobileProgressLevel> {
+public object FfiConverterTypeMobileProgressRank: FfiConverterRustBuffer<MobileProgressRank> {
     override fun read(buf: ByteBuffer) = try {
-        MobileProgressLevel.values()[buf.getInt() - 1]
+        MobileProgressRank.values()[buf.getInt() - 1]
     } catch (e: IndexOutOfBoundsException) {
         throw RuntimeException("invalid enum value, something is very wrong!!", e)
     }
 
-    override fun allocationSize(value: MobileProgressLevel) = 4UL
+    override fun allocationSize(value: MobileProgressRank) = 4UL
 
-    override fun write(value: MobileProgressLevel, buf: ByteBuffer) {
+    override fun write(value: MobileProgressRank, buf: ByteBuffer) {
         buf.putInt(value.ordinal + 1)
     }
 }
@@ -3987,6 +4487,41 @@ public object FfiConverterTypeMobileQuestionType: FfiConverterRustBuffer<MobileQ
 
 
 
+enum class MobileQuizXpScopeKind {
+    
+    TOPIC,
+    COURSE,
+    ALL_TOPICS;
+
+    
+
+
+    companion object
+}
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobileQuizXpScopeKind: FfiConverterRustBuffer<MobileQuizXpScopeKind> {
+    override fun read(buf: ByteBuffer) = try {
+        MobileQuizXpScopeKind.values()[buf.getInt() - 1]
+    } catch (e: IndexOutOfBoundsException) {
+        throw RuntimeException("invalid enum value, something is very wrong!!", e)
+    }
+
+    override fun allocationSize(value: MobileQuizXpScopeKind) = 4UL
+
+    override fun write(value: MobileQuizXpScopeKind, buf: ByteBuffer) {
+        buf.putInt(value.ordinal + 1)
+    }
+}
+
+
+
+
+
+
 enum class MobileSourceKind {
     
     COURSE_MATERIAL,
@@ -4048,6 +4583,49 @@ public object FfiConverterTypeMobileStatisticsLimit: FfiConverterRustBuffer<Mobi
     override fun allocationSize(value: MobileStatisticsLimit) = 4UL
 
     override fun write(value: MobileStatisticsLimit, buf: ByteBuffer) {
+        buf.putInt(value.ordinal + 1)
+    }
+}
+
+
+
+
+
+
+enum class MobileXpSource {
+    
+    UNIQUE_CORRECT_QUESTION,
+    PASSED_TWENTY_QUIZ,
+    PASSED_FIFTY_QUIZ,
+    PASSED_ALL_QUESTIONS_QUIZ,
+    MASTERED_TOPIC,
+    COMPLETED_COURSE,
+    PRACTICE_EASY,
+    PRACTICE_MEDIUM,
+    PRACTICE_HARD,
+    PRACTICE_FIRST_TRY,
+    PRACTICE_NO_HINTS;
+
+    
+
+
+    companion object
+}
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMobileXpSource: FfiConverterRustBuffer<MobileXpSource> {
+    override fun read(buf: ByteBuffer) = try {
+        MobileXpSource.values()[buf.getInt() - 1]
+    } catch (e: IndexOutOfBoundsException) {
+        throw RuntimeException("invalid enum value, something is very wrong!!", e)
+    }
+
+    override fun allocationSize(value: MobileXpSource) = 4UL
+
+    override fun write(value: MobileXpSource, buf: ByteBuffer) {
         buf.putInt(value.ordinal + 1)
     }
 }
@@ -4266,6 +4844,34 @@ public object FfiConverterSequenceString: FfiConverterRustBuffer<List<kotlin.Str
         buf.putInt(value.size)
         value.iterator().forEach {
             FfiConverterString.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterSequenceTypeMobileAchievementProgress: FfiConverterRustBuffer<List<MobileAchievementProgress>> {
+    override fun read(buf: ByteBuffer): List<MobileAchievementProgress> {
+        val len = buf.getInt()
+        return List<MobileAchievementProgress>(len) {
+            FfiConverterTypeMobileAchievementProgress.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<MobileAchievementProgress>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeMobileAchievementProgress.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<MobileAchievementProgress>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeMobileAchievementProgress.write(it, buf)
         }
     }
 }
@@ -4584,6 +5190,34 @@ public object FfiConverterSequenceTypeMobilePracticeTaskProgress: FfiConverterRu
 /**
  * @suppress
  */
+public object FfiConverterSequenceTypeMobilePracticeXpOpportunity: FfiConverterRustBuffer<List<MobilePracticeXpOpportunity>> {
+    override fun read(buf: ByteBuffer): List<MobilePracticeXpOpportunity> {
+        val len = buf.getInt()
+        return List<MobilePracticeXpOpportunity>(len) {
+            FfiConverterTypeMobilePracticeXpOpportunity.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<MobilePracticeXpOpportunity>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeMobilePracticeXpOpportunity.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<MobilePracticeXpOpportunity>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeMobilePracticeXpOpportunity.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
 public object FfiConverterSequenceTypeMobileQuestionAttemptHistory: FfiConverterRustBuffer<List<MobileQuestionAttemptHistory>> {
     override fun read(buf: ByteBuffer): List<MobileQuestionAttemptHistory> {
         val len = buf.getInt()
@@ -4640,6 +5274,62 @@ public object FfiConverterSequenceTypeMobileQuestionMistakeSummary: FfiConverter
 /**
  * @suppress
  */
+public object FfiConverterSequenceTypeMobileQuizXpOpportunity: FfiConverterRustBuffer<List<MobileQuizXpOpportunity>> {
+    override fun read(buf: ByteBuffer): List<MobileQuizXpOpportunity> {
+        val len = buf.getInt()
+        return List<MobileQuizXpOpportunity>(len) {
+            FfiConverterTypeMobileQuizXpOpportunity.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<MobileQuizXpOpportunity>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeMobileQuizXpOpportunity.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<MobileQuizXpOpportunity>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeMobileQuizXpOpportunity.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterSequenceTypeMobileRankDefinition: FfiConverterRustBuffer<List<MobileRankDefinition>> {
+    override fun read(buf: ByteBuffer): List<MobileRankDefinition> {
+        val len = buf.getInt()
+        return List<MobileRankDefinition>(len) {
+            FfiConverterTypeMobileRankDefinition.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<MobileRankDefinition>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeMobileRankDefinition.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<MobileRankDefinition>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeMobileRankDefinition.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
 public object FfiConverterSequenceTypeMobileSessionProgress: FfiConverterRustBuffer<List<MobileSessionProgress>> {
     override fun read(buf: ByteBuffer): List<MobileSessionProgress> {
         val len = buf.getInt()
@@ -4686,6 +5376,34 @@ public object FfiConverterSequenceTypeMobileTopic: FfiConverterRustBuffer<List<M
         buf.putInt(value.size)
         value.iterator().forEach {
             FfiConverterTypeMobileTopic.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterSequenceTypeMobileXpRule: FfiConverterRustBuffer<List<MobileXpRule>> {
+    override fun read(buf: ByteBuffer): List<MobileXpRule> {
+        val len = buf.getInt()
+        return List<MobileXpRule>(len) {
+            FfiConverterTypeMobileXpRule.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<MobileXpRule>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeMobileXpRule.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<MobileXpRule>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeMobileXpRule.write(it, buf)
         }
     }
 } fun `coreVersion`(): kotlin.String {

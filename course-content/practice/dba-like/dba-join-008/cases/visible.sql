@@ -1,0 +1,2 @@
+CREATE TABLE databases(id INTEGER, name TEXT); CREATE TABLE backups(id INTEGER, database_id INTEGER, status TEXT);
+         INSERT INTO databases VALUES (1,'app'),(2,'audit'),(3,'billing'); INSERT INTO backups VALUES (1,1,'failed'),(2,1,'success'),(3,3,'failed');

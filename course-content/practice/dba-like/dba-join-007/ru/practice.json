@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-007",
+  "category": "JOIN",
+  "title": "Login-роли и доступные им базы",
+  "description": "Выведите grants только для ролей с can_login = 1. Ровно две колонки: role_name, database_name. Одна строка на grant. Сортировка: role_name ASC, затем database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT r.role_name, d.name AS database_name\nFROM role_grants AS g\n",
+  "hints": [
+    "Нужно связать role_grants сразу с db_roles и databases.",
+    "Фильтр can_login применяется к строке роли."
+  ],
+  "solution_explanation": "Две внешние ссылки в таблице grants требуют двух JOIN.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 94
+}

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-001",
+  "category": "JOIN",
+  "title": "Database, server, and owner",
+  "description": "For each database return exactly three columns: database_name, hostname, owner_role. Include every database that has a defined server and owner role. Sort by hostname ASC, then database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT d.name AS database_name,\n       s.hostname,\n       r.name AS owner_role\nFROM databases AS d\n",
+  "hints": [
+    "Join databases to servers by server_id and to db_roles by owner_role_id.",
+    "INNER JOIN is sufficient for this task."
+  ],
+  "solution_explanation": "Two JOINs restore readable hostname and role name from foreign keys.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 70
+}

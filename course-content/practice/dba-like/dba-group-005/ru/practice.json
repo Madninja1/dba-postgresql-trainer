@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-group-005",
+  "category": "GROUP BY / HAVING",
+  "title": "Серверы с крупным суммарным объёмом баз",
+  "description": "Для каждой server_name посчитайте суммарный size_gb баз и оставьте серверы с total_size_gb не меньше 100. Ровно две колонки: server_name, total_size_gb. Сортировка: total_size_gb DESC, затем server_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT server_name, SUM(size_gb) AS total_size_gb\nFROM databases\n",
+  "hints": [
+    "Сумма считается отдельно для каждого server_name.",
+    "Порог по SUM относится к HAVING."
+  ],
+  "solution_explanation": "Задача проверяет SUM, группировку и порог на агрегат.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "having"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 62
+}

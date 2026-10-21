@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-select-002",
+  "category": "SELECT / WHERE / ORDER BY",
+  "title": "Databases under pressure",
+  "description": "Return exactly four columns: server_name, name, size_mb, connection_usage_percent. Include only online databases where size_mb is at least 51200 or connection_usage_percent is at least 80. Sort by connection_usage_percent DESC, then name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT server_name, name, size_mb, connection_usage_percent\nFROM databases\n",
+  "hints": [
+    "Combine size and connection conditions with OR, while status must apply to the whole group.",
+    "Parentheses around the OR conditions matter here."
+  ],
+  "solution_explanation": "Parentheses prevent OR from bypassing the status = online filter.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "where"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "order"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 20
+}

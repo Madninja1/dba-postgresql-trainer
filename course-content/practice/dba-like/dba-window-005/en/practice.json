@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-window-005",
+  "category": "Window functions",
+  "title": "Running successful backup size",
+  "description": "Consider only successful backups. For each database_name calculate running_size_mb as cumulative SUM(size_mb) ordered by finished_seq ASC, backup_id ASC. Return exactly five columns: backup_id, database_name, finished_seq, size_mb, running_size_mb. Final sort: database_name ASC, finished_seq ASC, backup_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT backup_id, database_name, finished_seq, size_mb,\n       SUM(size_mb) OVER (\n       ) AS running_size_mb\nFROM backups\n",
+  "hints": [
+    "PARTITION BY database_name restarts accumulation for each database.",
+    "Two ordering fields make accumulation deterministic when finished_seq ties."
+  ],
+  "solution_explanation": "A window SUM preserves every backup row while exposing cumulative size.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "over"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "sum"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 133
+}

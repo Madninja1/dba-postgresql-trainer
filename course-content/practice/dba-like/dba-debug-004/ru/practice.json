@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "key": "dba-debug-004",
+  "category": "FixQuery / FindLogicalError",
+  "title": "Приоритет AND и OR в фильтре сессий",
+  "description": "Исправьте запрос. Нужно вернуть только production-сессии, которые либо имеют state = active, либо state = idle in transaction. Сессия другого environment не должна проходить ни при каком из этих state. Ровно три колонки: session_id, environment, state. Сортировка: session_id ASC.",
+  "type": "find_logical_error",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT session_id, environment, state\nFROM sessions\nWHERE environment = 'production' AND state = 'active' OR state = 'idle in transaction'\nORDER BY session_id ASC;\n",
+  "hints": [
+    "AND имеет более высокий приоритет, чем OR.",
+    "Объедините два допустимых state в одну логическую группу."
+  ],
+  "solution_explanation": "Скобки заставляют environment = production применяться к обеим альтернативам state.",
+  "rules": [],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 152
+}

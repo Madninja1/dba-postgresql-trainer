@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-select-010",
+  "category": "SELECT / WHERE / ORDER BY",
+  "title": "Production databases at capacity risk",
+  "description": "For production databases, derive risk_reason by priority: `read_only` when read_only = 1; otherwise `disk` when free_percent < 15; otherwise `connections` when connections_used * 100.0 / connections_limit >= 90; otherwise `ok`. Return only rows where risk_reason is not `ok`, with exactly five columns: database_name, free_percent, connections_used, connections_limit, risk_reason. Sort by reason priority read_only, disk, connections, then database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "SELECT database_name, free_percent, connections_used, connections_limit\nFROM database_health\n",
+  "hints": [
+    "One CASE can derive the reason and an outer SELECT can filter by its alias.",
+    "CASE branch order matters because one database may satisfy multiple conditions."
+  ],
+  "solution_explanation": "Condition priority makes classification deterministic; an outer query allows filtering the derived risk_reason cleanly.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "case"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 37
+}

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-008",
+  "category": "JOIN",
+  "title": "Databases without backup history",
+  "description": "Return databases for which the backups table contains no rows of any status. Return exactly one column: database_name. Sort by database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT d.name AS database_name\nFROM databases AS d\n",
+  "hints": [
+    "LEFT JOIN preserves a database without a match.",
+    "Check NULL on the backups row key rather than status."
+  ],
+  "solution_explanation": "An anti-join using LEFT JOIN + IS NULL finds complete absence of history.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 95
+}

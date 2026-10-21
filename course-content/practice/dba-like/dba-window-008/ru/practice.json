@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "key": "dba-window-008",
+  "category": "Window functions",
+  "title": "Первое и последнее измерение latency",
+  "description": "Для каждой database_name выведите одно значение first_duration_ms из самого раннего измерения и last_duration_ms из самого позднего измерения по sampled_seq, используя FIRST_VALUE и LAST_VALUE. При одинаковом sampled_seq порядок определяется sample_id ASC. LAST_VALUE должен видеть весь partition, а не только строки до текущей. Ровно четыре колонки: database_name, first_duration_ms, last_duration_ms, delta_ms = last_duration_ms - first_duration_ms. Сортировка: ABS(delta_ms) DESC, затем database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "SELECT DISTINCT database_name\nFROM query_stats\n",
+  "hints": [
+    "Для LAST_VALUE задайте frame ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING.",
+    "После вычисления одинаковых оконных значений для строк одной базы DISTINCT оставит одну строку."
+  ],
+  "solution_explanation": "Явный полный frame устраняет типичную ловушку LAST_VALUE, где значением становится текущая строка.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "first_value"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "last_value"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "over"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 136
+}

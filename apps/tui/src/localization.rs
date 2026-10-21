@@ -1,5 +1,6 @@
 use dba_trainer_domain::{
-    PracticeDifficulty, ProgressLevel, QuestionLimit, StatisticsLimit, TopicMasteryStats,
+    AchievementKind, AchievementRarity, PracticeDifficulty, ProgressRank, QuestionLimit,
+    StatisticsLimit, TopicMasteryStats, XpSource,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -65,6 +66,7 @@ pub struct UiStrings {
     pub practice_started: &'static str,
     pub practice_attempts: &'static str,
     pub practice_first_try: &'static str,
+    pub practice_no_hints: &'static str,
     pub practice_difficulty: &'static str,
     pub practice_schema: &'static str,
     pub practice_data: &'static str,
@@ -155,8 +157,26 @@ pub struct UiStrings {
     pub today: &'static str,
     pub last_7_days: &'static str,
     pub rank: &'static str,
-    pub career_path: &'static str,
-    pub salary_disclaimer: &'static str,
+    pub xp: &'static str,
+    pub next_rank: &'static str,
+    pub rank_scale: &'static str,
+    pub xp_rules: &'static str,
+    pub xp_available: &'static str,
+    pub xp_opportunities: &'static str,
+    pub xp_questions: &'static str,
+    pub xp_quizzes: &'static str,
+    pub xp_topics: &'static str,
+    pub xp_courses: &'static str,
+    pub xp_practice: &'static str,
+    pub xp_pass_bonus: &'static str,
+    pub xp_received: &'static str,
+    pub achievements: &'static str,
+    pub mastery: &'static str,
+    pub active_days_28: &'static str,
+    pub last_activity: &'static str,
+    pub no_recent_activity: &'static str,
+    pub sql_attempts: &'static str,
+    pub sql_solved: &'static str,
     pub course_progress: &'static str,
     pub recent_activity: &'static str,
     pub study_day_target: &'static str,
@@ -225,74 +245,130 @@ impl UiStrings {
         }
     }
 
-    pub fn progress_level(&self, level: ProgressLevel) -> &'static str {
-        match level {
-            ProgressLevel::ColdStart => "Cold Start",
-            ProgressLevel::QueryRunner => "Query Runner",
-            ProgressLevel::WarmCache => "Warm Cache",
-            ProgressLevel::BackendTamer => "Backend Tamer",
-            ProgressLevel::WalKeeper => "WAL Keeper",
-            ProgressLevel::IncidentHandler => "Incident Handler",
-            ProgressLevel::DbaOneMaster => "DBA-1 Master",
-            ProgressLevel::ProductionSurvivor => "Production Survivor",
+    pub fn progress_rank(&self, rank: ProgressRank) -> &'static str {
+        match rank {
+            ProgressRank::Init => "Init",
+            ProgressRank::PsqlTrainee => "PSQL Trainee",
+            ProgressRank::QueryAdept => "Query Adept",
+            ProgressRank::SchemaKeeper => "Schema Keeper",
+            ProgressRank::PlanReader => "Plan Reader",
+            ProgressRank::WalOperator => "WAL Operator",
+            ProgressRank::PostgresGuardian => "Postgres Guardian",
+            ProgressRank::MadNinjaDba => "MadNinja DBA",
         }
     }
 
-    pub fn progress_message(&self, level: ProgressLevel) -> &'static str {
-        if self.main_menu == "Main menu" {
-            match level {
-                ProgressLevel::ColdStart => {
-                    "Warm-up is over. Ten questions are enough to make today count."
-                }
-                ProgressLevel::QueryRunner => {
-                    "Queries are moving. Keep knowledge from turning into a cache miss."
-                }
-                ProgressLevel::WarmCache => {
-                    "Cache is warm. Discipline is already doing more than random motivation."
-                }
-                ProgressLevel::BackendTamer => {
-                    "Backend tamed. Weak spots are visible now; finish them deliberately."
-                }
-                ProgressLevel::WalKeeper => {
-                    "WAL is under watch. Keep going without magic fixes or chmod 777."
-                }
-                ProgressLevel::IncidentHandler => {
-                    "Incidents look less mystical now: observe first, then fix."
-                }
-                ProgressLevel::DbaOneMaster => {
-                    "DBA-1 completed. Now you can at least tell what exactly broke."
-                }
-                ProgressLevel::ProductionSurvivor => {
-                    "Production Survivor. Everything currently loaded is mastered; add the next level."
-                }
+    pub fn rank_description(&self, rank: ProgressRank) -> &'static str {
+        let english = self.main_menu == "Main menu";
+        match (english, rank) {
+            (true, ProgressRank::Init) => {
+                "The journey starts here. Build the first reliable habits."
             }
-        } else {
-            match level {
-                ProgressLevel::ColdStart => {
-                    "Разогрев закончен. Десять вопросов — и день уже не потерян."
-                }
-                ProgressLevel::QueryRunner => {
-                    "Запросы пошли. Главное — не превращать знания в cache miss."
-                }
-                ProgressLevel::WarmCache => {
-                    "Кэш прогрет. Дисциплина уже работает лучше случайной мотивации."
-                }
-                ProgressLevel::BackendTamer => {
-                    "Backend приручён. Слабые места видно — добивай их осознанно."
-                }
-                ProgressLevel::WalKeeper => {
-                    "WAL под присмотром. Продолжай без магии и без chmod 777."
-                }
-                ProgressLevel::IncidentHandler => {
-                    "Инциденты уже не выглядят мистикой: сначала наблюдаем, потом чиним."
-                }
-                ProgressLevel::DbaOneMaster => {
-                    "DBA-1 закрыт. Теперь ты хотя бы знаешь, что именно сломалось."
-                }
-                ProgressLevel::ProductionSurvivor => {
-                    "Production Survivor. Всё загруженное освоено — пора добавлять следующий уровень."
-                }
+            (true, ProgressRank::PsqlTrainee) => "Basic SQL and quiz practice is becoming routine.",
+            (true, ProgressRank::QueryAdept) => {
+                "Queries are no longer random commands; you can reason about results."
             }
+            (true, ProgressRank::SchemaKeeper) => {
+                "You are building a stable picture of schemas, objects and data flow."
+            }
+            (true, ProgressRank::PlanReader) => {
+                "You are ready to reason about execution plans and query behavior."
+            }
+            (true, ProgressRank::WalOperator) => {
+                "Operational PostgreSQL concepts are becoming part of your toolkit."
+            }
+            (true, ProgressRank::PostgresGuardian) => {
+                "A broad part of the DBA path is under control."
+            }
+            (true, ProgressRank::MadNinjaDba) => {
+                "Top rank: persistent practice across the whole trainer."
+            }
+            (false, ProgressRank::Init) => "Старт обучения: формируем первые устойчивые привычки.",
+            (false, ProgressRank::PsqlTrainee) => {
+                "Базовые тесты и SQL-практика уже становятся рутиной."
+            }
+            (false, ProgressRank::QueryAdept) => {
+                "Запросы уже не набор команд: ты понимаешь, почему получается результат."
+            }
+            (false, ProgressRank::SchemaKeeper) => {
+                "Формируется целостное понимание схем, объектов и движения данных."
+            }
+            (false, ProgressRank::PlanReader) => {
+                "Можно переходить к осмысленному чтению планов и поведению запросов."
+            }
+            (false, ProgressRank::WalOperator) => {
+                "Операционные механизмы PostgreSQL становятся рабочим инструментом."
+            }
+            (false, ProgressRank::PostgresGuardian) => "Большая часть DBA-пути уже под контролем.",
+            (false, ProgressRank::MadNinjaDba) => {
+                "Верхний ранг: системная практика по всему тренажёру."
+            }
+        }
+    }
+
+    pub fn achievement_title(&self, kind: AchievementKind) -> &'static str {
+        let english = self.main_menu == "Main menu";
+        match (english, kind) {
+            (true, AchievementKind::FirstAnswer) => "First Blood",
+            (false, AchievementKind::FirstAnswer) => "Первый ответ",
+            (_, AchievementKind::HundredAnswers) => "100 Questions",
+            (_, AchievementKind::PerfectTwenty) => "20/20",
+            (true, AchievementKind::QuizVeteran) => "Quiz Veteran",
+            (false, AchievementKind::QuizVeteran) => "Ветеран тестов",
+            (_, AchievementKind::FirstSql) => "SQL Initiate",
+            (_, AchievementKind::OneShot) => "One Shot",
+            (_, AchievementKind::QueryNinja) => "Query Ninja",
+            (_, AchievementKind::SevenDayStreak) => "Seven Days",
+            (_, AchievementKind::ThirtyDayStreak) => "WAL Never Sleeps",
+            (true, AchievementKind::CourseMaster) => "Course Master",
+            (false, AchievementKind::CourseMaster) => "Мастер курса",
+            (_, AchievementKind::MadNinja) => "MadNinja",
+        }
+    }
+
+    pub fn achievement_rarity(&self, rarity: AchievementRarity) -> &'static str {
+        let english = self.main_menu == "Main menu";
+        match (english, rarity) {
+            (true, AchievementRarity::Common) => "Common",
+            (true, AchievementRarity::Rare) => "Rare",
+            (true, AchievementRarity::Epic) => "Epic",
+            (true, AchievementRarity::Legendary) => "Legendary",
+            (false, AchievementRarity::Common) => "Обычная",
+            (false, AchievementRarity::Rare) => "Редкая",
+            (false, AchievementRarity::Epic) => "Эпическая",
+            (false, AchievementRarity::Legendary) => "Легендарная",
+        }
+    }
+
+    pub fn xp_source(&self, source: XpSource) -> &'static str {
+        let english = self.main_menu == "Main menu";
+        match (english, source) {
+            (true, XpSource::UniqueCorrectQuestion) => "First correct answer to a question",
+            (true, XpSource::PassedTwentyQuiz) => "First passed 20-question quiz for a scope",
+            (true, XpSource::PassedFiftyQuiz) => "First passed 50-question quiz for a scope",
+            (true, XpSource::PassedAllQuestionsQuiz) => {
+                "First passed all-questions quiz for a scope"
+            }
+            (true, XpSource::MasteredTopic) => "Topic mastered for the first time",
+            (true, XpSource::CompletedCourse) => "Course completed for the first time",
+            (true, XpSource::PracticeEasy) => "Solved Easy SQL task",
+            (true, XpSource::PracticeMedium) => "Solved Medium SQL task",
+            (true, XpSource::PracticeHard) => "Solved Hard SQL task",
+            (true, XpSource::PracticeFirstTry) => "SQL task solved on first check",
+            (true, XpSource::PracticeNoHints) => "SQL task solved without hints",
+            (false, XpSource::UniqueCorrectQuestion) => "Первый правильный ответ на вопрос",
+            (false, XpSource::PassedTwentyQuiz) => "Первое прохождение 20 вопросов для раздела",
+            (false, XpSource::PassedFiftyQuiz) => "Первое прохождение 50 вопросов для раздела",
+            (false, XpSource::PassedAllQuestionsQuiz) => {
+                "Первое прохождение всех вопросов для раздела"
+            }
+            (false, XpSource::MasteredTopic) => "Тема впервые освоена",
+            (false, XpSource::CompletedCourse) => "Курс впервые закрыт",
+            (false, XpSource::PracticeEasy) => "Решена лёгкая SQL-задача",
+            (false, XpSource::PracticeMedium) => "Решена средняя SQL-задача",
+            (false, XpSource::PracticeHard) => "Решена сложная SQL-задача",
+            (false, XpSource::PracticeFirstTry) => "SQL-задача решена с первой проверки",
+            (false, XpSource::PracticeNoHints) => "SQL-задача решена без подсказок",
         }
     }
 
@@ -377,6 +453,7 @@ static ENGLISH: UiStrings = UiStrings {
     practice_started: "Started",
     practice_attempts: "Attempts",
     practice_first_try: "First try",
+    practice_no_hints: "No hints",
     practice_difficulty: "Difficulty",
     practice_schema: "Schema",
     practice_data: "Table data",
@@ -467,11 +544,29 @@ static ENGLISH: UiStrings = UiStrings {
     today: "Today",
     last_7_days: "Last 7 days",
     rank: "Rank",
-    career_path: "Career path (game)",
-    salary_disclaimer: "Skills are counted. Salary is not guaranteed.",
+    xp: "XP",
+    next_rank: "To next rank",
+    rank_scale: "Rank scale",
+    xp_rules: "How XP is earned",
+    xp_available: "Available XP",
+    xp_opportunities: "Where to earn XP",
+    xp_questions: "New correct answers",
+    xp_quizzes: "Quiz completion bonuses",
+    xp_topics: "Topic mastery",
+    xp_courses: "Course completion",
+    xp_practice: "SQL Practice",
+    xp_pass_bonus: "pass bonus",
+    xp_received: "XP received",
+    achievements: "Achievements",
+    mastery: "Mastery",
+    active_days_28: "Active days in the last 28 days",
+    last_activity: "Last activity",
+    no_recent_activity: "No learning activity in the last 28 days.",
+    sql_attempts: "SQL attempts",
+    sql_solved: "SQL tasks solved",
     course_progress: "Course progress",
-    recent_activity: "Recent 28 days",
-    study_day_target: "A study day requires at least 10 answered questions.",
+    recent_activity: "Activity in the last 28 days",
+    study_day_target: "A study day is 10 answered questions or at least one solved SQL task.",
 
     all_modes: "All modes",
     twenty_questions: "20 questions",
@@ -533,6 +628,7 @@ static RUSSIAN: UiStrings = UiStrings {
     practice_started: "Начато",
     practice_attempts: "Попыток",
     practice_first_try: "С первой попытки",
+    practice_no_hints: "Без подсказок",
     practice_difficulty: "Сложность",
     practice_schema: "Схема",
     practice_data: "Данные таблицы",
@@ -616,18 +712,36 @@ static RUSSIAN: UiStrings = UiStrings {
     last_error: "Последняя ошибка",
     mistake_history: "История попыток",
     activity: "Активность и прогресс",
-    active_days: "Дней с запуском",
+    active_days: "Активных дней",
     study_days: "Учебных дней",
     current_streak: "Текущая серия",
     best_streak: "Лучшая серия",
     today: "Сегодня",
     last_7_days: "За 7 дней",
     rank: "Ранг",
-    career_path: "Путь к 500k ₽ (игровой)",
-    salary_disclaimer: "Навыки считаем. Зарплату не гарантируем.",
+    xp: "XP",
+    next_rank: "До следующего ранга",
+    rank_scale: "Шкала рангов",
+    xp_rules: "За что начисляется XP",
+    xp_available: "Доступно XP",
+    xp_opportunities: "Где ещё заработать XP",
+    xp_questions: "Новые правильные ответы",
+    xp_quizzes: "Бонусы за прохождение тестов",
+    xp_topics: "Освоение тем",
+    xp_courses: "Завершение курсов",
+    xp_practice: "Практика SQL",
+    xp_pass_bonus: "бонус за прохождение",
+    xp_received: "XP получен",
+    achievements: "Достижения",
+    mastery: "Мастерство",
+    active_days_28: "Активных дней за последние 28 дней",
+    last_activity: "Последняя активность",
+    no_recent_activity: "За последние 28 дней учебной активности не было.",
+    sql_attempts: "Попыток SQL",
+    sql_solved: "Решено SQL-задач",
     course_progress: "Прогресс по курсам",
-    recent_activity: "Последние 28 дней",
-    study_day_target: "Учебный день — минимум 10 отвеченных вопросов.",
+    recent_activity: "Активность за последние 28 дней",
+    study_day_target: "Учебный день — 10 отвеченных вопросов или хотя бы одна решённая SQL-задача.",
 
     all_modes: "Все режимы",
     twenty_questions: "20 вопросов",

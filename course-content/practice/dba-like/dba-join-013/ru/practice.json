@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-013",
+  "category": "JOIN",
+  "title": "Серверы без открытых инцидентов",
+  "description": "Выведите production-серверы, для которых нет ни одного incidents с resolved = 0. Серверы с только resolved-инцидентами должны остаться. Ровно одна колонка: hostname. Сортировка: hostname ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT s.hostname\nFROM servers AS s\n",
+  "hints": [
+    "Условие resolved = 0 нужно поместить в ON, чтобы resolved-инцидент не уничтожил сервер.",
+    "После LEFT JOIN отсутствие открытого совпадения определяется по NULL id инцидента."
+  ],
+  "solution_explanation": "Фильтр на правой таблице внутри ON превращает LEFT JOIN в анти-соединение именно по открытым инцидентам.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 100
+}

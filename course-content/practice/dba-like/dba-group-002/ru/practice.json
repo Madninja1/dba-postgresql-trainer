@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-group-002",
+  "category": "GROUP BY / HAVING",
+  "title": "Медленные базы по статистике запросов",
+  "description": "Для каждой database_name с минимум тремя измеренными запросами посчитайте среднюю duration_ms и округлите её до одного знака после запятой. Выведите ровно две колонки: database_name, avg_duration_ms. В результат включайте только базы с avg_duration_ms не меньше 200. Сортировка: avg_duration_ms DESC, при равенстве database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT database_name, ROUND(AVG(duration_ms), 1) AS avg_duration_ms\nFROM query_stats\n",
+  "hints": [
+    "Оба условия по агрегатам — количество и среднее — проверяются в HAVING.",
+    "В ORDER BY можно использовать alias avg_duration_ms."
+  ],
+  "solution_explanation": "Группа проходит только если в ней достаточно наблюдений и средняя длительность действительно высока.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "having"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 50
+}

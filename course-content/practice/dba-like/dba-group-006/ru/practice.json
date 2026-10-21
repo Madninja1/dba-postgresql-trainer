@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-group-006",
+  "category": "GROUP BY / HAVING",
+  "title": "Базы с повторяющимися сбоями backup",
+  "description": "Учитывайте только backup со status = failed. Для каждой database_name посчитайте failed_count и оставьте базы с failed_count не меньше 2. Ровно две колонки: database_name, failed_count. Сортировка: failed_count DESC, затем database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT database_name, COUNT(*) AS failed_count\nFROM backups\n",
+  "hints": [
+    "Сначала отберите failed-строки, затем группируйте.",
+    "Порог на количество групп задаётся через HAVING."
+  ],
+  "solution_explanation": "WHERE исключает успешные backup до агрегирования, а HAVING оставляет только повторяющиеся сбои.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "having"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 63
+}

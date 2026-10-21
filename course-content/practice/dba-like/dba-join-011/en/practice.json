@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-011",
+  "category": "JOIN",
+  "title": "Query samples and database owner",
+  "description": "For query_stats lasting at least 500 ms return exactly four columns: sample_id, database_name, owner_role, duration_ms. Join query_stats to databases, then owner_role_id to db_roles. Sort by duration_ms DESC, then sample_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT q.id AS sample_id, d.name AS database_name, r.role_name AS owner_role, q.duration_ms\nFROM query_stats AS q\n",
+  "hints": [
+    "database_id links a sample to a database; owner_role_id links the database to its role.",
+    "The duration_ms threshold applies to query_stats."
+  ],
+  "solution_explanation": "Two chained joins add database and owner context to each measurement.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 98
+}

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-010",
+  "category": "JOIN",
+  "title": "Open incidents on production servers",
+  "description": "Return unresolved incidents only for production servers. Return exactly four columns: incident_id, hostname, severity, opened_seq. Sort by opened_seq ASC, then incident_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT i.id AS incident_id, s.hostname, i.severity, i.opened_seq\nFROM incidents AS i\n",
+  "hints": [
+    "environment is stored in servers while resolved is stored in incidents.",
+    "Join by incidents.server_id."
+  ],
+  "solution_explanation": "A join is required because the environment filter and incident data live in different tables.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 97
+}

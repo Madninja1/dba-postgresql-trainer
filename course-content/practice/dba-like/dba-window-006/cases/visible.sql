@@ -1,0 +1,1 @@
+CREATE TABLE query_stats(sample_id INTEGER, database_name TEXT, sampled_seq INTEGER, duration_ms INTEGER); INSERT INTO query_stats VALUES (1,'app',10,100),(2,'app',20,150),(3,'audit',5,50),(4,'audit',6,40);

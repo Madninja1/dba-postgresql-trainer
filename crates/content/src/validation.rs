@@ -297,6 +297,14 @@ fn valid_key(value: &str) -> bool {
     })
 }
 
+fn valid_practice_category(value: &str) -> bool {
+    if value.is_empty() || value.trim() != value || value.chars().count() > 80 {
+        return false;
+    }
+
+    value.chars().all(|character| !character.is_control())
+}
+
 fn valid_url(value: &str) -> bool {
     let value = value.trim();
 
@@ -371,7 +379,7 @@ pub fn validate_practice(
         errors.push(format!("invalid practice key '{}'", practice.key));
     }
 
-    if !valid_key(&practice.category) {
+    if !valid_practice_category(&practice.category) {
         errors.push(format!("invalid practice category '{}'", practice.category));
     }
 
@@ -611,7 +619,7 @@ pub fn validate_practice(
 
 #[cfg(test)]
 mod tests {
-    use super::valid_course_code;
+    use super::{valid_course_code, valid_practice_category};
 
     #[test]
     fn accepts_supported_course_code_shape() {
@@ -644,6 +652,33 @@ mod tests {
             assert!(
                 !valid_course_code(value),
                 "expected '{value}' to be invalid"
+            );
+        }
+    }
+
+    #[test]
+    fn accepts_practice_display_categories() {
+        for value in [
+            "JOIN",
+            "GROUP BY / HAVING",
+            "SELECT / WHERE / ORDER BY",
+            "Subquery / CTE",
+            "Window functions",
+            "FixQuery / FindLogicalError",
+        ] {
+            assert!(
+                valid_practice_category(value),
+                "expected '{value}' to be a valid practice category"
+            );
+        }
+    }
+
+    #[test]
+    fn rejects_invalid_practice_categories() {
+        for value in ["", " JOIN", "JOIN ", "JOIN\nWindow"] {
+            assert!(
+                !valid_practice_category(value),
+                "expected '{value}' to be an invalid practice category"
             );
         }
     }

@@ -46,6 +46,15 @@ pub fn load_practice(
     setup_sql: &str,
     solution_sql: &str,
 ) -> Result<PracticeBundle, ContentError> {
+    load_practice_with_cases(practice_json, setup_sql, solution_sql, &[])
+}
+
+pub fn load_practice_with_cases(
+    practice_json: &str,
+    setup_sql: &str,
+    solution_sql: &str,
+    hidden_case_sql: &[&str],
+) -> Result<PracticeBundle, ContentError> {
     let practice: PracticeDocument =
         serde_json::from_str(practice_json).map_err(|source| ContentError::Json {
             document: "practice.json",
@@ -54,10 +63,28 @@ pub fn load_practice(
 
     validate_practice(&practice, setup_sql, solution_sql).map_err(ContentError::Validation)?;
 
+    let mut case_errors = Vec::new();
+    for (index, case_sql) in hidden_case_sql.iter().enumerate() {
+        if case_sql.trim().is_empty() {
+            case_errors.push(format!(
+                "practice '{}' hidden case {} is empty",
+                practice.key,
+                index + 1
+            ));
+        }
+    }
+    if !case_errors.is_empty() {
+        return Err(ContentError::Validation(case_errors));
+    }
+
     Ok(PracticeBundle {
         practice,
         setup_sql: setup_sql.to_owned(),
         solution_sql: solution_sql.to_owned(),
+        hidden_case_sql: hidden_case_sql
+            .iter()
+            .map(|sql| (*sql).to_owned())
+            .collect(),
     })
 }
 
@@ -422,6 +449,36 @@ mod tests {
         assert_eq!(bundle.practice.key, "sql-demo");
         assert_eq!(bundle.practice.category, "select");
         assert!(bundle.setup_sql.contains("CREATE TABLE"));
+    }
+
+    #[test]
+    fn loads_practice_hidden_cases() {
+        let practice_json = r#"
+        {
+            "schema_version": 1,
+            "key": "sql-hidden-demo",
+            "category": "JOIN",
+            "title": "Hidden demo",
+            "description": "Return rows",
+            "type": "write_query",
+            "comparison": "unordered",
+            "sort_order": 10
+        }
+        "#;
+
+        let hidden = [
+            "CREATE TABLE demo (id INTEGER); INSERT INTO demo VALUES (2);",
+            "CREATE TABLE demo (id INTEGER); INSERT INTO demo VALUES (3);",
+        ];
+        let bundle = load_practice_with_cases(
+            practice_json,
+            "CREATE TABLE demo (id INTEGER); INSERT INTO demo VALUES (1);",
+            "SELECT id FROM demo;",
+            &hidden,
+        )
+        .expect("practice with hidden cases should load");
+
+        assert_eq!(bundle.hidden_case_sql.len(), 2);
     }
 
     #[test]

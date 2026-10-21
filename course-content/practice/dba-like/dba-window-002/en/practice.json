@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-window-002",
+  "category": "Window functions",
+  "title": "Backup size growth versus previous backup",
+  "description": "Consider only successful backups. For each backup, use LAG to find the previous backup for the same database_name in finished_seq ASC, then id ASC order. Return exactly five columns: database_name, backup_id, size_mb, previous_size_mb, growth_mb, where growth_mb = size_mb - previous_size_mb. Keep only rows with growth_mb of at least 100. Sort by database_name ASC, then backup_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "WITH history AS (\n    SELECT database_name, id AS backup_id, size_mb\n    FROM backups\n    WHERE status = 'success'\n)\n",
+  "hints": [
+    "LAG(size_mb) should partition by database_name and order by finished_seq, id.",
+    "Filter the difference in the outer query after previous_size_mb has been calculated."
+  ],
+  "solution_explanation": "LAG relates each successful backup to its predecessor inside the same database; the CTE then lets us filter the calculated growth.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "over"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "lag"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 130
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "key": "dba-window-008",
+  "category": "Window functions",
+  "title": "First and last latency sample per database",
+  "description": "For each database_name return one first_duration_ms from the earliest sample and last_duration_ms from the latest sample by sampled_seq using FIRST_VALUE and LAST_VALUE. Ties on sampled_seq are ordered by sample_id ASC. LAST_VALUE must see the entire partition, not only rows through the current row. Return exactly four columns: database_name, first_duration_ms, last_duration_ms, delta_ms = last_duration_ms - first_duration_ms. Sort by ABS(delta_ms) DESC, then database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "SELECT DISTINCT database_name\nFROM query_stats\n",
+  "hints": [
+    "For LAST_VALUE use ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING.",
+    "After deriving identical window values per database, DISTINCT can keep one row."
+  ],
+  "solution_explanation": "An explicit full frame avoids the common LAST_VALUE trap where the current row becomes the last value.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "first_value"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "last_value"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "over"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 136
+}

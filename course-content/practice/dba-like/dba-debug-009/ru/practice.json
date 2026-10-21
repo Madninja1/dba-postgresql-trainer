@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-debug-009",
+  "category": "FixQuery / FindLogicalError",
+  "title": "MAX выбрал поля из разных backup",
+  "description": "Исправьте запрос. Для каждой database_name нужно вернуть finished_seq и size_mb именно одной строки — последнего successful backup по finished_seq; при равенстве finished_seq выбирайте больший backup_id. База без successful backup не выводится. Ровно три колонки: database_name, finished_seq, size_mb. Сортировка: database_name ASC.",
+  "type": "find_logical_error",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "SELECT database_name, MAX(finished_seq) AS finished_seq, MAX(size_mb) AS size_mb\nFROM backups\nWHERE status = 'success'\nGROUP BY database_name\nORDER BY database_name ASC;\n",
+  "hints": [
+    "MAX(finished_seq) и MAX(size_mb) вычисляются независимо и могут относиться к разным строкам.",
+    "Сначала выберите одну последнюю строку на базу, например ROW_NUMBER(), затем берите её поля."
+  ],
+  "solution_explanation": "ROW_NUMBER ранжирует целые строки, поэтому finished_seq и size_mb гарантированно принадлежат одному выбранному backup.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "row_number"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "over"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 157
+}

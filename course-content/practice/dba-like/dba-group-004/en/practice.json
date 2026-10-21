@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-group-004",
+  "category": "GROUP BY / HAVING",
+  "title": "Session states with multiple sessions",
+  "description": "Count sessions for each state and keep only states with at least 2 sessions. Return exactly two columns: state, session_count. Sort by session_count DESC, then state ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT state, COUNT(*) AS session_count\nFROM sessions\n",
+  "hints": [
+    "After GROUP BY, a COUNT condition belongs in HAVING.",
+    "The session_count alias can be used in ORDER BY."
+  ],
+  "solution_explanation": "HAVING filters already formed groups by the aggregate count.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "having"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 61
+}

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-group-001",
+  "category": "GROUP BY / HAVING",
+  "title": "Databases with multiple active sessions",
+  "description": "Count only active sessions for each database_name. Return exactly two columns: database_name, active_sessions, and keep only databases with active_sessions of at least 2. Sort by active_sessions DESC, then database_name ASC for ties.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT database_name, COUNT(*) AS active_sessions\nFROM sessions\n",
+  "hints": [
+    "Filter to active sessions first.",
+    "A COUNT(*) filter belongs in HAVING, not WHERE."
+  ],
+  "solution_explanation": "WHERE filters rows before aggregation; HAVING filters formed groups.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "having"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 40
+}

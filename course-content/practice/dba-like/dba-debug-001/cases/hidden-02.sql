@@ -1,0 +1,2 @@
+CREATE TABLE databases (id INTEGER PRIMARY KEY, name TEXT NOT NULL); CREATE TABLE sessions (id INTEGER PRIMARY KEY, database_id INTEGER NOT NULL, state TEXT NOT NULL);
+INSERT INTO databases VALUES (1,'a'),(2,'b');

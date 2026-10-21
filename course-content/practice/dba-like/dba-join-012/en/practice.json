@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-012",
+  "category": "JOIN",
+  "title": "Databases owned by NOLOGIN roles",
+  "description": "Return databases whose owner has can_login = 0. Return exactly two columns: database_name, owner_role. Sort by database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT d.name AS database_name, r.role_name AS owner_role\nFROM databases AS d\n",
+  "hints": [
+    "owner_role_id references db_roles.id.",
+    "The can_login filter applies to the joined role."
+  ],
+  "solution_explanation": "The join allows databases to be filtered by a property of their owner.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 99
+}

@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "key": "dba-debug-003",
+  "category": "FixQuery / FindLogicalError",
+  "title": "NULL in unfinished backups",
+  "description": "Fix the query so it returns backups whose finished_seq is NULL. Return exactly two columns: backup_id, database_name. Sort by backup_id ASC.",
+  "type": "fix_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT backup_id, database_name\nFROM backups\nWHERE finished_seq = NULL\nORDER BY backup_id ASC;\n",
+  "hints": [
+    "NULL cannot be tested correctly with =.",
+    "Use the dedicated NULL predicate."
+  ],
+  "solution_explanation": "= NULL evaluates to UNKNOWN; IS NULL selects unfinished rows.",
+  "rules": [],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 151
+}

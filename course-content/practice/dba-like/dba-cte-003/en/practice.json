@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-cte-003",
+  "category": "Subquery / CTE",
+  "title": "Active session counts via CTE",
+  "description": "Use a CTE to first count active_sessions for each database_name using only state = active. Then return databases with at least 2 active_sessions. Return exactly two columns: database_name, active_sessions. Sort by active_sessions DESC, then database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "WITH active_counts AS (\n  SELECT database_name\n  FROM sessions\n)\nSELECT *\nFROM active_counts\n",
+  "hints": [
+    "Perform WHERE + GROUP BY inside the CTE and apply the threshold outside.",
+    "The CTE should already expose active_sessions."
+  ],
+  "solution_explanation": "The CTE separates active-session aggregation from final filtering.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "with"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 111
+}

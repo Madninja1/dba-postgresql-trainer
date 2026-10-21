@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "key": "dba-select-005",
+  "category": "SELECT / WHERE / ORDER BY",
+  "title": "Streaming replicas with noticeable lag",
+  "description": "Return only replicas in streaming state with lag_seconds of at least 30. Return exactly three columns: replica_name, database_name, lag_seconds. Sort by lag_seconds DESC, then replica_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT replica_name, database_name, lag_seconds\nFROM replicas\n",
+  "hints": [
+    "Replica state and lag threshold are both required conditions.",
+    "Sort by lag first and use the replica name as the tie-breaker."
+  ],
+  "solution_explanation": "The filter must not include stopped/catching_up replicas even when their lag is large.",
+  "rules": [
+    {
+      "type": "forbid_select_star"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 32
+}

@@ -1,4 +1,6 @@
-use dba_trainer_domain::{ActivityStats, Source, SourceKind, StatisticsLimit, TrainingStats};
+use dba_trainer_domain::{
+    ProgressRank, Source, SourceKind, StatisticsLimit, TrainingStats, XP_SOURCES,
+};
 
 use ratatui::{
     Frame,
@@ -420,7 +422,8 @@ fn render_activity(frame: &mut Frame, app: &App) {
         return;
     };
 
-    let level = stats.level();
+    let rank = stats.rank();
+    let next_rank = stats.next_rank();
     let today_accuracy = if stats.today_answered_questions == 0 {
         0.0
     } else {
@@ -428,10 +431,71 @@ fn render_activity(frame: &mut Frame, app: &App) {
     };
 
     let mut message = format!(
-        "{}: {}\n{}\n\n{}: {} · {} / {} · {:.1}%\n{}: {}\n{}: {}\n{}: {}\n{}: {}\n{}: {}\n{}: {}\n\n{}: {:.1}%\n{}\n\n{}:\n",
+        "{}: {}\n{}: {}\n{}\n",
         strings.rank,
-        strings.progress_level(level),
-        strings.progress_message(level),
+        strings.progress_rank(rank),
+        strings.xp,
+        stats.xp,
+        strings.rank_description(rank),
+    );
+
+    if let Some(next) = next_rank {
+        message.push_str(&format!(
+            "{}: {} · {} XP\n",
+            strings.next_rank,
+            strings.progress_rank(next),
+            next.minimum_xp().saturating_sub(stats.xp),
+        ));
+    }
+
+    message.push_str(&format!("\n{}:\n", strings.rank_scale));
+    for candidate in ProgressRank::ALL {
+        let marker = if candidate == rank {
+            '>'
+        } else if stats.xp >= candidate.minimum_xp() {
+            '+'
+        } else {
+            '-'
+        };
+        message.push_str(&format!(
+            "{marker} {} — {} XP\n",
+            strings.progress_rank(candidate),
+            candidate.minimum_xp(),
+        ));
+    }
+
+    message.push_str(&format!("\n{}:\n", strings.xp_rules));
+    for source in XP_SOURCES {
+        message.push_str(&format!(
+            "+{} XP · {}\n",
+            source.points(),
+            strings.xp_source(source),
+        ));
+    }
+
+    let opportunities = &stats.xp_opportunity_summary;
+    message.push_str(&format!(
+        "\n{}: {} XP\n{}: {} XP\n{}: {} XP\n{}: {} XP\n{}: {} XP\n{}: {} XP\n",
+        strings.xp_opportunities,
+        opportunities.total_available_xp(),
+        strings.xp_questions,
+        opportunities.question_xp,
+        strings.xp_quizzes,
+        opportunities.quiz_xp,
+        strings.xp_topics,
+        opportunities.mastery_xp,
+        strings.xp_courses,
+        opportunities.course_xp,
+        strings.xp_practice,
+        opportunities.practice_xp,
+    ));
+
+    message.push_str(&format!(
+        "\n{}: {:.1}% ({}/{})\n{}: {} · {} / {} · {:.1}%\n{}: {}\n{}: {}\n{}: {}\n{}: {}\n{}: {}\n{}: {}\n{}\n\n{}:\n",
+        strings.mastery,
+        stats.overall_mastery_percent(),
+        stats.passed_topics(),
+        stats.total_topics(),
         strings.today,
         stats.today_answered_questions,
         stats.today_correct_answers,
@@ -449,11 +513,9 @@ fn render_activity(frame: &mut Frame, app: &App) {
         stats.best_streak,
         strings.last_7_days,
         stats.last_7_days_answered_questions,
-        strings.career_path,
-        stats.overall_mastery_percent(),
-        strings.salary_disclaimer,
+        strings.study_day_target,
         strings.course_progress,
-    );
+    ));
 
     if stats.course_progress.is_empty() {
         message.push_str("—\n");
@@ -469,22 +531,66 @@ fn render_activity(frame: &mut Frame, app: &App) {
         }
     }
 
+    let unlocked = stats
+        .achievements
+        .iter()
+        .filter(|achievement| achievement.unlocked)
+        .count();
     message.push_str(&format!(
-        "\n{}\n{}:\n{}\n",
-        strings.study_day_target,
+        "\n{}: {}/{}\n",
+        strings.achievements,
+        unlocked,
+        stats.achievements.len(),
+    ));
+    for achievement in &stats.achievements {
+        let marker = if achievement.unlocked { '+' } else { '-' };
+        message.push_str(&format!(
+            "{marker} {} · {} · {}/{}\n",
+            strings.achievement_title(achievement.kind),
+            strings.achievement_rarity(achievement.rarity),
+            achievement.current,
+            achievement.target,
+        ));
+    }
+
+    message.push_str(&format!(
+        "\n{}\n{}: {}\n",
         strings.recent_activity,
-        heatmap(stats),
+        strings.active_days_28,
+        stats.recent_days.len(),
     ));
 
-    for day in stats.recent_days.iter().rev() {
-        message.push_str(&format!(
-            "{} — {}: {} · {}: {}\n",
-            day.date,
-            strings.answered_questions,
-            day.answered_questions,
-            strings.correct_answers_count,
-            day.correct_answers,
-        ));
+    if stats.recent_days.is_empty() {
+        message.push_str(strings.no_recent_activity);
+        message.push('\n');
+    } else {
+        for day in stats.recent_days.iter().rev() {
+            let mut parts = Vec::new();
+            if day.answered_questions > 0 {
+                parts.push(format!(
+                    "{}: {}",
+                    strings.answered_questions, day.answered_questions
+                ));
+            }
+            if day.practice_attempts > 0 {
+                parts.push(format!(
+                    "{}: {}",
+                    strings.sql_attempts, day.practice_attempts
+                ));
+            }
+            if day.practice_solved > 0 {
+                parts.push(format!("{}: {}", strings.sql_solved, day.practice_solved));
+            }
+            message.push_str(&format!("{} — {}\n", day.date, parts.join(" · ")));
+        }
+    }
+
+    if let Some(date) = stats.last_activity_date.as_deref() {
+        message.push_str(&format!("\n{}: {date}", strings.last_activity));
+        if let Some(days) = stats.days_since_last_activity {
+            message.push_str(&format!(" · {days} d"));
+        }
+        message.push('\n');
     }
 
     render_message_with_footer(
@@ -494,40 +600,6 @@ fn render_activity(frame: &mut Frame, app: &App) {
         strings.footer_statistics_scroll,
         app.statistics_scroll,
     );
-}
-
-fn heatmap(stats: &ActivityStats) -> String {
-    if stats.recent_days.is_empty() {
-        return String::from("—");
-    }
-
-    let first = stats
-        .recent_days
-        .first()
-        .map(|day| day.date.as_str())
-        .unwrap_or("");
-    let last = stats
-        .recent_days
-        .last()
-        .map(|day| day.date.as_str())
-        .unwrap_or("");
-    let mut rows = Vec::new();
-
-    for week in stats.recent_days.chunks(7) {
-        let row = week
-            .iter()
-            .map(|day| match day.answered_questions {
-                0 => '·',
-                1..=9 => '░',
-                10..=24 => '▒',
-                25..=49 => '▓',
-                _ => '█',
-            })
-            .collect::<String>();
-        rows.push(row);
-    }
-
-    format!("{first} → {last}\n{}", rows.join("\n"))
 }
 
 fn render_message_with_footer(

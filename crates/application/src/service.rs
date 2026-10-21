@@ -136,6 +136,10 @@ where
         self.repository.save_practice_draft(task_id, sql)
     }
 
+    pub fn record_practice_hint(&mut self, task_id: i64) -> Result<(), RepositoryError> {
+        self.repository.record_practice_hint(task_id)
+    }
+
     pub fn record_practice_attempt(
         &mut self,
         task_id: i64,

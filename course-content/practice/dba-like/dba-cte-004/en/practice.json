@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-cte-004",
+  "category": "Subquery / CTE",
+  "title": "Databases without successful backups using NOT EXISTS",
+  "description": "Use NOT EXISTS to return databases for which no backup with status = success exists. Failed/cancelled backups are not successful. Return exactly one column: database_name. Sort by database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT d.name AS database_name\nFROM databases AS d\n",
+  "hints": [
+    "Correlate the subquery with the current d.id.",
+    "NOT EXISTS checks that no matching successful row exists."
+  ],
+  "solution_explanation": "A correlated NOT EXISTS directly expresses “no successful backup exists”.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "exists"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 112
+}

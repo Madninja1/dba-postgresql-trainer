@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-010",
+  "category": "JOIN",
+  "title": "Открытые инциденты production-серверов",
+  "description": "Выведите нерешённые инциденты только production-серверов. Ровно четыре колонки: incident_id, hostname, severity, opened_seq. Сортировка: opened_seq ASC, затем incident_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT i.id AS incident_id, s.hostname, i.severity, i.opened_seq\nFROM incidents AS i\n",
+  "hints": [
+    "environment находится в servers, resolved — в incidents.",
+    "Соединение выполняется по incidents.server_id."
+  ],
+  "solution_explanation": "JOIN нужен, потому что фильтр окружения и данные инцидента живут в разных таблицах.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 97
+}

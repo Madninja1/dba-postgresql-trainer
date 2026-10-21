@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "key": "dba-group-010",
+  "category": "GROUP BY / HAVING",
+  "title": "Базы с устойчиво тяжёлыми запросами",
+  "description": "Для каждой database_name посчитайте sample_count, avg_duration_ms (округление до одного знака), max_duration_ms и slow_count — число запросов с duration_ms не меньше 500. Оставьте только базы с sample_count не меньше 4, slow_count не меньше 2 и средним duration_ms не меньше 200. Ровно пять колонок: database_name, sample_count, avg_duration_ms, max_duration_ms, slow_count. Сортировка: slow_count DESC, avg_duration_ms DESC, database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "SELECT database_name\nFROM query_stats\nGROUP BY database_name\n",
+  "hints": [
+    "Все три порога относятся к агрегированным значениям.",
+    "slow_count получается условной агрегацией."
+  ],
+  "solution_explanation": "Несколько агрегатов и несколько условий HAVING формируют более строгий профиль тяжёлой нагрузки.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "having"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "case"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 67
+}

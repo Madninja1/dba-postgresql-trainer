@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-debug-006",
+  "category": "FixQuery / FindLogicalError",
+  "title": "NOT IN broken by NULL",
+  "description": "Fix the query so it returns databases with no active sessions. sessions may contain rows with database_id = NULL; those rows must not make the result empty. Return exactly one column: database_name. Sort by database_name ASC.",
+  "type": "find_logical_error",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT name AS database_name\nFROM databases\nWHERE id NOT IN (SELECT database_id FROM sessions WHERE state = 'active')\nORDER BY name ASC;\n",
+  "hints": [
+    "A NULL inside NOT IN turns comparisons for other values into UNKNOWN.",
+    "A correlated NOT EXISTS avoids this problem."
+  ],
+  "solution_explanation": "NOT EXISTS checks active-session existence per database and is unaffected by NULL in unrelated rows.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "exists"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 154
+}

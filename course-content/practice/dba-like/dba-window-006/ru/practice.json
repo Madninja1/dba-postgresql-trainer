@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-window-006",
+  "category": "Window functions",
+  "title": "Изменение длительности запроса от измерения к измерению",
+  "description": "Для каждого database_name в порядке sampled_seq ASC, sample_id ASC получите previous_duration_ms через LAG и delta_ms = duration_ms - previous_duration_ms. Для первой строки каждой базы оба значения должны быть NULL. Ровно шесть колонок: sample_id, database_name, sampled_seq, duration_ms, previous_duration_ms, delta_ms. Итоговая сортировка: database_name ASC, sampled_seq ASC, sample_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT sample_id, database_name, sampled_seq, duration_ms\nFROM query_stats\n",
+  "hints": [
+    "LAG(duration_ms) нужен с PARTITION BY database_name.",
+    "Чтобы не повторять окно несколько раз, можно сначала вычислить previous_duration_ms в CTE."
+  ],
+  "solution_explanation": "LAG предоставляет предыдущее измерение в той же базе; вычитание автоматически даёт NULL для первой строки.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "lag"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "over"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 134
+}

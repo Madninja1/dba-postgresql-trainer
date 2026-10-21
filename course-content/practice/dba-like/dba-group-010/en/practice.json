@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "key": "dba-group-010",
+  "category": "GROUP BY / HAVING",
+  "title": "Databases with consistently heavy queries",
+  "description": "For each database_name calculate sample_count, avg_duration_ms rounded to one decimal, max_duration_ms, and slow_count as queries with duration_ms at least 500. Keep only databases with sample_count at least 4, slow_count at least 2, and average duration_ms at least 200. Return exactly five columns: database_name, sample_count, avg_duration_ms, max_duration_ms, slow_count. Sort by slow_count DESC, avg_duration_ms DESC, database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "SELECT database_name\nFROM query_stats\nGROUP BY database_name\n",
+  "hints": [
+    "All three thresholds apply to aggregate values.",
+    "slow_count is produced with conditional aggregation."
+  ],
+  "solution_explanation": "Multiple aggregates and HAVING conditions create a stricter heavy-load profile.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "having"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "case"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 67
+}

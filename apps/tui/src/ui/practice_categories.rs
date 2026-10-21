@@ -63,15 +63,22 @@ pub fn render(frame: &mut Frame, app: &App) {
     }
 
     for category in app.practice_categories() {
+        let xp_available = app.practice_category_xp_available(&category);
         let suffix = app
             .practice_category_stats(&category)
             .map(|stats| {
+                let xp = if xp_available > 0 {
+                    format!(" · {}: {xp_available} XP", app.strings().xp_available)
+                } else {
+                    String::new()
+                };
                 format!(
-                    "  {}/{} · {} {}",
+                    "  {}/{} · {} {}{}",
                     stats.solved_tasks,
                     stats.total_tasks,
                     app.strings().practice_attempts,
-                    stats.total_attempts
+                    stats.total_attempts,
+                    xp,
                 )
             })
             .unwrap_or_default();

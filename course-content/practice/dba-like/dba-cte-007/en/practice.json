@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-cte-007",
+  "category": "Subquery / CTE",
+  "title": "Servers where every database has a successful backup",
+  "description": "Use NOT EXISTS. Return servers that have at least one database and for which no database on that server lacks a successful backup. Return exactly one column: hostname. A server without databases must not be included. Sort by hostname ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT s.hostname\nFROM servers AS s\n",
+  "hints": [
+    "Separately prove that at least one database exists.",
+    "In the second condition, search for a server database for which no successful backup exists."
+  ],
+  "solution_explanation": "Double NOT EXISTS expresses “every database has a successful backup”, while EXISTS excludes empty servers.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "exists"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 115
+}

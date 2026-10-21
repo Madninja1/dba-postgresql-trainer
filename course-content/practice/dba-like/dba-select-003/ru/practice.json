@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-select-003",
+  "category": "SELECT / WHERE / ORDER BY",
+  "title": "Приоритет нерешённых инцидентов",
+  "description": "Выведите ровно четыре колонки: id, server_name, severity, age_hours. В результат включайте только нерешённые инциденты severity critical или high. Сортировка: сначала critical, затем high; внутри одного severity — age_hours DESC, затем id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT id, server_name, severity, age_hours\nFROM incidents\n",
+  "hints": [
+    "Нерешённый инцидент имеет resolved_at IS NULL.",
+    "Для пользовательского порядка severity удобно использовать CASE в ORDER BY."
+  ],
+  "solution_explanation": "CASE преобразует textual severity в явный сортировочный приоритет.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "where"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "order"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 30
+}

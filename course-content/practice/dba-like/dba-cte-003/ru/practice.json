@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-cte-003",
+  "category": "Subquery / CTE",
+  "title": "Active-сессии через CTE",
+  "description": "Используйте CTE, чтобы сначала посчитать active_sessions для каждой database_name только по state = active. Затем выведите базы с active_sessions не меньше 2. Ровно две колонки: database_name, active_sessions. Сортировка: active_sessions DESC, затем database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "WITH active_counts AS (\n  SELECT database_name\n  FROM sessions\n)\nSELECT *\nFROM active_counts\n",
+  "hints": [
+    "В CTE выполните WHERE + GROUP BY, во внешнем запросе оставьте нужный порог.",
+    "CTE должен возвращать уже готовый active_sessions."
+  ],
+  "solution_explanation": "CTE разделяет агрегирование active-сессий и итоговую фильтрацию.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "with"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 111
+}

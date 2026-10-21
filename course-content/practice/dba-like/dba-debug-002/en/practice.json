@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-debug-002",
+  "category": "FixQuery / FindLogicalError",
+  "title": "Extra rows from backup history",
+  "description": "Fix the query so it returns exactly one row per database and exactly two columns: database_name, finished_seq. For a database with successful backups, return the finished_seq of the latest successful backup; a database without a successful backup must remain with finished_seq = NULL. Sort by database_name ASC.",
+  "type": "find_logical_error",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT d.name AS database_name, b.finished_seq\nFROM databases AS d\nJOIN backups AS b ON b.database_id = d.id\nWHERE b.status = 'success'\nORDER BY d.name;\n",
+  "hints": [
+    "Reduce multiple successful backups for one database to one value first.",
+    "LEFT JOIN preserves databases without successful backups; MAX(finished_seq) chooses the latest sequence."
+  ],
+  "solution_explanation": "LEFT JOIN preserves all databases, while GROUP BY + MAX collapses successful backup history to one row per database.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 150
+}

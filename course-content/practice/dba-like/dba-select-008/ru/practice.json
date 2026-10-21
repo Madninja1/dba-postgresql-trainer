@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-select-008",
+  "category": "SELECT / WHERE / ORDER BY",
+  "title": "Очередь обслуживания по приоритету",
+  "description": "Для jobs со status = pending выведите ровно четыре колонки: job_id, database_name, priority, priority_rank. priority_rank вычислите как 1 для critical, 2 для high, 3 для normal, 4 для остальных значений. Сортировка: priority_rank ASC, scheduled_seq ASC, затем job_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT job_id, database_name, priority\nFROM maintenance_jobs\n",
+  "hints": [
+    "CASE удобно превратить текстовый priority в числовой порядок.",
+    "scheduled_seq участвует в сортировке, но не обязан быть выходной колонкой."
+  ],
+  "solution_explanation": "Явный priority_rank делает порядок очереди проверяемым независимо от алфавитного порядка текста.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "case"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 35
+}

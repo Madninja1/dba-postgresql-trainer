@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "key": "dba-select-007",
+  "category": "SELECT / WHERE / ORDER BY",
+  "title": "Истекающие login-роли",
+  "description": "Текущая контрольная точка равна 100. Выведите только роли с can_login = 1 и ненулевым valid_until_seq меньше 100. Ровно две колонки: role_name, valid_until_seq. NULL означает отсутствие срока и не должен попадать в результат. Сортировка: valid_until_seq ASC, затем role_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT role_name, valid_until_seq\nFROM db_roles\n",
+  "hints": [
+    "Сравнение с 100 уже исключит NULL, но условие can_login всё равно нужно отдельно.",
+    "Сначала идут роли с более ранним сроком."
+  ],
+  "solution_explanation": "Роль без LOGIN или без срока действия не считается истёкшей login-ролью.",
+  "rules": [
+    {
+      "type": "forbid_select_star"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 34
+}

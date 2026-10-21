@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-debug-006",
+  "category": "FixQuery / FindLogicalError",
+  "title": "NOT IN сломался из-за NULL",
+  "description": "Исправьте запрос так, чтобы он возвращал базы, у которых нет active-сессий. В sessions могут существовать строки с database_id = NULL; они не должны приводить к пустому результату. Ровно одна колонка: database_name. Сортировка: database_name ASC.",
+  "type": "find_logical_error",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT name AS database_name\nFROM databases\nWHERE id NOT IN (SELECT database_id FROM sessions WHERE state = 'active')\nORDER BY name ASC;\n",
+  "hints": [
+    "NULL внутри NOT IN делает сравнение UNKNOWN для остальных значений.",
+    "Коррелированный NOT EXISTS не имеет этой проблемы."
+  ],
+  "solution_explanation": "NOT EXISTS проверяет наличие active-сессии отдельно для каждой базы и не зависит от NULL в чужих строках.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "exists"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 154
+}

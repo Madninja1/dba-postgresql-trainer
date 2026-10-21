@@ -14,12 +14,16 @@ import dev.dbatrainer.ffi.MobilePracticeExecutionResult
 import dev.dbatrainer.ffi.MobilePracticeSchema
 import dev.dbatrainer.ffi.MobilePracticeStats
 import dev.dbatrainer.ffi.MobilePracticeTableData
+import dev.dbatrainer.ffi.MobilePracticeDifficulty
 import dev.dbatrainer.ffi.MobilePracticeTask
 import dev.dbatrainer.ffi.MobilePracticeTaskProgress
+import dev.dbatrainer.ffi.MobilePracticeXpOpportunity
 import dev.dbatrainer.ffi.MobileQuestion
 import dev.dbatrainer.ffi.MobileQuestionLimit
 import dev.dbatrainer.ffi.MobileQuestionMistakeDetail
 import dev.dbatrainer.ffi.MobileQuestionMistakeSummary
+import dev.dbatrainer.ffi.MobileQuizXpOpportunity
+import dev.dbatrainer.ffi.MobileQuizXpScopeKind
 import dev.dbatrainer.ffi.MobileQuestionType
 import dev.dbatrainer.ffi.MobileSessionProgress
 import dev.dbatrainer.ffi.MobileStatisticsLimit
@@ -383,7 +387,15 @@ class TrainerController(context: Context) {
     val practiceTasksForSelectedCategory: List<MobilePracticeTask>
         get() {
             val category = selectedPracticeCategory ?: return emptyList()
-            return practiceTasks.filter { task -> task.category == category }
+            return listOf(
+                MobilePracticeDifficulty.EASY,
+                MobilePracticeDifficulty.MEDIUM,
+                MobilePracticeDifficulty.HARD,
+            ).flatMap { difficulty ->
+                practiceTasks.filter { task ->
+                    task.category == category && task.difficulty == difficulty
+                }
+            }
         }
 
     val resumablePracticeTask: MobilePracticeTask?
@@ -408,6 +420,20 @@ class TrainerController(context: Context) {
 
     fun practiceCategoryStats(category: String): MobilePracticeCategoryStats? =
         practiceStats?.categories?.firstOrNull { stats -> stats.category == category }
+
+    fun practiceXpOpportunityFor(taskId: Long): MobilePracticeXpOpportunity? =
+        activityStats
+            ?.practiceXpOpportunities
+            ?.firstOrNull { opportunity -> opportunity.taskId == taskId }
+
+    fun practiceXpAvailable(taskId: Long): ULong =
+        practiceXpOpportunityFor(taskId)?.totalAvailableXp ?: 0UL
+
+    fun practiceCategoryXpAvailable(category: String): ULong =
+        practiceTasks
+            .asSequence()
+            .filter { task -> task.category == category }
+            .fold(0UL) { total, task -> total + practiceXpAvailable(task.id) }
 
     fun changeLanguage(language: UiLanguage) {
         if (this.language == language) {
@@ -464,7 +490,7 @@ class TrainerController(context: Context) {
             practiceCheck = null
             practicePane = PracticePane.Editor
             practiceHintCount = minOf(
-                progress?.attempts?.toInt() ?: 0,
+                progress?.hintsRevealed?.toInt() ?: 0,
                 task.hints.size,
             )
             practiceShowSolution = false
@@ -517,10 +543,8 @@ class TrainerController(context: Context) {
         try {
             val result = requireTrainer().practiceCheck(task.id, practiceSql)
             practiceCheck = result
-            if (!result.isCorrect && practiceHintCount < task.hints.size) {
-                practiceHintCount += 1
-            }
             refreshPracticeState()
+            activityStats = requireTrainer().activityStats()
             practicePane = PracticePane.Result
         } catch (error: Exception) {
             practiceError = error.message ?: error::class.java.simpleName
@@ -551,7 +575,12 @@ class TrainerController(context: Context) {
 
         practiceMessage = null
         when {
-            practiceHintCount < unlocked -> practiceHintCount += 1
+            practiceHintCount < unlocked -> runCoreAction {
+                requireTrainer().practiceRecordHint(task.id)
+                practiceHintCount += 1
+                refreshPracticeState()
+                activityStats = requireTrainer().activityStats()
+            }
             practiceHintCount >= task.hints.size ->
                 practiceMessage = strings.practiceNoMoreHints
             else ->
@@ -622,6 +651,57 @@ class TrainerController(context: Context) {
 
     fun topicMasteryFor(topicId: Long): MobileTopicMasteryStats? =
         topicMastery[topicId]
+
+    fun topicXpOpportunity(topicId: Long): MobileQuizXpOpportunity? =
+        activityStats
+            ?.quizXpOpportunities
+            ?.firstOrNull { opportunity ->
+                opportunity.scopeKind == MobileQuizXpScopeKind.TOPIC &&
+                    opportunity.topicId == topicId
+            }
+
+    fun courseXpOpportunity(courseCode: String): MobileQuizXpOpportunity? =
+        activityStats
+            ?.quizXpOpportunities
+            ?.firstOrNull { opportunity ->
+                opportunity.scopeKind == MobileQuizXpScopeKind.COURSE &&
+                    opportunity.courseCode == courseCode
+            }
+
+    fun allTopicsXpOpportunity(): MobileQuizXpOpportunity? =
+        activityStats
+            ?.quizXpOpportunities
+            ?.firstOrNull { opportunity ->
+                opportunity.scopeKind == MobileQuizXpScopeKind.ALL_TOPICS
+            }
+
+    fun questionXpAvailable(questionId: Long): Boolean =
+        activityStats?.questionXpAvailableIds?.contains(questionId) == true
+
+    fun topicXpAvailable(topicId: Long): ULong =
+        topicXpOpportunity(topicId)?.totalAvailableXp ?: 0UL
+
+    fun courseXpAvailable(courseCode: String): ULong =
+        courseXpOpportunity(courseCode)?.totalAvailableXp ?: 0UL
+
+    fun topicCourseXpAvailable(courseCode: String): ULong =
+        topics
+            .asSequence()
+            .filter { topic -> topic.courseCode == courseCode }
+            .sumOf { topic -> topicXpAvailable(topic.id) }
+
+    val pendingQuizXpOpportunity: MobileQuizXpOpportunity?
+        get() {
+            if (pendingMistakeReview) {
+                return null
+            }
+
+            return when {
+                pendingTopic != null -> topicXpOpportunity(pendingTopic!!.id)
+                pendingCourse != null -> courseXpOpportunity(pendingCourse!!)
+                else -> allTopicsXpOpportunity()
+            }
+        }
 
     fun openLabs() {
         selectedLabCourse = null
@@ -832,6 +912,7 @@ class TrainerController(context: Context) {
                 correctAnswers += 1
             }
 
+            activityStats = requireTrainer().activityStats()
             screen = AppScreen.Feedback
         }
     }
@@ -860,6 +941,7 @@ class TrainerController(context: Context) {
 
         runCoreAction {
             showCancelDialog = false
+            activityStats = requireTrainer().activityStats()
             resetQuizState()
             unfinishedSessions = requireTrainer().unfinishedSessions()
             screen = AppScreen.Home

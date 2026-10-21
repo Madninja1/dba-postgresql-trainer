@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "key": "dba-group-007",
+  "category": "GROUP BY / HAVING",
+  "title": "Активные и idle-сессии по базе",
+  "description": "Для каждой database_name посчитайте active_sessions и idle_sessions условной агрегацией. Учитывайте только state `active` и `idle`; другие состояния не должны увеличивать ни один счётчик. Оставьте базы, где active_sessions не меньше 1. Ровно три колонки: database_name, active_sessions, idle_sessions. Сортировка: active_sessions DESC, idle_sessions DESC, database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT database_name\nFROM sessions\nGROUP BY database_name\n",
+  "hints": [
+    "SUM(CASE WHEN ... THEN 1 ELSE 0 END) позволяет считать состояния отдельно.",
+    "Тот же условный агрегат можно повторить в HAVING."
+  ],
+  "solution_explanation": "Условная агрегация создаёт независимые счётчики в одной строке на базу.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "having"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "case"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 64
+}

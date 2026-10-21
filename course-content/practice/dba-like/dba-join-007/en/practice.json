@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-007",
+  "category": "JOIN",
+  "title": "Login roles and accessible databases",
+  "description": "Return grants only for roles with can_login = 1. Return exactly two columns: role_name, database_name, one row per grant. Sort by role_name ASC, then database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT r.role_name, d.name AS database_name\nFROM role_grants AS g\n",
+  "hints": [
+    "Join role_grants to both db_roles and databases.",
+    "The can_login filter applies to the role row."
+  ],
+  "solution_explanation": "Two foreign references in the grants table require two joins.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 94
+}

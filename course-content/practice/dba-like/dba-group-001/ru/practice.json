@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-group-001",
+  "category": "GROUP BY / HAVING",
+  "title": "Базы с несколькими активными сессиями",
+  "description": "Посчитайте только active-сессии для каждой database_name. Выведите ровно две колонки: database_name, active_sessions, и оставьте только базы с active_sessions не меньше 2. Сортировка: active_sessions DESC, при равенстве database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT database_name, COUNT(*) AS active_sessions\nFROM sessions\n",
+  "hints": [
+    "Сначала отфильтруйте только active-сессии.",
+    "Фильтр по COUNT(*) применяется через HAVING, не WHERE."
+  ],
+  "solution_explanation": "WHERE фильтрует строки до агрегации, HAVING — уже сформированные группы.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "having"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 40
+}

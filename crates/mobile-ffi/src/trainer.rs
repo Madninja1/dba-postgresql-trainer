@@ -164,6 +164,13 @@ impl MobileTrainer {
             .map_err(to_mobile_error)
     }
 
+    pub fn practice_record_hint(&self, task_id: i64) -> Result<(), MobileError> {
+        let mut service = self.service()?;
+        service
+            .record_practice_hint(task_id)
+            .map_err(to_mobile_error)
+    }
+
     pub fn practice_execute(
         &self,
         task_id: i64,

@@ -45,7 +45,19 @@ pub fn render(frame: &mut Frame, app: &App) {
                 Style::default()
             };
 
-            ListItem::new(course.to_uppercase()).style(style)
+            let xp_available = app.course_xp_available(course);
+            let label = if xp_available > 0 {
+                format!(
+                    "{} | {}: {} XP",
+                    course.to_uppercase(),
+                    app.strings().xp_available,
+                    xp_available,
+                )
+            } else {
+                course.to_uppercase()
+            };
+
+            ListItem::new(label).style(style)
         })
         .collect::<Vec<_>>();
 

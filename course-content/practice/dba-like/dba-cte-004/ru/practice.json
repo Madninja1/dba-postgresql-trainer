@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-cte-004",
+  "category": "Subquery / CTE",
+  "title": "Базы без successful backup через NOT EXISTS",
+  "description": "Используйте NOT EXISTS и выведите базы, для которых не существует ни одного backup со status = success. Failed/cancelled backup не считается successful. Ровно одна колонка: database_name. Сортировка: database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT d.name AS database_name\nFROM databases AS d\n",
+  "hints": [
+    "Подзапрос должен быть связан с текущей d.id.",
+    "NOT EXISTS проверяет отсутствие хотя бы одной подходящей successful-строки."
+  ],
+  "solution_explanation": "Коррелированный NOT EXISTS выражает условие «нет successful backup» напрямую.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "exists"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 112
+}

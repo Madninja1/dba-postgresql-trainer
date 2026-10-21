@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-select-008",
+  "category": "SELECT / WHERE / ORDER BY",
+  "title": "Maintenance queue by priority",
+  "description": "For jobs with status = pending, return exactly four columns: job_id, database_name, priority, priority_rank. Compute priority_rank as 1 for critical, 2 for high, 3 for normal, and 4 for every other value. Sort by priority_rank ASC, scheduled_seq ASC, then job_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT job_id, database_name, priority\nFROM maintenance_jobs\n",
+  "hints": [
+    "CASE is useful for turning textual priority into a numeric order.",
+    "scheduled_seq participates in sorting but does not have to be an output column."
+  ],
+  "solution_explanation": "An explicit priority_rank makes queue ordering independent from alphabetical text ordering.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "case"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 35
+}

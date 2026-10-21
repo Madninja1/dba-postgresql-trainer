@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "key": "dba-group-008",
+  "category": "GROUP BY / HAVING",
+  "title": "Servers with open critical incidents",
+  "description": "For each server_name, calculate open_incidents as rows with resolved = 0 and critical_open as unresolved rows with severity = critical. Keep only servers with at least one critical_open incident. Return exactly three columns: server_name, open_incidents, critical_open. Sort by critical_open DESC, open_incidents DESC, server_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT server_name\nFROM incidents\nGROUP BY server_name\n",
+  "hints": [
+    "Two SUM(CASE ...) expressions can produce the two counters.",
+    "Resolved incidents must contribute to neither open_incidents nor critical_open."
+  ],
+  "solution_explanation": "Conditional aggregation separates total open incident load from critical incidents.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "having"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "case"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 65
+}

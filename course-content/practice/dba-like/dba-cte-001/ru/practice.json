@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "key": "dba-cte-001",
+  "category": "Subquery / CTE",
+  "title": "Базы крупнее среднего на своём сервере",
+  "description": "Выведите ровно три колонки: server_name, name, size_mb для баз, размер которых строго больше среднего размера баз на том же сервере. Сортировка: server_name ASC, затем size_mb DESC, при равенстве size_mb — name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT d.server_name, d.name, d.size_mb\nFROM databases AS d\n",
+  "hints": [
+    "В подзапросе среднее должно рассчитываться только для текущего server_name.",
+    "Сравните d.size_mb с коррелированным AVG(size_mb)."
+  ],
+  "solution_explanation": "Коррелированный подзапрос пересчитывает среднее отдельно для каждого сервера.",
+  "rules": [],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 100
+}

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-group-004",
+  "category": "GROUP BY / HAVING",
+  "title": "Состояния с несколькими сессиями",
+  "description": "Посчитайте число сессий для каждого state и оставьте только state с количеством не меньше 2. Ровно две колонки: state, session_count. Сортировка: session_count DESC, затем state ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT state, COUNT(*) AS session_count\nFROM sessions\n",
+  "hints": [
+    "После GROUP BY ограничение на COUNT применяется через HAVING.",
+    "Alias session_count можно использовать в ORDER BY."
+  ],
+  "solution_explanation": "HAVING фильтрует уже сформированные группы по агрегированному количеству.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "having"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 61
+}

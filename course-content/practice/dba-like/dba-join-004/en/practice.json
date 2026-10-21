@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-004",
+  "category": "JOIN",
+  "title": "Databases and their servers",
+  "description": "Return every database together with its server hostname. Return exactly two columns: database_name, hostname. Sort by database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT d.name AS database_name, s.hostname\nFROM databases AS d\n",
+  "hints": [
+    "Join on databases.server_id = servers.id.",
+    "Only databases with an existing server are required."
+  ],
+  "solution_explanation": "A regular INNER JOIN associates each database with its server.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 91
+}

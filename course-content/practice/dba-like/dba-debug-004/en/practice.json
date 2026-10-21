@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "key": "dba-debug-004",
+  "category": "FixQuery / FindLogicalError",
+  "title": "AND/OR precedence in a session filter",
+  "description": "Fix the query. Return only production sessions whose state is either active or idle in transaction. A session from another environment must never pass for either state. Return exactly three columns: session_id, environment, state. Sort by session_id ASC.",
+  "type": "find_logical_error",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT session_id, environment, state\nFROM sessions\nWHERE environment = 'production' AND state = 'active' OR state = 'idle in transaction'\nORDER BY session_id ASC;\n",
+  "hints": [
+    "AND has higher precedence than OR.",
+    "Group the two accepted states into one logical condition."
+  ],
+  "solution_explanation": "Parentheses make environment = production apply to both state alternatives.",
+  "rules": [],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 152
+}

@@ -1,0 +1,2 @@
+CREATE TABLE servers(id INTEGER, hostname TEXT); CREATE TABLE databases(id INTEGER, name TEXT, server_id INTEGER); CREATE TABLE db_roles(id INTEGER, role_name TEXT); CREATE TABLE role_grants(role_id INTEGER, database_id INTEGER);
+         INSERT INTO servers VALUES (1,'a'),(2,'b'),(3,'c'); INSERT INTO databases VALUES (1,'a1',1),(2,'a2',1),(3,'b1',2),(4,'c1',3); INSERT INTO db_roles VALUES (1,'alice'),(2,'bob'); INSERT INTO role_grants VALUES (1,1),(1,2),(1,3),(2,1),(2,4);

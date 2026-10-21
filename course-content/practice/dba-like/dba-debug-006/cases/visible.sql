@@ -1,0 +1,1 @@
+CREATE TABLE databases(id INTEGER, name TEXT); CREATE TABLE sessions(id INTEGER, database_id INTEGER, state TEXT); INSERT INTO databases VALUES (1,'app'),(2,'audit'),(3,'billing'); INSERT INTO sessions VALUES (1,1,'active'),(2,NULL,'active'),(3,3,'idle');

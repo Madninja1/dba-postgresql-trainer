@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-select-010",
+  "category": "SELECT / WHERE / ORDER BY",
+  "title": "Production-базы с риском ёмкости",
+  "description": "Для production-баз определите risk_reason по приоритету: `read_only` если read_only = 1; иначе `disk` если free_percent < 15; иначе `connections` если connections_used * 100.0 / connections_limit >= 90; иначе `ok`. Выведите только строки, где risk_reason не `ok`, и ровно пять колонок: database_name, free_percent, connections_used, connections_limit, risk_reason. Сортировка по приоритету причин read_only, disk, connections, затем database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "SELECT database_name, free_percent, connections_used, connections_limit\nFROM database_health\n",
+  "hints": [
+    "Один CASE можно использовать для вычисления причины, а внешний SELECT — для фильтра по alias.",
+    "Порядок ветвей CASE важен: одна база может подходить сразу под несколько условий."
+  ],
+  "solution_explanation": "Приоритет условий делает классификацию однозначной; внешний запрос позволяет безопасно фильтровать уже вычисленный risk_reason.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "case"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 37
+}

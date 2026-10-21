@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "key": "dba-select-004",
+  "category": "SELECT / WHERE / ORDER BY",
+  "title": "Databases not accepting connections",
+  "description": "Return production databases that are currently not accepting connections. Return exactly two columns: database_name, size_gb. Sort by size_gb DESC, then database_name ASC for ties.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT database_name, size_gb\nFROM database_health\n",
+  "hints": [
+    "Filter by both the environment and accepting_connections flag.",
+    "Add database_name as a stable tie-breaker for equal sizes."
+  ],
+  "solution_explanation": "This task checks exact filtering by two independent conditions and a complete sort order.",
+  "rules": [
+    {
+      "type": "forbid_select_star"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 31
+}

@@ -51,8 +51,39 @@ pub fn render(frame: &mut Frame, app: &App) {
         _ => "—",
     };
     let attempts = progress.map_or(0, |progress| progress.attempts);
+    let xp_available = app.practice_xp_available(task.id);
+    let bonus_details = app
+        .practice_xp_opportunity(task.id)
+        .map(|opportunity| {
+            let mut parts = Vec::new();
+            if opportunity.first_try_xp > 0 {
+                parts.push(format!(
+                    "{} +{}",
+                    app.strings().practice_first_try,
+                    opportunity.first_try_xp
+                ));
+            }
+            if opportunity.no_hints_xp > 0 {
+                parts.push(format!(
+                    "{} +{}",
+                    app.strings().practice_no_hints,
+                    opportunity.no_hints_xp
+                ));
+            }
+            parts
+        })
+        .unwrap_or_default();
+    let xp = if bonus_details.is_empty() {
+        format!("  ·  {}: {xp_available} XP", app.strings().xp_available)
+    } else {
+        format!(
+            "  ·  {}: {xp_available} XP ({})",
+            app.strings().xp_available,
+            bonus_details.join(" · ")
+        )
+    };
     let task_text = format!(
-        "{}\n{}: {}  ·  {}: {}  ·  {}: {}  ·  {}: {}",
+        "{}\n{}: {}  ·  {}: {}  ·  {}: {}  ·  {}: {}{}",
         task.description,
         app.strings().practice_category,
         task.category,
@@ -62,6 +93,7 @@ pub fn render(frame: &mut Frame, app: &App) {
         attempts,
         app.strings().practice_progress,
         status,
+        xp,
     );
     let task_panel = Paragraph::new(task_text).wrap(Wrap { trim: true }).block(
         Block::default()

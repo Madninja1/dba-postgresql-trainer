@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-debug-007",
+  "category": "FixQuery / FindLogicalError",
+  "title": "Среднее latency считает idle-сессии",
+  "description": "Исправьте запрос. Для каждой database_name нужно считать avg_duration_sec только по state = active. Базы без active-сессий не выводятся. Ровно две колонки: database_name, avg_duration_sec, округление до одного знака. Сортировка: avg_duration_sec DESC, затем database_name ASC.",
+  "type": "fix_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT database_name, ROUND(AVG(duration_sec), 1) AS avg_duration_sec\nFROM sessions\nGROUP BY database_name\nORDER BY avg_duration_sec DESC, database_name ASC;\n",
+  "hints": [
+    "Сейчас AVG видит все state.",
+    "Отбор active должен происходить до GROUP BY."
+  ],
+  "solution_explanation": "WHERE state = active формирует правильный набор строк до агрегирования.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 155
+}

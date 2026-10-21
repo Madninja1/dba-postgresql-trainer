@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-group-006",
+  "category": "GROUP BY / HAVING",
+  "title": "Databases with repeated backup failures",
+  "description": "Consider only backups with status = failed. For each database_name, count failed_count and keep databases with at least 2 failures. Return exactly two columns: database_name, failed_count. Sort by failed_count DESC, then database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT database_name, COUNT(*) AS failed_count\nFROM backups\n",
+  "hints": [
+    "Filter failed rows before grouping.",
+    "Apply the group count threshold through HAVING."
+  ],
+  "solution_explanation": "WHERE removes successful backups before aggregation and HAVING keeps repeated failures only.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "having"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 63
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "key": "dba-select-009",
+  "category": "SELECT / WHERE / ORDER BY",
+  "title": "Активные сессии в ожидании",
+  "description": "Выведите active-сессии длительностью не меньше 60 секунд, у которых wait_event не NULL. Ровно четыре колонки: session_id, database_name, duration_sec, wait_event. Сортировка: duration_sec DESC, затем session_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT session_id, database_name, duration_sec, wait_event\nFROM sessions\n",
+  "hints": [
+    "Нужны одновременно state, минимальная длительность и наличие wait_event.",
+    "Проверка NULL выполняется специальным предикатом SQL."
+  ],
+  "solution_explanation": "Сессия без wait_event не считается ожидающей, даже если она долгая и active.",
+  "rules": [
+    {
+      "type": "forbid_select_star"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 36
+}

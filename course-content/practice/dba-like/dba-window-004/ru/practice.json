@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-window-004",
+  "category": "Window functions",
+  "title": "Ранг размера базы внутри сервера",
+  "description": "Для каждой базы вычислите size_rank внутри своего server_name с помощью DENSE_RANK по size_gb DESC. Базы одинакового размера получают одинаковый rank без пропусков. Ровно четыре колонки: server_name, database_name, size_gb, size_rank. Итоговая сортировка: server_name ASC, size_rank ASC, database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT server_name, database_name, size_gb,\n       DENSE_RANK() OVER (\n       ) AS size_rank\nFROM databases\n",
+  "hints": [
+    "PARTITION BY отделяет рейтинги разных серверов.",
+    "DENSE_RANK нужен именно из-за требования не оставлять пропусков после равных размеров."
+  ],
+  "solution_explanation": "DENSE_RANK формирует независимый рейтинг размера для каждого сервера.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "dense_rank"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "over"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 132
+}

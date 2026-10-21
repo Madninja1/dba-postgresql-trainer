@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-cte-006",
+  "category": "Subquery / CTE",
+  "title": "Sessions slower than their database average",
+  "description": "Using a correlated subquery, return active sessions whose duration_sec is strictly greater than the average duration_sec of all active sessions for the same database_name. Return exactly three columns: session_id, database_name, duration_sec. Sort by database_name ASC, duration_sec DESC, session_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT s.id AS session_id, s.database_name, s.duration_sec\nFROM sessions AS s\n",
+  "hints": [
+    "The inner AVG must filter state = active and correlate by database_name.",
+    "The outer query must also keep only active sessions."
+  ],
+  "solution_explanation": "Correlation recalculates the baseline separately for the database of each outer row.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "avg"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 114
+}

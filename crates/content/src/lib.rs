@@ -12,7 +12,9 @@ pub use builtin::{
 
 pub use error::ContentError;
 
-pub use loader::{load_bundle, load_bundle_from_dir, load_lab, load_practice};
+pub use loader::{
+    load_bundle, load_bundle_from_dir, load_lab, load_practice, load_practice_with_cases,
+};
 
 pub use model::{
     AnswerDocument, CONTENT_SCHEMA_VERSION, ContentBundle, LabBundle, LabDocument,

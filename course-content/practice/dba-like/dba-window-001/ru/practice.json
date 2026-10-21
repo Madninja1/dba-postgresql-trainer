@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-window-001",
+  "category": "Window functions",
+  "title": "Топ-2 самых долгих запроса каждой базы",
+  "description": "Для каждой database_name выведите не более двух самых долгих запросов и ровно три колонки: database_name, query_id, duration_ms. Внутри каждой базы ранжируйте по duration_ms DESC, при равенстве — query_id ASC. Используйте ROW_NUMBER(). Сортировка результата: database_name ASC, внутри базы — в том же порядке ранга.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "WITH ranked AS (\n    SELECT database_name, id AS query_id, duration_ms\n    FROM query_stats\n)\n",
+  "hints": [
+    "ROW_NUMBER() должен быть PARTITION BY database_name.",
+    "После вычисления rn отфильтруйте rn <= 2 во внешнем запросе."
+  ],
+  "solution_explanation": "Оконная функция ранжирует запросы независимо внутри каждой базы, затем внешний запрос оставляет первые два.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "over"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 120
+}

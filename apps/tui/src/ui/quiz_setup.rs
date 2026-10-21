@@ -11,15 +11,29 @@ use ratatui::{
 use super::common::vertical_chunks;
 
 pub fn render(frame: &mut Frame, app: &App) {
-    let areas = vertical_chunks(
-        frame.area(),
-        &[
+    let xp_opportunity = app.quiz_xp_opportunity_for_scope(&app.quiz_scope);
+    let show_xp_details = xp_opportunity.is_some_and(|opportunity| {
+        opportunity.unique_question_xp > 0
+            || opportunity.mastery_xp > 0
+            || opportunity.course_completion_xp > 0
+    });
+    let constraints = if show_xp_details {
+        vec![
+            Constraint::Length(3),
+            Constraint::Min(5),
+            Constraint::Length(5),
+            Constraint::Length(5),
+            Constraint::Length(3),
+        ]
+    } else {
+        vec![
             Constraint::Length(3),
             Constraint::Min(5),
             Constraint::Length(5),
             Constraint::Length(3),
-        ],
-    );
+        ]
+    };
+    let areas = vertical_chunks(frame.area(), &constraints);
 
     let title = match &app.quiz_scope {
         QuizScope::AllTopics => app.strings().general_quiz.to_string(),
@@ -66,8 +80,27 @@ pub fn render(frame: &mut Frame, app: &App) {
             } else {
                 Style::default()
             };
+            let label = if let Some(opportunity) = xp_opportunity {
+                let bonus = opportunity.pass_bonus_for_limit(*limit);
+                if bonus > 0 {
+                    format!(
+                        "{} · +{} XP {}",
+                        app.strings().question_limit(*limit),
+                        bonus,
+                        app.strings().xp_pass_bonus,
+                    )
+                } else {
+                    format!(
+                        "{} · {}",
+                        app.strings().question_limit(*limit),
+                        app.strings().xp_received,
+                    )
+                }
+            } else {
+                app.strings().question_limit(*limit).to_string()
+            };
 
-            ListItem::new(app.strings().question_limit(*limit)).style(style)
+            ListItem::new(label).style(style)
         })
         .collect::<Vec<_>>();
 
@@ -97,5 +130,39 @@ pub fn render(frame: &mut Frame, app: &App) {
     frame.render_widget(header, areas[0]);
     frame.render_widget(list, areas[1]);
     frame.render_widget(criteria, areas[2]);
-    frame.render_widget(footer, areas[3]);
+
+    if show_xp_details {
+        let opportunity = xp_opportunity.expect("XP details require an opportunity");
+        let mut lines = Vec::new();
+        if opportunity.unique_question_xp > 0 {
+            lines.push(format!(
+                "{}: +{} XP",
+                app.strings().xp_questions,
+                opportunity.unique_question_xp,
+            ));
+        }
+        if opportunity.mastery_xp > 0 {
+            lines.push(format!(
+                "{}: +{} XP",
+                app.strings().xp_topics,
+                opportunity.mastery_xp,
+            ));
+        }
+        if opportunity.course_completion_xp > 0 {
+            lines.push(format!(
+                "{}: +{} XP",
+                app.strings().xp_courses,
+                opportunity.course_completion_xp,
+            ));
+        }
+        let xp = Paragraph::new(lines.join("\n")).block(
+            Block::default()
+                .title(app.strings().xp_available)
+                .borders(Borders::ALL),
+        );
+        frame.render_widget(xp, areas[3]);
+        frame.render_widget(footer, areas[4]);
+    } else {
+        frame.render_widget(footer, areas[3]);
+    }
 }

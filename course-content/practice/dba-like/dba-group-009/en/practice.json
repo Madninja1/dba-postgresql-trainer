@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "key": "dba-group-009",
+  "category": "GROUP BY / HAVING",
+  "title": "Databases with low backup success rate",
+  "description": "For each database_name with at least three backups, calculate success_pct as 100.0 * successful / total rounded to one decimal place. Only status = success counts as successful. Keep databases with success_pct below 80.0. Return exactly three columns: database_name, backup_count, success_pct. Sort by success_pct ASC, then database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT database_name, COUNT(*) AS backup_count\nFROM backups\nGROUP BY database_name\n",
+  "hints": [
+    "SUM(CASE ...) can count successful backups.",
+    "Multiplying by 100.0 ensures floating-point division."
+  ],
+  "solution_explanation": "The minimum sample size and quality threshold are both enforced in HAVING.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "having"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "case"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 66
+}

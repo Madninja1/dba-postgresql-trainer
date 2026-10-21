@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-cte-006",
+  "category": "Subquery / CTE",
+  "title": "Сессии дольше среднего своей базы",
+  "description": "С помощью коррелированного подзапроса выведите active-сессии, у которых duration_sec строго больше средней duration_sec всех active-сессий той же database_name. Ровно три колонки: session_id, database_name, duration_sec. Сортировка: database_name ASC, duration_sec DESC, session_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT s.id AS session_id, s.database_name, s.duration_sec\nFROM sessions AS s\n",
+  "hints": [
+    "Внутренний AVG должен фильтровать state = active и быть связан по database_name.",
+    "Во внешнем запросе тоже оставьте только active-сессии."
+  ],
+  "solution_explanation": "Корреляция пересчитывает базовый уровень отдельно для базы каждой внешней строки.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "avg"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 114
+}

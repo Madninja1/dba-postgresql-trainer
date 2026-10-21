@@ -60,10 +60,17 @@ pub fn render(frame: &mut Frame, app: &App) {
                 .strings()
                 .topic_mastery_summary(app.topic_mastery_for(topic.id));
 
-            let label = if mastery.is_empty() {
-                format!("{display_number}. {}", topic.title)
+            let xp_available = app.topic_xp_available(topic.id);
+            let xp = if xp_available > 0 {
+                format!(" | {}: {xp_available} XP", app.strings().xp_available)
             } else {
-                format!("{display_number}. {}  |  {mastery}", topic.title)
+                String::new()
+            };
+
+            let label = if mastery.is_empty() {
+                format!("{display_number}. {}{xp}", topic.title)
+            } else {
+                format!("{display_number}. {}  |  {mastery}{xp}", topic.title)
             };
 
             ListItem::new(label).style(style)

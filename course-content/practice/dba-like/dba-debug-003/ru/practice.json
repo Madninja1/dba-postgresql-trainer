@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "key": "dba-debug-003",
+  "category": "FixQuery / FindLogicalError",
+  "title": "NULL в незавершённых backup",
+  "description": "Исправьте запрос так, чтобы он возвращал backup, у которых finished_seq = NULL. Ровно две колонки: backup_id, database_name. Сортировка: backup_id ASC.",
+  "type": "fix_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT backup_id, database_name\nFROM backups\nWHERE finished_seq = NULL\nORDER BY backup_id ASC;\n",
+  "hints": [
+    "NULL нельзя корректно проверить оператором =.",
+    "Используйте специальный NULL-предикат."
+  ],
+  "solution_explanation": "Сравнение = NULL даёт UNKNOWN; IS NULL выбирает незавершённые строки.",
+  "rules": [],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 151
+}

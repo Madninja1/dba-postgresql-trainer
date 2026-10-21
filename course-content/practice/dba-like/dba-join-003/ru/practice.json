@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-003",
+  "category": "JOIN",
+  "title": "Последний успешный backup через self join",
+  "description": "Верните ровно одну строку на каждую базу и три колонки: database_name, backup_id, finished_seq. Для каждой базы нужен последний successful backup; база без successful backup должна остаться в результате с NULL в backup_id и finished_seq. При одинаковом finished_seq более новым считается backup с большим id. Используйте JOIN без подзапросов. Сортировка: database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "SELECT d.name AS database_name,\n       b.id AS backup_id,\n       b.finished_seq\nFROM databases AS d\n",
+  "hints": [
+    "Сначала присоедините все successful backup как b.",
+    "Вторым LEFT JOIN присоедините более новый backup той же базы; нужная строка — та, для которой newer.id IS NULL."
+  ],
+  "solution_explanation": "Anti-self-join исключает каждый backup, для которого существует более новый successful backup.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 90
+}

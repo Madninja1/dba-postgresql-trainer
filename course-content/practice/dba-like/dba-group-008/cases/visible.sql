@@ -1,0 +1,1 @@
+CREATE TABLE incidents(id INTEGER, server_name TEXT, severity TEXT, resolved INTEGER); INSERT INTO incidents VALUES (1,'pg01','critical',0),(2,'pg01','warning',0),(3,'pg01','critical',1),(4,'pg02','warning',0),(5,'pg03','critical',0),(6,'pg03','critical',0);

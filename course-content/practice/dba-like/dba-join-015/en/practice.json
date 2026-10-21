@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-015",
+  "category": "JOIN",
+  "title": "Roles with database access across multiple servers",
+  "description": "For each role count the number of distinct servers hosting databases from its grants. Keep roles with access to at least two distinct servers. Return exactly two columns: role_name, server_count. Multiple grants to databases on the same server count that server only once. Sort by server_count DESC, then role_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "SELECT r.role_name\nFROM role_grants AS g\n",
+  "hints": [
+    "The chain is grants → roles and grants → databases → servers.",
+    "COUNT(DISTINCT server_id) prevents multiple databases on one server from inflating the count."
+  ],
+  "solution_explanation": "COUNT DISTINCT across the joins measures infrastructure spread rather than raw grant count.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "having"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 102
+}

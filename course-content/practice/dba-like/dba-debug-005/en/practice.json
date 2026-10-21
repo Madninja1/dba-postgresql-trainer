@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-debug-005",
+  "category": "FixQuery / FindLogicalError",
+  "title": "COUNT(*) inflated the session count",
+  "description": "Fix the query so it returns every database and the actual number of related sessions, including 0 for a database with no sessions. Return exactly two columns: database_name, session_count. Sort by session_count DESC, then database_name ASC.",
+  "type": "fix_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT d.name AS database_name, COUNT(*) AS session_count\nFROM databases AS d\nLEFT JOIN sessions AS s ON s.database_id = d.id\nGROUP BY d.id, d.name\nORDER BY session_count DESC, d.name ASC;\n",
+  "hints": [
+    "LEFT JOIN still creates one NULL-extended row for a database without sessions.",
+    "Count a non-NULL key from the right table instead of *."
+  ],
+  "solution_explanation": "COUNT(s.id) ignores the NULL-extended LEFT JOIN row and therefore returns 0 correctly.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 153
+}

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-cte-007",
+  "category": "Subquery / CTE",
+  "title": "Серверы, где каждая база имеет successful backup",
+  "description": "Используйте NOT EXISTS. Выведите серверы, у которых есть хотя бы одна база и не существует ни одной базы этого сервера без successful backup. Ровно одна колонка: hostname. Сервер без баз не должен попадать в результат. Сортировка: hostname ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT s.hostname\nFROM servers AS s\n",
+  "hints": [
+    "Нужно отдельно доказать существование хотя бы одной базы.",
+    "Во втором условии ищите базу сервера, для которой не существует successful backup."
+  ],
+  "solution_explanation": "Двойной NOT EXISTS выражает квантор «для каждой базы есть successful backup», а EXISTS исключает пустые серверы.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "exists"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 115
+}

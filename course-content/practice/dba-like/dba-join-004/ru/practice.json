@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-004",
+  "category": "JOIN",
+  "title": "Базы и их серверы",
+  "description": "Выведите каждую базу вместе с hostname её сервера. Ровно две колонки: database_name, hostname. Сортировка: database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT d.name AS database_name, s.hostname\nFROM databases AS d\n",
+  "hints": [
+    "Связь выполняется по databases.server_id = servers.id.",
+    "Нужны только базы с существующим сервером."
+  ],
+  "solution_explanation": "Обычный INNER JOIN связывает базу с единственным сервером.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 91
+}

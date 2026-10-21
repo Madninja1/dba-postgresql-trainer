@@ -21,8 +21,13 @@ pub use practice::{
 };
 
 pub use progress::{
-    ActivityStats, CourseProgress, DailyActivity, ProgressLevel, QuestionAttemptHistory,
-    QuestionMistakeDetail, QuestionMistakeSummary, STUDY_DAY_QUESTION_TARGET,
+    AchievementKind, AchievementProgress, AchievementRarity, ActivityStats, CourseProgress,
+    DailyActivity, PracticeXpOpportunity, ProgressRank, QuestionAttemptHistory,
+    QuestionMistakeDetail, QuestionMistakeSummary, QuizXpOpportunity, QuizXpOpportunityScope,
+    STUDY_DAY_QUESTION_TARGET, XP_COMPLETED_COURSE, XP_MASTERED_TOPIC, XP_PASSED_QUIZ_20,
+    XP_PASSED_QUIZ_50, XP_PASSED_QUIZ_ALL, XP_PRACTICE_EASY, XP_PRACTICE_FIRST_TRY,
+    XP_PRACTICE_HARD, XP_PRACTICE_MEDIUM, XP_PRACTICE_NO_HINTS, XP_SOURCES,
+    XP_UNIQUE_CORRECT_QUESTION, XpOpportunitySummary, XpSource,
 };
 
 pub use session::{

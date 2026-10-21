@@ -1,0 +1,1 @@
+CREATE TABLE query_stats(id INTEGER, database_name TEXT, duration_ms INTEGER); INSERT INTO query_stats VALUES (1,'app',100),(2,'app',500),(3,'app',600),(4,'app',200),(5,'billing',1000),(6,'billing',1000),(7,'billing',10),(8,'audit',500),(9,'audit',500),(10,'audit',500);

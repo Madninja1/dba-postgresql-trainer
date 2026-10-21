@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-013",
+  "category": "JOIN",
+  "title": "Servers without open incidents",
+  "description": "Return production servers for which there are no incidents with resolved = 0. Servers with resolved incidents only must remain. Return exactly one column: hostname. Sort by hostname ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT s.hostname\nFROM servers AS s\n",
+  "hints": [
+    "Place resolved = 0 in ON so a resolved incident does not remove the server.",
+    "After the LEFT JOIN, absence of an open match is detected by a NULL incident id."
+  ],
+  "solution_explanation": "Filtering the right table inside ON creates an anti-join specifically against open incidents.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 100
+}

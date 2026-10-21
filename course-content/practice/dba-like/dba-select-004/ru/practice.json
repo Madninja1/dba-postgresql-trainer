@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "key": "dba-select-004",
+  "category": "SELECT / WHERE / ORDER BY",
+  "title": "Базы с отключёнными подключениями",
+  "description": "Выведите production-базы, которые сейчас не принимают подключения. Ровно две колонки: database_name, size_gb. Сортировка: size_gb DESC, при равенстве database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT database_name, size_gb\nFROM database_health\n",
+  "hints": [
+    "Отберите одновременно нужное окружение и флаг accepting_connections.",
+    "Для равных размеров добавьте стабильный tie-breaker по имени базы."
+  ],
+  "solution_explanation": "Задача проверяет точную фильтрацию по двум независимым признакам и полный порядок сортировки.",
+  "rules": [
+    {
+      "type": "forbid_select_star"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 31
+}

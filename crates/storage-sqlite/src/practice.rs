@@ -45,77 +45,29 @@ impl PracticeEngine for SqlitePracticeEngine {
         validate_sql(sql)?;
 
         let mut failed_checks = validate_rules(task, sql);
-        let actual_connection = create_sandbox(task)?;
-        let actual = execute_sql(&actual_connection, sql)?;
-
         let assertions = if task.assertions.is_empty() {
             vec![PracticeAssertion::ResultEqualsSolution]
         } else {
             task.assertions.clone()
         };
 
-        let needs_expected = assertions
-            .iter()
-            .any(|assertion| matches!(assertion, PracticeAssertion::ResultEqualsSolution));
+        let visible = check_case(task, sql, &task.setup_sql, &assertions)?;
+        failed_checks.extend(visible.failed_checks);
 
-        let expected = if needs_expected {
-            let expected_connection = create_sandbox(task)?;
-            Some(execute_sql(&expected_connection, &task.solution_sql)?)
-        } else {
-            None
-        };
-
-        for assertion in &assertions {
-            match assertion {
-                PracticeAssertion::ResultEqualsSolution => {
-                    let expected = expected.as_ref().expect("expected result should exist");
-                    if !compare_results(task.comparison, expected, &actual) {
-                        failed_checks
-                            .push(String::from("result does not match the expected result"));
-                    }
-                }
-                PracticeAssertion::TableExists(table) => {
-                    if !object_exists(&actual_connection, "table", table)? {
-                        failed_checks.push(format!("table '{table}' does not exist"));
-                    }
-                }
-                PracticeAssertion::IndexExists(index) => {
-                    if !object_exists(&actual_connection, "index", index)? {
-                        failed_checks.push(format!("index '{index}' does not exist"));
-                    }
-                }
-                PracticeAssertion::ScalarEquals { sql, expected } => {
-                    let result = execute_sql(&actual_connection, sql)?;
-                    let actual_value = result
-                        .rows
-                        .first()
-                        .and_then(|row| row.first())
-                        .map(ToString::to_string);
-                    if actual_value.as_deref() != Some(expected.as_str()) {
-                        failed_checks.push(format!(
-                            "assertion returned {:?}, expected {expected}",
-                            actual_value.as_deref().unwrap_or("<no value>")
-                        ));
-                    }
-                }
-                PracticeAssertion::RowCountEquals { sql, expected } => {
-                    let result = execute_sql(&actual_connection, sql)?;
-                    if result.row_count() != *expected {
-                        failed_checks.push(format!(
-                            "assertion returned {} rows, expected {expected}",
-                            result.row_count()
-                        ));
-                    }
-                }
-            }
+        for (index, setup_sql) in task.hidden_case_sql.iter().enumerate() {
+            let hidden = check_case(task, sql, setup_sql, &assertions)?;
+            failed_checks.extend(
+                hidden
+                    .failed_checks
+                    .into_iter()
+                    .map(|failure| format!("hidden case {}: {failure}", index + 1)),
+            );
         }
 
         Ok(PracticeCheckResult {
             is_correct: failed_checks.is_empty(),
-            actual_rows: actual.row_count(),
-            expected_rows: expected
-                .as_ref()
-                .map_or(0, PracticeExecutionResult::row_count),
+            actual_rows: visible.actual_rows,
+            expected_rows: visible.expected_rows,
             failed_checks,
         })
     }
@@ -162,15 +114,98 @@ impl PracticeEngine for SqlitePracticeEngine {
     }
 }
 
+#[derive(Debug)]
+struct CaseCheck {
+    actual_rows: usize,
+    expected_rows: usize,
+    failed_checks: Vec<String>,
+}
+
+fn check_case(
+    task: &PracticeTask,
+    sql: &str,
+    setup_sql: &str,
+    assertions: &[PracticeAssertion],
+) -> Result<CaseCheck, PracticeError> {
+    let actual_connection = create_sandbox_from_sql(setup_sql)?;
+    let actual = execute_sql(&actual_connection, sql)?;
+    let needs_expected = assertions
+        .iter()
+        .any(|assertion| matches!(assertion, PracticeAssertion::ResultEqualsSolution));
+    let expected = if needs_expected {
+        let expected_connection = create_sandbox_from_sql(setup_sql)?;
+        Some(execute_sql(&expected_connection, &task.solution_sql)?)
+    } else {
+        None
+    };
+
+    let mut failed_checks = Vec::new();
+    for assertion in assertions {
+        match assertion {
+            PracticeAssertion::ResultEqualsSolution => {
+                let expected = expected.as_ref().expect("expected result should exist");
+                if !compare_results(task.comparison, expected, &actual) {
+                    failed_checks.push(String::from("result does not match the expected result"));
+                }
+            }
+            PracticeAssertion::TableExists(table) => {
+                if !object_exists(&actual_connection, "table", table)? {
+                    failed_checks.push(format!("table '{table}' does not exist"));
+                }
+            }
+            PracticeAssertion::IndexExists(index) => {
+                if !object_exists(&actual_connection, "index", index)? {
+                    failed_checks.push(format!("index '{index}' does not exist"));
+                }
+            }
+            PracticeAssertion::ScalarEquals { sql, expected } => {
+                let result = execute_sql(&actual_connection, sql)?;
+                let actual_value = result
+                    .rows
+                    .first()
+                    .and_then(|row| row.first())
+                    .map(ToString::to_string);
+                if actual_value.as_deref() != Some(expected.as_str()) {
+                    failed_checks.push(format!(
+                        "assertion returned {:?}, expected {expected}",
+                        actual_value.as_deref().unwrap_or("<no value>")
+                    ));
+                }
+            }
+            PracticeAssertion::RowCountEquals { sql, expected } => {
+                let result = execute_sql(&actual_connection, sql)?;
+                if result.row_count() != *expected {
+                    failed_checks.push(format!(
+                        "assertion returned {} rows, expected {expected}",
+                        result.row_count()
+                    ));
+                }
+            }
+        }
+    }
+
+    Ok(CaseCheck {
+        actual_rows: actual.row_count(),
+        expected_rows: expected
+            .as_ref()
+            .map_or(0, PracticeExecutionResult::row_count),
+        failed_checks,
+    })
+}
+
 fn create_sandbox(task: &PracticeTask) -> Result<Connection, PracticeError> {
+    create_sandbox_from_sql(&task.setup_sql)
+}
+
+fn create_sandbox_from_sql(setup_sql: &str) -> Result<Connection, PracticeError> {
     let connection = Connection::open_in_memory()
         .map_err(|error| PracticeError::execution(error.to_string()))?;
     connection
         .execute_batch("PRAGMA foreign_keys = ON;")
         .map_err(|error| PracticeError::execution(error.to_string()))?;
     connection
-        .execute_batch(&task.setup_sql)
-        .map_err(|error| map_sql_error(&task.setup_sql, error))?;
+        .execute_batch(setup_sql)
+        .map_err(|error| map_sql_error(setup_sql, error))?;
     Ok(connection)
 }
 
@@ -441,6 +476,7 @@ mod tests {
             setup_sql: String::from(
                 "CREATE TABLE values_table (id INTEGER); INSERT INTO values_table VALUES (1), (2);",
             ),
+            hidden_case_sql: Vec::new(),
             solution_sql: String::from("SELECT id FROM values_table WHERE id = 2;"),
             solution_explanation: None,
             hints: vec![String::from("Filter by id")],
@@ -483,6 +519,31 @@ mod tests {
         assert!(!incorrect.is_correct);
         assert_eq!(incorrect.expected_rows, 1);
         assert_eq!(incorrect.actual_rows, 2);
+    }
+
+    #[test]
+    fn checker_runs_hidden_cases() {
+        let mut task = task();
+        task.hidden_case_sql = vec![String::from(
+            "CREATE TABLE values_table (id INTEGER); INSERT INTO values_table VALUES (3), (4);",
+        )];
+        let engine = SqlitePracticeEngine::new();
+
+        let hardcoded = engine
+            .check(&task, "SELECT 2 AS id;")
+            .expect("hidden case should run");
+        let real_solution = engine
+            .check(&task, "SELECT id FROM values_table WHERE id = 2;")
+            .expect("solution should pass hidden case");
+
+        assert!(!hardcoded.is_correct);
+        assert!(
+            hardcoded
+                .failed_checks
+                .iter()
+                .any(|failure| failure.starts_with("hidden case 1:"))
+        );
+        assert!(real_solution.is_correct);
     }
 
     #[test]

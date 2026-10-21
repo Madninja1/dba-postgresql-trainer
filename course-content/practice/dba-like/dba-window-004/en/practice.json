@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-window-004",
+  "category": "Window functions",
+  "title": "Database size rank within each server",
+  "description": "For each database compute size_rank within its server_name using DENSE_RANK by size_gb DESC. Databases with the same size share a rank with no gaps. Return exactly four columns: server_name, database_name, size_gb, size_rank. Final sort: server_name ASC, size_rank ASC, database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT server_name, database_name, size_gb,\n       DENSE_RANK() OVER (\n       ) AS size_rank\nFROM databases\n",
+  "hints": [
+    "PARTITION BY separates rankings for different servers.",
+    "DENSE_RANK is required because tied sizes must not leave gaps."
+  ],
+  "solution_explanation": "DENSE_RANK builds an independent size ranking for each server.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "dense_rank"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "over"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 132
+}

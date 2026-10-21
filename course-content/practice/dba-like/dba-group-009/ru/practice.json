@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "key": "dba-group-009",
+  "category": "GROUP BY / HAVING",
+  "title": "Базы с низкой успешностью backup",
+  "description": "Для каждой database_name с минимум тремя backup посчитайте success_pct как 100.0 * successful / total, округлённое до одного знака после запятой. Успешным считается только status = success. Оставьте базы с success_pct меньше 80.0. Ровно три колонки: database_name, backup_count, success_pct. Сортировка: success_pct ASC, затем database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT database_name, COUNT(*) AS backup_count\nFROM backups\nGROUP BY database_name\n",
+  "hints": [
+    "Для successful можно использовать SUM(CASE ...).",
+    "Умножение на 100.0 обеспечивает вещественное деление."
+  ],
+  "solution_explanation": "Минимум три наблюдения и порог качества одновременно проверяются в HAVING.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "having"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "case"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 66
+}

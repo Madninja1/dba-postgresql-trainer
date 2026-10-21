@@ -1,0 +1,1 @@
+CREATE TABLE servers(id INTEGER, hostname TEXT); CREATE TABLE databases(id INTEGER, server_id INTEGER); CREATE TABLE backups(id INTEGER, database_id INTEGER, status TEXT); INSERT INTO servers VALUES (1,'x'),(2,'y'),(3,'z'); INSERT INTO databases VALUES (1,1),(2,1),(3,3); INSERT INTO backups VALUES (1,1,'success'),(2,2,'failed'),(3,3,'success');

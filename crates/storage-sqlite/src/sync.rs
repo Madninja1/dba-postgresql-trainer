@@ -109,6 +109,7 @@ impl SqliteRepository {
             &bundle.practice,
             &bundle.setup_sql,
             &bundle.solution_sql,
+            &bundle.hidden_case_sql,
         )?;
 
         transaction.commit()?;
@@ -140,6 +141,10 @@ impl ContentLocaleRepository for SqliteRepository {
         let practice = load_builtin_practice_for_locale(locale)
             .map_err(|error| RepositoryError::Storage(error.to_string()))?;
 
+        self.connection
+            .execute("UPDATE practice_tasks SET is_active = 0", [])
+            .map_err(|error| RepositoryError::Storage(error.to_string()))?;
+
         for task in &practice {
             self.sync_practice(task)
                 .map_err(|error| RepositoryError::Storage(error.to_string()))?;
@@ -154,6 +159,7 @@ fn sync_practice_document(
     practice: &PracticeDocument,
     setup_sql: &str,
     solution_sql: &str,
+    hidden_case_sql: &[String],
 ) -> rusqlite::Result<()> {
     let practice_type = match practice.practice_type {
         PracticeKindDocument::WriteQuery => "write_query",
@@ -253,6 +259,17 @@ fn sync_practice_document(
         transaction.execute(
             "INSERT INTO practice_rules (task_id, position, rule_type, value) VALUES (?1, ?2, ?3, ?4)",
             params![task_id, position as i64, rule_type, value],
+        )?;
+    }
+
+    transaction.execute(
+        "DELETE FROM practice_hidden_cases WHERE task_id = ?1",
+        params![task_id],
+    )?;
+    for (position, setup_sql) in hidden_case_sql.iter().enumerate() {
+        transaction.execute(
+            "INSERT INTO practice_hidden_cases (task_id, position, setup_sql) VALUES (?1, ?2, ?3)",
+            params![task_id, position as i64, setup_sql],
         )?;
     }
 
@@ -602,6 +619,7 @@ fn source_kind_value(source_kind: SourceKindDocument) -> &'static str {
 mod tests {
     use super::*;
 
+    use dba_trainer_application::PracticeRepository;
     use dba_trainer_content::load_bundle;
 
     #[test]
@@ -711,6 +729,48 @@ mod tests {
         assert_eq!(questions, 1);
         assert_eq!(answers, 2);
     }
+
+    #[test]
+    fn sync_practice_persists_hidden_cases() {
+        let practice_json = r#"
+        {
+            "schema_version": 1,
+            "key": "hidden-sync",
+            "category": "JOIN",
+            "title": "Hidden sync",
+            "description": "Test",
+            "type": "write_query",
+            "comparison": "unordered",
+            "difficulty": "easy",
+            "sort_order": 1
+        }
+        "#;
+        let hidden = [
+            "CREATE TABLE demo (id INTEGER); INSERT INTO demo VALUES (2);",
+            "CREATE TABLE demo (id INTEGER); INSERT INTO demo VALUES (3);",
+        ];
+        let bundle = dba_trainer_content::load_practice_with_cases(
+            practice_json,
+            "CREATE TABLE demo (id INTEGER); INSERT INTO demo VALUES (1);",
+            "SELECT id FROM demo;",
+            &hidden,
+        )
+        .expect("practice content should be valid");
+        let mut repository = SqliteRepository::in_memory().expect("database should open");
+
+        repository
+            .sync_practice(&bundle)
+            .expect("practice sync should work");
+        repository
+            .sync_practice(&bundle)
+            .expect("second practice sync should work");
+
+        let task = repository
+            .practice_task("hidden-sync")
+            .expect("practice task should load");
+        assert_eq!(task.hidden_case_sql.len(), 2);
+    }
+
     #[test]
     fn sync_lab_is_idempotent() {
         let lab_json = r#"

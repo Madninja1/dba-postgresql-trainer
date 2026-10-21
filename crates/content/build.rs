@@ -18,6 +18,7 @@ struct PracticeBundlePaths {
     document_path: PathBuf,
     setup_path: PathBuf,
     solution_path: PathBuf,
+    hidden_case_paths: Vec<PathBuf>,
 }
 
 fn main() -> io::Result<()> {
@@ -86,7 +87,7 @@ fn main() -> io::Result<()> {
 
     generated.push_str("];\n\n");
     generated.push_str(
-        "pub(crate) const BUILTIN_PRACTICE_DOCUMENTS: &[(&str, &str, &str, &str, &str)] = &[\n",
+        "pub(crate) type BuiltinPracticeDocument = (\n\n            &'static str,\n\n            &'static str,\n\n            &'static str,\n\n            &'static str,\n\n            &'static str,\n\n            &'static [&'static str],\n\n        );\n\n\n\n        pub(crate) const BUILTIN_PRACTICE_DOCUMENTS: &[BuiltinPracticeDocument] = &[\n",
     );
 
     for bundle in practice {
@@ -95,13 +96,21 @@ fn main() -> io::Result<()> {
         let solution_path = bundle.solution_path.canonicalize()?;
 
         generated.push_str(&format!(
-            "    ({:?}, {:?}, include_str!({:?}), include_str!({:?}), include_str!({:?})),\n",
+            "    ({:?}, {:?}, include_str!({:?}), include_str!({:?}), include_str!({:?}), &[",
             bundle.content_key,
             bundle.locale,
             document_path.to_string_lossy(),
             setup_path.to_string_lossy(),
             solution_path.to_string_lossy(),
         ));
+        for hidden_case_path in bundle.hidden_case_paths {
+            let hidden_case_path = hidden_case_path.canonicalize()?;
+            generated.push_str(&format!(
+                "include_str!({:?}), ",
+                hidden_case_path.to_string_lossy(),
+            ));
+        }
+        generated.push_str("]),\n");
     }
 
     generated.push_str("];\n");
@@ -129,16 +138,12 @@ fn collect_documents(
     let lab_path = directory.join("lab.json");
     let lab_markdown_path = directory.join("lab.md");
     let practice_path = directory.join("practice.json");
-    let practice_setup_path = directory.join("setup.sql");
-    let practice_solution_path = directory.join("solution.sql");
 
     let has_topic = topic_path.is_file();
     let has_questions = questions_path.is_file();
     let has_lab = lab_path.is_file();
     let has_lab_markdown = lab_markdown_path.is_file();
     let has_practice = practice_path.is_file();
-    let has_practice_setup = practice_setup_path.is_file();
-    let has_practice_solution = practice_solution_path.is_file();
 
     if has_topic || has_questions {
         if !(has_topic && has_questions) {
@@ -184,23 +189,69 @@ fn collect_documents(
         return Ok(());
     }
 
-    if has_practice || has_practice_setup || has_practice_solution {
-        if !(has_practice && has_practice_setup && has_practice_solution) {
+    if has_practice {
+        let task_directory = directory.parent().unwrap_or(directory);
+        let local_setup = directory.join("setup.sql");
+        let local_cases = directory.join("cases");
+        let shared_setup = task_directory.join("setup.sql");
+        let shared_cases = task_directory.join("cases");
+
+        let (setup_path, cases_directory) = if local_cases.join("visible.sql").is_file() {
+            (local_cases.join("visible.sql"), Some(local_cases))
+        } else if local_setup.is_file() {
+            (local_setup, None)
+        } else if shared_cases.join("visible.sql").is_file() {
+            (shared_cases.join("visible.sql"), Some(shared_cases))
+        } else if shared_setup.is_file() {
+            (shared_setup, None)
+        } else {
             return Err(io::Error::new(
                 io::ErrorKind::InvalidData,
                 format!(
-                    "practice locale directory {} must contain practice.json, setup.sql and solution.sql",
+                    "practice locale directory {} must provide setup.sql or cases/visible.sql",
                     directory.display()
                 ),
             ));
+        };
+
+        let local_solution = directory.join("solution.sql");
+        let shared_solution = task_directory.join("solution.sql");
+        let solution_path = if local_solution.is_file() {
+            local_solution
+        } else if shared_solution.is_file() {
+            shared_solution
+        } else {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidData,
+                format!(
+                    "practice locale directory {} must provide solution.sql",
+                    directory.display()
+                ),
+            ));
+        };
+
+        let mut hidden_case_paths = Vec::new();
+        if let Some(cases_directory) = cases_directory {
+            let mut entries = fs::read_dir(&cases_directory)?.collect::<Result<Vec<_>, _>>()?;
+            entries.sort_by_key(|entry| entry.path());
+            for entry in entries {
+                let path = entry.path();
+                let Some(name) = path.file_name().and_then(|value| value.to_str()) else {
+                    continue;
+                };
+                if path.is_file() && name.starts_with("hidden-") && name.ends_with(".sql") {
+                    hidden_case_paths.push(path);
+                }
+            }
         }
 
         register_practice(
             content_root,
             directory,
             practice_path,
-            practice_setup_path,
-            practice_solution_path,
+            setup_path,
+            solution_path,
+            hidden_case_paths,
             practice,
         )?;
         return Ok(());
@@ -249,11 +300,15 @@ fn register_practice(
     document_path: PathBuf,
     setup_path: PathBuf,
     solution_path: PathBuf,
+    hidden_case_paths: Vec<PathBuf>,
     output: &mut Vec<PracticeBundlePaths>,
 ) -> io::Result<()> {
     println!("cargo:rerun-if-changed={}", document_path.display());
     println!("cargo:rerun-if-changed={}", setup_path.display());
     println!("cargo:rerun-if-changed={}", solution_path.display());
+    for hidden_case_path in &hidden_case_paths {
+        println!("cargo:rerun-if-changed={}", hidden_case_path.display());
+    }
 
     let (content_key, locale) = localized_content_key(content_root, directory, "practice")?;
 
@@ -263,6 +318,7 @@ fn register_practice(
         document_path,
         setup_path,
         solution_path,
+        hidden_case_paths,
     });
 
     Ok(())

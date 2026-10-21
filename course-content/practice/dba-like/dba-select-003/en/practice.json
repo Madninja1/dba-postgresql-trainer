@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-select-003",
+  "category": "SELECT / WHERE / ORDER BY",
+  "title": "Prioritize unresolved incidents",
+  "description": "Return exactly four columns: id, server_name, severity, age_hours. Include only unresolved incidents with critical or high severity. Sort critical before high; within one severity sort by age_hours DESC, then id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT id, server_name, severity, age_hours\nFROM incidents\n",
+  "hints": [
+    "An unresolved incident has resolved_at IS NULL.",
+    "Use CASE in ORDER BY for a custom severity order."
+  ],
+  "solution_explanation": "CASE maps textual severity to an explicit sort priority.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "where"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "order"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 30
+}

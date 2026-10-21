@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-group-005",
+  "category": "GROUP BY / HAVING",
+  "title": "Servers with large total database size",
+  "description": "For each server_name, calculate total database size and keep servers with total_size_gb of at least 100. Return exactly two columns: server_name, total_size_gb. Sort by total_size_gb DESC, then server_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT server_name, SUM(size_gb) AS total_size_gb\nFROM databases\n",
+  "hints": [
+    "Calculate the sum separately for each server_name.",
+    "A condition on SUM belongs in HAVING."
+  ],
+  "solution_explanation": "This task checks SUM, grouping, and a threshold on an aggregate.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "having"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 62
+}

@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "key": "dba-cte-001",
+  "category": "Subquery / CTE",
+  "title": "Databases larger than their server average",
+  "description": "Return exactly three columns: server_name, name, size_mb for databases whose size is strictly greater than the average database size on the same server. Sort by server_name ASC, then size_mb DESC, then name ASC when size_mb ties.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT d.server_name, d.name, d.size_mb\nFROM databases AS d\n",
+  "hints": [
+    "The subquery average must be limited to the current server_name.",
+    "Compare d.size_mb with a correlated AVG(size_mb)."
+  ],
+  "solution_explanation": "The correlated subquery calculates an average independently for each server.",
+  "rules": [],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 100
+}

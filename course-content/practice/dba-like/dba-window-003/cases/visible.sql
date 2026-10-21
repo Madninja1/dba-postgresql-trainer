@@ -1,0 +1,1 @@
+CREATE TABLE sessions(session_id INTEGER, database_name TEXT, state TEXT, started_seq INTEGER); INSERT INTO sessions VALUES (1,'app','active',20),(2,'audit','idle',1),(3,'billing','active',10),(4,'app','active',10);

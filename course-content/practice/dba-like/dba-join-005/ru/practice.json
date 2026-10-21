@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-005",
+  "category": "JOIN",
+  "title": "Сессии и login-роли",
+  "description": "Для каждой сессии выведите её session_id и role_name. Ровно две колонки: session_id, role_name. Сортировка: session_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT s.id AS session_id, r.role_name\nFROM sessions AS s\n",
+  "hints": [
+    "sessions.role_id ссылается на db_roles.id.",
+    "INNER JOIN достаточно, так как каждая тестовая сессия имеет роль."
+  ],
+  "solution_explanation": "Задача закрепляет соединение факта с таблицей справочника ролей.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 92
+}

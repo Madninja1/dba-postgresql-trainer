@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-window-007",
+  "category": "Window functions",
+  "title": "Большие интервалы между successful backup",
+  "description": "Учитывайте только successful backup. Для каждой database_name найдите previous_finished_seq через LAG в порядке finished_seq ASC, backup_id ASC и gap_seq = finished_seq - previous_finished_seq. Выведите только строки, где gap_seq не меньше 10. Ровно пять колонок: backup_id, database_name, finished_seq, previous_finished_seq, gap_seq. Итоговая сортировка: gap_seq DESC, database_name ASC, backup_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "WITH gaps AS (\n  SELECT backup_id, database_name, finished_seq\n  FROM backups\n)\nSELECT\n",
+  "hints": [
+    "Оконную функцию нельзя напрямую использовать в WHERE того же SELECT — вынесите её в CTE или подзапрос.",
+    "Failed backup не должен влиять на previous_finished_seq."
+  ],
+  "solution_explanation": "Сначала окно строит последовательность только successful backup, затем внешний запрос фильтрует рассчитанный gap.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "lag"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "over"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 135
+}

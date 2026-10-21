@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-window-001",
+  "category": "Window functions",
+  "title": "Top 2 longest queries per database",
+  "description": "For each database_name return at most two longest queries and exactly three columns: database_name, query_id, duration_ms. Rank within each database by duration_ms DESC, then query_id ASC for ties. Use ROW_NUMBER(). Sort the final result by database_name ASC and preserve that rank order within each database.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "WITH ranked AS (\n    SELECT database_name, id AS query_id, duration_ms\n    FROM query_stats\n)\n",
+  "hints": [
+    "ROW_NUMBER() must use PARTITION BY database_name.",
+    "After calculating rn, filter rn <= 2 in the outer query."
+  ],
+  "solution_explanation": "The window function ranks queries independently inside each database, then the outer query keeps the first two.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "over"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 120
+}

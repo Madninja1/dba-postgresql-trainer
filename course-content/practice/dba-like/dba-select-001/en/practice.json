@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-select-001",
+  "category": "SELECT / WHERE / ORDER BY",
+  "title": "Long-running active production sessions",
+  "description": "Return exactly three columns: database_name, role_name, duration_seconds. Include only active production sessions lasting at least 300 seconds. Sort by duration_seconds DESC, then database_name ASC for ties.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT database_name, role_name, duration_seconds\nFROM sessions\n",
+  "hints": [
+    "Filter by state, environment, and minimum duration together.",
+    "Use two ORDER BY keys for a stable result."
+  ],
+  "solution_explanation": "WHERE keeps only qualifying active production sessions and ORDER BY makes the result deterministic.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "where"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "order"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 10
+}

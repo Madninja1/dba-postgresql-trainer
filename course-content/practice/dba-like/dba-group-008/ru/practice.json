@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "key": "dba-group-008",
+  "category": "GROUP BY / HAVING",
+  "title": "Серверы с открытыми critical-инцидентами",
+  "description": "Для каждого server_name посчитайте open_incidents — число строк с resolved = 0, и critical_open — число нерешённых строк с severity = critical. Оставьте только серверы с critical_open не меньше 1. Ровно три колонки: server_name, open_incidents, critical_open. Сортировка: critical_open DESC, open_incidents DESC, server_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT server_name\nFROM incidents\nGROUP BY server_name\n",
+  "hints": [
+    "Два счётчика можно получить двумя SUM(CASE ...).",
+    "resolved-инциденты не должны попадать ни в open_incidents, ни в critical_open."
+  ],
+  "solution_explanation": "Условная агрегация отделяет общую открытую нагрузку от критической.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "having"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "case"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 65
+}

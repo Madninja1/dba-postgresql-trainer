@@ -39,6 +39,8 @@ pub trait PracticeRepository {
 
     fn save_practice_draft(&mut self, task_id: i64, sql: &str) -> Result<(), RepositoryError>;
 
+    fn record_practice_hint(&mut self, task_id: i64) -> Result<(), RepositoryError>;
+
     fn record_practice_attempt(
         &mut self,
         task_id: i64,

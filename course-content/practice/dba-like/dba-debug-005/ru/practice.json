@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-debug-005",
+  "category": "FixQuery / FindLogicalError",
+  "title": "COUNT(*) завысил число сессий",
+  "description": "Исправьте запрос так, чтобы он возвращал все базы и реальное число связанных sessions, включая 0 для базы без сессий. Ровно две колонки: database_name, session_count. Сортировка: session_count DESC, затем database_name ASC.",
+  "type": "fix_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT d.name AS database_name, COUNT(*) AS session_count\nFROM databases AS d\nLEFT JOIN sessions AS s ON s.database_id = d.id\nGROUP BY d.id, d.name\nORDER BY session_count DESC, d.name ASC;\n",
+  "hints": [
+    "LEFT JOIN создаёт одну NULL-строку даже для базы без сессий.",
+    "Считайте ненулевой ключ правой таблицы, а не * ."
+  ],
+  "solution_explanation": "COUNT(s.id) игнорирует NULL расширенной строки LEFT JOIN и поэтому корректно даёт 0.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 153
+}

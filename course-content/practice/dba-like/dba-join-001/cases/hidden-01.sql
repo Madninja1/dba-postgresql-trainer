@@ -1,0 +1,2 @@
+CREATE TABLE servers (id INTEGER PRIMARY KEY, hostname TEXT NOT NULL); CREATE TABLE db_roles (id INTEGER PRIMARY KEY, name TEXT NOT NULL); CREATE TABLE databases (id INTEGER PRIMARY KEY, server_id INTEGER NOT NULL, name TEXT NOT NULL, owner_role_id INTEGER NOT NULL);
+INSERT INTO servers VALUES (10,'db-z'),(20,'db-a'); INSERT INTO db_roles VALUES (5,'postgres'),(6,'etl'); INSERT INTO databases VALUES (7,10,'warehouse',6),(8,20,'core',5),(9,20,'analytics',6);

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-001",
+  "category": "JOIN",
+  "title": "База, сервер и владелец",
+  "description": "Для каждой базы выведите ровно три колонки: database_name, hostname, owner_role. В результат должны попасть все базы, для которых определены сервер и роль-владелец. Сортировка: hostname ASC, затем database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT d.name AS database_name,\n       s.hostname,\n       r.name AS owner_role\nFROM databases AS d\n",
+  "hints": [
+    "Нужно соединить databases с servers по server_id и с db_roles по owner_role_id.",
+    "Для этой задачи достаточно INNER JOIN."
+  ],
+  "solution_explanation": "Два JOIN восстанавливают читаемые hostname и имя роли из внешних ключей.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 70
+}

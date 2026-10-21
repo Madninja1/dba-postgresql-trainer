@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-window-006",
+  "category": "Window functions",
+  "title": "Query duration change between samples",
+  "description": "For each database_name ordered by sampled_seq ASC, sample_id ASC, derive previous_duration_ms with LAG and delta_ms = duration_ms - previous_duration_ms. For the first row of each database both values must be NULL. Return exactly six columns: sample_id, database_name, sampled_seq, duration_ms, previous_duration_ms, delta_ms. Final sort: database_name ASC, sampled_seq ASC, sample_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT sample_id, database_name, sampled_seq, duration_ms\nFROM query_stats\n",
+  "hints": [
+    "LAG(duration_ms) needs PARTITION BY database_name.",
+    "A CTE can compute previous_duration_ms once before deriving delta_ms."
+  ],
+  "solution_explanation": "LAG exposes the previous sample in the same database; subtraction naturally yields NULL for the first row.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "lag"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "over"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 134
+}

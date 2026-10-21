@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-009",
+  "category": "JOIN",
+  "title": "Активные сессии: база, сервер и роль",
+  "description": "Для active-сессий выведите ровно четыре колонки: session_id, database_name, hostname, role_name. Свяжите sessions с databases, servers и db_roles по их идентификаторам. Сортировка: database_name ASC, затем session_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT s.id AS session_id\nFROM sessions AS s\n",
+  "hints": [
+    "От sessions нужны две связи: к базе и роли; от базы — к серверу.",
+    "Фильтр state применяется до формирования итогового списка."
+  ],
+  "solution_explanation": "Три JOIN восстанавливают контекст active-сессии из нормализованных таблиц.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 96
+}

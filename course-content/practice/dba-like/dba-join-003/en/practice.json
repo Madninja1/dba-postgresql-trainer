@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-003",
+  "category": "JOIN",
+  "title": "Latest successful backup with a self join",
+  "description": "Return exactly one row per database and exactly three columns: database_name, backup_id, finished_seq. Use the latest successful backup for each database; a database without a successful backup must remain with NULL backup_id and finished_seq. If finished_seq ties, the backup with the larger id is newer. Use JOINs without subqueries. Sort by database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "SELECT d.name AS database_name,\n       b.id AS backup_id,\n       b.finished_seq\nFROM databases AS d\n",
+  "hints": [
+    "First join successful backups as b.",
+    "With a second LEFT JOIN, attach any newer backup for the same database; keep rows where newer.id IS NULL."
+  ],
+  "solution_explanation": "The anti self-join removes every backup that has a newer successful backup.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 90
+}

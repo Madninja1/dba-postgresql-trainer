@@ -1,0 +1,1 @@
+CREATE TABLE backups(backup_id INTEGER, database_name TEXT, status TEXT, finished_seq INTEGER, size_mb INTEGER); INSERT INTO backups VALUES (1,'app','success',10,100),(2,'app','failed',15,999),(3,'app','success',20,110),(4,'audit','success',5,50);

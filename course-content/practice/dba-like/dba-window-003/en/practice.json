@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-window-003",
+  "category": "Window functions",
+  "title": "Number active sessions by age",
+  "description": "For active sessions assign row_number from oldest to newest by started_seq ASC, then session_id ASC for ties. Return exactly four columns: session_id, database_name, started_seq, age_rank. Final sort: age_rank ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT session_id, database_name, started_seq,\n       ROW_NUMBER() OVER (\n       ) AS age_rank\nFROM sessions\n",
+  "hints": [
+    "ROW_NUMBER() needs no PARTITION BY here: numbering is global for all active sessions.",
+    "The ORDER BY inside OVER must fully match the age rule."
+  ],
+  "solution_explanation": "ROW_NUMBER creates a deterministic active-session queue with session_id as the tie-breaker.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "row_number"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "over"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 131
+}

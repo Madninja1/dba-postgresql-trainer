@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-group-003",
+  "category": "GROUP BY / HAVING",
+  "title": "Servers with repeated backup failures",
+  "description": "Count failed backups from the last 7 days inclusive (age_days <= 7) for each server_name. Return exactly two columns: server_name, failed_backups, and keep only servers with failed_backups of at least 2. Sort by failed_backups DESC, then server_name ASC for ties.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT server_name, COUNT(*) AS failed_backups\nFROM backups\n",
+  "hints": [
+    "Old failed backups must not count.",
+    "Apply the count threshold after GROUP BY."
+  ],
+  "solution_explanation": "WHERE limits time/status; HAVING keeps servers with repeated failures.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "having"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 60
+}

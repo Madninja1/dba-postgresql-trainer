@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-window-005",
+  "category": "Window functions",
+  "title": "Накопительный объём successful backup",
+  "description": "Учитывайте только successful backup. Для каждой database_name посчитайте running_size_mb как накопительную SUM(size_mb) в порядке finished_seq ASC, backup_id ASC. Ровно пять колонок: backup_id, database_name, finished_seq, size_mb, running_size_mb. Итоговая сортировка: database_name ASC, finished_seq ASC, backup_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT backup_id, database_name, finished_seq, size_mb,\n       SUM(size_mb) OVER (\n       ) AS running_size_mb\nFROM backups\n",
+  "hints": [
+    "PARTITION BY database_name начинает накопление заново для каждой базы.",
+    "Два поля порядка делают накопление однозначным при одинаковом finished_seq."
+  ],
+  "solution_explanation": "Оконная SUM сохраняет каждую backup-строку и одновременно показывает накопленный объём.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "over"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "sum"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 133
+}

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-009",
+  "category": "JOIN",
+  "title": "Active sessions with database, server, and role",
+  "description": "For active sessions return exactly four columns: session_id, database_name, hostname, role_name. Join sessions to databases, servers, and db_roles by their identifiers. Sort by database_name ASC, then session_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT s.id AS session_id\nFROM sessions AS s\n",
+  "hints": [
+    "sessions has two links: to a database and a role; the database links to the server.",
+    "Apply the state filter to the session rows."
+  ],
+  "solution_explanation": "Three joins reconstruct the active session context from normalized tables.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 96
+}

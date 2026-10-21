@@ -1,0 +1,2 @@
+CREATE TABLE servers (id INTEGER PRIMARY KEY, hostname TEXT NOT NULL); CREATE TABLE sessions (id INTEGER PRIMARY KEY, server_id INTEGER NOT NULL, state TEXT NOT NULL);
+INSERT INTO servers VALUES (1,'a'),(2,'b');

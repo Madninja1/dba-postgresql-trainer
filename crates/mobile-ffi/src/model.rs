@@ -1,10 +1,13 @@
 use dba_trainer_domain::{
-    ActivityStats, AnswerResult, CourseProgress, DailyActivity, Lab, PracticeCategoryStats,
-    PracticeCheckResult, PracticeColumn, PracticeDifficulty, PracticeExecutionResult, PracticeKind,
-    PracticeRule, PracticeSchema, PracticeStats, PracticeTable, PracticeTableData, PracticeTask,
-    PracticeTaskProgress, ProgressLevel, Question, QuestionAttemptHistory, QuestionLimit,
+    AchievementKind, AchievementProgress, AchievementRarity, ActivityStats, AnswerResult,
+    CourseProgress, DailyActivity, Lab, PracticeCategoryStats, PracticeCheckResult, PracticeColumn,
+    PracticeDifficulty, PracticeExecutionResult, PracticeKind, PracticeRule, PracticeSchema,
+    PracticeStats, PracticeTable, PracticeTableData, PracticeTask, PracticeTaskProgress,
+    PracticeXpOpportunity, ProgressRank, Question, QuestionAttemptHistory, QuestionLimit,
     QuestionMistakeDetail, QuestionMistakeSummary, QuestionType, QuizScope, QuizSession,
-    SessionProgress, Source, SourceKind, StatisticsLimit, Topic, TopicMasteryStats, TrainingStats,
+    QuizXpOpportunity, QuizXpOpportunityScope, SessionProgress, Source, SourceKind,
+    StatisticsLimit, Topic, TopicMasteryStats, TrainingStats, XP_SOURCES, XpOpportunitySummary,
+    XpSource,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, uniffi::Enum)]
@@ -83,6 +86,7 @@ pub struct MobilePracticeTaskProgress {
     pub task_id: i64,
     pub last_sql: String,
     pub attempts: u64,
+    pub hints_revealed: u64,
     pub solved: bool,
     pub solved_attempt: Option<u64>,
     pub updated_at: String,
@@ -191,15 +195,114 @@ pub struct MobileTopicMasteryStats {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, uniffi::Enum)]
-pub enum MobileProgressLevel {
-    ColdStart,
-    QueryRunner,
-    WarmCache,
-    BackendTamer,
-    WalKeeper,
-    IncidentHandler,
-    DbaOneMaster,
-    ProductionSurvivor,
+pub enum MobileProgressRank {
+    Init,
+    PsqlTrainee,
+    QueryAdept,
+    SchemaKeeper,
+    PlanReader,
+    WalOperator,
+    PostgresGuardian,
+    MadNinjaDba,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, uniffi::Enum)]
+pub enum MobileAchievementRarity {
+    Common,
+    Rare,
+    Epic,
+    Legendary,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, uniffi::Enum)]
+pub enum MobileAchievementKind {
+    FirstAnswer,
+    HundredAnswers,
+    PerfectTwenty,
+    QuizVeteran,
+    FirstSql,
+    OneShot,
+    QueryNinja,
+    SevenDayStreak,
+    ThirtyDayStreak,
+    CourseMaster,
+    MadNinja,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct MobileAchievementProgress {
+    pub kind: MobileAchievementKind,
+    pub rarity: MobileAchievementRarity,
+    pub unlocked: bool,
+    pub current: u64,
+    pub target: u64,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct MobileRankDefinition {
+    pub rank: MobileProgressRank,
+    pub minimum_xp: u64,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, uniffi::Enum)]
+pub enum MobileXpSource {
+    UniqueCorrectQuestion,
+    PassedTwentyQuiz,
+    PassedFiftyQuiz,
+    PassedAllQuestionsQuiz,
+    MasteredTopic,
+    CompletedCourse,
+    PracticeEasy,
+    PracticeMedium,
+    PracticeHard,
+    PracticeFirstTry,
+    PracticeNoHints,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct MobileXpRule {
+    pub source: MobileXpSource,
+    pub points: u64,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, uniffi::Enum)]
+pub enum MobileQuizXpScopeKind {
+    Topic,
+    Course,
+    AllTopics,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct MobileQuizXpOpportunity {
+    pub scope_kind: MobileQuizXpScopeKind,
+    pub topic_id: Option<i64>,
+    pub course_code: Option<String>,
+    pub unique_question_xp: u64,
+    pub twenty_bonus_xp: u64,
+    pub fifty_bonus_xp: u64,
+    pub all_bonus_xp: u64,
+    pub mastery_xp: u64,
+    pub course_completion_xp: u64,
+    pub total_available_xp: u64,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct MobilePracticeXpOpportunity {
+    pub task_id: i64,
+    pub solve_xp: u64,
+    pub first_try_xp: u64,
+    pub no_hints_xp: u64,
+    pub total_available_xp: u64,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct MobileXpOpportunitySummary {
+    pub question_xp: u64,
+    pub quiz_xp: u64,
+    pub mastery_xp: u64,
+    pub course_xp: u64,
+    pub practice_xp: u64,
+    pub total_available_xp: u64,
 }
 
 #[derive(Debug, Clone, uniffi::Record)]
@@ -237,6 +340,8 @@ pub struct MobileDailyActivity {
     pub answered_questions: u64,
     pub correct_answers: u64,
     pub completed_sessions: u64,
+    pub practice_attempts: u64,
+    pub practice_solved: u64,
 }
 
 #[derive(Debug, Clone, uniffi::Record)]
@@ -262,9 +367,22 @@ pub struct MobileActivityStats {
     pub passed_topics: u64,
     pub total_topics: u64,
     pub overall_mastery_percent: f64,
-    pub level: MobileProgressLevel,
+    pub xp: u64,
+    pub rank: MobileProgressRank,
+    pub rank_min_xp: u64,
+    pub next_rank_xp: Option<u64>,
+    pub rank_progress_percent: f64,
+    pub last_activity_date: Option<String>,
+    pub days_since_last_activity: Option<u64>,
     pub recent_days: Vec<MobileDailyActivity>,
     pub course_progress: Vec<MobileCourseProgress>,
+    pub achievements: Vec<MobileAchievementProgress>,
+    pub rank_definitions: Vec<MobileRankDefinition>,
+    pub xp_rules: Vec<MobileXpRule>,
+    pub xp_opportunity_summary: MobileXpOpportunitySummary,
+    pub question_xp_available_ids: Vec<i64>,
+    pub quiz_xp_opportunities: Vec<MobileQuizXpOpportunity>,
+    pub practice_xp_opportunities: Vec<MobilePracticeXpOpportunity>,
 }
 
 #[derive(Debug, Clone, uniffi::Record)]
@@ -398,6 +516,7 @@ impl From<PracticeTaskProgress> for MobilePracticeTaskProgress {
             task_id: value.task_id,
             last_sql: value.last_sql,
             attempts: value.attempts as u64,
+            hints_revealed: value.hints_revealed as u64,
             solved: value.solved,
             solved_attempt: value.solved_attempt.map(|attempt| attempt as u64),
             updated_at: value.updated_at,
@@ -679,17 +798,76 @@ impl From<AnswerResult> for MobileAnswerResult {
     }
 }
 
-impl From<ProgressLevel> for MobileProgressLevel {
-    fn from(value: ProgressLevel) -> Self {
+impl From<ProgressRank> for MobileProgressRank {
+    fn from(value: ProgressRank) -> Self {
         match value {
-            ProgressLevel::ColdStart => Self::ColdStart,
-            ProgressLevel::QueryRunner => Self::QueryRunner,
-            ProgressLevel::WarmCache => Self::WarmCache,
-            ProgressLevel::BackendTamer => Self::BackendTamer,
-            ProgressLevel::WalKeeper => Self::WalKeeper,
-            ProgressLevel::IncidentHandler => Self::IncidentHandler,
-            ProgressLevel::DbaOneMaster => Self::DbaOneMaster,
-            ProgressLevel::ProductionSurvivor => Self::ProductionSurvivor,
+            ProgressRank::Init => Self::Init,
+            ProgressRank::PsqlTrainee => Self::PsqlTrainee,
+            ProgressRank::QueryAdept => Self::QueryAdept,
+            ProgressRank::SchemaKeeper => Self::SchemaKeeper,
+            ProgressRank::PlanReader => Self::PlanReader,
+            ProgressRank::WalOperator => Self::WalOperator,
+            ProgressRank::PostgresGuardian => Self::PostgresGuardian,
+            ProgressRank::MadNinjaDba => Self::MadNinjaDba,
+        }
+    }
+}
+
+impl From<AchievementRarity> for MobileAchievementRarity {
+    fn from(value: AchievementRarity) -> Self {
+        match value {
+            AchievementRarity::Common => Self::Common,
+            AchievementRarity::Rare => Self::Rare,
+            AchievementRarity::Epic => Self::Epic,
+            AchievementRarity::Legendary => Self::Legendary,
+        }
+    }
+}
+
+impl From<AchievementKind> for MobileAchievementKind {
+    fn from(value: AchievementKind) -> Self {
+        match value {
+            AchievementKind::FirstAnswer => Self::FirstAnswer,
+            AchievementKind::HundredAnswers => Self::HundredAnswers,
+            AchievementKind::PerfectTwenty => Self::PerfectTwenty,
+            AchievementKind::QuizVeteran => Self::QuizVeteran,
+            AchievementKind::FirstSql => Self::FirstSql,
+            AchievementKind::OneShot => Self::OneShot,
+            AchievementKind::QueryNinja => Self::QueryNinja,
+            AchievementKind::SevenDayStreak => Self::SevenDayStreak,
+            AchievementKind::ThirtyDayStreak => Self::ThirtyDayStreak,
+            AchievementKind::CourseMaster => Self::CourseMaster,
+            AchievementKind::MadNinja => Self::MadNinja,
+        }
+    }
+}
+
+impl From<AchievementProgress> for MobileAchievementProgress {
+    fn from(value: AchievementProgress) -> Self {
+        Self {
+            kind: value.kind.into(),
+            rarity: value.rarity.into(),
+            unlocked: value.unlocked,
+            current: value.current as u64,
+            target: value.target as u64,
+        }
+    }
+}
+
+impl From<XpSource> for MobileXpSource {
+    fn from(value: XpSource) -> Self {
+        match value {
+            XpSource::UniqueCorrectQuestion => Self::UniqueCorrectQuestion,
+            XpSource::PassedTwentyQuiz => Self::PassedTwentyQuiz,
+            XpSource::PassedFiftyQuiz => Self::PassedFiftyQuiz,
+            XpSource::PassedAllQuestionsQuiz => Self::PassedAllQuestionsQuiz,
+            XpSource::MasteredTopic => Self::MasteredTopic,
+            XpSource::CompletedCourse => Self::CompletedCourse,
+            XpSource::PracticeEasy => Self::PracticeEasy,
+            XpSource::PracticeMedium => Self::PracticeMedium,
+            XpSource::PracticeHard => Self::PracticeHard,
+            XpSource::PracticeFirstTry => Self::PracticeFirstTry,
+            XpSource::PracticeNoHints => Self::PracticeNoHints,
         }
     }
 }
@@ -741,6 +919,8 @@ impl From<DailyActivity> for MobileDailyActivity {
             answered_questions: value.answered_questions as u64,
             correct_answers: value.correct_answers as u64,
             completed_sessions: value.completed_sessions as u64,
+            practice_attempts: value.practice_attempts as u64,
+            practice_solved: value.practice_solved as u64,
         }
     }
 }
@@ -760,12 +940,90 @@ impl From<CourseProgress> for MobileCourseProgress {
     }
 }
 
+impl From<QuizXpOpportunity> for MobileQuizXpOpportunity {
+    fn from(value: QuizXpOpportunity) -> Self {
+        let total_available_xp = value.total_available_xp() as u64;
+        let (scope_kind, topic_id, course_code) = match value.scope {
+            QuizXpOpportunityScope::Topic(topic_id) => {
+                (MobileQuizXpScopeKind::Topic, Some(topic_id.0), None)
+            }
+            QuizXpOpportunityScope::Course(course_code) => {
+                (MobileQuizXpScopeKind::Course, None, Some(course_code))
+            }
+            QuizXpOpportunityScope::AllTopics => (MobileQuizXpScopeKind::AllTopics, None, None),
+        };
+
+        Self {
+            scope_kind,
+            topic_id,
+            course_code,
+            unique_question_xp: value.unique_question_xp as u64,
+            twenty_bonus_xp: value.twenty_bonus_xp as u64,
+            fifty_bonus_xp: value.fifty_bonus_xp as u64,
+            all_bonus_xp: value.all_bonus_xp as u64,
+            mastery_xp: value.mastery_xp as u64,
+            course_completion_xp: value.course_completion_xp as u64,
+            total_available_xp,
+        }
+    }
+}
+
+impl From<PracticeXpOpportunity> for MobilePracticeXpOpportunity {
+    fn from(value: PracticeXpOpportunity) -> Self {
+        let total_available_xp = value.total_available_xp() as u64;
+
+        Self {
+            task_id: value.task_id,
+            solve_xp: value.solve_xp as u64,
+            first_try_xp: value.first_try_xp as u64,
+            no_hints_xp: value.no_hints_xp as u64,
+            total_available_xp,
+        }
+    }
+}
+
+impl From<XpOpportunitySummary> for MobileXpOpportunitySummary {
+    fn from(value: XpOpportunitySummary) -> Self {
+        let total_available_xp = value.total_available_xp() as u64;
+
+        Self {
+            question_xp: value.question_xp as u64,
+            quiz_xp: value.quiz_xp as u64,
+            mastery_xp: value.mastery_xp as u64,
+            course_xp: value.course_xp as u64,
+            practice_xp: value.practice_xp as u64,
+            total_available_xp,
+        }
+    }
+}
+
 impl From<ActivityStats> for MobileActivityStats {
     fn from(value: ActivityStats) -> Self {
         let passed_topics = value.passed_topics();
         let total_topics = value.total_topics();
         let overall_mastery_percent = value.overall_mastery_percent();
-        let level = value.level();
+        let rank = value.rank();
+        let next_rank_xp = rank.next().map(|next| next.minimum_xp() as u64);
+        let rank_min_xp = rank.minimum_xp() as u64;
+        let rank_progress_percent = value.rank_progress_percent();
+        let xp_opportunity_summary = value.xp_opportunity_summary.clone().into();
+        let question_xp_available_ids = value
+            .question_xp_available_ids
+            .iter()
+            .map(|question_id| question_id.0)
+            .collect();
+        let quiz_xp_opportunities = value
+            .quiz_xp_opportunities
+            .clone()
+            .into_iter()
+            .map(Into::into)
+            .collect();
+        let practice_xp_opportunities = value
+            .practice_xp_opportunities
+            .clone()
+            .into_iter()
+            .map(Into::into)
+            .collect();
 
         Self {
             active_days: value.active_days as u64,
@@ -780,9 +1038,34 @@ impl From<ActivityStats> for MobileActivityStats {
             passed_topics: passed_topics as u64,
             total_topics: total_topics as u64,
             overall_mastery_percent,
-            level: level.into(),
+            xp: value.xp as u64,
+            rank: rank.into(),
+            rank_min_xp,
+            next_rank_xp,
+            rank_progress_percent,
+            last_activity_date: value.last_activity_date,
+            days_since_last_activity: value.days_since_last_activity.map(|days| days as u64),
             recent_days: value.recent_days.into_iter().map(Into::into).collect(),
             course_progress: value.course_progress.into_iter().map(Into::into).collect(),
+            achievements: value.achievements.into_iter().map(Into::into).collect(),
+            rank_definitions: ProgressRank::ALL
+                .into_iter()
+                .map(|rank| MobileRankDefinition {
+                    rank: rank.into(),
+                    minimum_xp: rank.minimum_xp() as u64,
+                })
+                .collect(),
+            xp_rules: XP_SOURCES
+                .into_iter()
+                .map(|source| MobileXpRule {
+                    source: source.into(),
+                    points: source.points() as u64,
+                })
+                .collect(),
+            xp_opportunity_summary,
+            question_xp_available_ids,
+            quiz_xp_opportunities,
+            practice_xp_opportunities,
         }
     }
 }

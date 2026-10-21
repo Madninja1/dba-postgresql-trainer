@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-window-003",
+  "category": "Window functions",
+  "title": "Нумерация active-сессий по возрасту",
+  "description": "Для active-сессий присвойте row_number от самой старой к самой новой по started_seq ASC, при равенстве session_id ASC. Ровно четыре колонки: session_id, database_name, started_seq, age_rank. Итоговая сортировка: age_rank ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT session_id, database_name, started_seq,\n       ROW_NUMBER() OVER (\n       ) AS age_rank\nFROM sessions\n",
+  "hints": [
+    "ROW_NUMBER() здесь не требует PARTITION BY: нумерация общая для всех active-сессий.",
+    "Порядок внутри OVER должен полностью совпадать с правилом возраста."
+  ],
+  "solution_explanation": "ROW_NUMBER создаёт однозначную очередь active-сессий благодаря tie-breaker по session_id.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "row_number"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "over"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 131
+}

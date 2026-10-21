@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-008",
+  "category": "JOIN",
+  "title": "Базы без истории backup",
+  "description": "Выведите базы, для которых в backups нет ни одной строки любого status. Ровно одна колонка: database_name. Сортировка: database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT d.name AS database_name\nFROM databases AS d\n",
+  "hints": [
+    "LEFT JOIN сохраняет базу без совпадения.",
+    "Проверяйте NULL по ключу строки backups, а не по status."
+  ],
+  "solution_explanation": "Анти-соединение через LEFT JOIN + IS NULL находит полное отсутствие истории.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 95
+}

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-group-003",
+  "category": "GROUP BY / HAVING",
+  "title": "Серверы с повторяющимися сбоями backup",
+  "description": "Посчитайте failed backup за последние 7 дней включительно (age_days <= 7) для каждого server_name. Выведите ровно две колонки: server_name, failed_backups, и оставьте только серверы с failed_backups не меньше 2. Сортировка: failed_backups DESC, при равенстве server_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT server_name, COUNT(*) AS failed_backups\nFROM backups\n",
+  "hints": [
+    "Старые failed backup не должны попадать в счётчик.",
+    "Порог по количеству проверяется после GROUP BY."
+  ],
+  "solution_explanation": "WHERE ограничивает период и статус, HAVING оставляет серверы с повторяющимися сбоями.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "having"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 60
+}

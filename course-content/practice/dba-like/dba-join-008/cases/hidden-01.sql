@@ -1,0 +1,2 @@
+CREATE TABLE databases(id INTEGER, name TEXT); CREATE TABLE backups(id INTEGER, database_id INTEGER, status TEXT);
+         INSERT INTO databases VALUES (1,'x'),(2,'y'); INSERT INTO backups VALUES (1,2,'cancelled');

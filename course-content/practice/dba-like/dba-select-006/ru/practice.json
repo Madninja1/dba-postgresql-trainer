@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "key": "dba-select-006",
+  "category": "SELECT / WHERE / ORDER BY",
+  "title": "Неуспешные задания backup",
+  "description": "Выведите backup-задания со status = failed. Ровно три колонки: database_name, job_id, error_code. Сортировка: database_name ASC, затем job_id DESC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT database_name, job_id, error_code\nFROM backup_jobs\n",
+  "hints": [
+    "Нужен точный status failed, остальные состояния исключаются.",
+    "Вторая сортировка внутри базы идёт по job_id в обратном порядке."
+  ],
+  "solution_explanation": "Проверяется базовая фильтрация по состоянию DBA-задачи и составной ORDER BY.",
+  "rules": [
+    {
+      "type": "forbid_select_star"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 33
+}

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-join-006",
+  "category": "JOIN",
+  "title": "Backups and database names",
+  "description": "Return only successful backups together with the database name. Return exactly three columns: backup_id, database_name, size_mb. Sort by backup_id ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "easy",
+  "starter_sql": "SELECT b.id AS backup_id, d.name AS database_name, b.size_mb\nFROM backups AS b\n",
+  "hints": [
+    "Join backups to databases by database_id.",
+    "status belongs to the backups table."
+  ],
+  "solution_explanation": "Filtering after the correct JOIN keeps only successful backups.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 93
+}

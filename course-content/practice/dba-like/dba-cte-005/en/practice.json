@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-cte-005",
+  "category": "Subquery / CTE",
+  "title": "Latest backup through a CTE",
+  "description": "Use a CTE to get the maximum finished_seq for each database_id across all backups. Then return matching backup rows. If multiple backups for one database share the maximum finished_seq, return all of them. Return exactly three columns: database_name, finished_seq, status. Sort by database_name ASC, then status ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "WITH latest AS (\n  SELECT database_id, MAX(finished_seq) AS finished_seq\n  FROM backups\n  GROUP BY database_id\n)\nSELECT\n",
+  "hints": [
+    "The CTE stores database_id + maximum finished_seq.",
+    "Then join latest to both backups and databases."
+  ],
+  "solution_explanation": "The CTE identifies the latest sequence and a join retrieves the remaining fields from the original row.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "with"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "join"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 113
+}

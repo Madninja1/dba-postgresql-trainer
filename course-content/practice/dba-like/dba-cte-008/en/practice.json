@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "key": "dba-cte-008",
+  "category": "Subquery / CTE",
+  "title": "DBA risk score from two aggregates",
+  "description": "Use at least two CTEs: one for active session counts by database_id and one for failed backup counts by database_id. For each database calculate risk_score = active_sessions * 2 + failed_backups * 3, treating missing values as zero. Return only databases with risk_score at least 5. Return exactly four columns: database_name, active_sessions, failed_backups, risk_score. Sort by risk_score DESC, then database_name ASC.",
+  "type": "write_query",
+  "comparison": "ordered",
+  "difficulty": "hard",
+  "starter_sql": "WITH active AS (\n  SELECT database_id\n  FROM sessions\n),\nfailed AS (\n  SELECT database_id\n  FROM backups\n)\nSELECT\n",
+  "hints": [
+    "Each CTE should aggregate only its own event type.",
+    "LEFT JOIN + COALESCE preserves a database that lacks one event category."
+  ],
+  "solution_explanation": "Two pre-aggregations prevent sessions × backups row multiplication and produce the correct risk_score.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "with"
+    },
+    {
+      "type": "require_keyword",
+      "keyword": "coalesce"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 116
+}

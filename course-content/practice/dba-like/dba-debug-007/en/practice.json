@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "key": "dba-debug-007",
+  "category": "FixQuery / FindLogicalError",
+  "title": "Average latency includes idle sessions",
+  "description": "Fix the query. For each database_name calculate avg_duration_sec using only state = active. Databases with no active sessions are omitted. Return exactly two columns: database_name, avg_duration_sec rounded to one decimal. Sort by avg_duration_sec DESC, then database_name ASC.",
+  "type": "fix_query",
+  "comparison": "ordered",
+  "difficulty": "medium",
+  "starter_sql": "SELECT database_name, ROUND(AVG(duration_sec), 1) AS avg_duration_sec\nFROM sessions\nGROUP BY database_name\nORDER BY avg_duration_sec DESC, database_name ASC;\n",
+  "hints": [
+    "The current AVG sees every state.",
+    "Filter active rows before GROUP BY."
+  ],
+  "solution_explanation": "WHERE state = active forms the correct row set before aggregation.",
+  "rules": [
+    {
+      "type": "require_keyword",
+      "keyword": "group"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "result_equals_solution"
+    }
+  ],
+  "sort_order": 155
+}

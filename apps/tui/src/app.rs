@@ -1,11 +1,12 @@
 use dba_trainer_application::{PracticeEngine, PracticeError, RepositoryError, TrainerService};
 
 use dba_trainer_domain::{
-    ActivityStats, AnswerOptionId, AnswerResult, Lab, PracticeCheckResult, PracticeExecutionResult,
-    PracticeSchema, PracticeStats, PracticeTableData, PracticeTask, PracticeTaskProgress, Question,
-    QuestionId, QuestionLimit, QuestionMistakeDetail, QuestionMistakeSummary, QuestionType,
-    QuizScope, SessionConfig, SessionId, SessionProgress, StatisticsFilter, StatisticsLimit,
-    StatisticsScope, Topic, TopicId, TopicMasteryStats, TrainingStats,
+    ActivityStats, AnswerOptionId, AnswerResult, Lab, PracticeCheckResult, PracticeDifficulty,
+    PracticeExecutionResult, PracticeSchema, PracticeStats, PracticeTableData, PracticeTask,
+    PracticeTaskProgress, Question, QuestionId, QuestionLimit, QuestionMistakeDetail,
+    QuestionMistakeSummary, QuestionType, QuizScope, SessionConfig, SessionId, SessionProgress,
+    StatisticsFilter, StatisticsLimit, StatisticsScope, Topic, TopicId, TopicMasteryStats,
+    TrainingStats,
 };
 
 use dba_trainer_storage_sqlite::{SqlitePracticeEngine, SqliteRepository};
@@ -976,12 +977,10 @@ impl App {
                             &self.practice_sql,
                             result.is_correct,
                         )?;
-                        if !result.is_correct && self.practice_hint_count < task.hints.len() {
-                            self.practice_hint_count += 1;
-                        }
                         self.practice_check = Some(result);
                         self.practice_error = None;
                         self.refresh_practice_state()?;
+                        self.activity_stats = Some(self.service.activity_stats()?);
                         self.practice_pane = PracticePane::Result;
                     }
                     Err(error) => {
@@ -1025,6 +1024,9 @@ impl App {
                     let unlocked = (attempts + 1).min(hints_len);
                     if self.practice_hint_count < unlocked {
                         self.practice_hint_count += 1;
+                        self.service.record_practice_hint(task_id)?;
+                        self.refresh_practice_state()?;
+                        self.activity_stats = Some(self.service.activity_stats()?);
                     } else if self.practice_hint_count >= hints_len {
                         self.practice_message =
                             Some(self.strings().practice_no_more_hints.to_string());
@@ -1121,10 +1123,17 @@ impl App {
         let Some(category) = self.selected_practice_category.as_deref() else {
             return Vec::new();
         };
-        self.practice_tasks
+        let mut tasks = self
+            .practice_tasks
             .iter()
             .filter(|task| task.category == category)
-            .collect()
+            .collect::<Vec<_>>();
+        tasks.sort_by_key(|task| match task.difficulty {
+            PracticeDifficulty::Easy => 0,
+            PracticeDifficulty::Medium => 1,
+            PracticeDifficulty::Hard => 2,
+        });
+        tasks
     }
 
     pub fn progress_for_practice_task(&self, task_id: i64) -> Option<&PracticeTaskProgress> {
@@ -1141,6 +1150,30 @@ impl App {
             .categories
             .iter()
             .find(|stats| stats.category == category)
+    }
+
+    pub fn practice_xp_opportunity(
+        &self,
+        task_id: i64,
+    ) -> Option<&dba_trainer_domain::PracticeXpOpportunity> {
+        self.activity_stats
+            .as_ref()
+            .and_then(|stats| stats.practice_xp_opportunity(task_id))
+    }
+
+    pub fn practice_xp_available(&self, task_id: i64) -> usize {
+        self.practice_xp_opportunity(task_id).map_or(
+            0,
+            dba_trainer_domain::PracticeXpOpportunity::total_available_xp,
+        )
+    }
+
+    pub fn practice_category_xp_available(&self, category: &str) -> usize {
+        self.practice_tasks
+            .iter()
+            .filter(|task| task.category == category)
+            .map(|task| self.practice_xp_available(task.id))
+            .sum()
     }
 
     pub fn practice_solution_available(&self) -> bool {
@@ -1177,7 +1210,7 @@ impl App {
         self.practice_cursor = self.practice_sql.len();
         self.practice_hint_count = progress
             .as_ref()
-            .map_or(0, |progress| progress.attempts.min(task.hints.len()));
+            .map_or(0, |progress| progress.hints_revealed.min(task.hints.len()));
         self.selected_practice_category = Some(task.category.clone());
         let task_ids = self
             .practice_tasks_for_selected_category()
@@ -1787,6 +1820,39 @@ impl App {
             .map(|(_, stats)| stats)
     }
 
+    pub fn question_xp_available(&self, question_id: QuestionId) -> bool {
+        self.activity_stats
+            .as_ref()
+            .is_some_and(|stats| stats.question_xp_available(question_id))
+    }
+
+    pub fn quiz_xp_opportunity_for_scope(
+        &self,
+        scope: &QuizScope,
+    ) -> Option<&dba_trainer_domain::QuizXpOpportunity> {
+        self.activity_stats
+            .as_ref()
+            .and_then(|stats| stats.quiz_xp_opportunity(scope))
+    }
+
+    pub fn topic_xp_available(&self, topic_id: TopicId) -> usize {
+        self.quiz_xp_opportunity_for_scope(&QuizScope::Topic(topic_id))
+            .map_or(0, dba_trainer_domain::QuizXpOpportunity::total_available_xp)
+    }
+
+    pub fn course_xp_available(&self, course_code: &str) -> usize {
+        self.quiz_xp_opportunity_for_scope(&QuizScope::Course(course_code.to_string()))
+            .map_or(0, dba_trainer_domain::QuizXpOpportunity::total_available_xp)
+    }
+
+    pub fn topic_course_xp_available(&self, course_code: &str) -> usize {
+        self.topics
+            .iter()
+            .filter(|topic| topic.course_code == course_code)
+            .map(|topic| self.topic_xp_available(topic.id))
+            .sum()
+    }
+
     fn load_topic_mastery_for_selected_course(&mut self) -> Result<(), RepositoryError> {
         let topic_ids = self
             .topics_for_selected_course()
@@ -2034,6 +2100,7 @@ impl App {
             )));
         }
 
+        self.activity_stats = Some(self.service.activity_stats()?);
         self.unfinished_sessions = self.service.unfinished_sessions()?;
         self.reset_quiz();
         self.screen = Screen::Home;
@@ -2112,6 +2179,8 @@ impl App {
 
                 self.feedback = None;
 
+                self.activity_stats = Some(self.service.activity_stats()?);
+                self.unfinished_sessions = self.service.unfinished_sessions()?;
                 self.screen = Screen::Results;
             }
         }
@@ -2200,6 +2269,7 @@ impl App {
         self.feedback_scroll = 0;
 
         self.feedback = Some(result);
+        self.activity_stats = Some(self.service.activity_stats()?);
 
         self.screen = Screen::Feedback;
 

@@ -1,0 +1,1 @@
+CREATE TABLE sessions(id INTEGER, database_name TEXT, state TEXT); INSERT INTO sessions VALUES (1,'a','idle in transaction'),(2,'a','active'),(3,'b','disabled'),(4,'c','active'),(5,'c','active'),(6,'c','idle');
