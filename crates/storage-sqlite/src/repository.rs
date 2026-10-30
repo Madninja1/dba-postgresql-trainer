@@ -1510,6 +1510,277 @@ impl LearningHistoryRepository for SqliteRepository {
     }
 }
 
+fn prepare_statistics_reset_questions_for_course(
+    transaction: &Transaction<'_>,
+    course_code: &str,
+) -> Result<(), RepositoryError> {
+    transaction
+        .execute_batch(
+            "
+            DROP TABLE IF EXISTS temp.reset_statistics_questions;
+            CREATE TEMP TABLE reset_statistics_questions (
+                question_id INTEGER PRIMARY KEY
+            );
+            ",
+        )
+        .map_err(repository_error)?;
+
+    transaction
+        .execute(
+            "
+            INSERT INTO reset_statistics_questions (question_id)
+            SELECT q.id
+            FROM questions q
+            JOIN topics t ON t.id = q.topic_id
+            WHERE t.course_code = ?1
+            ",
+            params![course_code],
+        )
+        .map_err(repository_error)?;
+
+    Ok(())
+}
+
+fn prepare_statistics_reset_questions_for_topic(
+    transaction: &Transaction<'_>,
+    topic_id: TopicId,
+) -> Result<(), RepositoryError> {
+    transaction
+        .execute_batch(
+            "
+            DROP TABLE IF EXISTS temp.reset_statistics_questions;
+            CREATE TEMP TABLE reset_statistics_questions (
+                question_id INTEGER PRIMARY KEY
+            );
+            ",
+        )
+        .map_err(repository_error)?;
+
+    transaction
+        .execute(
+            "
+            INSERT INTO reset_statistics_questions (question_id)
+            SELECT id
+            FROM questions
+            WHERE topic_id = ?1
+            ",
+            params![topic_id.0],
+        )
+        .map_err(repository_error)?;
+
+    Ok(())
+}
+
+fn clear_scoped_quiz_statistics(
+    transaction: &Transaction<'_>,
+    course_code: Option<&str>,
+) -> Result<(), RepositoryError> {
+    // Attempts are the source for answer history, mistakes and mastery.
+    transaction
+        .execute(
+            "
+            DELETE FROM attempts
+            WHERE question_id IN (
+                SELECT question_id
+                FROM reset_statistics_questions
+            )
+            ",
+            [],
+        )
+        .map_err(repository_error)?;
+
+    // Remove the reset material from every quiz, including mixed/general quizzes.
+    // This keeps unrelated course/topic history intact.
+    transaction
+        .execute(
+            "
+            DELETE FROM session_questions
+            WHERE question_id IN (
+                SELECT question_id
+                FROM reset_statistics_questions
+            )
+            ",
+            [],
+        )
+        .map_err(repository_error)?;
+
+    // After removing questions, compact positions so unfinished mixed quizzes remain resumable.
+    transaction
+        .execute_batch(
+            "
+            DROP TABLE IF EXISTS temp.reset_statistics_positions;
+            CREATE TEMP TABLE reset_statistics_positions AS
+            SELECT
+                session_id,
+                question_id,
+                ROW_NUMBER() OVER (
+                    PARTITION BY session_id
+                    ORDER BY position, question_id
+                ) - 1 AS new_position
+            FROM session_questions;
+
+            UPDATE session_questions
+            SET position = -position - 1;
+
+            UPDATE session_questions
+            SET position = (
+                SELECT p.new_position
+                FROM reset_statistics_positions p
+                WHERE p.session_id = session_questions.session_id
+                  AND p.question_id = session_questions.question_id
+            );
+
+            DROP TABLE reset_statistics_positions;
+            ",
+        )
+        .map_err(repository_error)?;
+
+    transaction
+        .execute(
+            "
+            UPDATE quiz_sessions
+            SET current_index = (
+                SELECT COUNT(*)
+                FROM attempts a
+                WHERE a.session_id = quiz_sessions.id
+            )
+            WHERE finished_at IS NULL
+              AND cancelled_at IS NULL
+            ",
+            [],
+        )
+        .map_err(repository_error)?;
+
+    // A quiz made entirely from the reset scope has no useful state left, including unfinished ones.
+    transaction
+        .execute(
+            "
+            DELETE FROM quiz_sessions
+            WHERE NOT EXISTS (
+                SELECT 1
+                FROM session_questions sq
+                WHERE sq.session_id = quiz_sessions.id
+            )
+            ",
+            [],
+        )
+        .map_err(repository_error)?;
+
+    // Remove XP that belongs directly to the reset questions/topics and invalidate parent
+    // course-completion XP. Practice XP and unrelated quiz XP remain untouched.
+    transaction
+        .execute(
+            "
+            DELETE FROM xp_events
+            WHERE event_key IN (
+                SELECT 'question:correct:' || rq.question_id
+                FROM reset_statistics_questions rq
+            )
+               OR event_key IN (
+                SELECT DISTINCT 'topic:mastered:' || q.topic_id
+                FROM questions q
+                JOIN reset_statistics_questions rq ON rq.question_id = q.id
+            )
+               OR EXISTS (
+                SELECT 1
+                FROM questions q
+                JOIN reset_statistics_questions rq ON rq.question_id = q.id
+                WHERE xp_events.event_key LIKE 'quiz:passed:topic:' || q.topic_id || ':%'
+            )
+               OR event_key IN (
+                SELECT DISTINCT 'course:completed:' || t.course_code
+                FROM questions q
+                JOIN topics t ON t.id = q.topic_id
+                JOIN reset_statistics_questions rq ON rq.question_id = q.id
+            )
+            ",
+            [],
+        )
+        .map_err(repository_error)?;
+
+    if let Some(course_code) = course_code {
+        transaction
+            .execute(
+                "
+                DELETE FROM xp_events
+                WHERE event_key LIKE 'quiz:passed:course:' || ?1 || ':%'
+                ",
+                params![course_code],
+            )
+            .map_err(repository_error)?;
+    }
+
+    // Rebuild only quiz-derived activity counters. App opens and SQL-practice activity survive
+    // a scoped reset.
+    transaction
+        .execute(
+            "
+            UPDATE daily_activity
+            SET answered_questions = 0,
+                correct_answers = 0,
+                completed_sessions = 0
+            ",
+            [],
+        )
+        .map_err(repository_error)?;
+
+    transaction
+        .execute_batch(
+            "
+            INSERT INTO daily_activity (
+                activity_date,
+                open_count,
+                answered_questions,
+                correct_answers,
+                completed_sessions
+            )
+            SELECT
+                activity_date,
+                0,
+                SUM(answered_questions),
+                SUM(correct_answers),
+                SUM(completed_sessions)
+            FROM (
+                SELECT
+                    date(a.answered_at, 'localtime') AS activity_date,
+                    COUNT(*) AS answered_questions,
+                    COALESCE(SUM(a.is_correct), 0) AS correct_answers,
+                    0 AS completed_sessions
+                FROM attempts a
+                JOIN quiz_sessions s ON s.id = a.session_id
+                WHERE s.finished_at IS NOT NULL
+                  AND s.cancelled_at IS NULL
+                  AND s.is_review = 0
+                GROUP BY date(a.answered_at, 'localtime')
+
+                UNION ALL
+
+                SELECT
+                    date(s.finished_at, 'localtime') AS activity_date,
+                    0 AS answered_questions,
+                    0 AS correct_answers,
+                    COUNT(*) AS completed_sessions
+                FROM quiz_sessions s
+                WHERE s.finished_at IS NOT NULL
+                  AND s.cancelled_at IS NULL
+                  AND s.is_review = 0
+                GROUP BY date(s.finished_at, 'localtime')
+            ) quiz_activity
+            WHERE activity_date IS NOT NULL
+            GROUP BY activity_date
+            ON CONFLICT(activity_date) DO UPDATE SET
+                answered_questions = excluded.answered_questions,
+                correct_answers = excluded.correct_answers,
+                completed_sessions = excluded.completed_sessions;
+
+            DROP TABLE IF EXISTS temp.reset_statistics_questions;
+            ",
+        )
+        .map_err(repository_error)?;
+
+    Ok(())
+}
+
 impl SessionRepository for SqliteRepository {
     fn start_session(&mut self, config: &SessionConfig) -> Result<QuizSession, RepositoryError> {
         let (scope, topic_id, course_code, is_review) = match &config.scope {
@@ -2132,35 +2403,41 @@ impl SessionRepository for SqliteRepository {
         })
     }
 
-    fn clear_statistics(&mut self) -> Result<(), RepositoryError> {
+    fn clear_statistics(&mut self, scope: &StatisticsScope) -> Result<(), RepositoryError> {
         let transaction = self.connection.transaction().map_err(repository_error)?;
 
-        transaction
-            .execute(
-                "
-                DELETE FROM quiz_sessions
-                WHERE finished_at IS NOT NULL
-                   OR cancelled_at IS NOT NULL
-                ",
-                [],
-            )
-            .map_err(repository_error)?;
+        match scope {
+            StatisticsScope::All => {
+                // A full reset means a genuinely clean start, including unfinished quizzes.
+                transaction
+                    .execute("DELETE FROM quiz_sessions", [])
+                    .map_err(repository_error)?;
 
-        transaction
-            .execute("DELETE FROM daily_activity", [])
-            .map_err(repository_error)?;
+                transaction
+                    .execute("DELETE FROM daily_activity", [])
+                    .map_err(repository_error)?;
 
-        transaction
-            .execute("DELETE FROM practice_attempts", [])
-            .map_err(repository_error)?;
+                transaction
+                    .execute("DELETE FROM practice_attempts", [])
+                    .map_err(repository_error)?;
 
-        transaction
-            .execute("DELETE FROM practice_progress", [])
-            .map_err(repository_error)?;
+                transaction
+                    .execute("DELETE FROM practice_progress", [])
+                    .map_err(repository_error)?;
 
-        transaction
-            .execute("DELETE FROM xp_events", [])
-            .map_err(repository_error)?;
+                transaction
+                    .execute("DELETE FROM xp_events", [])
+                    .map_err(repository_error)?;
+            }
+            StatisticsScope::Course(course_code) => {
+                prepare_statistics_reset_questions_for_course(&transaction, course_code)?;
+                clear_scoped_quiz_statistics(&transaction, Some(course_code))?;
+            }
+            StatisticsScope::Topic(topic_id) => {
+                prepare_statistics_reset_questions_for_topic(&transaction, *topic_id)?;
+                clear_scoped_quiz_statistics(&transaction, None)?;
+            }
+        }
 
         transaction.commit().map_err(repository_error)?;
 
@@ -3572,7 +3849,7 @@ mod tests {
     }
 
     #[test]
-    fn clear_statistics_removes_history_but_keeps_active_session() {
+    fn clear_statistics_removes_history_and_active_session() {
         let mut repository = seeded_repository();
 
         let completed_config = SessionConfig {
@@ -3593,12 +3870,12 @@ mod tests {
             .submit_answer(completed_session.id, question.id, &[AnswerOptionId(1)])
             .expect("answer should complete session");
 
-        let active_session = repository
+        repository
             .start_session(&completed_config)
             .expect("active session should start");
 
         repository
-            .clear_statistics()
+            .clear_statistics(&StatisticsScope::All)
             .expect("statistics should clear");
 
         let stats = repository
@@ -3629,9 +3906,161 @@ mod tests {
 
         let active = repository
             .active_session()
-            .expect("active session should load")
-            .expect("active session should remain");
+            .expect("active session query should succeed");
+        assert!(active.is_none());
+    }
+    #[test]
+    fn clear_topic_statistics_preserves_other_topic_history() {
+        let mut repository = seeded_repository();
 
-        assert_eq!(active.id, active_session.id);
+        repository
+            .connection
+            .execute_batch(
+                "
+                INSERT INTO topics (
+                    id, course_code, slug, title, description, sort_order
+                ) VALUES (
+                    2, 'dba-1', 'backup', 'Backup', NULL, 2
+                );
+
+                INSERT INTO questions (
+                    id, topic_id, source_id, text, explanation
+                ) VALUES (
+                    2, 2, 1, 'Backup question?', 'Backup explanation'
+                );
+
+                INSERT INTO answer_options (
+                    id, question_id, text, is_correct, sort_order
+                ) VALUES
+                    (3, 2, 'Correct', 1, 1),
+                    (4, 2, 'Incorrect', 0, 2);
+                ",
+            )
+            .expect("second topic should be inserted");
+
+        for (topic_id, answer_id) in [
+            (TopicId(1), AnswerOptionId(1)),
+            (TopicId(2), AnswerOptionId(3)),
+        ] {
+            let session = repository
+                .start_session(&SessionConfig {
+                    scope: QuizScope::Topic(topic_id),
+                    limit: QuestionLimit::All,
+                })
+                .expect("topic session should start");
+            let question = repository
+                .current_question(session.id)
+                .expect("question should load")
+                .expect("question should exist");
+            repository
+                .submit_answer(session.id, question.id, &[answer_id])
+                .expect("answer should complete session");
+        }
+
+        repository
+            .start_session(&SessionConfig {
+                scope: QuizScope::Topic(TopicId(1)),
+                limit: QuestionLimit::All,
+            })
+            .expect("unfinished topic session should start");
+
+        repository
+            .clear_statistics(&StatisticsScope::Topic(TopicId(1)))
+            .expect("topic statistics should clear");
+
+        let cleared = repository
+            .statistics(&StatisticsFilter {
+                scope: StatisticsScope::Topic(TopicId(1)),
+                limit: StatisticsLimit::Any,
+            })
+            .expect("cleared topic statistics should load");
+        assert_eq!(cleared, TrainingStats::default());
+
+        let preserved = repository
+            .statistics(&StatisticsFilter {
+                scope: StatisticsScope::Topic(TopicId(2)),
+                limit: StatisticsLimit::Any,
+            })
+            .expect("other topic statistics should load");
+        assert_eq!(preserved.completed_sessions, 1);
+        assert_eq!(preserved.answered_questions, 1);
+        assert_eq!(preserved.correct_answers, 1);
+
+        let unfinished = repository
+            .unfinished_sessions()
+            .expect("unfinished sessions should load");
+        assert!(unfinished.is_empty());
+    }
+
+    #[test]
+    fn clear_course_statistics_preserves_other_course_history() {
+        let mut repository = seeded_repository();
+
+        repository
+            .connection
+            .execute_batch(
+                "
+                INSERT INTO topics (
+                    id, course_code, slug, title, description, sort_order
+                ) VALUES (
+                    2, 'dba-2', 'backup', 'Backup', NULL, 2
+                );
+
+                INSERT INTO questions (
+                    id, topic_id, source_id, text, explanation
+                ) VALUES (
+                    2, 2, 1, 'Backup question?', 'Backup explanation'
+                );
+
+                INSERT INTO answer_options (
+                    id, question_id, text, is_correct, sort_order
+                ) VALUES
+                    (3, 2, 'Correct', 1, 1),
+                    (4, 2, 'Incorrect', 0, 2);
+                ",
+            )
+            .expect("second course should be inserted");
+
+        for (course_code, expected_question_id, answer_id) in [
+            ("dba-1", QuestionId(1), AnswerOptionId(1)),
+            ("dba-2", QuestionId(2), AnswerOptionId(3)),
+        ] {
+            let session = repository
+                .start_session(&SessionConfig {
+                    scope: QuizScope::Course(course_code.to_string()),
+                    limit: QuestionLimit::All,
+                })
+                .expect("course session should start");
+            let question = repository
+                .current_question(session.id)
+                .expect("question should load")
+                .expect("question should exist");
+            assert_eq!(question.id, expected_question_id);
+            repository
+                .submit_answer(session.id, question.id, &[answer_id])
+                .expect("answer should complete session");
+        }
+
+        repository
+            .clear_statistics(&StatisticsScope::Course("dba-1".to_string()))
+            .expect("course statistics should clear");
+
+        let cleared = repository
+            .statistics(&StatisticsFilter {
+                scope: StatisticsScope::Course("dba-1".to_string()),
+                limit: StatisticsLimit::Any,
+            })
+            .expect("cleared course statistics should load");
+        assert_eq!(cleared, TrainingStats::default());
+
+        let preserved = repository
+            .statistics(&StatisticsFilter {
+                scope: StatisticsScope::Course("dba-2".to_string()),
+                limit: StatisticsLimit::Any,
+            })
+            .expect("other course statistics should load");
+        assert_eq!(preserved.completed_sessions, 1);
+        assert_eq!(preserved.answered_questions, 1);
+        assert_eq!(preserved.correct_answers, 1);
     }
 }

@@ -458,7 +458,23 @@ impl MobileTrainer {
 
     pub fn clear_statistics(&self) -> Result<(), MobileError> {
         let mut service = self.service()?;
-        service.clear_statistics().map_err(to_mobile_error)
+        service
+            .clear_statistics(&StatisticsScope::All)
+            .map_err(to_mobile_error)
+    }
+
+    pub fn clear_statistics_course(&self, course_code: String) -> Result<(), MobileError> {
+        let mut service = self.service()?;
+        service
+            .clear_statistics(&StatisticsScope::Course(course_code))
+            .map_err(to_mobile_error)
+    }
+
+    pub fn clear_statistics_topic(&self, topic_id: i64) -> Result<(), MobileError> {
+        let mut service = self.service()?;
+        service
+            .clear_statistics(&StatisticsScope::Topic(TopicId(topic_id)))
+            .map_err(to_mobile_error)
     }
 }
 

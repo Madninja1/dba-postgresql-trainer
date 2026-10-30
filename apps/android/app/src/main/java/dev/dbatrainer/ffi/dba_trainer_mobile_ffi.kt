@@ -689,6 +689,10 @@ internal object IntegrityCheckingUniffiLib {
     ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_clear_statistics(
     ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_clear_statistics_course(
+    ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_clear_statistics_topic(
+    ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_current_question(
     ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_labs(
@@ -782,6 +786,10 @@ internal object UniffiLib {
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_cancel_session(`ptr`: Long,`sessionId`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): Unit
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_clear_statistics(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
+    ): Unit
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_clear_statistics_course(`ptr`: Long,`courseCode`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): Unit
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_clear_statistics_topic(`ptr`: Long,`topicId`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): Unit
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_current_question(`ptr`: Long,`sessionId`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
@@ -980,6 +988,12 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_clear_statistics() and 0xFFFF) != 46729) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_clear_statistics_course() and 0xFFFF) != 33979) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_clear_statistics_topic() and 0xFFFF) != 52795) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_current_question() and 0xFFFF) != 42502) {
@@ -1484,6 +1498,10 @@ public interface MobileTrainerInterface {
     
     fun `clearStatistics`()
     
+    fun `clearStatisticsCourse`(`courseCode`: kotlin.String)
+    
+    fun `clearStatisticsTopic`(`topicId`: kotlin.Long)
+    
     fun `currentQuestion`(`sessionId`: kotlin.Long): MobileQuestion?
     
     fun `labs`(): List<MobileLab>
@@ -1705,6 +1723,34 @@ open class MobileTrainer: Disposable, AutoCloseable, MobileTrainerInterface
     UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_clear_statistics(
         it,
         _status)
+}
+    }
+    
+    
+
+    
+    @Throws(MobileException::class)override fun `clearStatisticsCourse`(`courseCode`: kotlin.String)
+        = 
+    callWithHandle {
+    uniffiRustCallWithError(MobileException) { _status ->
+    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_clear_statistics_course(
+        it,
+        
+        FfiConverterString.lower(`courseCode`),_status)
+}
+    }
+    
+    
+
+    
+    @Throws(MobileException::class)override fun `clearStatisticsTopic`(`topicId`: kotlin.Long)
+        = 
+    callWithHandle {
+    uniffiRustCallWithError(MobileException) { _status ->
+    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_clear_statistics_topic(
+        it,
+        
+        FfiConverterLong.lower(`topicId`),_status)
 }
     }
     

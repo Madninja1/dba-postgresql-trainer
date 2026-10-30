@@ -1,8 +1,8 @@
 use dba_trainer_domain::{
     ActivityStats, AnswerOptionId, AnswerResult, Lab, PracticeStats, PracticeTask,
     PracticeTaskProgress, Question, QuestionId, QuestionMistakeDetail, QuestionMistakeSummary,
-    QuizSession, SessionConfig, SessionId, SessionProgress, StatisticsFilter, Topic, TopicId,
-    TopicMasteryStats, TrainingStats,
+    QuizSession, SessionConfig, SessionId, SessionProgress, StatisticsFilter, StatisticsScope,
+    Topic, TopicId, TopicMasteryStats, TrainingStats,
 };
 
 use crate::RepositoryError;
@@ -77,5 +77,5 @@ pub trait SessionRepository {
         answer_option_ids: &[AnswerOptionId],
     ) -> Result<AnswerResult, RepositoryError>;
 
-    fn clear_statistics(&mut self) -> Result<(), RepositoryError>;
+    fn clear_statistics(&mut self, scope: &StatisticsScope) -> Result<(), RepositoryError>;
 }

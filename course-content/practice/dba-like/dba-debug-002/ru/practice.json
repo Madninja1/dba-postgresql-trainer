@@ -3,7 +3,7 @@
   "key": "dba-debug-002",
   "category": "FixQuery / FindLogicalError",
   "title": "Лишние строки из истории backup",
-  "description": "Исправьте запрос так, чтобы он возвращал ровно одну строку на каждую базу и две колонки: database_name, finished_seq. Для базы с successful backup нужен finished_seq последнего successful backup; база без successful backup должна остаться с finished_seq = NULL. Сортировка: database_name ASC.",
+  "description": "Исправьте запрос так, чтобы он возвращал ровно одну строку на каждую базу и две колонки: database_name, finished_seq. Для каждой базы верните максимальный finished_seq среди её successful backup. Если successful backup отсутствуют, база должна остаться в результате с finished_seq = NULL. Сортировка: database_name ASC.",
   "type": "find_logical_error",
   "comparison": "ordered",
   "difficulty": "medium",

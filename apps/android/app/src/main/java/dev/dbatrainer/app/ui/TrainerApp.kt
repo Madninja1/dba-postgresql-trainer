@@ -52,6 +52,7 @@ import dev.dbatrainer.app.AppScreen
 import dev.dbatrainer.app.CourseStatisticsRow
 import dev.dbatrainer.app.ModeStatisticsRow
 import dev.dbatrainer.app.StatisticsPage
+import dev.dbatrainer.app.StatisticsResetTarget
 import dev.dbatrainer.app.TopicStatisticsRow
 import dev.dbatrainer.app.TrainerController
 import dev.dbatrainer.app.UiLanguage
@@ -150,6 +151,38 @@ fun TrainerApp(controller: TrainerController) {
                     ) {
                         Text(strings.stayInQuiz)
                     }
+                }
+            },
+        )
+    }
+
+    controller.pendingStatisticsReset?.let { target ->
+        val scopeLabel = when (target) {
+            StatisticsResetTarget.All -> strings.overallStatistics
+            is StatisticsResetTarget.Course -> target.courseCode.uppercase()
+            is StatisticsResetTarget.Topic -> target.topic.title
+        }
+
+        AlertDialog(
+            onDismissRequest = controller::dismissStatisticsReset,
+            title = {
+                Text(strings.clearStatisticsConfirmTitle)
+            },
+            text = {
+                Text("${strings.clearStatisticsConfirmMessage}\n\n$scopeLabel")
+            },
+            confirmButton = {
+                Button(
+                    onClick = controller::confirmStatisticsReset,
+                ) {
+                    Text(strings.clearStatisticsConfirm)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = controller::dismissStatisticsReset,
+                ) {
+                    Text(strings.back)
                 }
             },
         )
@@ -1441,7 +1474,7 @@ private fun StatisticsRootScreen(controller: TrainerController) {
 
             item {
                 OutlinedButton(
-                    onClick = controller::clearStatistics,
+                    onClick = controller::requestClearStatistics,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(strings.clearStatistics)
@@ -1542,6 +1575,15 @@ private fun StatisticsTopicsScreen(controller: TrainerController) {
                     },
                 )
             }
+
+            item {
+                OutlinedButton(
+                    onClick = controller::requestClearCurrentStatisticsScope,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(strings.clearScopeStatistics)
+                }
+            }
         }
     }
 }
@@ -1578,15 +1620,36 @@ private fun StatisticsGlobalModesScreen(controller: TrainerController) {
 
 @Composable
 private fun StatisticsScopeModesScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
+
     TrainerScaffold(
         title = controller.statisticsScopeTitle,
         onBack = controller::back,
     ) { modifier ->
-        StatisticsModesList(
-            rows = controller.scopeModeStatistics,
+        LazyColumn(
             modifier = modifier,
-            onClick = controller::openScopeModeDetail,
-        )
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
+        ) {
+            items(
+                items = controller.scopeModeStatistics,
+                key = { row -> row.title },
+            ) { row ->
+                StatisticsNavigationCard(
+                    title = row.title,
+                    stats = row.stats,
+                    onClick = { controller.openScopeModeDetail(row) },
+                )
+            }
+
+            item {
+                OutlinedButton(
+                    onClick = controller::requestClearCurrentStatisticsScope,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(strings.clearScopeStatistics)
+                }
+            }
+        }
     }
 }
 

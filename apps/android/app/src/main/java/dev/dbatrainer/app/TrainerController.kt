@@ -91,6 +91,12 @@ data class ModeStatisticsRow(
     val stats: MobileTrainingStats,
 )
 
+sealed interface StatisticsResetTarget {
+    data object All : StatisticsResetTarget
+    data class Course(val courseCode: String) : StatisticsResetTarget
+    data class Topic(val topic: MobileTopic) : StatisticsResetTarget
+}
+
 class TrainerController(context: Context) {
     private val preferences = context.getSharedPreferences(
         "dba_trainer_settings",
@@ -261,6 +267,9 @@ class TrainerController(context: Context) {
         private set
 
     var selectedStatisticsTopic by mutableStateOf<MobileTopic?>(null)
+        private set
+
+    var pendingStatisticsReset by mutableStateOf<StatisticsResetTarget?>(null)
         private set
 
     private var statisticsDetailReturnPage = StatisticsPage.Root
@@ -1157,16 +1166,84 @@ class TrainerController(context: Context) {
         }
     }
 
-    fun clearStatistics() {
+    fun requestClearStatistics() {
+        pendingStatisticsReset = StatisticsResetTarget.All
+    }
+
+    fun requestClearCurrentStatisticsScope() {
+        val topic = selectedStatisticsTopic
+        val courseCode = selectedStatisticsCourse
+
+        pendingStatisticsReset = when {
+            topic != null -> StatisticsResetTarget.Topic(topic)
+            courseCode != null -> StatisticsResetTarget.Course(courseCode)
+            else -> return
+        }
+    }
+
+    fun dismissStatisticsReset() {
+        pendingStatisticsReset = null
+    }
+
+    fun confirmStatisticsReset() {
+        val target = pendingStatisticsReset ?: return
+
         runCoreAction {
-            requireTrainer().clearStatistics()
+            when (target) {
+                StatisticsResetTarget.All -> requireTrainer().clearStatistics()
+                is StatisticsResetTarget.Course ->
+                    requireTrainer().clearStatisticsCourse(target.courseCode)
+                is StatisticsResetTarget.Topic ->
+                    requireTrainer().clearStatisticsTopic(target.topic.id)
+            }
+
+            pendingStatisticsReset = null
             refreshStatisticsOverview()
-            resetStatisticsNavigation()
-            mistakeSummaries = emptyList()
+            mistakeSummaries = requireTrainer().mistakeSummaries()
             mistakeDetail = null
             activityStats = requireTrainer().activityStats()
             unfinishedSessions = requireTrainer().unfinishedSessions()
             refreshPracticeState()
+
+            when (target) {
+                StatisticsResetTarget.All -> resetStatisticsNavigation()
+                is StatisticsResetTarget.Course -> {
+                    selectedStatisticsCourse = target.courseCode
+                    selectedStatisticsTopic = null
+                    topicStatistics = topics
+                        .filter { topic -> topic.courseCode == target.courseCode }
+                        .map { topic ->
+                            TopicStatisticsRow(
+                                topic = topic,
+                                stats = requireTrainer().statisticsTopic(
+                                    topic.id,
+                                    MobileStatisticsLimit.ANY,
+                                ),
+                            )
+                        }
+                    scopeModeStatistics = loadModeStatistics { limit ->
+                        requireTrainer().statisticsCourse(target.courseCode, limit)
+                    }
+                }
+                is StatisticsResetTarget.Topic -> {
+                    selectedStatisticsCourse = target.topic.courseCode
+                    selectedStatisticsTopic = target.topic
+                    topicStatistics = topics
+                        .filter { topic -> topic.courseCode == target.topic.courseCode }
+                        .map { topic ->
+                            TopicStatisticsRow(
+                                topic = topic,
+                                stats = requireTrainer().statisticsTopic(
+                                    topic.id,
+                                    MobileStatisticsLimit.ANY,
+                                ),
+                            )
+                        }
+                    scopeModeStatistics = loadModeStatistics { limit ->
+                        requireTrainer().statisticsTopic(target.topic.id, limit)
+                    }
+                }
+            }
         }
     }
 

@@ -1,8 +1,8 @@
 use dba_trainer_domain::{
     ActivityStats, AnswerOptionId, AnswerResult, Lab, PracticeStats, PracticeTask,
     PracticeTaskProgress, Question, QuestionId, QuestionMistakeDetail, QuestionMistakeSummary,
-    QuizSession, SessionConfig, SessionId, SessionProgress, StatisticsFilter, Topic, TopicId,
-    TopicMasteryStats, TrainingStats,
+    QuizSession, SessionConfig, SessionId, SessionProgress, StatisticsFilter, StatisticsScope,
+    Topic, TopicId, TopicMasteryStats, TrainingStats,
 };
 
 use rand::{rng, seq::SliceRandom};
@@ -78,8 +78,8 @@ where
         self.repository.statistics(filter)
     }
 
-    pub fn clear_statistics(&mut self) -> Result<(), RepositoryError> {
-        self.repository.clear_statistics()
+    pub fn clear_statistics(&mut self, scope: &StatisticsScope) -> Result<(), RepositoryError> {
+        self.repository.clear_statistics(scope)
     }
 }
 
@@ -241,7 +241,7 @@ mod tests {
             Ok(TrainingStats::default())
         }
 
-        fn clear_statistics(&mut self) -> Result<(), RepositoryError> {
+        fn clear_statistics(&mut self, _scope: &StatisticsScope) -> Result<(), RepositoryError> {
             Ok(())
         }
     }

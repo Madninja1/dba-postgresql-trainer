@@ -1,4 +1,5 @@
 mod cancel_session;
+mod clear_statistics;
 mod common;
 mod courses;
 mod feedback;
@@ -91,6 +92,10 @@ pub fn render(frame: &mut Frame, app: &App) {
 
         Screen::CancelSession => {
             cancel_session::render(frame, app);
+        }
+
+        Screen::ClearStatistics => {
+            clear_statistics::render(frame, app);
         }
 
         Screen::Results => {

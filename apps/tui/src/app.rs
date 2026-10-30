@@ -37,6 +37,8 @@ pub enum Screen {
 
     CancelSession,
 
+    ClearStatistics,
+
     Results,
     Statistics,
 }
@@ -236,6 +238,10 @@ pub struct App {
 
     pub decision_selected: usize,
 
+    pub statistics_clear_scope: Option<StatisticsScope>,
+
+    pub statistics_clear_label: String,
+
     pub statistics: Option<TrainingStats>,
 
     pub statistics_view: StatisticsView,
@@ -372,6 +378,10 @@ impl App {
 
             decision_selected: 0,
 
+            statistics_clear_scope: None,
+
+            statistics_clear_label: String::new(),
+
             statistics: None,
 
             statistics_view: StatisticsView::Root,
@@ -496,6 +506,8 @@ impl App {
             Screen::ResumeSession => self.handle_resume_action(action),
 
             Screen::CancelSession => self.handle_cancel_action(action),
+
+            Screen::ClearStatistics => self.handle_clear_statistics_action(action),
 
             Screen::Statistics => self.handle_statistics_action(action),
         };
@@ -1519,24 +1531,129 @@ impl App {
             }
 
             Action::Back => {
+                // Statistics reset can delete unfinished sessions. Refresh the cached
+                // home-menu counter before leaving statistics so it never shows a
+                // stale value until the Resume screen is opened.
+                self.unfinished_sessions = self.service.unfinished_sessions()?;
                 self.back_statistics();
             }
 
             Action::ClearStatistics => {
-                self.service.clear_statistics()?;
+                let (scope, label) = self.statistics_clear_target();
+                self.statistics_clear_scope = Some(scope);
+                self.statistics_clear_label = label;
+                self.decision_selected = 1;
+                self.screen = Screen::ClearStatistics;
+            }
+
+            _ => {}
+        }
+
+        Ok(())
+    }
+
+    fn statistics_clear_target(&self) -> (StatisticsScope, String) {
+        match &self.statistics_view {
+            StatisticsView::Courses => self
+                .statistics_course_codes()
+                .get(self.statistics_selected)
+                .map(|course_code| {
+                    (
+                        StatisticsScope::Course(course_code.clone()),
+                        course_code.to_uppercase(),
+                    )
+                })
+                .unwrap_or((
+                    StatisticsScope::All,
+                    self.strings().all_statistics.to_string(),
+                )),
+            StatisticsView::Course(course_code) => {
+                if self.statistics_selected == 0 {
+                    (
+                        StatisticsScope::Course(course_code.clone()),
+                        course_code.to_uppercase(),
+                    )
+                } else {
+                    let topic_index = self.statistics_selected - 1;
+                    self.statistics_topics_for_course(course_code)
+                        .get(topic_index)
+                        .map(|topic| {
+                            (
+                                StatisticsScope::Topic(topic.id),
+                                format!("{} → {}", course_code.to_uppercase(), topic.title),
+                            )
+                        })
+                        .unwrap_or((
+                            StatisticsScope::Course(course_code.clone()),
+                            course_code.to_uppercase(),
+                        ))
+                }
+            }
+            StatisticsView::Filters { scope, title } => (scope.clone(), title.clone()),
+            StatisticsView::Detail { filter, title } => {
+                let label = if title.is_empty() {
+                    self.strings().all_statistics.to_string()
+                } else {
+                    title.clone()
+                };
+                (filter.scope.clone(), label)
+            }
+            StatisticsView::MistakeCourse(course_code) => (
+                StatisticsScope::Course(course_code.clone()),
+                course_code.to_uppercase(),
+            ),
+            StatisticsView::MistakeTopic {
+                course_code,
+                topic_id,
+            } => {
+                let title = self
+                    .topics
+                    .iter()
+                    .find(|topic| topic.id == *topic_id)
+                    .map(|topic| topic.title.clone())
+                    .unwrap_or_else(|| format!("#{}", topic_id.0));
+                (
+                    StatisticsScope::Topic(*topic_id),
+                    format!("{} → {}", course_code.to_uppercase(), title),
+                )
+            }
+            _ => (
+                StatisticsScope::All,
+                self.strings().all_statistics.to_string(),
+            ),
+        }
+    }
+
+    fn handle_clear_statistics_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        match action {
+            Action::Up | Action::Down => {
+                self.decision_selected = 1 - self.decision_selected.min(1);
+            }
+            Action::Confirm if self.decision_selected == 0 => {
+                if let Some(scope) = self.statistics_clear_scope.take() {
+                    self.service.clear_statistics(&scope)?;
+                }
+
+                self.statistics_clear_label.clear();
                 self.zero_statistics_summaries();
                 self.mistake_summaries.clear();
                 self.mistake_detail = None;
                 self.activity_stats = Some(self.service.activity_stats()?);
                 self.practice_progress = self.service.practice_progress()?;
                 self.practice_stats = self.service.practice_stats()?;
+                self.unfinished_sessions = self.service.unfinished_sessions()?;
                 self.statistics = None;
                 self.statistics_view = StatisticsView::Root;
                 self.statistics_history.clear();
                 self.statistics_selected = 0;
                 self.statistics_scroll = 0;
+                self.screen = Screen::Statistics;
             }
-
+            Action::Confirm | Action::Back => {
+                self.statistics_clear_scope = None;
+                self.statistics_clear_label.clear();
+                self.screen = Screen::Statistics;
+            }
             _ => {}
         }
 
