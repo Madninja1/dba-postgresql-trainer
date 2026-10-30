@@ -3,10 +3,10 @@ use std::{fs, path::Path};
 use crate::{
     error::ContentError,
     model::{
-        ContentBundle, LabBundle, LabDocument, PracticeBundle, PracticeDocument, QuestionsDocument,
-        TopicDocument,
+        ContentBundle, LabBundle, LabDocument, NoteBundle, PracticeBundle, PracticeDocument,
+        QuestionsDocument, TopicDocument,
     },
-    validation::{validate_bundle, validate_lab, validate_practice},
+    validation::{validate_bundle, validate_lab, validate_note, validate_practice},
 };
 
 pub fn load_bundle(topic_json: &str, questions_json: &str) -> Result<ContentBundle, ContentError> {
@@ -25,6 +25,21 @@ pub fn load_bundle(topic_json: &str, questions_json: &str) -> Result<ContentBund
     validate_bundle(&topic, &questions).map_err(ContentError::Validation)?;
 
     Ok(ContentBundle { topic, questions })
+}
+
+pub fn load_note(topic_json: &str, note_markdown: &str) -> Result<NoteBundle, ContentError> {
+    let topic: TopicDocument =
+        serde_json::from_str(topic_json).map_err(|source| ContentError::Json {
+            document: "topic.json",
+            source,
+        })?;
+
+    validate_note(&topic, note_markdown).map_err(ContentError::Validation)?;
+
+    Ok(NoteBundle {
+        topic,
+        body: note_markdown.to_owned(),
+    })
 }
 
 pub fn load_lab(lab_json: &str, lab_markdown: &str) -> Result<LabBundle, ContentError> {
@@ -127,6 +142,21 @@ mod tests {
         "sort_order": 10
     }
     "#;
+
+    #[test]
+    fn loads_valid_note_for_topic() {
+        let note =
+            load_note(TOPIC_JSON, "# Architecture\n\nShort note.").expect("valid note should load");
+
+        assert_eq!(note.topic.slug, "dba1-tools-install");
+        assert!(note.body.contains("Short note"));
+    }
+
+    #[test]
+    fn rejects_empty_note() {
+        let error = load_note(TOPIC_JSON, "   ").expect_err("empty note must fail");
+        assert!(matches!(error, ContentError::Validation(_)));
+    }
 
     #[test]
     fn loads_valid_bundle() {

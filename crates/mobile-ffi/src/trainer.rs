@@ -3,7 +3,7 @@ use std::sync::{Arc, Mutex, MutexGuard};
 use dba_trainer_application::{PracticeEngine, TrainerService};
 use dba_trainer_content::{
     DEFAULT_CONTENT_LOCALE, load_builtin_bundles, load_builtin_labs_for_locale,
-    load_builtin_practice_for_locale,
+    load_builtin_notes_for_locale, load_builtin_practice_for_locale,
 };
 use dba_trainer_domain::{
     AnswerOptionId, PracticeTask, QuestionId, QuizScope, SessionConfig, SessionId,
@@ -92,6 +92,16 @@ impl MobileTrainer {
             .topics()
             .map(|topics| topics.into_iter().map(MobileTopic::from).collect())
             .map_err(to_mobile_error)
+    }
+
+    pub fn topic_note(&self, topic_slug: String, locale: String) -> Result<String, MobileError> {
+        let notes = load_builtin_notes_for_locale(&locale).map_err(to_mobile_error)?;
+
+        Ok(notes
+            .into_iter()
+            .find(|note| note.topic.slug == topic_slug)
+            .map(|note| note.body)
+            .unwrap_or_default())
     }
 
     pub fn topic_mastery(&self, topic_id: i64) -> Result<MobileTopicMasteryStats, MobileError> {

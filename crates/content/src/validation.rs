@@ -5,6 +5,21 @@ use crate::model::{
     SourceKindDocument, TopicDocument,
 };
 
+pub(crate) fn validate_note(topic: &TopicDocument, body: &str) -> Result<(), Vec<String>> {
+    let mut errors = Vec::new();
+    validate_topic(topic, &mut errors);
+
+    if body.trim().is_empty() {
+        errors.push(format!("topic '{}' notes.md must not be empty", topic.slug));
+    }
+
+    if errors.is_empty() {
+        Ok(())
+    } else {
+        Err(errors)
+    }
+}
+
 pub(crate) fn validate_bundle(
     topic: &TopicDocument,
     questions: &QuestionsDocument,

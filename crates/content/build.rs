@@ -28,6 +28,7 @@ fn main() -> io::Result<()> {
     let content_root = manifest_dir.join("../../course-content");
 
     let mut topics = Vec::new();
+    let mut notes = Vec::new();
     let mut labs = Vec::new();
     let mut practice = Vec::new();
 
@@ -35,11 +36,15 @@ fn main() -> io::Result<()> {
         &content_root,
         &content_root,
         &mut topics,
+        &mut notes,
         &mut labs,
         &mut practice,
     )?;
 
     topics.sort_by(|left, right| {
+        (&left.content_key, &left.locale).cmp(&(&right.content_key, &right.locale))
+    });
+    notes.sort_by(|left, right| {
         (&left.content_key, &left.locale).cmp(&(&right.content_key, &right.locale))
     });
     labs.sort_by(|left, right| {
@@ -56,6 +61,23 @@ fn main() -> io::Result<()> {
         String::from("pub(crate) const BUILTIN_DOCUMENTS: &[(&str, &str, &str, &str)] = &[\n");
 
     for bundle in topics {
+        let first_path = bundle.first_path.canonicalize()?;
+        let second_path = bundle.second_path.canonicalize()?;
+
+        generated.push_str(&format!(
+            "    ({:?}, {:?}, include_str!({:?}), include_str!({:?})),\n",
+            bundle.content_key,
+            bundle.locale,
+            first_path.to_string_lossy(),
+            second_path.to_string_lossy(),
+        ));
+    }
+
+    generated.push_str("];\n\n");
+    generated
+        .push_str("pub(crate) const BUILTIN_NOTE_DOCUMENTS: &[(&str, &str, &str, &str)] = &[\n");
+
+    for bundle in notes {
         let first_path = bundle.first_path.canonicalize()?;
         let second_path = bundle.second_path.canonicalize()?;
 
@@ -124,6 +146,7 @@ fn collect_documents(
     content_root: &Path,
     directory: &Path,
     topics: &mut Vec<BundlePaths>,
+    notes: &mut Vec<BundlePaths>,
     labs: &mut Vec<BundlePaths>,
     practice: &mut Vec<PracticeBundlePaths>,
 ) -> io::Result<()> {
@@ -135,17 +158,19 @@ fn collect_documents(
 
     let topic_path = directory.join("topic.json");
     let questions_path = directory.join("questions.json");
+    let notes_path = directory.join("notes.md");
     let lab_path = directory.join("lab.json");
     let lab_markdown_path = directory.join("lab.md");
     let practice_path = directory.join("practice.json");
 
     let has_topic = topic_path.is_file();
     let has_questions = questions_path.is_file();
+    let has_notes = notes_path.is_file();
     let has_lab = lab_path.is_file();
     let has_lab_markdown = lab_markdown_path.is_file();
     let has_practice = practice_path.is_file();
 
-    if has_topic || has_questions {
+    if has_topic || has_questions || has_notes {
         if !(has_topic && has_questions) {
             return Err(io::Error::new(
                 io::ErrorKind::InvalidData,
@@ -159,11 +184,23 @@ fn collect_documents(
         register_pair(
             content_root,
             directory,
-            topic_path,
+            topic_path.clone(),
             questions_path,
             topics,
             "topic",
         )?;
+
+        if has_notes {
+            register_pair(
+                content_root,
+                directory,
+                topic_path,
+                notes_path,
+                notes,
+                "note",
+            )?;
+        }
+
         return Ok(());
     }
 
@@ -264,7 +301,7 @@ fn collect_documents(
         let path = entry.path();
 
         if path.is_dir() {
-            collect_documents(content_root, &path, topics, labs, practice)?;
+            collect_documents(content_root, &path, topics, notes, labs, practice)?;
         }
     }
 

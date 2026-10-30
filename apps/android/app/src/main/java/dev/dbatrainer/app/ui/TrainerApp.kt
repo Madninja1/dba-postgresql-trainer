@@ -103,6 +103,9 @@ fun TrainerApp(controller: TrainerController) {
                 AppScreen.UnfinishedQuizzes -> UnfinishedQuizzesScreen(controller)
                 AppScreen.TopicCourses -> TopicCoursesScreen(controller)
                 AppScreen.Topics -> TopicsScreen(controller)
+                AppScreen.NotesCourses -> NotesCoursesScreen(controller)
+                AppScreen.NotesTopics -> NotesTopicsScreen(controller)
+                AppScreen.NoteDetail -> NoteDetailScreen(controller)
                 AppScreen.Courses -> CoursesScreen(controller)
                 AppScreen.Limit -> LimitScreen(controller)
                 AppScreen.LabCourses -> LabCoursesScreen(controller)
@@ -277,6 +280,15 @@ private fun HomeScreen(controller: TrainerController) {
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(strings.topicQuiz)
+            }
+        }
+
+        item {
+            OutlinedButton(
+                onClick = controller::openNotes,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(strings.notes)
             }
         }
 
@@ -520,6 +532,173 @@ private fun TopicsScreen(controller: TrainerController) {
                     },
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun NotesCoursesScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
+
+    CourseSelectionScreen(
+        controller = controller,
+        title = strings.notes,
+        prompt = strings.chooseNotesCourse,
+        onChoose = controller::chooseNotesCourse,
+        xpForCourse = null,
+    )
+}
+
+@Composable
+private fun NotesTopicsScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
+    val courseCode = controller.selectedNotesCourse
+    val topics = controller.topicsForSelectedNotesCourse
+
+    TrainerScaffold(
+        title = if (courseCode == null) {
+            strings.notes
+        } else {
+            "${strings.notes} → ${courseCode.uppercase()}"
+        },
+        onBack = controller::back,
+    ) { modifier ->
+        if (topics.isEmpty()) {
+            EmptyMessage(
+                text = strings.notesEmpty,
+                modifier = modifier,
+            )
+            return@TrainerScaffold
+        }
+
+        val showLevelGroups = topics.all { topic -> topic.notesPart in 1L..3L }
+
+        LazyColumn(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
+        ) {
+            if (showLevelGroups) {
+                topics
+                    .groupBy { topic -> topic.notesPart }
+                    .forEach { (part, partTopics) ->
+                        item(key = "notes-part-$part") {
+                            Text(
+                                text = controller.notesPartLabel(part),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+
+                        items(
+                            items = partTopics,
+                            key = { topic -> topic.id },
+                        ) { topic ->
+                            val index = topics.indexOfFirst { candidate -> candidate.id == topic.id }
+                            NoteTopicCard(
+                                topic = topic,
+                                displayNumber = topicDisplayNumber(topics, index),
+                                onClick = { controller.openNote(topic) },
+                            )
+                        }
+                    }
+            } else {
+                items(
+                    items = topics,
+                    key = { topic -> topic.id },
+                ) { topic ->
+                    val index = topics.indexOfFirst { candidate -> candidate.id == topic.id }
+                    NoteTopicCard(
+                        topic = topic,
+                        displayNumber = topicDisplayNumber(topics, index),
+                        onClick = { controller.openNote(topic) },
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun NoteTopicCard(
+    topic: MobileTopic,
+    displayNumber: String,
+    onClick: () -> Unit,
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+    ) {
+        Column(
+            modifier = Modifier.padding(LayoutSpacing.card),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            Text(
+                text = "$displayNumber. ${topic.title}",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
+            topic.description?.takeIf { it.isNotBlank() }?.let { description ->
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun NoteDetailScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
+    val topic = controller.selectedNoteTopic
+    val scrollState = rememberScrollState()
+
+    TrainerScaffold(
+        title = topic?.let {
+            "${it.courseCode.uppercase()} · ${controller.notesPartLabel(it.notesPart)} · ${it.topicNumber}. ${it.title}"
+        } ?: strings.notes,
+        onBack = controller::back,
+    ) { modifier ->
+        if (topic == null) {
+            EmptyMessage(
+                text = strings.notesEmpty,
+                modifier = modifier,
+            )
+            return@TrainerScaffold
+        }
+
+        Box(modifier = modifier) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(end = LayoutSpacing.section),
+            ) {
+                val markdown = controller.selectedNoteBody
+                if (markdown.isBlank()) {
+                    Text(
+                        text = strings.notesMissing,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                } else {
+                    LabMarkdownContent(
+                        markdown = markdown,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            }
+
+            LabScrollPositionIndicator(
+                scrollState = scrollState,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+                    .padding(vertical = 4.dp),
+            )
         }
     }
 }

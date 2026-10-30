@@ -1,4 +1,5 @@
 use dba_trainer_application::{PracticeEngine, PracticeError, RepositoryError, TrainerService};
+use dba_trainer_content::{NoteBundle, load_builtin_notes_for_locale};
 
 use dba_trainer_domain::{
     ActivityStats, AnswerOptionId, AnswerResult, Lab, PracticeCheckResult, PracticeDifficulty,
@@ -21,6 +22,11 @@ pub enum Screen {
 
     TopicCourses,
     Topics,
+
+    NotesCourses,
+    NotesTopics,
+    NoteDetail,
+
     Courses,
     QuizSetup,
 
@@ -129,6 +135,7 @@ pub enum StatisticsView {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum HomeItem {
     Topics,
+    Notes,
     GeneralQuiz,
     UnfinishedQuizzes,
     Labs,
@@ -142,6 +149,7 @@ impl HomeItem {
     pub fn label(self, strings: &UiStrings, language: UiLanguage) -> String {
         match self {
             Self::Topics => strings.topic_quiz.to_string(),
+            Self::Notes => strings.notes.to_string(),
             Self::GeneralQuiz => strings.general_quiz.to_string(),
             Self::UnfinishedQuizzes => strings.resume_title.to_string(),
             Self::Labs => strings.labs.to_string(),
@@ -153,8 +161,9 @@ impl HomeItem {
     }
 }
 
-pub const HOME_ITEMS: [HomeItem; 8] = [
+pub const HOME_ITEMS: [HomeItem; 9] = [
     HomeItem::Topics,
+    HomeItem::Notes,
     HomeItem::GeneralQuiz,
     HomeItem::UnfinishedQuizzes,
     HomeItem::Labs,
@@ -187,6 +196,14 @@ pub struct App {
 
     pub topics: Vec<Topic>,
     pub selected_topic_course: Option<String>,
+
+    pub notes: Vec<NoteBundle>,
+    pub notes_course_selected: usize,
+    pub notes_topic_selected: usize,
+    pub selected_notes_course: Option<String>,
+    pub selected_note_topic: Option<Topic>,
+    pub note_scroll: u16,
+
     pub labs: Vec<Lab>,
     pub selected_lab_course: Option<String>,
     pub selected_lab: Option<Lab>,
@@ -285,6 +302,8 @@ impl App {
         service.set_content_locale(language.code())?;
         service.record_app_open()?;
         let topics = service.topics()?;
+        let notes = load_builtin_notes_for_locale(language.code())
+            .map_err(|error| RepositoryError::Storage(error.to_string()))?;
         let labs = service.labs()?;
         let practice_tasks = service.practice_tasks()?;
         let practice_progress = service.practice_progress()?;
@@ -321,6 +340,13 @@ impl App {
             topics,
 
             selected_topic_course: None,
+
+            notes,
+            notes_course_selected: 0,
+            notes_topic_selected: 0,
+            selected_notes_course: None,
+            selected_note_topic: None,
+            note_scroll: 0,
 
             labs,
 
@@ -481,6 +507,12 @@ impl App {
 
             Screen::Topics => self.handle_topics_action(action),
 
+            Screen::NotesCourses => self.handle_notes_courses_action(action),
+
+            Screen::NotesTopics => self.handle_notes_topics_action(action),
+
+            Screen::NoteDetail => self.handle_note_detail_action(action),
+
             Screen::Courses => self.handle_courses_action(action),
 
             Screen::QuizSetup => self.handle_quiz_setup_action(action),
@@ -535,6 +567,15 @@ impl App {
                     self.screen = Screen::TopicCourses;
                 }
 
+                HomeItem::Notes => {
+                    self.notes_course_selected = 0;
+                    self.notes_topic_selected = 0;
+                    self.selected_notes_course = None;
+                    self.selected_note_topic = None;
+                    self.note_scroll = 0;
+                    self.screen = Screen::NotesCourses;
+                }
+
                 HomeItem::GeneralQuiz => {
                     self.course_selected = 0;
                     self.screen = Screen::Courses;
@@ -584,6 +625,8 @@ impl App {
 
                     self.service.set_content_locale(language.code())?;
                     self.topics = self.service.topics()?;
+                    self.notes = load_builtin_notes_for_locale(language.code())
+                        .map_err(|error| RepositoryError::Storage(error.to_string()))?;
                     self.labs = self.service.labs()?;
                     self.practice_tasks = self.service.practice_tasks()?;
                     self.practice_progress = self.service.practice_progress()?;
@@ -672,6 +715,86 @@ impl App {
                 self.screen = Screen::TopicCourses;
             }
 
+            _ => {}
+        }
+
+        Ok(())
+    }
+
+    fn handle_notes_courses_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        let courses = self.course_codes();
+
+        match action {
+            Action::Up => {
+                self.notes_course_selected =
+                    previous_index(self.notes_course_selected, courses.len());
+            }
+            Action::Down => {
+                self.notes_course_selected = next_index(self.notes_course_selected, courses.len());
+            }
+            Action::Confirm => {
+                if let Some(course_code) = courses.get(self.notes_course_selected) {
+                    self.selected_notes_course = Some(course_code.clone());
+                    self.notes_topic_selected = 0;
+                    self.selected_note_topic = None;
+                    self.screen = Screen::NotesTopics;
+                }
+            }
+            Action::Back => {
+                self.selected_notes_course = None;
+                self.screen = Screen::Home;
+            }
+            _ => {}
+        }
+
+        Ok(())
+    }
+
+    fn handle_notes_topics_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        let topic_count = self.notes_topics_for_selected_course().len();
+
+        match action {
+            Action::Up => {
+                self.notes_topic_selected = previous_index(self.notes_topic_selected, topic_count);
+            }
+            Action::Down => {
+                self.notes_topic_selected = next_index(self.notes_topic_selected, topic_count);
+            }
+            Action::Confirm => {
+                self.selected_note_topic = self
+                    .notes_topics_for_selected_course()
+                    .get(self.notes_topic_selected)
+                    .map(|topic| (*topic).clone());
+                self.note_scroll = 0;
+
+                if self.selected_note_topic.is_some() {
+                    self.screen = Screen::NoteDetail;
+                }
+            }
+            Action::Back => {
+                self.selected_note_topic = None;
+                self.selected_notes_course = None;
+                self.screen = Screen::NotesCourses;
+            }
+            _ => {}
+        }
+
+        Ok(())
+    }
+
+    fn handle_note_detail_action(&mut self, action: Action) -> Result<(), RepositoryError> {
+        match action {
+            Action::Up => {
+                self.note_scroll = self.note_scroll.saturating_sub(1);
+            }
+            Action::Down => {
+                self.note_scroll = self.note_scroll.saturating_add(1);
+            }
+            Action::Back => {
+                self.note_scroll = 0;
+                self.selected_note_topic = None;
+                self.screen = Screen::NotesTopics;
+            }
             _ => {}
         }
 
@@ -1905,6 +2028,26 @@ impl App {
             | StatisticsView::Activity
             | StatisticsView::Detail { .. } => 0,
         }
+    }
+
+    pub fn notes_topics_for_selected_course(&self) -> Vec<&Topic> {
+        let Some(course_code) = self.selected_notes_course.as_deref() else {
+            return Vec::new();
+        };
+
+        self.topics
+            .iter()
+            .filter(|topic| topic.course_code == course_code)
+            .collect()
+    }
+
+    pub fn selected_note_body(&self) -> Option<&str> {
+        let topic = self.selected_note_topic.as_ref()?;
+
+        self.notes
+            .iter()
+            .find(|note| note.topic.course == topic.course_code && note.topic.slug == topic.slug)
+            .map(|note| note.body.as_str())
     }
 
     pub fn course_codes(&self) -> Vec<String> {

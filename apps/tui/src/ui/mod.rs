@@ -7,6 +7,9 @@ mod home;
 mod lab_courses;
 mod lab_detail;
 mod labs;
+mod note_detail;
+mod notes_courses;
+mod notes_topics;
 mod practice_categories;
 mod practice_editor;
 mod practice_tasks;
@@ -48,6 +51,18 @@ pub fn render(frame: &mut Frame, app: &App) {
 
         Screen::Topics => {
             topics::render(frame, app);
+        }
+
+        Screen::NotesCourses => {
+            notes_courses::render(frame, app);
+        }
+
+        Screen::NotesTopics => {
+            notes_topics::render(frame, app);
+        }
+
+        Screen::NoteDetail => {
+            note_detail::render(frame, app);
         }
 
         Screen::Courses => {

@@ -44,12 +44,16 @@ pub fn render(frame: &mut Frame, app: &App) {
         .alignment(Alignment::Center)
         .block(Block::default().borders(Borders::ALL));
 
+    let show_level_groups = topics
+        .iter()
+        .all(|topic| (1..=3).contains(&topic.notes_part));
+
     let mut items = Vec::new();
     let mut selected_row = 0usize;
     let mut previous_part = None;
 
     for (index, topic) in topics.iter().enumerate() {
-        if previous_part != Some(topic.notes_part) {
+        if show_level_groups && previous_part != Some(topic.notes_part) {
             items.push(
                 ListItem::new(format!(
                     "── {} ──",
@@ -65,9 +69,10 @@ pub fn render(frame: &mut Frame, app: &App) {
         }
 
         let number = topic_display_number(&topics, index);
-        let has_note = app.notes.iter().any(|note| {
-            note.topic.course == topic.course_code && note.topic.slug == topic.slug
-        });
+        let has_note = app
+            .notes
+            .iter()
+            .any(|note| note.topic.course == topic.course_code && note.topic.slug == topic.slug);
         let suffix = if has_note { "" } else { "  ·  —" };
 
         items.push(ListItem::new(format!("{number}. {}{suffix}", topic.title)));

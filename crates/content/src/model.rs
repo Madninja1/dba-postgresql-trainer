@@ -90,6 +90,12 @@ pub struct ContentBundle {
     pub questions: QuestionsDocument,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct NoteBundle {
+    pub topic: TopicDocument,
+    pub body: String,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct LabDocument {

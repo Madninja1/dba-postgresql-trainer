@@ -60,7 +60,7 @@ pub fn render(frame: &mut Frame, app: &App) {
     frame.render_widget(footer, areas[1]);
 }
 
-fn markdown_to_text(markdown: &str) -> Text<'static> {
+pub(super) fn markdown_to_text(markdown: &str) -> Text<'static> {
     let mut lines = Vec::new();
     let mut in_code = false;
     let mut first_content_seen = false;

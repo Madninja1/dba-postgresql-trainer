@@ -15,7 +15,9 @@ pub fn render(frame: &mut Frame, app: &App) {
 
     let areas = vertical_chunks(frame.area(), &[Constraint::Min(5), Constraint::Length(3)]);
 
-    let body = app.selected_note_body().unwrap_or(app.strings().notes_missing);
+    let body = app
+        .selected_note_body()
+        .unwrap_or(app.strings().notes_missing);
     let content = markdown_to_text(body);
     let content_length = content.lines.len().max(1);
     let viewport_height = areas[0].height.saturating_sub(2) as usize;

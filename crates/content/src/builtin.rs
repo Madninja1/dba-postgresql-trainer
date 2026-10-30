@@ -1,8 +1,8 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use crate::{
-    ContentBundle, ContentError, LabBundle, PracticeBundle, QuestionDocument, load_bundle,
-    load_lab, load_practice_with_cases,
+    ContentBundle, ContentError, LabBundle, NoteBundle, PracticeBundle, QuestionDocument,
+    load_bundle, load_lab, load_note, load_practice_with_cases,
 };
 
 include!(concat!(env!("OUT_DIR"), "/builtin_registry.rs"));
@@ -15,6 +15,12 @@ struct LocalizedBundle {
     topic_key: &'static str,
     locale: &'static str,
     bundle: ContentBundle,
+}
+
+#[derive(Debug, Clone)]
+struct LocalizedNote {
+    locale: &'static str,
+    bundle: NoteBundle,
 }
 
 #[derive(Debug, Clone)]
@@ -77,6 +83,59 @@ pub fn load_builtin_bundles_for_locale(
     }
 
     validate_course_topic_numbers(&selected)?;
+
+    Ok(selected)
+}
+
+pub fn load_builtin_notes_for_locale(
+    requested_locale: &str,
+) -> Result<Vec<NoteBundle>, ContentError> {
+    let localized = load_all_localized_notes()?;
+
+    let requested = normalize_locale(requested_locale);
+    let base = requested.split('-').next().unwrap_or(requested.as_str());
+
+    let mut by_topic: BTreeMap<&str, Vec<&LocalizedNote>> = BTreeMap::new();
+    for entry in &localized {
+        by_topic
+            .entry(entry.bundle.topic.slug.as_str())
+            .or_default()
+            .push(entry);
+    }
+
+    let mut selected = Vec::with_capacity(by_topic.len());
+    for entries in by_topic.values() {
+        let chosen = entries
+            .iter()
+            .copied()
+            .find(|entry| entry.locale == requested)
+            .or_else(|| {
+                if base == requested {
+                    None
+                } else {
+                    entries.iter().copied().find(|entry| entry.locale == base)
+                }
+            })
+            .or_else(|| {
+                entries
+                    .iter()
+                    .copied()
+                    .find(|entry| entry.locale == FALLBACK_CONTENT_LOCALE)
+            })
+            .or_else(|| entries.first().copied())
+            .expect("localized note group must not be empty");
+
+        selected.push(chosen.bundle.clone());
+    }
+
+    selected.sort_by_key(|bundle| {
+        (
+            bundle.topic.course.clone(),
+            bundle.topic.notes_part,
+            bundle.topic.topic_number,
+            bundle.topic.sort_order,
+        )
+    });
 
     Ok(selected)
 }
@@ -237,6 +296,15 @@ fn load_all_localized_practice() -> Result<Vec<LocalizedPractice>, ContentError>
                     })
             },
         )
+        .collect()
+}
+
+fn load_all_localized_notes() -> Result<Vec<LocalizedNote>, ContentError> {
+    BUILTIN_NOTE_DOCUMENTS
+        .iter()
+        .map(|(_topic_key, locale, topic_json, note_markdown)| {
+            load_note(topic_json, note_markdown).map(|bundle| LocalizedNote { locale, bundle })
+        })
         .collect()
 }
 

@@ -8,16 +8,16 @@ DBA Trainer — полностью офлайн-приложение для об
 
 ## Текущая версия
 
-Текущая версия приложения: **0.5.0**.
+Текущая версия приложения: **0.6.0**.
 
 Готовые сборки при публикации хранятся непосредственно в репозитории в `releases/<version>/`:
 
 ```text
 releases/
-└── v0.5.0/
-    ├── dba-trainer-android-v0.5.0.apk
-    ├── dba-trainer-tui-linux-x86_64-v0.5.0.tar.gz
-    └── dba-trainer-tui-windows-x86_64-v0.5.0.zip
+└── v0.6.0/
+    ├── dba-trainer-android-v0.6.0.apk
+    ├── dba-trainer-tui-linux-x86_64-v0.6.0.tar.gz
+    └── dba-trainer-tui-windows-x86_64-v0.6.0.zip
 ```
 
 Android-файл — обычный устанавливаемый APK. Для Linux и Windows публикуются терминальные бинарники; отдельный desktop GUI/инсталлятор не требуется.

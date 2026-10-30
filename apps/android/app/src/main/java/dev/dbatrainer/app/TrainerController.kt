@@ -38,6 +38,9 @@ enum class AppScreen {
     UnfinishedQuizzes,
     TopicCourses,
     Topics,
+    NotesCourses,
+    NotesTopics,
+    NoteDetail,
     Courses,
     Limit,
     LabCourses,
@@ -124,6 +127,15 @@ class TrainerController(context: Context) {
         private set
 
     var selectedTopicCourse by mutableStateOf<String?>(null)
+        private set
+
+    var selectedNotesCourse by mutableStateOf<String?>(null)
+        private set
+
+    var selectedNoteTopic by mutableStateOf<MobileTopic?>(null)
+        private set
+
+    var selectedNoteBody by mutableStateOf("")
         private set
 
     var selectedLabCourse by mutableStateOf<String?>(null)
@@ -338,6 +350,12 @@ class TrainerController(context: Context) {
             return topics.filter { topic -> topic.courseCode == courseCode }
         }
 
+    val topicsForSelectedNotesCourse: List<MobileTopic>
+        get() {
+            val courseCode = selectedNotesCourse ?: return emptyList()
+            return topics.filter { topic -> topic.courseCode == courseCode }
+        }
+
     val labCourseCodes: List<String>
         get() = labs
             .map { lab -> lab.courseCode }
@@ -455,6 +473,7 @@ class TrainerController(context: Context) {
             labs = requireTrainer().labs()
             refreshPracticeState()
             resetPracticeWorkbench()
+            selectedNoteBody = ""
             this.language = language
             preferences
                 .edit()
@@ -711,6 +730,35 @@ class TrainerController(context: Context) {
                 else -> allTopicsXpOpportunity()
             }
         }
+
+    fun openNotes() {
+        selectedNotesCourse = null
+        selectedNoteTopic = null
+        selectedNoteBody = ""
+        screen = AppScreen.NotesCourses
+    }
+
+    fun chooseNotesCourse(courseCode: String) {
+        selectedNotesCourse = courseCode
+        selectedNoteTopic = null
+        selectedNoteBody = ""
+        screen = AppScreen.NotesTopics
+    }
+
+    fun openNote(topic: MobileTopic) {
+        runCoreAction {
+            selectedNoteTopic = topic
+            selectedNoteBody = requireTrainer().topicNote(topic.slug, language.code)
+            screen = AppScreen.NoteDetail
+        }
+    }
+
+    fun notesPartLabel(part: Long): String = when (part) {
+        1L -> strings.notesSimple
+        2L -> strings.notesMiddle
+        3L -> strings.notesStrong
+        else -> "Part $part"
+    }
 
     fun openLabs() {
         selectedLabCourse = null
@@ -1257,6 +1305,21 @@ class TrainerController(context: Context) {
             AppScreen.UnfinishedQuizzes -> screen = AppScreen.Home
             AppScreen.TopicCourses -> screen = AppScreen.Home
             AppScreen.Topics -> screen = AppScreen.TopicCourses
+            AppScreen.NotesCourses -> {
+                selectedNotesCourse = null
+                screen = AppScreen.Home
+            }
+            AppScreen.NotesTopics -> {
+                selectedNoteTopic = null
+                selectedNoteBody = ""
+                selectedNotesCourse = null
+                screen = AppScreen.NotesCourses
+            }
+            AppScreen.NoteDetail -> {
+                selectedNoteTopic = null
+                selectedNoteBody = ""
+                screen = AppScreen.NotesTopics
+            }
             AppScreen.Courses -> screen = AppScreen.Home
             AppScreen.LabCourses -> screen = AppScreen.Home
             AppScreen.Labs -> {

@@ -747,6 +747,8 @@ internal object IntegrityCheckingUniffiLib {
     ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_topic_mastery(
     ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_topic_note(
+    ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_topics(
     ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_unfinished_sessions(
@@ -844,6 +846,8 @@ internal object UniffiLib {
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_submit_answer(`ptr`: Long,`sessionId`: Long,`questionId`: Long,`answerOptionIds`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_topic_mastery(`ptr`: Long,`topicId`: Long,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_topic_note(`ptr`: Long,`topicSlug`: RustBuffer.ByValue,`locale`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_topics(`ptr`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
@@ -1075,6 +1079,9 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_topic_mastery() and 0xFFFF) != 39919) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_topic_note() and 0xFFFF) != 55593) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_topics() and 0xFFFF) != 50680) {
@@ -1555,6 +1562,8 @@ public interface MobileTrainerInterface {
     fun `submitAnswer`(`sessionId`: kotlin.Long, `questionId`: kotlin.Long, `answerOptionIds`: List<kotlin.Long>): MobileAnswerResult
     
     fun `topicMastery`(`topicId`: kotlin.Long): MobileTopicMasteryStats
+    
+    fun `topicNote`(`topicSlug`: kotlin.String, `locale`: kotlin.String): kotlin.String
     
     fun `topics`(): List<MobileTopic>
     
@@ -2161,6 +2170,22 @@ open class MobileTrainer: Disposable, AutoCloseable, MobileTrainerInterface
         it,
         
         FfiConverterLong.lower(`topicId`),_status)
+}
+    }
+    )
+    }
+    
+
+    
+    @Throws(MobileException::class)override fun `topicNote`(`topicSlug`: kotlin.String, `locale`: kotlin.String): kotlin.String {
+            return FfiConverterString.lift(
+    callWithHandle {
+    uniffiRustCallWithError(MobileException) { _status ->
+    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_topic_note(
+        it,
+        
+        FfiConverterString.lower(`topicSlug`),
+        FfiConverterString.lower(`locale`),_status)
 }
     }
     )

@@ -8,16 +8,16 @@ The current course focus is PostgreSQL DBA training. The repository is structure
 
 ## Current release
 
-Current application version: **0.5.0**.
+Current application version: **0.6.0**.
 
 Prebuilt packages are kept in the repository under `releases/<version>/` when they are published. The intended release set is:
 
 ```text
 releases/
-└── v0.5.0/
-    ├── dba-trainer-android-v0.5.0.apk
-    ├── dba-trainer-tui-linux-x86_64-v0.5.0.tar.gz
-    └── dba-trainer-tui-windows-x86_64-v0.5.0.zip
+└── v0.6.0/
+    ├── dba-trainer-android-v0.6.0.apk
+    ├── dba-trainer-tui-linux-x86_64-v0.6.0.tar.gz
+    └── dba-trainer-tui-windows-x86_64-v0.6.0.zip
 ```
 
 The Android package is an installable APK. The Linux and Windows packages contain terminal binaries; there is no separate desktop GUI installer.
