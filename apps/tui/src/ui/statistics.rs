@@ -146,7 +146,7 @@ pub fn render(frame: &mut Frame, app: &App) {
                 title.clone()
             };
 
-            render_detail(frame, app, &title);
+            render_detail(frame, app, &title, filter.limit != StatisticsLimit::Any);
         }
     }
 }
@@ -624,7 +624,7 @@ fn render_message_with_footer(
     frame.render_widget(footer, areas[1]);
 }
 
-fn render_detail(frame: &mut Frame, app: &App, title: &str) {
+fn render_detail(frame: &mut Frame, app: &App, title: &str, mode_specific: bool) {
     let strings = app.strings();
 
     let Some(stats) = app.statistics.as_ref() else {
@@ -658,7 +658,12 @@ fn render_detail(frame: &mut Frame, app: &App, title: &str) {
         .alignment(Alignment::Center)
         .block(Block::default().title(title).borders(Borders::ALL));
 
-    let footer = Paragraph::new(strings.footer_statistics_detail)
+    let footer_text = if mode_specific {
+        strings.footer_statistics_mode_detail
+    } else {
+        strings.footer_statistics_detail
+    };
+    let footer = Paragraph::new(footer_text)
         .alignment(Alignment::Center)
         .block(Block::default().borders(Borders::ALL));
 

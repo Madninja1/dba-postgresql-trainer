@@ -78,4 +78,7 @@ pub trait SessionRepository {
     ) -> Result<AnswerResult, RepositoryError>;
 
     fn clear_statistics(&mut self, scope: &StatisticsScope) -> Result<(), RepositoryError>;
+
+    fn clear_statistics_filter(&mut self, filter: &StatisticsFilter)
+    -> Result<(), RepositoryError>;
 }

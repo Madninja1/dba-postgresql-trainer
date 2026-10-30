@@ -81,6 +81,13 @@ where
     pub fn clear_statistics(&mut self, scope: &StatisticsScope) -> Result<(), RepositoryError> {
         self.repository.clear_statistics(scope)
     }
+
+    pub fn clear_statistics_filter(
+        &mut self,
+        filter: &StatisticsFilter,
+    ) -> Result<(), RepositoryError> {
+        self.repository.clear_statistics_filter(filter)
+    }
 }
 
 impl<R> TrainerService<R>
@@ -242,6 +249,13 @@ mod tests {
         }
 
         fn clear_statistics(&mut self, _scope: &StatisticsScope) -> Result<(), RepositoryError> {
+            Ok(())
+        }
+
+        fn clear_statistics_filter(
+            &mut self,
+            _filter: &StatisticsFilter,
+        ) -> Result<(), RepositoryError> {
             Ok(())
         }
     }

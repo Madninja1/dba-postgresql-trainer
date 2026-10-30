@@ -691,7 +691,13 @@ internal object IntegrityCheckingUniffiLib {
     ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_clear_statistics_course(
     ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_clear_statistics_course_limit(
+    ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_clear_statistics_limit(
+    ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_clear_statistics_topic(
+    ): Int
+    external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_clear_statistics_topic_limit(
     ): Int
     external fun uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_current_question(
     ): Int
@@ -791,7 +797,13 @@ internal object UniffiLib {
     ): Unit
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_clear_statistics_course(`ptr`: Long,`courseCode`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): Unit
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_clear_statistics_course_limit(`ptr`: Long,`courseCode`: RustBuffer.ByValue,`limit`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): Unit
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_clear_statistics_limit(`ptr`: Long,`limit`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): Unit
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_clear_statistics_topic(`ptr`: Long,`topicId`: Long,uniffi_out_err: UniffiRustCallStatus, 
+    ): Unit
+    external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_clear_statistics_topic_limit(`ptr`: Long,`topicId`: Long,`limit`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): Unit
     external fun uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_current_question(`ptr`: Long,`sessionId`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
@@ -997,7 +1009,16 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
     if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_clear_statistics_course() and 0xFFFF) != 33979) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_clear_statistics_course_limit() and 0xFFFF) != 17030) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_clear_statistics_limit() and 0xFFFF) != 34993) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_clear_statistics_topic() and 0xFFFF) != 52795) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_clear_statistics_topic_limit() and 0xFFFF) != 20476) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if ((lib.uniffi_dba_trainer_mobile_ffi_checksum_method_mobiletrainer_current_question() and 0xFFFF) != 42502) {
@@ -1507,7 +1528,13 @@ public interface MobileTrainerInterface {
     
     fun `clearStatisticsCourse`(`courseCode`: kotlin.String)
     
+    fun `clearStatisticsCourseLimit`(`courseCode`: kotlin.String, `limit`: MobileStatisticsLimit)
+    
+    fun `clearStatisticsLimit`(`limit`: MobileStatisticsLimit)
+    
     fun `clearStatisticsTopic`(`topicId`: kotlin.Long)
+    
+    fun `clearStatisticsTopicLimit`(`topicId`: kotlin.Long, `limit`: MobileStatisticsLimit)
     
     fun `currentQuestion`(`sessionId`: kotlin.Long): MobileQuestion?
     
@@ -1752,6 +1779,35 @@ open class MobileTrainer: Disposable, AutoCloseable, MobileTrainerInterface
     
 
     
+    @Throws(MobileException::class)override fun `clearStatisticsCourseLimit`(`courseCode`: kotlin.String, `limit`: MobileStatisticsLimit)
+        = 
+    callWithHandle {
+    uniffiRustCallWithError(MobileException) { _status ->
+    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_clear_statistics_course_limit(
+        it,
+        
+        FfiConverterString.lower(`courseCode`),
+        FfiConverterTypeMobileStatisticsLimit.lower(`limit`),_status)
+}
+    }
+    
+    
+
+    
+    @Throws(MobileException::class)override fun `clearStatisticsLimit`(`limit`: MobileStatisticsLimit)
+        = 
+    callWithHandle {
+    uniffiRustCallWithError(MobileException) { _status ->
+    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_clear_statistics_limit(
+        it,
+        
+        FfiConverterTypeMobileStatisticsLimit.lower(`limit`),_status)
+}
+    }
+    
+    
+
+    
     @Throws(MobileException::class)override fun `clearStatisticsTopic`(`topicId`: kotlin.Long)
         = 
     callWithHandle {
@@ -1760,6 +1816,21 @@ open class MobileTrainer: Disposable, AutoCloseable, MobileTrainerInterface
         it,
         
         FfiConverterLong.lower(`topicId`),_status)
+}
+    }
+    
+    
+
+    
+    @Throws(MobileException::class)override fun `clearStatisticsTopicLimit`(`topicId`: kotlin.Long, `limit`: MobileStatisticsLimit)
+        = 
+    callWithHandle {
+    uniffiRustCallWithError(MobileException) { _status ->
+    UniffiLib.uniffi_dba_trainer_mobile_ffi_fn_method_mobiletrainer_clear_statistics_topic_limit(
+        it,
+        
+        FfiConverterLong.lower(`topicId`),
+        FfiConverterTypeMobileStatisticsLimit.lower(`limit`),_status)
 }
     }
     

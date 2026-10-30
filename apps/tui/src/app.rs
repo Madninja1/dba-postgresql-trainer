@@ -257,6 +257,8 @@ pub struct App {
 
     pub statistics_clear_scope: Option<StatisticsScope>,
 
+    pub statistics_clear_filter: Option<StatisticsFilter>,
+
     pub statistics_clear_label: String,
 
     pub statistics: Option<TrainingStats>,
@@ -405,6 +407,8 @@ impl App {
             decision_selected: 0,
 
             statistics_clear_scope: None,
+
+            statistics_clear_filter: None,
 
             statistics_clear_label: String::new(),
 
@@ -1662,9 +1666,29 @@ impl App {
             }
 
             Action::ClearStatistics => {
-                let (scope, label) = self.statistics_clear_target();
-                self.statistics_clear_scope = Some(scope);
-                self.statistics_clear_label = label;
+                let mode_filter = match &self.statistics_view {
+                    StatisticsView::Detail { filter, title }
+                        if filter.limit != StatisticsLimit::Any =>
+                    {
+                        Some((filter.clone(), title.clone()))
+                    }
+                    _ => None,
+                };
+
+                if let Some((filter, title)) = mode_filter {
+                    self.statistics_clear_scope = None;
+                    self.statistics_clear_filter = Some(filter.clone());
+                    self.statistics_clear_label = if title.is_empty() {
+                        self.strings().statistics_limit(filter.limit).to_string()
+                    } else {
+                        title
+                    };
+                } else {
+                    let (scope, label) = self.statistics_clear_target();
+                    self.statistics_clear_scope = Some(scope);
+                    self.statistics_clear_filter = None;
+                    self.statistics_clear_label = label;
+                }
                 self.decision_selected = 1;
                 self.screen = Screen::ClearStatistics;
             }
@@ -1753,27 +1777,55 @@ impl App {
                 self.decision_selected = 1 - self.decision_selected.min(1);
             }
             Action::Confirm if self.decision_selected == 0 => {
-                if let Some(scope) = self.statistics_clear_scope.take() {
+                if let Some(filter) = self.statistics_clear_filter.take() {
+                    self.service.clear_statistics_filter(&filter)?;
+                    self.statistics = Some(self.service.statistics(&filter)?);
+                    self.unfinished_sessions = self.service.unfinished_sessions()?;
+                    self.mistake_summaries = self.service.mistake_summaries()?;
+                    self.mistake_detail = None;
+                    self.activity_stats = Some(self.service.activity_stats()?);
+                    self.load_statistics_course_summaries()?;
+                    self.load_statistics_mode_summaries()?;
+
+                    match &filter.scope {
+                        StatisticsScope::Course(course_code) => {
+                            self.load_statistics_topic_summaries(course_code)?;
+                            self.load_statistics_filter_summaries(&filter.scope)?;
+                        }
+                        StatisticsScope::Topic(topic_id) => {
+                            let course_code = self
+                                .topic_by_id(*topic_id)
+                                .map(|topic| topic.course_code.clone());
+                            if let Some(course_code) = course_code {
+                                self.load_statistics_topic_summaries(&course_code)?;
+                            }
+                            self.load_statistics_filter_summaries(&filter.scope)?;
+                        }
+                        StatisticsScope::All => {}
+                    }
+                } else if let Some(scope) = self.statistics_clear_scope.take() {
                     self.service.clear_statistics(&scope)?;
+                    self.zero_statistics_summaries();
+                    self.mistake_summaries.clear();
+                    self.mistake_detail = None;
+                    self.activity_stats = Some(self.service.activity_stats()?);
+                    self.practice_progress = self.service.practice_progress()?;
+                    self.practice_stats = self.service.practice_stats()?;
+                    self.unfinished_sessions = self.service.unfinished_sessions()?;
+                    self.statistics = None;
+                    self.statistics_view = StatisticsView::Root;
+                    self.statistics_history.clear();
+                    self.statistics_selected = 0;
+                    self.statistics_scroll = 0;
                 }
 
                 self.statistics_clear_label.clear();
-                self.zero_statistics_summaries();
-                self.mistake_summaries.clear();
-                self.mistake_detail = None;
-                self.activity_stats = Some(self.service.activity_stats()?);
-                self.practice_progress = self.service.practice_progress()?;
-                self.practice_stats = self.service.practice_stats()?;
-                self.unfinished_sessions = self.service.unfinished_sessions()?;
-                self.statistics = None;
-                self.statistics_view = StatisticsView::Root;
-                self.statistics_history.clear();
-                self.statistics_selected = 0;
                 self.statistics_scroll = 0;
                 self.screen = Screen::Statistics;
             }
             Action::Confirm | Action::Back => {
                 self.statistics_clear_scope = None;
+                self.statistics_clear_filter = None;
                 self.statistics_clear_label.clear();
                 self.screen = Screen::Statistics;
             }

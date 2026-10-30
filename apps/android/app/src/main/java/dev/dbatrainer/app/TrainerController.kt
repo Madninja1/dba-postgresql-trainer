@@ -31,6 +31,10 @@ import dev.dbatrainer.ffi.MobileTopic
 import dev.dbatrainer.ffi.MobileTopicMasteryStats
 import dev.dbatrainer.ffi.MobileTrainer
 import dev.dbatrainer.ffi.MobileTrainingStats
+import dev.dbatrainer.app.game.DbaWorldController
+import dev.dbatrainer.app.game.domain.KnowledgeSnapshot
+import dev.dbatrainer.app.game.domain.KnowledgeTopicProgress
+import dev.dbatrainer.app.game.engine.KnowledgeEngine
 import java.io.File
 
 enum class AppScreen {
@@ -53,6 +57,7 @@ enum class AppScreen {
     Feedback,
     Results,
     Statistics,
+    DbaWorld,
 }
 
 enum class PracticePane {
@@ -98,9 +103,25 @@ sealed interface StatisticsResetTarget {
     data object All : StatisticsResetTarget
     data class Course(val courseCode: String) : StatisticsResetTarget
     data class Topic(val topic: MobileTopic) : StatisticsResetTarget
+    data class GlobalMode(
+        val limit: MobileStatisticsLimit,
+        val title: String,
+    ) : StatisticsResetTarget
+    data class CourseMode(
+        val courseCode: String,
+        val limit: MobileStatisticsLimit,
+        val title: String,
+    ) : StatisticsResetTarget
+    data class TopicMode(
+        val topic: MobileTopic,
+        val limit: MobileStatisticsLimit,
+        val title: String,
+    ) : StatisticsResetTarget
 }
 
 class TrainerController(context: Context) {
+    val dbaWorld = DbaWorldController(context)
+
     private val preferences = context.getSharedPreferences(
         "dba_trainer_settings",
         Context.MODE_PRIVATE,
@@ -260,6 +281,9 @@ class TrainerController(context: Context) {
     var statisticsDetailTitle by mutableStateOf("")
         private set
 
+    var statisticsDetailLimit by mutableStateOf<MobileStatisticsLimit?>(null)
+        private set
+
     var mistakeSummaries by mutableStateOf<List<MobileQuestionMistakeSummary>>(emptyList())
         private set
 
@@ -285,6 +309,7 @@ class TrainerController(context: Context) {
         private set
 
     private var statisticsDetailReturnPage = StatisticsPage.Root
+    private var returnToDbaWorldAfterLearning = false
     private var trainer: MobileTrainer? = null
     private var sessionId: Long? = null
 
@@ -656,6 +681,50 @@ class TrainerController(context: Context) {
         openPracticeTask(next)
     }
 
+    fun openDbaWorld() {
+        runCoreAction {
+            returnToDbaWorldAfterLearning = false
+            unfinishedSessions = requireTrainer().unfinishedSessions()
+            dbaWorld.open(buildDbaWorldKnowledgeSnapshot())
+            screen = AppScreen.DbaWorld
+        }
+    }
+
+    fun openDbaWorldKnowledgeNote(courseCode: String, topicSlug: String) {
+        runCoreAction {
+            val topic = requireDbaWorldTopic(courseCode, topicSlug)
+            returnToDbaWorldAfterLearning = true
+            selectedNotesCourse = courseCode
+            selectedNoteTopic = topic
+            selectedNoteBody = requireTrainer().topicNote(topic.slug, language.code)
+            screen = AppScreen.NoteDetail
+        }
+    }
+
+    fun openDbaWorldKnowledgeQuiz(courseCode: String, topicSlug: String) {
+        runCoreAction {
+            val topic = requireDbaWorldTopic(courseCode, topicSlug)
+            returnToDbaWorldAfterLearning = true
+            pendingCourse = null
+            pendingTopic = topic
+            pendingMistakeReview = false
+            screen = AppScreen.Limit
+        }
+    }
+
+    fun openDbaWorldKnowledgeLab(courseCode: String, topicSlug: String) {
+        runCoreAction {
+            val topic = requireDbaWorldTopic(courseCode, topicSlug)
+            val lab = labs.firstOrNull { candidate ->
+                candidate.courseCode == courseCode && candidate.labNumber == topic.topicNumber
+            } ?: error("No lab for ${topic.title}")
+            returnToDbaWorldAfterLearning = true
+            selectedLabCourse = courseCode
+            selectedLab = lab
+            screen = AppScreen.LabDetail
+        }
+    }
+
     fun openTopics() {
         selectedTopicCourse = null
         pendingTopic = null
@@ -1001,7 +1070,13 @@ class TrainerController(context: Context) {
             activityStats = requireTrainer().activityStats()
             resetQuizState()
             unfinishedSessions = requireTrainer().unfinishedSessions()
-            screen = AppScreen.Home
+            if (returnToDbaWorldAfterLearning) {
+                refreshDbaWorldKnowledge()
+                returnToDbaWorldAfterLearning = false
+                screen = AppScreen.DbaWorld
+            } else {
+                screen = AppScreen.Home
+            }
         }
     }
 
@@ -1018,7 +1093,13 @@ class TrainerController(context: Context) {
             showCancelDialog = false
             resetQuizState()
             unfinishedSessions = requireTrainer().unfinishedSessions()
-            screen = AppScreen.Home
+            if (returnToDbaWorldAfterLearning) {
+                refreshDbaWorldKnowledge()
+                returnToDbaWorldAfterLearning = false
+                screen = AppScreen.DbaWorld
+            } else {
+                screen = AppScreen.Home
+            }
         }
     }
 
@@ -1030,9 +1111,17 @@ class TrainerController(context: Context) {
             else -> StatisticsPage.Mistakes
         }
 
+        val returnToWorld = returnToDbaWorldAfterLearning
         resetQuizState()
 
-        if (wasMistakeReview) {
+        if (returnToWorld) {
+            runCoreAction {
+                unfinishedSessions = requireTrainer().unfinishedSessions()
+                refreshDbaWorldKnowledge()
+                returnToDbaWorldAfterLearning = false
+                screen = AppScreen.DbaWorld
+            }
+        } else if (wasMistakeReview) {
             runCoreAction {
                 mistakeSummaries = requireTrainer().mistakeSummaries()
                 mistakeDetail = null
@@ -1056,6 +1145,7 @@ class TrainerController(context: Context) {
         val stats = overallStatistics ?: return
         statisticsDetail = stats
         statisticsDetailTitle = strings.overallStatistics
+        statisticsDetailLimit = null
         statisticsDetailReturnPage = StatisticsPage.Root
         statisticsPage = StatisticsPage.Detail
     }
@@ -1120,6 +1210,7 @@ class TrainerController(context: Context) {
     fun openGlobalModeDetail(row: ModeStatisticsRow) {
         statisticsDetail = row.stats
         statisticsDetailTitle = row.title
+        statisticsDetailLimit = row.limit
         statisticsDetailReturnPage = StatisticsPage.GlobalModes
         statisticsPage = StatisticsPage.Detail
     }
@@ -1133,8 +1224,34 @@ class TrainerController(context: Context) {
             }
             append(row.title)
         }
+        statisticsDetailLimit = row.limit
         statisticsDetailReturnPage = StatisticsPage.ScopeModes
         statisticsPage = StatisticsPage.Detail
+    }
+
+    fun requestClearCurrentQuestionModeStatistics() {
+        val limit = statisticsDetailLimit ?: return
+        if (limit == MobileStatisticsLimit.ANY) {
+            return
+        }
+
+        val title = statisticsDetailTitle
+        pendingStatisticsReset = when {
+            selectedStatisticsTopic != null -> StatisticsResetTarget.TopicMode(
+                topic = selectedStatisticsTopic!!,
+                limit = limit,
+                title = title,
+            )
+            selectedStatisticsCourse != null -> StatisticsResetTarget.CourseMode(
+                courseCode = selectedStatisticsCourse!!,
+                limit = limit,
+                title = title,
+            )
+            else -> StatisticsResetTarget.GlobalMode(
+                limit = limit,
+                title = title,
+            )
+        }
     }
 
     fun openMistakes() {
@@ -1243,6 +1360,18 @@ class TrainerController(context: Context) {
                     requireTrainer().clearStatisticsCourse(target.courseCode)
                 is StatisticsResetTarget.Topic ->
                     requireTrainer().clearStatisticsTopic(target.topic.id)
+                is StatisticsResetTarget.GlobalMode ->
+                    requireTrainer().clearStatisticsLimit(target.limit)
+                is StatisticsResetTarget.CourseMode ->
+                    requireTrainer().clearStatisticsCourseLimit(
+                        target.courseCode,
+                        target.limit,
+                    )
+                is StatisticsResetTarget.TopicMode ->
+                    requireTrainer().clearStatisticsTopicLimit(
+                        target.topic.id,
+                        target.limit,
+                    )
             }
 
             pendingStatisticsReset = null
@@ -1291,6 +1420,67 @@ class TrainerController(context: Context) {
                         requireTrainer().statisticsTopic(target.topic.id, limit)
                     }
                 }
+                is StatisticsResetTarget.GlobalMode -> {
+                    selectedStatisticsCourse = null
+                    selectedStatisticsTopic = null
+                    statisticsDetail = requireTrainer().statisticsAll(target.limit)
+                    statisticsDetailTitle = target.title
+                    statisticsDetailLimit = target.limit
+                    statisticsDetailReturnPage = StatisticsPage.GlobalModes
+                    statisticsPage = StatisticsPage.Detail
+                }
+                is StatisticsResetTarget.CourseMode -> {
+                    selectedStatisticsCourse = target.courseCode
+                    selectedStatisticsTopic = null
+                    topicStatistics = topics
+                        .filter { topic -> topic.courseCode == target.courseCode }
+                        .map { topic ->
+                            TopicStatisticsRow(
+                                topic = topic,
+                                stats = requireTrainer().statisticsTopic(
+                                    topic.id,
+                                    MobileStatisticsLimit.ANY,
+                                ),
+                            )
+                        }
+                    scopeModeStatistics = loadModeStatistics { limit ->
+                        requireTrainer().statisticsCourse(target.courseCode, limit)
+                    }
+                    statisticsDetail = requireTrainer().statisticsCourse(
+                        target.courseCode,
+                        target.limit,
+                    )
+                    statisticsDetailTitle = target.title
+                    statisticsDetailLimit = target.limit
+                    statisticsDetailReturnPage = StatisticsPage.ScopeModes
+                    statisticsPage = StatisticsPage.Detail
+                }
+                is StatisticsResetTarget.TopicMode -> {
+                    selectedStatisticsCourse = target.topic.courseCode
+                    selectedStatisticsTopic = target.topic
+                    topicStatistics = topics
+                        .filter { topic -> topic.courseCode == target.topic.courseCode }
+                        .map { topic ->
+                            TopicStatisticsRow(
+                                topic = topic,
+                                stats = requireTrainer().statisticsTopic(
+                                    topic.id,
+                                    MobileStatisticsLimit.ANY,
+                                ),
+                            )
+                        }
+                    scopeModeStatistics = loadModeStatistics { limit ->
+                        requireTrainer().statisticsTopic(target.topic.id, limit)
+                    }
+                    statisticsDetail = requireTrainer().statisticsTopic(
+                        target.topic.id,
+                        target.limit,
+                    )
+                    statisticsDetailTitle = target.title
+                    statisticsDetailLimit = target.limit
+                    statisticsDetailReturnPage = StatisticsPage.ScopeModes
+                    statisticsPage = StatisticsPage.Detail
+                }
             }
         }
     }
@@ -1302,6 +1492,11 @@ class TrainerController(context: Context) {
     fun back() {
         when (screen) {
             AppScreen.Home -> Unit
+            AppScreen.DbaWorld -> {
+                if (!dbaWorld.back()) {
+                    screen = AppScreen.Home
+                }
+            }
             AppScreen.UnfinishedQuizzes -> screen = AppScreen.Home
             AppScreen.TopicCourses -> screen = AppScreen.Home
             AppScreen.Topics -> screen = AppScreen.TopicCourses
@@ -1318,7 +1513,16 @@ class TrainerController(context: Context) {
             AppScreen.NoteDetail -> {
                 selectedNoteTopic = null
                 selectedNoteBody = ""
-                screen = AppScreen.NotesTopics
+                if (returnToDbaWorldAfterLearning) {
+                    selectedNotesCourse = null
+                    runCoreAction {
+                        refreshDbaWorldKnowledge()
+                        returnToDbaWorldAfterLearning = false
+                        screen = AppScreen.DbaWorld
+                    }
+                } else {
+                    screen = AppScreen.NotesTopics
+                }
             }
             AppScreen.Courses -> screen = AppScreen.Home
             AppScreen.LabCourses -> screen = AppScreen.Home
@@ -1326,7 +1530,19 @@ class TrainerController(context: Context) {
                 selectedLab = null
                 screen = AppScreen.LabCourses
             }
-            AppScreen.LabDetail -> screen = AppScreen.Labs
+            AppScreen.LabDetail -> {
+                selectedLab = null
+                if (returnToDbaWorldAfterLearning) {
+                    selectedLabCourse = null
+                    runCoreAction {
+                        refreshDbaWorldKnowledge()
+                        returnToDbaWorldAfterLearning = false
+                        screen = AppScreen.DbaWorld
+                    }
+                } else {
+                    screen = AppScreen.Labs
+                }
+            }
             AppScreen.PracticeCategories -> screen = AppScreen.Home
             AppScreen.PracticeTasks -> {
                 selectedPracticeCategory = null
@@ -1334,21 +1550,32 @@ class TrainerController(context: Context) {
             }
             AppScreen.PracticeWorkbench -> practiceBack()
             AppScreen.Limit -> {
-                screen = when {
-                    pendingMistakeReview -> {
-                        statisticsPage = when {
-                            pendingTopic != null -> StatisticsPage.MistakeQuestions
-                            pendingCourse != null -> StatisticsPage.MistakeTopics
-                            else -> StatisticsPage.Mistakes
-                        }
-                        pendingMistakeReview = false
-                        pendingTopic = null
-                        pendingCourse = null
-                        AppScreen.Statistics
+                if (returnToDbaWorldAfterLearning) {
+                    pendingTopic = null
+                    pendingCourse = null
+                    pendingMistakeReview = false
+                    runCoreAction {
+                        refreshDbaWorldKnowledge()
+                        returnToDbaWorldAfterLearning = false
+                        screen = AppScreen.DbaWorld
                     }
-                    pendingTopic != null -> AppScreen.Topics
-                    pendingCourse != null -> AppScreen.Courses
-                    else -> AppScreen.Home
+                } else {
+                    screen = when {
+                        pendingMistakeReview -> {
+                            statisticsPage = when {
+                                pendingTopic != null -> StatisticsPage.MistakeQuestions
+                                pendingCourse != null -> StatisticsPage.MistakeTopics
+                                else -> StatisticsPage.Mistakes
+                            }
+                            pendingMistakeReview = false
+                            pendingTopic = null
+                            pendingCourse = null
+                            AppScreen.Statistics
+                        }
+                        pendingTopic != null -> AppScreen.Topics
+                        pendingCourse != null -> AppScreen.Courses
+                        else -> AppScreen.Home
+                    }
                 }
             }
 
@@ -1542,10 +1769,50 @@ class TrainerController(context: Context) {
         scopeModeStatistics = emptyList()
         statisticsDetail = null
         statisticsDetailTitle = ""
+        statisticsDetailLimit = null
         mistakeDetail = null
         selectedMistakeCourse = null
         selectedMistakeTopic = null
         statisticsDetailReturnPage = StatisticsPage.Root
+    }
+
+    private fun requireDbaWorldTopic(courseCode: String, topicSlug: String): MobileTopic =
+        topics.firstOrNull { topic ->
+            topic.courseCode == courseCode && topic.slug == topicSlug
+        } ?: error("DBA World topic not found: $courseCode/$topicSlug")
+
+    private fun buildDbaWorldKnowledgeSnapshot(): KnowledgeSnapshot {
+        val trainer = requireTrainer()
+        val progressByKey = topics
+            .map { topic ->
+                val mastery = trainer.topicMastery(topic.id)
+                val unfinished = unfinishedSessions.any { session ->
+                    !session.isReview && session.topicId == topic.id
+                }
+                val started = mastery.completedAttempts > 0UL || unfinished
+                val progress = KnowledgeTopicProgress(
+                    courseCode = topic.courseCode,
+                    topicSlug = topic.slug,
+                    topicNumber = topic.topicNumber,
+                    title = topic.title,
+                    started = started,
+                    passed = mastery.passed,
+                    completedAttempts = mastery.completedAttempts.toLong(),
+                    bestAccuracyPercent = mastery.bestAccuracyPercent,
+                    hasLab = labs.any { lab ->
+                        lab.courseCode == topic.courseCode && lab.labNumber == topic.topicNumber
+                    },
+                )
+                KnowledgeSnapshot.topicKey(topic.courseCode, topic.slug) to progress
+            }
+            .toMap()
+
+        return KnowledgeSnapshot(progressByKey)
+    }
+
+    private fun refreshDbaWorldKnowledge() {
+        unfinishedSessions = requireTrainer().unfinishedSessions()
+        dbaWorld.updateKnowledge(buildDbaWorldKnowledgeSnapshot())
     }
 
     private fun resetQuizState() {

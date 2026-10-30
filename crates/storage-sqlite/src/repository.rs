@@ -1571,10 +1571,21 @@ fn prepare_statistics_reset_questions_for_topic(
     Ok(())
 }
 
+fn statistics_limit_key(limit: StatisticsLimit) -> &'static str {
+    match limit {
+        StatisticsLimit::Any => "any",
+        StatisticsLimit::Twenty => "20",
+        StatisticsLimit::Fifty => "50",
+        StatisticsLimit::AllQuestions => "all",
+    }
+}
+
 fn clear_scoped_quiz_statistics(
     transaction: &Transaction<'_>,
     course_code: Option<&str>,
+    limit: StatisticsLimit,
 ) -> Result<(), RepositoryError> {
+    let limit_key = statistics_limit_key(limit);
     // Attempts are the source for answer history, mistakes and mastery.
     transaction
         .execute(
@@ -1584,8 +1595,16 @@ fn clear_scoped_quiz_statistics(
                 SELECT question_id
                 FROM reset_statistics_questions
             )
+              AND session_id IN (
+                SELECT s.id
+                FROM quiz_sessions s
+                WHERE ?1 = 'any'
+                   OR (?1 = '20' AND s.requested_count = 20 AND s.is_review = 0)
+                   OR (?1 = '50' AND s.requested_count = 50 AND s.is_review = 0)
+                   OR (?1 = 'all' AND s.requested_count IS NULL AND s.is_review = 0)
+              )
             ",
-            [],
+            params![limit_key],
         )
         .map_err(repository_error)?;
 
@@ -1599,8 +1618,16 @@ fn clear_scoped_quiz_statistics(
                 SELECT question_id
                 FROM reset_statistics_questions
             )
+              AND session_id IN (
+                SELECT s.id
+                FROM quiz_sessions s
+                WHERE ?1 = 'any'
+                   OR (?1 = '20' AND s.requested_count = 20 AND s.is_review = 0)
+                   OR (?1 = '50' AND s.requested_count = 50 AND s.is_review = 0)
+                   OR (?1 = 'all' AND s.requested_count IS NULL AND s.is_review = 0)
+              )
             ",
-            [],
+            params![limit_key],
         )
         .map_err(repository_error)?;
 
@@ -1666,46 +1693,71 @@ fn clear_scoped_quiz_statistics(
         )
         .map_err(repository_error)?;
 
-    // Remove XP that belongs directly to the reset questions/topics and invalidate parent
-    // course-completion XP. Practice XP and unrelated quiz XP remain untouched.
-    transaction
-        .execute(
-            "
-            DELETE FROM xp_events
-            WHERE event_key IN (
-                SELECT 'question:correct:' || rq.question_id
-                FROM reset_statistics_questions rq
-            )
-               OR event_key IN (
-                SELECT DISTINCT 'topic:mastered:' || q.topic_id
-                FROM questions q
-                JOIN reset_statistics_questions rq ON rq.question_id = q.id
-            )
-               OR EXISTS (
-                SELECT 1
-                FROM questions q
-                JOIN reset_statistics_questions rq ON rq.question_id = q.id
-                WHERE xp_events.event_key LIKE 'quiz:passed:topic:' || q.topic_id || ':%'
-            )
-               OR event_key IN (
-                SELECT DISTINCT 'course:completed:' || t.course_code
-                FROM questions q
-                JOIN topics t ON t.id = q.topic_id
-                JOIN reset_statistics_questions rq ON rq.question_id = q.id
-            )
-            ",
-            [],
-        )
-        .map_err(repository_error)?;
-
-    if let Some(course_code) = course_code {
+    // Quiz-passed XP is mode-specific. Question/mastery/course XP is shared across modes,
+    // so only a full scope reset may remove those shared achievements.
+    if limit == StatisticsLimit::Any {
         transaction
             .execute(
                 "
                 DELETE FROM xp_events
-                WHERE event_key LIKE 'quiz:passed:course:' || ?1 || ':%'
+                WHERE event_key IN (
+                    SELECT 'question:correct:' || rq.question_id
+                    FROM reset_statistics_questions rq
+                )
+                   OR event_key IN (
+                    SELECT DISTINCT 'topic:mastered:' || q.topic_id
+                    FROM questions q
+                    JOIN reset_statistics_questions rq ON rq.question_id = q.id
+                )
+                   OR EXISTS (
+                    SELECT 1
+                    FROM questions q
+                    JOIN reset_statistics_questions rq ON rq.question_id = q.id
+                    WHERE xp_events.event_key LIKE 'quiz:passed:topic:' || q.topic_id || ':%'
+                )
+                   OR event_key IN (
+                    SELECT DISTINCT 'course:completed:' || t.course_code
+                    FROM questions q
+                    JOIN topics t ON t.id = q.topic_id
+                    JOIN reset_statistics_questions rq ON rq.question_id = q.id
+                )
                 ",
-                params![course_code],
+                [],
+            )
+            .map_err(repository_error)?;
+
+        if let Some(course_code) = course_code {
+            transaction
+                .execute(
+                    "
+                    DELETE FROM xp_events
+                    WHERE event_key LIKE 'quiz:passed:course:' || ?1 || ':%'
+                    ",
+                    params![course_code],
+                )
+                .map_err(repository_error)?;
+        }
+    } else {
+        transaction
+            .execute(
+                "
+                DELETE FROM xp_events
+                WHERE (
+                    EXISTS (
+                        SELECT 1
+                        FROM questions q
+                        JOIN reset_statistics_questions rq ON rq.question_id = q.id
+                        WHERE xp_events.event_key =
+                            'quiz:passed:topic:' || q.topic_id || ':' || ?1
+                    )
+                    OR (
+                        ?2 IS NOT NULL
+                        AND xp_events.event_key =
+                            'quiz:passed:course:' || ?2 || ':' || ?1
+                    )
+                )
+                ",
+                params![limit_key, course_code],
             )
             .map_err(repository_error)?;
     }
@@ -2431,11 +2483,64 @@ impl SessionRepository for SqliteRepository {
             }
             StatisticsScope::Course(course_code) => {
                 prepare_statistics_reset_questions_for_course(&transaction, course_code)?;
-                clear_scoped_quiz_statistics(&transaction, Some(course_code))?;
+                clear_scoped_quiz_statistics(
+                    &transaction,
+                    Some(course_code),
+                    StatisticsLimit::Any,
+                )?;
             }
             StatisticsScope::Topic(topic_id) => {
                 prepare_statistics_reset_questions_for_topic(&transaction, *topic_id)?;
-                clear_scoped_quiz_statistics(&transaction, None)?;
+                clear_scoped_quiz_statistics(&transaction, None, StatisticsLimit::Any)?;
+            }
+        }
+
+        transaction.commit().map_err(repository_error)?;
+
+        Ok(())
+    }
+
+    fn clear_statistics_filter(
+        &mut self,
+        filter: &StatisticsFilter,
+    ) -> Result<(), RepositoryError> {
+        if filter.limit == StatisticsLimit::Any {
+            return self.clear_statistics(&filter.scope);
+        }
+
+        let transaction = self.connection.transaction().map_err(repository_error)?;
+
+        match &filter.scope {
+            StatisticsScope::All => {
+                transaction
+                    .execute_batch(
+                        "
+                        DROP TABLE IF EXISTS temp.reset_statistics_questions;
+                        CREATE TEMP TABLE reset_statistics_questions (
+                            question_id INTEGER PRIMARY KEY
+                        );
+                        INSERT INTO reset_statistics_questions (question_id)
+                        SELECT id FROM questions;
+                        ",
+                    )
+                    .map_err(repository_error)?;
+
+                clear_scoped_quiz_statistics(&transaction, None, filter.limit)?;
+
+                transaction
+                    .execute(
+                        "DELETE FROM xp_events WHERE event_key LIKE 'quiz:passed:%:' || ?1",
+                        params![statistics_limit_key(filter.limit)],
+                    )
+                    .map_err(repository_error)?;
+            }
+            StatisticsScope::Course(course_code) => {
+                prepare_statistics_reset_questions_for_course(&transaction, course_code)?;
+                clear_scoped_quiz_statistics(&transaction, Some(course_code), filter.limit)?;
+            }
+            StatisticsScope::Topic(topic_id) => {
+                prepare_statistics_reset_questions_for_topic(&transaction, *topic_id)?;
+                clear_scoped_quiz_statistics(&transaction, None, filter.limit)?;
             }
         }
 
@@ -3909,6 +4014,75 @@ mod tests {
             .expect("active session query should succeed");
         assert!(active.is_none());
     }
+    #[test]
+    fn clear_statistics_filter_removes_only_selected_question_limit() {
+        let mut repository = seeded_repository();
+
+        for limit in [
+            QuestionLimit::Twenty,
+            QuestionLimit::Fifty,
+            QuestionLimit::All,
+        ] {
+            let session = repository
+                .start_session(&SessionConfig {
+                    scope: QuizScope::Topic(TopicId(1)),
+                    limit,
+                })
+                .expect("topic session should start");
+            let question = repository
+                .current_question(session.id)
+                .expect("question should load")
+                .expect("question should exist");
+            repository
+                .submit_answer(session.id, question.id, &[AnswerOptionId(1)])
+                .expect("answer should complete session");
+
+            repository
+                .start_session(&SessionConfig {
+                    scope: QuizScope::Topic(TopicId(1)),
+                    limit,
+                })
+                .expect("unfinished topic session should start");
+        }
+
+        repository
+            .clear_statistics_filter(&StatisticsFilter {
+                scope: StatisticsScope::Topic(TopicId(1)),
+                limit: StatisticsLimit::Twenty,
+            })
+            .expect("20-question statistics should clear");
+
+        let twenty = repository
+            .statistics(&StatisticsFilter {
+                scope: StatisticsScope::Topic(TopicId(1)),
+                limit: StatisticsLimit::Twenty,
+            })
+            .expect("20-question statistics should load");
+        assert_eq!(twenty, TrainingStats::default());
+
+        for limit in [StatisticsLimit::Fifty, StatisticsLimit::AllQuestions] {
+            let preserved = repository
+                .statistics(&StatisticsFilter {
+                    scope: StatisticsScope::Topic(TopicId(1)),
+                    limit,
+                })
+                .expect("other mode statistics should load");
+            assert_eq!(preserved.completed_sessions, 1);
+            assert_eq!(preserved.answered_questions, 1);
+            assert_eq!(preserved.correct_answers, 1);
+        }
+
+        let unfinished = repository
+            .unfinished_sessions()
+            .expect("unfinished sessions should load");
+        assert_eq!(unfinished.len(), 2);
+        assert!(
+            unfinished.iter().all(|session| {
+                matches!(session.limit, QuestionLimit::Fifty | QuestionLimit::All)
+            })
+        );
+    }
+
     #[test]
     fn clear_topic_statistics_preserves_other_topic_history() {
         let mut repository = seeded_repository();

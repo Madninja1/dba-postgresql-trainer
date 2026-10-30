@@ -58,6 +58,7 @@ import dev.dbatrainer.app.TrainerController
 import dev.dbatrainer.app.UiLanguage
 import dev.dbatrainer.app.UiStrings
 import dev.dbatrainer.app.uiStrings
+import dev.dbatrainer.app.game.ui.DbaWorldRootScreen
 import dev.dbatrainer.ffi.MobileActivityStats
 import dev.dbatrainer.ffi.MobileAnswerResult
 import dev.dbatrainer.ffi.MobileLab
@@ -66,6 +67,7 @@ import dev.dbatrainer.ffi.MobileQuestionLimit
 import dev.dbatrainer.ffi.MobileQuestionMistakeSummary
 import dev.dbatrainer.ffi.MobileQuizXpOpportunity
 import dev.dbatrainer.ffi.MobileSessionProgress
+import dev.dbatrainer.ffi.MobileStatisticsLimit
 import dev.dbatrainer.ffi.MobileQuestionType
 import dev.dbatrainer.ffi.MobileSource
 import dev.dbatrainer.ffi.MobileTopic
@@ -118,6 +120,13 @@ fun TrainerApp(controller: TrainerController) {
                 AppScreen.Feedback -> FeedbackScreen(controller)
                 AppScreen.Results -> ResultsScreen(controller)
                 AppScreen.Statistics -> StatisticsScreen(controller)
+                AppScreen.DbaWorld -> DbaWorldRootScreen(
+                    controller = controller.dbaWorld,
+                    language = controller.language,
+                    onOpenKnowledgeNote = controller::openDbaWorldKnowledgeNote,
+                    onOpenKnowledgeQuiz = controller::openDbaWorldKnowledgeQuiz,
+                    onOpenKnowledgeLab = controller::openDbaWorldKnowledgeLab,
+                )
             }
         }
     }
@@ -164,6 +173,9 @@ fun TrainerApp(controller: TrainerController) {
             StatisticsResetTarget.All -> strings.overallStatistics
             is StatisticsResetTarget.Course -> target.courseCode.uppercase()
             is StatisticsResetTarget.Topic -> target.topic.title
+            is StatisticsResetTarget.GlobalMode -> target.title
+            is StatisticsResetTarget.CourseMode -> target.title
+            is StatisticsResetTarget.TopicMode -> target.title
         }
 
         AlertDialog(
@@ -271,6 +283,15 @@ private fun HomeScreen(controller: TrainerController) {
         controller.activityStats?.let { activity ->
             item {
                 RankSummaryCard(activity)
+            }
+        }
+
+        item {
+            Button(
+                onClick = controller::openDbaWorld,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text("DBA World")
             }
         }
 
@@ -2515,6 +2536,19 @@ private fun StatisticsDetailScreen(controller: TrainerController) {
                 StatisticsCard(
                     stats = stats,
                 )
+            }
+
+            if (controller.statisticsDetailLimit != null &&
+                controller.statisticsDetailLimit != MobileStatisticsLimit.ANY
+            ) {
+                item {
+                    OutlinedButton(
+                        onClick = controller::requestClearCurrentQuestionModeStatistics,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(strings.clearQuestionModeStatistics)
+                    }
+                }
             }
         }
     }

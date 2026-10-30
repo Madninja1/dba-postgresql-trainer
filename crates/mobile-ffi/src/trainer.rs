@@ -486,6 +486,44 @@ impl MobileTrainer {
             .clear_statistics(&StatisticsScope::Topic(TopicId(topic_id)))
             .map_err(to_mobile_error)
     }
+
+    pub fn clear_statistics_limit(&self, limit: MobileStatisticsLimit) -> Result<(), MobileError> {
+        let mut service = self.service()?;
+        service
+            .clear_statistics_filter(&StatisticsFilter {
+                scope: StatisticsScope::All,
+                limit: limit.into(),
+            })
+            .map_err(to_mobile_error)
+    }
+
+    pub fn clear_statistics_course_limit(
+        &self,
+        course_code: String,
+        limit: MobileStatisticsLimit,
+    ) -> Result<(), MobileError> {
+        let mut service = self.service()?;
+        service
+            .clear_statistics_filter(&StatisticsFilter {
+                scope: StatisticsScope::Course(course_code),
+                limit: limit.into(),
+            })
+            .map_err(to_mobile_error)
+    }
+
+    pub fn clear_statistics_topic_limit(
+        &self,
+        topic_id: i64,
+        limit: MobileStatisticsLimit,
+    ) -> Result<(), MobileError> {
+        let mut service = self.service()?;
+        service
+            .clear_statistics_filter(&StatisticsFilter {
+                scope: StatisticsScope::Topic(TopicId(topic_id)),
+                limit: limit.into(),
+            })
+            .map_err(to_mobile_error)
+    }
 }
 
 impl MobileTrainer {
