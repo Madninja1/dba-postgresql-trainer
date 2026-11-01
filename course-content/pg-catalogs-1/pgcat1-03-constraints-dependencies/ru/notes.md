@@ -1,26 +1,35 @@
 # Ограничения, зависимости, правила и триггеры
 
-## 1. Тема
+## Ментальная модель
 
-Тема посвящена системным каталогам PostgreSQL и связям между ними: где сервер хранит метаданные объектов и какие поля позволяют восстановить структуру и состояние базы.
+Эта группа каталогов отвечает на три разных вопроса:
 
 ```text
-основной материал темы
-        ↓
-понимание механизма
-        ↓
-важные ограничения и связи
-        ↓
-факты, которые проверяются тестами
+какие правила целостности заданы объекту?   → pg_constraint
+от чего объект зависит и что удалится?       → pg_depend / pg_shdepend
+какие серверные механизмы реагируют на SQL?  → pg_rewrite / pg_trigger /
+                                               pg_event_trigger
 ```
 
-## 2. Механизм
+Комментарии объектов хранятся отдельно в `pg_description` и `pg_shdescription`.
 
-Здесь важно понимать, где PostgreSQL хранит связи между объектами и метаданные механизмов, влияющих на DDL/DML.
+---
 
-### pg_constraint
+## `pg_constraint`: ограничения
 
-Содержит `CHECK`, `UNIQUE`, `PRIMARY KEY`, `FOREIGN KEY` и `EXCLUDE` constraints.
+`pg_constraint` хранит:
+
+- `CHECK`;
+- `UNIQUE`;
+- `PRIMARY KEY`;
+- `FOREIGN KEY`;
+- `EXCLUDE`;
+- constraint triggers;
+- domain constraints.
+
+`NOT NULL` — важное исключение: оно представлено не строкой в `pg_constraint`, а флагом `pg_attribute.attnotnull`.
+
+### Тип ограничения
 
 `contype`:
 
@@ -29,130 +38,277 @@ c  CHECK
 f  FOREIGN KEY
 p  PRIMARY KEY
 u  UNIQUE
+t  constraint trigger
 x  EXCLUDE
 ```
 
-`NOT NULL` — особый случай: для обычного столбца он представлен `pg_attribute.attnotnull`, а не строкой `pg_constraint` с `contype='n'`.
+### К какому объекту относится constraint
 
-Для внешнего ключа важны:
+- `conrelid` — таблица, если это table constraint;
+- `contypid` — domain, если это domain constraint;
+- `connamespace` — namespace constraint;
+- `conname` — имя, которое не обязано быть глобально уникальным.
 
-- `conrelid` — таблица с FK;
-- `confrelid` — целевая таблица;
-- `conkey` — номера ссылающихся столбцов;
-- `confkey` — номера целевых столбцов.
+### Состояние ограничения
 
-### pg_depend
+- `condeferrable` — constraint можно откладывать;
+- `condeferred` — deferred по умолчанию;
+- `convalidated` — существующие данные были проверены.
 
-Хранит зависимости между объектами внутри базы.
+`convalidated = false` в PostgreSQL 16 возможно для foreign key и `CHECK`.
 
-`deptype` включает:
+---
+
+## Индекс, поддерживающий constraint
+
+`conindid` указывает на индекс, связанный с ограничением, когда это применимо: unique, primary key, foreign key или exclusion constraint.
+
+Не следует читать это как «каждый constraint всегда имеет индекс». Например, обычный `CHECK` не требует supporting index.
+
+---
+
+## Как устроен FOREIGN KEY в `pg_constraint`
+
+Для FK особенно важны четыре поля:
 
 ```text
-n  NORMAL
-a  AUTO
-i  INTERNAL
-e  EXTENSION
-x  AUTO_EXTENSION
+conrelid  → таблица, где объявлен FK
+conkey    → номера её столбцов
+confrelid → referenced table
+confkey   → номера referenced columns
 ```
 
-По этой информации PostgreSQL определяет, что можно удалить независимо, что должно удаляться автоматически и какие объекты являются внутренней частью других объектов.
+Номера в `conkey/confkey` соответствуют `pg_attribute.attnum`.
 
-### pg_shdepend
+Дополнительные свойства:
 
-Аналог зависимостей для shared-объектов кластера, например ролей. Сам каталог также shared.
+- `confupdtype` — действие при update referenced key;
+- `confdeltype` — действие при delete referenced key;
+- `confmatchtype` — `FULL`, `PARTIAL` или `SIMPLE` в кодированном виде;
+- `conpfeqop`, `conppeqop`, `conffeqop` — операторы сравнения, используемые FK.
 
-### Комментарии
+Коды update/delete action:
 
-- `pg_description` — комментарии локальных объектов базы;
-- `pg_shdescription` — комментарии shared-объектов.
+```text
+a  NO ACTION
+r  RESTRICT
+c  CASCADE
+n  SET NULL
+d  SET DEFAULT
+```
 
-Поле `description` содержит текст комментария.
+`confdelsetcols` может задавать конкретные referencing columns, которые меняются при `SET NULL` или `SET DEFAULT`.
 
-### pg_rewrite
+### Выражение ограничения
 
-Хранит правила системы переписывания запросов. Определения представлений также представлены правилами rewrite.
+Внутреннее выражение `CHECK` хранится в `conbin`. Для пользовательского вывода предпочтительно использовать:
 
-### pg_trigger
+```sql
+pg_get_constraintdef(oid)
+```
+
+а не разбирать `pg_node_tree` вручную.
+
+---
+
+## `pg_depend`: граф зависимостей внутри базы
+
+`pg_depend` записывает отношения зависимости между объектами текущей базы данных. Благодаря этим данным PostgreSQL понимает, что запрещать при `DROP RESTRICT` и что удалять при `DROP CASCADE` или автоматически.
+
+Запись содержит две стороны:
+
+```text
+зависимый объект                          вышестоящий объект
+classid, objid, objsubid   ───────────→   refclassid, refobjid, refobjsubid
+```
+
+`objsubid/refobjsubid` используются для подобъекта, например столбца; `0` означает объект целиком.
+
+### `deptype`: не все зависимости одинаковы
+
+#### `n` — NORMAL
+
+Зависимый объект можно удалить отдельно. Вышестоящий объект удалить нельзя без `CASCADE`, если dependent object остаётся.
+
+#### `a` — AUTO
+
+Dependent object можно удалить отдельно, но при удалении referenced object он удаляется автоматически независимо от явного `CASCADE`.
+
+#### `i` — INTERNAL
+
+Dependent object считается внутренней частью другого объекта. Отдельный `DROP` для него запрещается; удалять нужно owning object.
+
+#### `P` / `S` — partition dependencies
+
+Используются для объектов секционирования с несколькими связанными parent objects. `P` — primary, `S` — secondary dependency. Они помогают корректно определять удаление partition-related объектов и формировать сообщения.
+
+#### `e` — EXTENSION
+
+Объект является членом extension. Удалять его следует через `DROP EXTENSION`.
+
+#### `x` — AUTO_EXTENSION
+
+Объект не является членом extension в смысле dump membership, но не может функционировать без extension и автоматически удаляется вместе с ним. При этом его можно удалить отдельно.
+
+У одного объекта может быть несколько записей зависимостей разных типов. Итоговое поведение `DROP` получается из совокупности этих связей.
+
+### Почему некоторых ожидаемых зависимостей нет
+
+Многие объекты, созданные `initdb`, считаются pinned. Они не должны удаляться, поэтому `pg_depend` не обязан хранить обычные записи зависимости от каждого такого системного объекта.
+
+---
+
+## `pg_shdepend`: зависимости от shared objects
+
+`pg_shdepend` решает похожую задачу, но для зависимостей от объектов, общих для кластера, прежде всего ролей и tablespaces.
+
+Поля включают:
+
+- `dbid` — база dependent object либо `0` для global object;
+- `classid`, `objid`, `objsubid` — dependent object;
+- `refclassid`, `refobjid` — shared referenced object;
+- `deptype` — вид shared dependency.
+
+Примеры типов:
+
+```text
+o  OWNER
+ a ACL
+ r POLICY
+ t TABLESPACE
+```
+
+Так PostgreSQL, например, может определить, что роль ещё владеет объектами или упоминается в ACL и поэтому не может быть просто удалена без разрешения этих зависимостей.
+
+---
+
+## Комментарии: `pg_description` и `pg_shdescription`
+
+Команда `COMMENT` хранит текст в системных каталогах.
+
+### `pg_description`
+
+Комментарии объектов текущей базы:
+
+- `objoid` — объект;
+- `classoid` — каталог объекта;
+- `objsubid` — номер столбца или `0`;
+- `description` — текст.
+
+### `pg_shdescription`
+
+Комментарии shared objects кластера. Каталог сам является shared.
+
+Здесь нет `objsubid`, потому что каталог предназначен для глобальных объектов, описываемых как целые сущности.
+
+---
+
+## `pg_rewrite`: query rewrite rules
+
+`pg_rewrite` хранит правила перезаписи для таблиц и представлений.
 
 Основные поля:
 
-- `tgrelid` — таблица;
-- `tgname` — имя триггера;
-- `tgfoid` — функция;
-- `tgtype` — битовая маска характеристик триггера;
-- `tgenabled` — режим включения относительно `session_replication_role`;
-- `tgqual` — внутреннее представление `WHEN`-условия.
+- `rulename` — имя;
+- `ev_class` — relation, к которому относится rule;
+- `ev_type` — вид события;
+- `ev_enabled` — режим `session_replication_role`;
+- `is_instead` — `INSTEAD` rule;
+- `ev_qual` — условие;
+- `ev_action` — действие.
 
-SQL-текст самой триггерной функции хранится не в `tgtype`, а через связанную функцию в `pg_proc`.
+Коды `ev_type`:
 
-### pg_event_trigger
+```text
+1  SELECT
+2  UPDATE
+3  INSERT
+4  DELETE
+```
 
-Event triggers реагируют на DDL-события.
+Если для relation существуют rules, `pg_class.relhasrules` должен быть установлен.
 
-Важные поля:
+---
 
-- `evtevent` — событие;
+## `pg_trigger`: триггеры таблиц и представлений
+
+`pg_trigger` содержит trigger metadata.
+
+Ключевые поля:
+
+- `tgrelid` — relation;
+- `tgname` — имя trigger, уникальное внутри одной таблицы;
+- `tgfoid` — вызываемая функция;
+- `tgtype` — bitmask условий срабатывания;
+- `tgenabled` — режим `session_replication_role`;
+- `tgisinternal` — внутренний trigger;
+- `tgconstraint` — связанный `pg_constraint`, если есть;
+- `tgnargs` — число аргументов;
+- `tgattr` — column numbers для column-specific UPDATE trigger;
+- `tgargs` — аргументы trigger function;
+- `tgqual` — внутреннее представление `WHEN` condition;
+- `tgoldtable`, `tgnewtable` — имена transition tables.
+
+Коды `tgenabled`:
+
+```text
+O  origin + local
+D  disabled
+R  replica
+A  always
+```
+
+Если у relation есть triggers, `pg_class.relhastriggers` должен быть установлен.
+
+Для восстановления читаемого определения есть `pg_get_triggerdef()`.
+
+---
+
+## `pg_event_trigger`: event triggers
+
+Event trigger реагирует не на изменение строки таблицы, а на события DDL-инфраструктуры.
+
+`pg_event_trigger` содержит:
+
+- `evtname` — имя;
+- `evtevent` — event;
+- `evtowner` — владелец;
 - `evtfoid` — вызываемая функция;
-- `evtenabled` — режим включения;
-- `evttags` — фильтр по command tags.
+- `evtenabled` — режим срабатывания;
+- `evttags` — список command tags либо `NULL`, если фильтра нет.
+
+`evtenabled` использует те же коды `O/D/R/A`, что и обычные triggers.
 
 ---
 
-## 3. Важные детали и покрытие тестов
+## Практический способ читать constraint
 
-Ниже собраны детали, которые проверяются вопросами этой темы. Они сгруппированы по разделам исходной документации, чтобы их можно было связывать с механизмом, а не запоминать как отдельный список ответов.
+```sql
+SELECT
+    c.conname,
+    c.contype,
+    c.conrelid::regclass AS relation_name,
+    pg_get_constraintdef(c.oid) AS definition
+FROM pg_constraint AS c
+WHERE c.conrelid = 'public.orders'::regclass;
+```
 
-### 53.13. pg_constraint
-
-- **Назначение каталога.** pg_constraint содержит основные табличные и доменные ограничения, включая CHECK, UNIQUE, PRIMARY KEY, FOREIGN KEY и EXCLUDE.
-- **Столбец contype; примечание о NOT NULL.** `c` — CHECK. NOT NULL не представлен как contype в pg_constraint: это свойство хранится в pg_attribute.attnotnull.
-- **NOT NULL хранится в pg_attribute.** В pg_attribute.attnotnull. Документация pg_constraint прямо отмечает, что ограничения NULL представлены не здесь, а в pg_attribute.
-- **conrelid, confrelid, conkey, confkey.** conrelid — таблица с ограничением. Для FK pg_constraint хранит обе стороны связи и номера соответствующих столбцов.
-
-### 53.18. pg_depend
-
-- **Назначение каталога зависимостей.** pg_depend хранит зависимости объектов базы и позволяет DROP решать, что удалять с CASCADE и когда запрещать удаление при RESTRICT.
-- **Поле deptype и виды зависимостей.** `n` — NORMAL. В тексте перечислены NORMAL, AUTO, INTERNAL, PARTITION_PRI/SEC, EXTENSION и AUTO_EXTENSION; `z` там не используется.
-
-### 53.48. pg_shdepend
-
-- **Назначение shared dependencies.** pg_shdepend хранит зависимости объектов баз данных от shared-объектов, таких как роли и tablespaces.
-
-### 53.19. pg_description
-
-- **Назначение и поле description.** pg_description — комментарии объектов базы данных. pg_description относится к объектам базы, а pg_shdescription — к глобальным объектам кластера.
-
-### 53.45. pg_rewrite
-
-- **Назначение каталога rewrite rules.** pg_rewrite содержит правила перезаписи; ev_class указывает отношение, а ev_action хранит дерево действия.
-
-### 53.58. pg_trigger
-
-- **Основные поля tgrelid, tgname, tgfoid, tgenabled, tgqual.** tgrelid указывает таблицу триггера. pg_trigger хранит связь триггера с таблицей и функцией, режим включения, аргументы и условие WHEN.
-
-### 53.21. pg_event_trigger
-
-- **Назначение каталога event triggers.** pg_event_trigger предназначен именно для событийных триггеров.
-- **evtevent, evtfoid, evtenabled, evttags.** evtevent — событие. pg_event_trigger содержит событие, функцию, режим включения и список command tags.
-
-### 53.49. pg_shdescription
-
-- **Назначение; objoid; description; shared catalog.** Каталог хранит комментарии к глобальным объектам. pg_shdescription — shared-аналог pg_description для глобальных объектов кластера.
+Этот запрос показывает важный принцип: catalog columns нужны для машинного анализа и связей, а `pg_get_*def()` — для человекочитаемого DDL-представления.
 
 ---
 
-# Что запомнить
+## Что запомнить
 
-- **Назначение каталога** → pg_constraint
-- **Столбец contype; примечание о NOT NULL** → `c` — CHECK
-- **NOT NULL хранится в pg_attribute** → В pg_attribute.attnotnull
-- **conrelid, confrelid, conkey, confkey** → conrelid — таблица с ограничением
-- **Назначение каталога зависимостей** → pg_depend
-- **Поле deptype и виды зависимостей** → `n` — NORMAL
-- **Назначение shared dependencies** → pg_shdepend
-- **Назначение и поле description** → pg_description — комментарии объектов базы данных
-- **Назначение каталога rewrite rules** → pg_rewrite
-- **Основные поля tgrelid, tgname, tgfoid, tgenabled, tgqual** → tgrelid указывает таблицу триггера
-- **Назначение каталога event triggers** → pg_event_trigger
-- **evtevent, evtfoid, evtenabled, evttags** → evtevent — событие
-- **Назначение; objoid; description; shared catalog** → Каталог хранит комментарии к глобальным объектам
+```text
+pg_constraint    → integrity constraints
+pg_attribute     → NOT NULL
+pg_depend        → dependencies внутри базы
+pg_shdepend      → dependencies на shared objects
+pg_description   → comments объектов базы
+pg_shdescription → comments shared objects
+pg_rewrite       → query rewrite rules
+pg_trigger       → row/statement triggers
+pg_event_trigger → event triggers
+```
+
+Главное различие: constraint описывает **правило целостности**, dependency — **отношение жизненного цикла между объектами**, а trigger/rule — **механизм реакции или переписывания SQL**.

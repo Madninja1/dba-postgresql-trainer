@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "rust-1",
+  "slug": "rust1-lifetimes",
+  "notes_part": 10,
+  "topic_number": 10,
+  "title": "Lifetimes",
+  "description": "Reference lifetimes, annotations, relationships between input and output references, structs with references, lifetime elision, and 'static.",
+  "sort_order": 100
+}

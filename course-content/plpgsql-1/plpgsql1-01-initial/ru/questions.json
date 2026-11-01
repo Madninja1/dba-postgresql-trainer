@@ -328,7 +328,7 @@
     },
     {
       "type": "multiple_choice",
-      "text": "Какие возможности PL/pgSQL перечислены в обзоре?",
+      "text": "Какие возможности предоставляет PL/pgSQL?",
       "answers": [
         {
           "key": "a",
@@ -356,7 +356,7 @@
           "correct": false
         }
       ],
-      "explanation": "Обзор перечисляет эти цели и преимущества языка.",
+      "explanation": "PL/pgSQL позволяет создавать функции, процедуры и триггеры, использовать управляющие конструкции и выполнять сложные вычисления вместе с возможностями SQL.",
       "source": {
         "key": "plpgsql1-initial-advantages",
         "kind": "postgresql_docs",
@@ -523,7 +523,7 @@
     },
     {
       "type": "multiple_choice",
-      "text": "Какие циклы рассматриваются в PL/pgSQL?",
+      "text": "Какие формы циклов поддерживает PL/pgSQL?",
       "answers": [
         {
           "key": "a",
@@ -556,7 +556,7 @@
           "correct": false
         }
       ],
-      "explanation": "Глава 43.6 перечисляет простые циклы, цикл по результату и FOREACH.",
+      "explanation": "PL/pgSQL поддерживает LOOP, WHILE, FOR по диапазону, FOR по результатам запроса и FOREACH по массиву.",
       "source": {
         "key": "plpgsql1-initial-loops",
         "kind": "postgresql_docs",
@@ -605,7 +605,7 @@
     },
     {
       "type": "multiple_choice",
-      "text": "Какие операции меняют FOUND по документации?",
+      "text": "Какие операции изменяют значение специальной переменной FOUND?",
       "answers": [
         {
           "key": "a",
@@ -643,7 +643,7 @@
           "correct": false
         }
       ],
-      "explanation": "Документация перечисляет операторы, меняющие FOUND, и отдельно отмечает, что EXECUTE его не меняет.",
+      "explanation": "SELECT INTO, PERFORM, DML-команды, FETCH, MOVE и RETURN QUERY изменяют FOUND; обычный EXECUTE сам по себе FOUND не изменяет.",
       "source": {
         "key": "plpgsql1-initial-found-rules",
         "kind": "postgresql_docs",

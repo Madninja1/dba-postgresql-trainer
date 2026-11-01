@@ -1,0 +1,664 @@
+{
+  "schema_version": 1,
+  "topic": "plpgsql1-middle",
+  "questions": [
+    {
+      "type": "single_choice",
+      "text": "What does `%TYPE` provide in a variable declaration?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It copies the data type of the referenced variable or column",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It copies the column value",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It creates a new domain",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It returns the type OID",
+          "correct": false
+        }
+      ],
+      "explanation": "`%TYPE` avoids duplicating a type declaration and follows changes to the referenced type.",
+      "source": {
+        "key": "plpgsql1-middle-type",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.3.3. Copying Data Types",
+        "locator": "%TYPE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-declarations"
+      },
+      "key": "plpgsql1-middle-001"
+    },
+    {
+      "type": "single_choice",
+      "text": "What does `%ROWTYPE` provide?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The row type of an existing table or view",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only the type of one column",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "An array type",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A cursor type",
+          "correct": false
+        }
+      ],
+      "explanation": "`table%ROWTYPE` declares a row variable with the structure of a table or view row.",
+      "source": {
+        "key": "plpgsql1-middle-rowtype",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.3.4. Row Types",
+        "locator": "%ROWTYPE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-declarations"
+      },
+      "key": "plpgsql1-middle-002"
+    },
+    {
+      "type": "single_choice",
+      "text": "How does RECORD differ from `%ROWTYPE`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "RECORD has no predetermined structure and acquires one when a row is assigned",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "RECORD always has the row type of pg_class",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "RECORD cannot change",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "RECORD is a synonym for integer",
+          "correct": false
+        }
+      ],
+      "explanation": "A RECORD variable acquires its structure dynamically; before its first assignment, its fields cannot be accessed.",
+      "source": {
+        "key": "plpgsql1-middle-record",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.3.5. Record Types",
+        "locator": "RECORD",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-declarations"
+      },
+      "key": "plpgsql1-middle-003"
+    },
+    {
+      "type": "single_choice",
+      "text": "What does `INTO STRICT` mean?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The command must return exactly one row or an error is raised",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The command must return at least two rows",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The result is always ignored",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The SQL runs at Serializable isolation",
+          "correct": false
+        }
+      ],
+      "explanation": "STRICT raises NO_DATA_FOUND for zero rows and TOO_MANY_ROWS for more than one row.",
+      "source": {
+        "key": "plpgsql1-middle-strict",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.3. Executing a Command with a Single-Row Result",
+        "locator": "INTO STRICT",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-middle-004"
+    },
+    {
+      "type": "single_choice",
+      "text": "What is EXECUTE used for in PL/pgSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Executing a dynamically constructed command",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Calling psql meta-commands",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only issuing COMMIT",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Creating a variable",
+          "correct": false
+        }
+      ],
+      "explanation": "EXECUTE accepts a command string and plans the command each time it runs.",
+      "source": {
+        "key": "plpgsql1-middle-execute",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.4. Executing Dynamic Commands",
+        "locator": "EXECUTE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-middle-005"
+    },
+    {
+      "type": "single_choice",
+      "text": "What is the safer way to pass data values to dynamic EXECUTE?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Use $1, $2 parameters with the USING clause",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Concatenate arbitrary values without escaping",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Use only dollar quoting around unknown values",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Use psql :variables",
+          "correct": false
+        }
+      ],
+      "explanation": "USING keeps values in their native data types and avoids text quoting for data values.",
+      "source": {
+        "key": "plpgsql1-middle-execute-using",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.4. Executing Dynamic Commands",
+        "locator": "EXECUTE ... USING",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-middle-006"
+    },
+    {
+      "type": "single_choice",
+      "text": "What does `GET DIAGNOSTICS x = ROW_COUNT` return?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The number of rows processed by the most recent SQL command",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The text of the latest error",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The backend PID",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The number of function arguments",
+          "correct": false
+        }
+      ],
+      "explanation": "ROW_COUNT is a bigint value containing the number of rows processed by the latest SQL command.",
+      "source": {
+        "key": "plpgsql1-middle-row-count",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.5. Obtaining the Result Status",
+        "locator": "GET DIAGNOSTICS ROW_COUNT",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-middle-007"
+    },
+    {
+      "type": "single_choice",
+      "text": "Which clause starts a block error handler?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "EXCEPTION",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "CATCH",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "ON ERROR",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "RESCUE",
+          "correct": false
+        }
+      ],
+      "explanation": "An EXCEPTION section handles matching error conditions raised in the block.",
+      "source": {
+        "key": "plpgsql1-middle-exception",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.6.8. Trapping Errors",
+        "locator": "EXCEPTION",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-control-structures"
+      },
+      "key": "plpgsql1-middle-008"
+    },
+    {
+      "type": "single_choice",
+      "text": "Which variable type is used for cursors?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "refcursor",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "jsonb",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "oidvector",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "cstring",
+          "correct": false
+        }
+      ],
+      "explanation": "Cursor variables in PL/pgSQL have the refcursor data type.",
+      "source": {
+        "key": "plpgsql1-middle-refcursor",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.7.1. Declaring Cursor Variables",
+        "locator": "refcursor",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-cursors"
+      },
+      "key": "plpgsql1-middle-009"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about `%TYPE` and `%ROWTYPE` are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "%TYPE copies the type of a column or variable",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "%ROWTYPE supplies the row structure of a table or view",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "They reduce duplicated type declarations in a function",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "%ROWTYPE stores only the table name as a string",
+          "correct": false
+        }
+      ],
+      "explanation": "Both constructs tie PL/pgSQL declarations to existing database types and reduce type duplication.",
+      "source": {
+        "key": "plpgsql1-middle-type-rowtype",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.3.3–43.3.4",
+        "locator": "%TYPE and %ROWTYPE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-declarations"
+      },
+      "key": "plpgsql1-middle-010"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "What happens with SELECT ... INTO without STRICT?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The first result row is assigned",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "If there are no rows, the target values become NULL",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "FOUND indicates whether a row was obtained",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "More than one row always raises TOO_MANY_ROWS",
+          "correct": false
+        }
+      ],
+      "explanation": "Without STRICT, only the first row is assigned and any additional rows are discarded; FOUND reports whether a row was obtained.",
+      "source": {
+        "key": "plpgsql1-middle-into-nonstrict",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.3. Executing a Command with a Single-Row Result",
+        "locator": "INTO without STRICT",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-middle-011"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which error conditions are associated with INTO STRICT?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "NO_DATA_FOUND when no row is returned",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "TOO_MANY_ROWS when more than one row is returned",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "DUPLICATE_DATABASE in every case",
+          "correct": false
+        }
+      ],
+      "explanation": "STRICT requires exactly one row.",
+      "source": {
+        "key": "plpgsql1-middle-strict-errors",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.3. Executing a Command with a Single-Row Result",
+        "locator": "NO_DATA_FOUND / TOO_MANY_ROWS",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-middle-012"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about EXECUTE are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The command text is evaluated as text",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The command is planned on every execution",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "INTO can capture its result",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "USING passes parameter values",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "EXECUTE always reuses a previously cached generic plan",
+          "correct": false
+        }
+      ],
+      "explanation": "Dynamic EXECUTE does not cache its plan and supports both INTO and USING.",
+      "source": {
+        "key": "plpgsql1-middle-execute-rules",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.4. Executing Dynamic Commands",
+        "locator": "EXECUTE INTO USING",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-middle-013"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which functions or format specifiers are recommended for dynamic identifiers and values?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "format with %I for identifiers",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "format with %L for values inserted as text",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "quote_ident for identifiers",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "quote_nullable for values that may be NULL",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Unescaped concatenation of user input",
+          "correct": false
+        }
+      ],
+      "explanation": "The dynamic SQL documentation describes format and quote_* helpers and separately recommends USING for data values.",
+      "source": {
+        "key": "plpgsql1-middle-dynamic-quoting",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.4. Executing Dynamic Commands",
+        "locator": "format / quote_ident / quote_nullable",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-middle-014"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about an EXCEPTION handler are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "If a statement in the block raises an error, later statements in that block are skipped",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Control is transferred to a matching WHEN clause",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Database changes made inside the failed block are rolled back while local PL/pgSQL variables keep their values",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Any EXCEPTION terminates the entire PostgreSQL session",
+          "correct": false
+        }
+      ],
+      "explanation": "The error-handling section defines both control flow and rollback behavior for an EXCEPTION block.",
+      "source": {
+        "key": "plpgsql1-middle-exception-rules",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.6.8. Trapping Errors",
+        "locator": "EXCEPTION WHEN",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-control-structures"
+      },
+      "key": "plpgsql1-middle-015"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which operations are available for cursors?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "OPEN",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "FETCH",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "MOVE",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "CLOSE",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "VACUUM CURSOR",
+          "correct": false
+        }
+      ],
+      "explanation": "The cursor chapter covers opening, fetching, moving, and closing cursors.",
+      "source": {
+        "key": "plpgsql1-middle-cursor-ops",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.7. Using Cursors",
+        "locator": "OPEN/FETCH/MOVE/CLOSE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-cursors"
+      },
+      "key": "plpgsql1-middle-016"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about RETURN QUERY are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It appends query rows to the function result set",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It has a RETURN QUERY EXECUTE form for dynamic queries",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It can affect FOUND",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It always terminates the function immediately",
+          "correct": false
+        }
+      ],
+      "explanation": "RETURN QUERY accumulates rows in the function result and execution continues afterward.",
+      "source": {
+        "key": "plpgsql1-middle-return-query",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.6.1.2. RETURN NEXT and RETURN QUERY",
+        "locator": "RETURN QUERY / EXECUTE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-control-structures"
+      },
+      "key": "plpgsql1-middle-017"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about RAISE are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It is used for messages and errors",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It supports multiple message severity levels",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "RAISE EXCEPTION raises an error",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "RAISE automatically performs COMMIT",
+          "correct": false
+        }
+      ],
+      "explanation": "PL/pgSQL uses RAISE both to emit messages and to raise errors at different severity levels.",
+      "source": {
+        "key": "plpgsql1-middle-raise",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.9.1. Reporting Errors and Messages",
+        "locator": "RAISE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-errors-and-messages"
+      },
+      "key": "plpgsql1-middle-018"
+    }
+  ]
+}

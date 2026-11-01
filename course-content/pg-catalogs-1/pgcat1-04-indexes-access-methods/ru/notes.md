@@ -1,26 +1,42 @@
 # Индексы и методы доступа
 
-## 1. Тема
+## Ментальная модель
 
-Тема посвящена системным каталогам PostgreSQL и связям между ними: где сервер хранит метаданные объектов и какие поля позволяют восстановить структуру и состояние базы.
+Описание индекса в PostgreSQL распределено по нескольким каталогам:
 
 ```text
-основной материал темы
-        ↓
-понимание механизма
-        ↓
-важные ограничения и связи
-        ↓
-факты, которые проверяются тестами
+pg_class
+   │  общая запись relation
+   ▼
+pg_index
+   │  свойства конкретного индекса и связь с таблицей
+   │
+   ├─ pg_opclass ── pg_opfamily
+   │       │            │
+   │       │            ├─ pg_amop   operators
+   │       │            └─ pg_amproc support procedures
+   │       ▼
+   └───── pg_am         access method
 ```
 
-## 2. Механизм
+Секционирование и наследование добавляют ещё два каталога:
 
-Метаданные индексов распределены между несколькими каталогами: общий объект живёт в `pg_class`, свойства индекса — в `pg_index`, а семантика метода доступа — в `pg_am`, opclass/opfamily и связанных каталогах.
+```text
+pg_partitioned_table → ключ секционирования
+pg_inherits          → parent/child edges
+```
 
-### pg_am
+---
 
-Описывает методы доступа отношений.
+## `pg_am`: методы доступа
+
+`pg_am` содержит методы доступа relations. Каждая строка описывает один access method.
+
+Поля:
+
+- `amname` — имя;
+- `amhandler` — handler function;
+- `amtype` — вид метода.
 
 `amtype`:
 
@@ -29,20 +45,63 @@ t  table access method
 i  index access method
 ```
 
-### pg_opfamily и pg_opclass
+Свойства индексных методов больше не кодируются множеством колонок `pg_am`, как в старых версиях PostgreSQL. Для проверки свойств существуют специальные функции `pg_indexam_has_property()`, `pg_index_has_property()` и `pg_index_column_has_property()`.
 
-`pg_opfamily` — семейство совместимых операторов и support procedures для метода доступа.
+---
 
-`pg_opclass` связывает индексируемый тип данных с методом доступа и семейством операторов.
+## Семейство операторов и класс операторов
 
-Ключевые ссылки:
+### `pg_opfamily`
+
+Operator family — набор совместимых operators и support procedures для одного index access method.
+
+Поля:
+
+- `opfmethod` → `pg_am`;
+- `opfname` — имя family;
+- `opfnamespace` — schema;
+- `opfowner` — владелец.
+
+Само содержимое family находится преимущественно в связанных строках `pg_amop`, `pg_amproc` и `pg_opclass`.
+
+### `pg_opclass`
+
+Operator class связывает:
+
+```text
+index access method
+        +
+индексируемый тип данных
+        +
+operator family
+```
+
+Поля:
 
 - `opcmethod` → `pg_am`;
-- `opcfamily` → `pg_opfamily`.
+- `opcname` — имя opclass;
+- `opcfamily` → `pg_opfamily`;
+- `opcintype` — индексируемый тип;
+- `opcdefault` — default opclass для пары access method + type;
+- `opckeytype` — тип, реально хранимый в индексе, либо `0`, если совпадает с `opcintype`.
 
-### pg_amop
+Для каждой комбинации `opcmethod + opcintype` может быть не больше одного default opclass.
 
-Содержит операторы семейства метода доступа.
+---
+
+## `pg_amop`: operators семейства
+
+`pg_amop` содержит operators, входящие в operator families.
+
+Основные поля:
+
+- `amopfamily` — family;
+- `amoplefttype`, `amoprighttype` — типы operands;
+- `amopstrategy` — strategy number;
+- `amoppurpose` — назначение;
+- `amopopr` — operator;
+- `amopmethod` — access method;
+- `amopsortfamily` — B-tree family для ordering operator.
 
 `amoppurpose`:
 
@@ -51,111 +110,191 @@ s  search
 o  ordering
 ```
 
-Search-оператор используется для условий поиска по индексу; ordering-оператор описывает индексное упорядочивание.
-
-### pg_amproc
-
-Содержит опорные функции семейств операторов. `amprocnum` задаёт номер support function, `amproc` — OID функции.
-
-### pg_index
-
-Дополняет запись индекса из `pg_class`.
-
-Полезные флаги:
-
-- `indisunique` — unique;
-- `indisprimary` — PRIMARY KEY;
-- `indisvalid` — индекс разрешено использовать в запросах;
-- `indisready` — индекс готов принимать новые записи;
-- `indislive` — индекс не находится в процессе удаления.
-
-`indkey` хранит номера столбцов таблицы. Ноль в позиции означает, что соответствующий атрибут индекса задан **выражением**, а не простой ссылкой на столбец.
-
-### pg_partitioned_table
-
-Хранит сведения о ключе секционирования:
-
-- `partstrat`: `h` hash, `l` list, `r` range;
-- `partnatts` — число элементов ключа;
-- `partattrs` — номера столбцов, `0` для выражения.
-
-### pg_inherits
-
-Непосредственные связи parent-child для наследования таблиц и индексов:
-
-- `inhrelid` — потомок;
-- `inhparent` — родитель;
-- `inhseqno` — порядок родителя при множественном наследовании;
-- `inhdetachpending` — секция в процессе отсоединения.
-
-#### Практический запрос
+Search operator означает, что index family умеет искать строки для условия вида:
 
 ```sql
-SELECT c.relname,
-       i.indisunique,
-       i.indisprimary,
-       i.indisvalid
-FROM pg_index AS i
-JOIN pg_class AS c ON c.oid = i.indexrelid;
+indexed_column operator constant
+```
+
+Ordering operator позволяет index scan выдавать строки в порядке, определяемом выражением `ORDER BY indexed_column operator constant`.
+
+---
+
+## `pg_amproc`: support procedures
+
+`pg_amproc` хранит опорные функции operator families.
+
+Поля:
+
+- `amprocfamily` — family;
+- `amproclefttype`, `amprocrighttype` — связанные types;
+- `amprocnum` — номер support function;
+- `amproc` — OID функции.
+
+Конкретная семантика номера support procedure зависит от access method. Поэтому `amprocnum` нельзя интерпретировать без знания соответствующего метода доступа.
+
+---
+
+## `pg_index`: свойства конкретного индекса
+
+Общая запись индекса находится в `pg_class`, а `pg_index` добавляет индекс-специфичные свойства.
+
+Основные связи:
+
+```text
+indexrelid → pg_class.oid индекса
+indrelid   → pg_class.oid таблицы
+```
+
+### Число атрибутов
+
+- `indnatts` — все attributes индекса, включая key и non-key INCLUDE columns;
+- `indnkeyatts` — только key attributes.
+
+### Назначение и состояние
+
+- `indisunique` — unique index;
+- `indisprimary` — индекс представляет PRIMARY KEY;
+- `indisexclusion` — поддерживает exclusion constraint;
+- `indisclustered` — таблица в последний раз была cluster-ована по этому index;
+- `indisreplident` — индекс выбран как replica identity.
+
+Состояние жизненного цикла:
+
+- `indisvalid` — индекс допустимо использовать в запросах;
+- `indisready` — индекс готов принимать новые данные;
+- `indislive` — индекс считается живым; `false` означает процесс удаления.
+
+Эти флаги особенно важны при online/concurrent операциях: индекс может физически существовать, но ещё не быть пригодным для planner или не участвовать в maintenance всех новых строк.
+
+### NULL в unique index
+
+`indnullsnotdistinct` относится к unique index:
+
+```text
+false → NULL считаются различными, можно несколько NULL
+true  → NULL считаются равными для uniqueness
 ```
 
 ---
 
-## 3. Важные детали и покрытие тестов
+## `indkey`: какие столбцы индексируются
 
-Ниже собраны детали, которые проверяются вопросами этой темы. Они сгруппированы по разделам исходной документации, чтобы их можно было связывать с механизмом, а не запоминать как отдельный список ответов.
+`indkey` содержит номера столбцов таблицы (`pg_attribute.attnum`).
 
-### 53.3. pg_am
+Пример:
 
-- **Назначение pg_am.** Методы доступа отношений. pg_am содержит по строке на метод доступа, поддерживаемый системой; в текущем описании методы задаются для таблиц и индексов.
-- **Столбец amtype.** `t` — табличный метод доступа. amtype различает table (`t`) и index (`i`) access methods.
+```text
+1 3
+```
 
-### 53.4. pg_amop
+означает первый и третий столбцы таблицы.
 
-- **Назначение pg_amop.** Операторы, являющиеся членами семейств операторов методов доступа. pg_amop хранит операторы семейств методов доступа; оператор может быть поисковым или упорядочивающим.
-- **Столбец amoppurpose.** `s` — search. amoppurpose использует `s` для поиска и `o` для упорядочивания.
+**Ноль** в `indkey` означает не «нулевой столбец», а expression key: соответствующий атрибут индекса задаётся выражением.
 
-### 53.5. pg_amproc
+Само дерево expression хранится в `indexprs`. В нём есть один expression для каждого нуля среди key attributes.
 
-- **Назначение pg_amproc.** pg_amproc описывает support functions, принадлежащие семействам операторов методов доступа.
+Partial index определяется через `indpred`: если поле не `NULL`, оно содержит внутреннее дерево predicate.
 
-### 53.33. pg_opclass
+Практически:
 
-- **Назначение pg_opclass и ссылки opcmethod/opcfamily.** pg_opclass связывает индексируемый тип данных с методом доступа и семейством операторов. Operator class задаёт применение семейства для типа/метода доступа, а operator family объединяет совместимые операторы и support procedures.
-
-### 53.26. pg_index
-
-- **Назначение pg_index.** pg_index содержит специфические свойства индекса, тогда как общая информация об отношении находится в pg_class.
-- **indisunique, indisprimary, indisvalid, indisready, indislive.** indisunique — уникальный индекс. Эти поля позволяют различать уникальность/primary key и фазы готовности, валидности и удаления индекса.
-- **Столбец indkey.** Соответствующий атрибут индекса задаётся выражением, а не простой ссылкой на столбец. В indkey обычные номера соответствуют pg_attribute.attnum, а 0 указывает на expression index attribute.
-
-### 53.37. pg_partitioned_table
-
-- **partstrat, partnatts, partattrs.** Информация о ключах секционирования. pg_partitioned_table описывает стратегию и состав partition key.
-
-### 53.27. pg_inherits
-
-- **Назначение pg_inherits.** pg_inherits содержит по записи на каждую непосредственную связь parent-child.
-- **inhrelid, inhparent, inhseqno, inhdetachpending.** inhrelid — OID дочерней таблицы/индекса. pg_inherits хранит child, parent, sequence number и флаг pending detach.
-
-### 53.35. pg_opfamily
-
-- **Назначение и связь с pg_amop/pg_amproc/pg_opclass.** Семейство совместимых операторов и support procedures для метода доступа. pg_opfamily определяет operator families; основная информация семейства также находится в связанных строках pg_amop, pg_amproc и pg_opclass.
+```text
+indkey       → column numbers / 0 for expressions
+indexprs     → expressions для нулей indkey
+indpred      → WHERE predicate partial index
+```
 
 ---
 
-# Что запомнить
+## `pg_partitioned_table`: ключ секционирования
 
-- **Назначение pg_am** → Методы доступа отношений
-- **Столбец amtype** → `t` — табличный метод доступа
-- **Назначение pg_amop** → Операторы, являющиеся членами семейств операторов методов доступа
-- **Столбец amoppurpose** → `s` — search
-- **Назначение pg_amproc** → pg_amproc
-- **Назначение pg_opclass и ссылки opcmethod/opcfamily** → pg_opclass связывает индексируемый тип данных с методом доступа и семейством операторов
-- **Назначение pg_index** → pg_index
-- **indisunique, indisprimary, indisvalid, indisready, indislive** → indisunique — уникальный индекс
-- **Столбец indkey** → Соответствующий атрибут индекса задаётся выражением, а не простой ссылкой на столбец
-- **partstrat, partnatts, partattrs** → Информация о ключах секционирования
-- **Назначение pg_inherits** → pg_inherits
-- **inhrelid, inhparent, inhseqno, inhdetachpending** → inhrelid — OID дочерней таблицы/индекса
-- **Назначение и связь с pg_amop/pg_amproc/pg_opclass** → Семейство совместимых операторов и support procedures для метода доступа
+`pg_partitioned_table` дополняет запись partitioned table из `pg_class`.
+
+Поля:
+
+- `partrelid` — partitioned table;
+- `partstrat` — стратегия;
+- `partnatts` — число частей partition key;
+- `partdefid` — default partition или `0`;
+- `partattrs` — column numbers либо `0` для expression;
+- `partclass` — operator classes;
+- `partcollation` — collations;
+- `partexprs` — выражения partition key для нулей в `partattrs`.
+
+Коды стратегии:
+
+```text
+h  HASH
+l  LIST
+r  RANGE
+```
+
+Как и в `pg_index.indkey`, `0` в `partattrs` означает expression, а не обычный столбец.
+
+---
+
+## `pg_inherits`: дерево наследования и секционирования
+
+`pg_inherits` хранит **непосредственные** parent/child связи таблиц и индексов.
+
+- `inhrelid` — child relation;
+- `inhparent` — parent relation;
+- `inhseqno` — порядок inherited columns при multiple inheritance;
+- `inhdetachpending` — partition сейчас отсоединяется.
+
+Каждый edge хранится отдельной строкой. Косвенную иерархию нужно получать обходом цепочки записей.
+
+Для declarative partitioning эта же структура представляет parent/partition relationships.
+
+---
+
+## Практические запросы
+
+### Индексы таблицы
+
+```sql
+SELECT
+    ic.relname AS index_name,
+    i.indisunique,
+    i.indisprimary,
+    i.indisvalid,
+    i.indisready,
+    i.indislive
+FROM pg_index AS i
+JOIN pg_class AS ic
+  ON ic.oid = i.indexrelid
+WHERE i.indrelid = 'public.orders'::regclass;
+```
+
+### Восстановление DDL индекса
+
+Для человекочитаемого определения лучше использовать:
+
+```sql
+SELECT pg_get_indexdef(indexrelid)
+FROM pg_index
+WHERE indrelid = 'public.orders'::regclass;
+```
+
+Это безопаснее, чем пытаться вручную декодировать `indexprs`, `indpred`, opclass и option fields.
+
+---
+
+## Что запомнить
+
+```text
+pg_am       → access methods
+pg_opfamily → совместимое семейство operators/procedures
+pg_opclass  → type + access method + family
+pg_amop     → operators family
+pg_amproc   → support procedures family
+pg_index    → свойства конкретного индекса
+
+indkey = N  → table column attnum N
+indkey = 0  → expression key
+
+pg_partitioned_table → partition key
+pg_inherits          → parent/child edges
+```
+
+Индекс в PostgreSQL — не одна строка каталога. Его полное описание получается из общей relation metadata, `pg_index`, access method и operator infrastructure.

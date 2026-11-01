@@ -1,0 +1,551 @@
+{
+  "schema_version": 1,
+  "topic": "linuxdba1-users-groups-permissions",
+  "questions": [
+    {
+      "key": "linuxdba1-users-groups-permissions-002",
+      "type": "multiple_choice",
+      "text": "Which data does `id` show according to the lab? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "UID",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Primary GID",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Supplementary groups",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Filesystem UUID",
+          "correct": false
+        }
+      ],
+      "explanation": "`id` prints user and group identifiers: UID, GID, and the group list.",
+      "source": {
+        "key": "linuxdba1-25-id",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Linux users",
+        "locator": "Lab 25 — UID and GID",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-003",
+      "type": "single_choice",
+      "text": "What does `useradd -m dba1` do?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Creates user `dba1` and the user's home directory",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Adds an existing user to group `dba1`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Changes the directory owner to `dba1`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Creates only a group without a user",
+          "correct": false
+        }
+      ],
+      "explanation": "`-m` means create a home directory for the new user.",
+      "source": {
+        "key": "linuxdba1-25-useradd",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Linux users",
+        "locator": "Lab 25 — creating user dba1",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-004",
+      "type": "multiple_choice",
+      "text": "What does `usermod -aG dbadmins dba1` mean? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Adds `dba1` to the supplementary group `dbadmins`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`-G` sets supplementary groups",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`-a` means append and preserves the other supplementary groups",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Without `-a`, the supplementary-group list can never change",
+          "correct": false
+        }
+      ],
+      "explanation": "The safe `-aG` combination adds a group instead of replacing the existing supplementary-group list.",
+      "source": {
+        "key": "linuxdba1-25-usermod",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Linux groups",
+        "locator": "Lab 25 — `usermod -aG`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-005",
+      "type": "single_choice",
+      "text": "What permissions does `chmod 750 /srv/pgbackup` set?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "owner `rwx`, group `r-x`, others `---`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "owner `rw-`, group `r--`, others `---`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "full access for everyone",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "only owner `r--`",
+          "correct": false
+        }
+      ],
+      "explanation": "In octal notation, `7 = rwx`, `5 = r-x`, and `0 = ---`.",
+      "source": {
+        "key": "linuxdba1-25-chmod-750",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "chmod",
+        "locator": "Lab 25 — octal permissions",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-006",
+      "type": "multiple_choice",
+      "text": "What do `r`, `w`, and `x` mean for a directory? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`r` — read the list of names in the directory",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`w` — create, delete, or rename entries",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`x` — traverse the directory and access objects inside it",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`x` — always delete the directory",
+          "correct": false
+        }
+      ],
+      "explanation": "For directories, `rwx` has a different meaning than for regular files; `x` is especially important because it is required to traverse the path.",
+      "source": {
+        "key": "linuxdba1-25-directory-rwx",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Access permissions",
+        "locator": "Lab 25 — `rwx` for a directory",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-007",
+      "type": "single_choice",
+      "text": "Why is `sudo -u dba1 touch /srv/pgbackup/dba1.txt` more useful than simply looking at `ls -l`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It actually tests the operation as the required user",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It automatically runs chmod 777",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It changes the user's primary group",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It shows only the directory size",
+          "correct": false
+        }
+      ],
+      "explanation": "The material emphasizes that permissions should be tested with a real operation as the specific user, not only inspected visually.",
+      "source": {
+        "key": "linuxdba1-25-effective-check",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Permission testing",
+        "locator": "Lab 25 — test permissions instead of only reading them",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-008",
+      "type": "multiple_choice",
+      "text": "Why does the write test use `sudo -u dba1 sh -c 'echo test >> /srv/pgbackup/test.txt'`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The `>>` redirection is normally processed by the current shell",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`sh -c` makes the shell and the redirection run as `dba1`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "This provides a genuine write-permission test for `dba1`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`sh -c` automatically changes the file owner to root",
+          "correct": false
+        }
+      ],
+      "explanation": "If you write `sudo -u dba1 echo ... >> file`, the original shell may perform the redirection; `sh -c` moves both the command and the redirection into the `dba1` context.",
+      "source": {
+        "key": "linuxdba1-25-shell-redirect",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Permission testing",
+        "locator": "Lab 25 — why `sh -c` is needed",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-009",
+      "type": "single_choice",
+      "text": "Which usual permissions result from `umask 022` in the lab's simplified model?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "File 644, directory 755",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "File 777, directory 666",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "File 600, directory 700",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "File 444, directory 555",
+          "correct": false
+        }
+      ],
+      "explanation": "The material uses base modes 666 for files and 777 for directories; with umask 022, the usual results are 644 and 755.",
+      "source": {
+        "key": "linuxdba1-25-umask-022",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "umask",
+        "locator": "Lab 25 — `umask 022`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-010",
+      "type": "multiple_choice",
+      "text": "What happens after temporarily setting `umask 0077` in the current shell? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A new regular file usually gets 600",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A new directory usually gets 700",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The change applies to the current shell and its child processes",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It permanently changes permissions for the entire operating system",
+          "correct": false
+        }
+      ],
+      "explanation": "`umask 0077` removes group/other permissions from newly created objects and applies in the shell context rather than as a global system setting.",
+      "source": {
+        "key": "linuxdba1-25-umask-077",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "umask",
+        "locator": "Lab 25 — temporarily changing umask",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-011",
+      "type": "single_choice",
+      "text": "Why can PostgreSQL get `Permission denied` even if the file itself has suitable permissions for `postgres`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "One of the parent directories may lack the `x` permission required for traversal",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Because `r` on a file always prevents reading",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Because every directory requires chmod 777",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Because Linux does not use UIDs",
+          "correct": false
+        }
+      ],
+      "explanation": "To access a file, the process must be able to traverse the entire directory chain; missing `x` on a parent directory blocks the path.",
+      "source": {
+        "key": "linuxdba1-25-parent-execute",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Permission denied",
+        "locator": "Lab 25 — parent-directory permissions",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-012",
+      "type": "multiple_choice",
+      "text": "What does `namei -l /srv/dba-lab/data/report.txt` show in the lab? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Path components leading to the file",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Permissions of each path component",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Owner/group for the path components",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Current pgbench TPS",
+          "correct": false
+        }
+      ],
+      "explanation": "`namei -l` makes it possible to identify where access breaks in the directory chain.",
+      "source": {
+        "key": "linuxdba1-25-namei",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Permission denied",
+        "locator": "Lab 25 — `namei -l`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-013",
+      "type": "single_choice",
+      "text": "What does `chown postgres:dbadmins /srv/pgbackup` do?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Sets owner to `postgres` and group to `dbadmins`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Sets mode 770",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Adds postgres to group dbadmins",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Creates directory /srv/pgbackup",
+          "correct": false
+        }
+      ],
+      "explanation": "The `owner:group` syntax lets one command set both the owner and the group of an object.",
+      "source": {
+        "key": "linuxdba1-25-chown-owner-group",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Owners and groups",
+        "locator": "Lab 25 — owner and group together",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-014",
+      "type": "multiple_choice",
+      "text": "Which questions are part of the diagnostic chain for `Permission denied`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Which Linux user is performing the operation?",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Who owns the object and which group is assigned to it?",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Which `rwx` permissions apply?",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Is the entire directory chain accessible?",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Which WAL segment should be deleted?",
+          "correct": false
+        }
+      ],
+      "explanation": "The material recommends checking the process user, owner/group, permissions, and traversability of the entire path in sequence.",
+      "source": {
+        "key": "linuxdba1-25-permission-chain",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Permission denied",
+        "locator": "Lab 25 — diagnostic model",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-015",
+      "type": "single_choice",
+      "text": "Why is `chmod -R 777 /srv/dba-lab` described as a bad habit?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It grants full access to everyone instead of assigning the minimum necessary permissions",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It always deletes the directory",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It changes the filesystem to ext4",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It terminates PostgreSQL processes",
+          "correct": false
+        }
+      ],
+      "explanation": "The lab reinforces the principle of least privilege: fix the specific access problem instead of opening everything to everyone.",
+      "source": {
+        "key": "linuxdba1-25-no-777",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Permission denied",
+        "locator": "Lab 25 — why chmod 777 is not a solution",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-users-groups-permissions-016",
+      "type": "multiple_choice",
+      "text": "Which commands can be used in the lab to inspect an object's or path's owner/group/permissions? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`ls -ld /srv/pgbackup`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`stat /srv/pgbackup`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`namei -l /path/to/file`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`uptime /srv/pgbackup`",
+          "correct": false
+        }
+      ],
+      "explanation": "`ls -ld`, `stat`, and `namei -l` provide different levels of visibility into permissions, ownership, and the directory chain.",
+      "source": {
+        "key": "linuxdba1-25-inspect-permissions",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Access permissions",
+        "locator": "Lab 25 — permission diagnostic tools",
+        "url": null
+      }
+    }
+  ]
+}

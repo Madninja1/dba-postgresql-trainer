@@ -5,7 +5,7 @@
     {
       "key": "dba1-admin-monitoring-001",
       "type": "single_choice",
-      "text": "Какие средства операционной системы приведены в материале для просмотра процессов PostgreSQL?",
+      "text": "Какие средства операционной системы можно использовать для просмотра процессов PostgreSQL?",
       "answers": [
         {
           "key": "a",
@@ -41,7 +41,7 @@
     {
       "key": "dba1-admin-monitoring-002",
       "type": "multiple_choice",
-      "text": "Какие утилиты в конспекте относятся к наблюдению за использованием ресурсов системы? Выберите все правильные варианты.",
+      "text": "Какие утилиты операционной системы позволяют наблюдать за использованием системных ресурсов? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -118,7 +118,7 @@
     {
       "key": "dba1-admin-monitoring-004",
       "type": "multiple_choice",
-      "text": "Какие утверждения о мониторинге дискового пространства средствами ОС соответствуют материалу? Выберите все правильные варианты.",
+      "text": "Какие утверждения о мониторинге дискового пространства средствами ОС верны? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -226,7 +226,7 @@
     {
       "key": "dba1-admin-monitoring-007",
       "type": "single_choice",
-      "text": "Где обслуживающие процессы PostgreSQL размещают накопительную статистику во время работы сервера согласно материалу?",
+      "text": "Где обслуживающие процессы PostgreSQL размещают накопительную статистику во время работы сервера?",
       "answers": [
         {
           "key": "a",
@@ -262,7 +262,7 @@
     {
       "key": "dba1-admin-monitoring-008",
       "type": "multiple_choice",
-      "text": "Какие значения stats_fetch_consistency перечислены в материале? Выберите все правильные варианты.",
+      "text": "Какие значения поддерживает параметр stats_fetch_consistency? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -406,7 +406,7 @@
     {
       "key": "dba1-admin-monitoring-012",
       "type": "multiple_choice",
-      "text": "Какие операции относятся к тем, для которых материал показывает специализированные представления прогресса? Выберите все правильные варианты.",
+      "text": "Для каких операций PostgreSQL предоставляет специализированные представления прогресса? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -550,7 +550,7 @@
     {
       "key": "dba1-admin-monitoring-016",
       "type": "multiple_choice",
-      "text": "Какие характеристики нужно учитывать при чтении накопительной статистики PostgreSQL согласно материалу? Выберите все правильные варианты.",
+      "text": "Какие характеристики нужно учитывать при чтении накопительной статистики PostgreSQL? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -580,6 +580,160 @@
         "module": "DBA1",
         "section": "Накопительная статистика",
         "locator": "Схема сбора статистики и stats_fetch_consistency",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-017",
+      "type": "multiple_choice",
+      "text": "Какие соответствия параметров сбора статистики PostgreSQL и их назначения верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "track_activities — отслеживание текущих команд серверных процессов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "track_counts — накопительная статистика обращений к таблицам и индексам",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "track_functions — статистика использования пользовательских функций",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "track_io_timing — измерение времени операций ввода-вывода блоков",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "track_counts — включение файловой ротации журнала",
+          "correct": false
+        }
+      ],
+      "explanation": "Система накопительной статистики управляется параметрами track_*. track_activities отвечает за текущие команды, track_counts — за обращения к таблицам и индексам, track_functions — за пользовательские функции, а track_io_timing — за время I/O блоков.",
+      "source": {
+        "key": "dba1-12-statistics-config",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Сбор статистики",
+        "locator": "Слайд 5 и раздел 28.2.1 PostgreSQL 16",
+        "url": "https://postgrespro.ru/docs/postgresql/16/monitoring-stats"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-018",
+      "type": "multiple_choice",
+      "text": "Какие счётчики статистики таблицы следует сопоставить с INSERT, DELETE и VACUUM? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "n_tup_ins",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "n_tup_del",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "n_live_tup",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "n_dead_tup",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "wal_segment_size",
+          "correct": false
+        }
+      ],
+      "explanation": "Практика занятия предлагает выполнить вставки и удаления, проверить n_tup_ins, n_tup_del, n_live_tup и n_dead_tup, затем выполнить VACUUM и сравнить статистику повторно.",
+      "source": {
+        "key": "dba1-12-monitoring-practice",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика",
+        "locator": "Слайд 20: статистика обращений к таблице",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-019",
+      "type": "single_choice",
+      "text": "Для чего используется функция pg_stat_clear_snapshot() при работе с накопительной статистикой?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Сбросить текущий снимок или кеш статистики, чтобы следующее обращение получило новые значения",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Удалить все таблицы системного каталога",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Остановить сбор статистики во всём кластере",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Очистить WAL до последней контрольной точки",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_stat_clear_snapshot() сбрасывает текущий снимок статистики или закешированные значения в транзакции; следующее обращение формирует новый снимок либо новый кеш согласно stats_fetch_consistency.",
+      "source": {
+        "key": "dba1-12-statistics-snapshot",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Накопительная статистика",
+        "locator": "pg_stat_clear_snapshot и stats_fetch_consistency",
+        "url": "https://postgrespro.ru/docs/postgresql/16/monitoring-stats"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-020",
+      "type": "multiple_choice",
+      "text": "Какие соответствия расширений статистики PostgreSQL и их назначения верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_stat_statements — статистика SQL-запросов",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pgstattuple — статистика по версиям строк",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_buffercache — состояние буферного кеша",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_repack — представление текущих ожиданий backend-процессов",
+          "correct": false
+        }
+      ],
+      "explanation": "Слайд дополнительной статистики перечисляет pg_stat_statements, pgstattuple и pg_buffercache как расширения для SQL-нагрузки, версий строк и буферного кеша соответственно.",
+      "source": {
+        "key": "dba1-12-extra-statistics",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Дополнительная статистика",
+        "locator": "Слайд 11: расширения статистики",
         "url": null
       }
     }

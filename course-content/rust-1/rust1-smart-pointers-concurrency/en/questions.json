@@ -1,0 +1,1137 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-smart-pointers-concurrency",
+  "questions": [
+    {
+      "key": "rust1-smart-pointers-concurrency-001",
+      "type": "single_choice",
+      "text": "Which ownership and allocation model is characteristic of `Box<T>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "One owner, with the value stored on the heap",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Multiple owners with an atomic counter",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Runtime borrow checking",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A channel between threads",
+          "correct": false
+        }
+      ],
+      "explanation": "`Box<T>` owns a heap-allocated value. The pointer itself has a known size and frees the data when it is dropped.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-box",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 15 — Smart Pointers and Concurrency, pp. 409–420",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-002",
+      "type": "single_choice",
+      "text": "Why does `Box<List>` allow a recursive list type when a direct `List` field does not?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The size of `Box` is known independently of the size of the nested `List`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`Box` forbids recursion at runtime",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`Box` automatically turns `List` into a data-free enum",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`Box` stores only `Copy` types",
+          "correct": false
+        }
+      ],
+      "explanation": "Direct recursion prevents the compiler from determining a finite type size; `Box` breaks the chain with a fixed-size pointer to the next item.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-box-recursive",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 15 — Smart Pointers and Concurrency, pp. 411–420",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-003",
+      "type": "multiple_choice",
+      "text": "Which statements about the `Deref` and `Drop` traits are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`Deref` lets a smart pointer behave like a reference",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`Drop` runs cleanup code when a value leaves scope",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "These traits are characteristic parts of smart-pointer behavior",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`Drop` is called only manually by the `*` operator",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter associates `Deref` with dereferencing and reference coercions, and `Drop` with automatic resource cleanup.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-deref-drop",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 15 — Smart Pointers and Concurrency, pp. 421–433",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-005",
+      "type": "single_choice",
+      "text": "When is a custom `Drop::drop` implementation called?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Automatically when the value goes out of scope",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only during `cargo clean`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only after `Rc::clone`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "On every `*value` dereference",
+          "correct": false
+        }
+      ],
+      "explanation": "`Drop` is part of the RAII model: cleanup runs automatically when the value is destroyed.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-drop",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 15 — Smart Pointers and Concurrency, pp. 430–433",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-006",
+      "type": "multiple_choice",
+      "text": "Which properties of `Rc<T>` are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It supports multiple owners of the same data",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It uses a strong-reference count",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`Rc::clone` increments the count rather than deeply copying the data",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It is primarily intended for sharing between threads",
+          "correct": false
+        }
+      ],
+      "explanation": "`Rc<T>` provides reference-counted shared ownership for single-threaded code; cloning an `Rc` creates another owner of the same data.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-rc",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 15 — Smart Pointers and Concurrency, pp. 434–440",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-008",
+      "type": "multiple_choice",
+      "text": "What changes when using `RefCell<T>` compared with ordinary `&` and `&mut`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Borrowing rules remain the same",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The checks move from compile time to runtime",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Violating the rules can panic at runtime",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`RefCell<T>` makes any number of simultaneous `&mut` borrows safe",
+          "correct": false
+        }
+      ],
+      "explanation": "`RefCell<T>` keeps the many-readers-or-one-writer rule but checks it at runtime through `borrow` and `borrow_mut`.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-refcell",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 15 — Smart Pointers and Concurrency, pp. 441–447",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-009",
+      "type": "single_choice",
+      "text": "What does the combination `Rc<RefCell<T>>` usually express?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Multiple owners plus mutable interior state in single-threaded code",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Atomic ownership across threads",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only immutable ownership by one object",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A nonblocking message channel",
+          "correct": false
+        }
+      ],
+      "explanation": "`Rc` provides shared ownership while `RefCell` provides interior mutability with runtime borrow checking in one thread.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-rc-refcell",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 15 — Smart Pointers and Concurrency, pp. 444–447",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-010",
+      "type": "multiple_choice",
+      "text": "What consequences can a strong `Rc<T>` cycle have? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Strong counts may never reach zero",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The data may remain allocated",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The cycle can cause a memory leak",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The borrow checker automatically breaks every cycle",
+          "correct": false
+        }
+      ],
+      "explanation": "Mutual strong `Rc` references can keep each other alive so their counts never reach zero, producing a leak.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-rc-cycle",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 15 — Smart Pointers and Concurrency, pp. 447–452",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-011",
+      "type": "multiple_choice",
+      "text": "Which statements about `Weak<T>` are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It is created from `Rc` with `Rc::downgrade`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It does not increment `strong_count`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`upgrade()` returns `Option<Rc<T>>`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It guarantees that the object can never be destroyed",
+          "correct": false
+        }
+      ],
+      "explanation": "`Weak<T>` is a non-owning relationship; the object may already have been destroyed, so `upgrade()` returns an `Option`.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-weak",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 15 — Smart Pointers and Concurrency, pp. 452–457",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-013",
+      "type": "multiple_choice",
+      "text": "Which statements about `thread::spawn` and `JoinHandle` are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`thread::spawn` creates a new thread of execution",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The returned `JoinHandle` can be used with `join()`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`join()` waits for the associated thread to finish",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Thread execution order after `spawn` is predetermined",
+          "correct": false
+        }
+      ],
+      "explanation": "Threads may execute in different orders; `JoinHandle::join` explicitly waits for completion.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-threads",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 16 — Smart Pointers and Concurrency, pp. 459–465",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-014",
+      "type": "single_choice",
+      "text": "Why is `move` often needed in a closure passed to `thread::spawn`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To transfer needed values into ownership of the new thread's closure",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To force the new thread to run first",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To disable `Send`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To create a `Mutex` automatically",
+          "correct": false
+        }
+      ],
+      "explanation": "A new thread may outlive the original scope, so `move` transfers values into the closure instead of borrowing local variables.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-threads-q014",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 16 — Smart Pointers and Concurrency, pp. 462–465",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-015",
+      "type": "multiple_choice",
+      "text": "Which statements about an `mpsc` channel are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`tx` is used for sending",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`rx` is used for receiving",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Sending a non-`Copy` value transfers its ownership",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The sender can be cloned for multiple producers",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`rx` is cloned to create multiple independent receivers",
+          "correct": false
+        }
+      ],
+      "explanation": "Channels transfer messages and ownership from producers to one receiver; `mpsc` supports multiple senders and a single receiver.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-channels",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 16 — Smart Pointers and Concurrency, pp. 466–474",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-016",
+      "type": "single_choice",
+      "text": "How does `recv()` differ from `try_recv()`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`recv()` blocks waiting for a message, while `try_recv()` returns immediately",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`try_recv()` deletes the channel",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`recv()` works only in the main thread",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`try_recv()` always returns a message",
+          "correct": false
+        }
+      ],
+      "explanation": "`recv()` waits for a message or channel closure, while `try_recv()` checks without blocking the current thread.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-channels-q016",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 16 — Smart Pointers and Concurrency, pp. 468–472",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-017",
+      "type": "multiple_choice",
+      "text": "What happens when working with `Mutex<T>`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`lock()` attempts to acquire exclusive access",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "If the lock is held, the thread may wait",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`MutexGuard` provides access to the protected value",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "When `MutexGuard` leaves scope, `Drop` releases the lock",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`lock()` returns a direct `&mut T` with no guard object",
+          "correct": false
+        }
+      ],
+      "explanation": "`Mutex` serializes mutable access, and `MutexGuard` ties lock ownership to scope through `Drop`.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-mutex",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 16 — Smart Pointers and Concurrency, pp. 475–481",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-018",
+      "type": "single_choice",
+      "text": "Why is `Rc<Mutex<T>>` not a replacement for `Arc<Mutex<T>>` across multiple threads?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`Rc<T>` is not designed for thread-safe counter updates and does not implement `Send`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`Mutex<T>` cannot be placed inside `Rc` even in one thread",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`Arc<T>` always stores data only on the stack",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`Rc<T>` does not support `clone`",
+          "correct": false
+        }
+      ],
+      "explanation": "`Rc` uses a non-thread-safe counter; for reference-counted ownership across threads the book uses atomic `Arc<T>`.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-arc",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 16 — Smart Pointers and Concurrency, pp. 480–484",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-019",
+      "type": "multiple_choice",
+      "text": "How should `Arc<Mutex<T>>` be understood? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`Arc` gives multiple threads shared ownership",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`Mutex` allows mutable access to one thread at a time",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The combination is the multithreaded analogue of the `Rc<RefCell<T>>` idea",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It guarantees that deadlocks cannot occur",
+          "correct": false
+        }
+      ],
+      "explanation": "The book directly compares `Rc<RefCell<T>>` in single-threaded code with `Arc<Mutex<T>>` in multithreaded code; logical deadlocks are still possible.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-arc-mutex",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 16 — Smart Pointers and Concurrency, pp. 480–484",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-020",
+      "type": "multiple_choice",
+      "text": "Which statements about the marker traits `Send` and `Sync` are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`Send` means ownership of a value can be safely transferred between threads",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`Sync` means references to a value can be safely shared between threads",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`Rc<T>` is given as an example of a type that is not `Send`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A type composed entirely of `Send` types usually becomes `Send` automatically",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`Rc<T>` is safe to send between threads because its reference counter is atomic",
+          "correct": false
+        }
+      ],
+      "explanation": "`Send` and `Sync` are marker guarantees for transferring ownership and sharing references across threads.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-send-sync",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 16 — Smart Pointers and Concurrency, pp. 484–486",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-022",
+      "type": "multiple_choice",
+      "text": "How do an ordinary reference and `Box<T>` differ in ownership and access to data? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Both can access data through dereferencing",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`Box<T>` owns the data it points to",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "An ordinary reference borrows a value",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`Box<T>` automatically provides multiple ownership like `Rc<T>`",
+          "correct": false
+        }
+      ],
+      "explanation": "`Box` is an owning smart pointer, while an ordinary reference is a borrowing pointer.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-box-reference",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 15 — Smart Pointers and Concurrency, pp. 408–412",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-023",
+      "type": "single_choice",
+      "text": "What should `Deref::deref` return in a `MyBox<T>` implementation?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A `&Self::Target` reference to the inner value",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The owned `T` itself",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Always `Box<T>`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`Option<&T>`",
+          "correct": false
+        }
+      ],
+      "explanation": "`Deref` defines `Target`, and `deref(&self)` returns a reference to that target.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-deref-impl",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 15 — Smart Pointers and Concurrency, pp. 422–425",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-030",
+      "type": "multiple_choice",
+      "text": "How does `Rc::strong_count` change? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "After creating the first `Rc`, the count is 1",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Each `Rc::clone` increments the count",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "When a clone leaves scope, the count decreases",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Creating a `Weak` increments the strong count",
+          "correct": false
+        }
+      ],
+      "explanation": "The strong count tracks owning `Rc` references, not `Weak` references.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-rc-counts",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 15 — Smart Pointers and Concurrency, pp. 437–440",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-031",
+      "type": "single_choice",
+      "text": "What risk does `RefCell<T>` move from compile time to runtime?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Violating borrowing rules can panic at runtime",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The type stops having an owner",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The value automatically becomes `Send`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "All type errors become runtime errors",
+          "correct": false
+        }
+      ],
+      "explanation": "`RefCell` checks borrows dynamically.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-refcell-runtime",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 15 — Smart Pointers and Concurrency, pp. 440–445",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-032",
+      "type": "multiple_choice",
+      "text": "Which `RefCell<T>` methods correspond to the two borrowing forms? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`borrow()` returns `Ref<T>`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`borrow_mut()` returns `RefMut<T>`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Many immutable borrows or one mutable borrow are allowed",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`borrow_mut()` can be called without limit at the same time",
+          "correct": false
+        }
+      ],
+      "explanation": "`RefCell` enforces the same borrowing rules, but at runtime.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-refcell-api",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 15 — Smart Pointers and Concurrency, pp. 441–445",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-034",
+      "type": "multiple_choice",
+      "text": "Which statements about reference cycles with `Rc<RefCell<T>>` are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "An ownership cycle can be created",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The strong count may never reach zero",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Rust permits memory-safe leaks",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`RefCell` always breaks the cycle",
+          "correct": false
+        }
+      ],
+      "explanation": "Strong `Rc` cycles can retain memory without violating memory safety.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-reference-cycle",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 15 — Smart Pointers and Concurrency, pp. 447–452",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-035",
+      "type": "single_choice",
+      "text": "What does `Weak::upgrade()` return after all strong owners have been destroyed?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`None`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A new `Rc` with restored data",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A dangling reference",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Always `Some`",
+          "correct": false
+        }
+      ],
+      "explanation": "`Weak` does not keep an object alive, so `upgrade()` can return `None`.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-weak-upgrade",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 15 — Smart Pointers and Concurrency, pp. 452–456",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-038",
+      "type": "multiple_choice",
+      "text": "The `main` thread spawns a child thread and receives a `JoinHandle`. How does placing `handle.join().unwrap()` relative to `main`'s own work affect execution? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "If `join` is called after `main` does its own work, the threads can run concurrently before the wait point",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "If `join` is called immediately after `spawn`, `main` waits for the child thread before continuing",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`join` blocks the calling thread until the associated thread finishes",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The position of `join` does not affect the possible interleaving of thread execution",
+          "correct": false
+        }
+      ],
+      "explanation": "`join` synchronizes the caller with the child thread: an early `join` reduces concurrency, while a later `join` lets both threads do work before the wait point.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-join-order",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 16 — Smart Pointers and Concurrency, pp. 461–463",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-041",
+      "type": "single_choice",
+      "text": "Why can a sent `String val` no longer be used after `tx.send(val).unwrap()`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`send` takes ownership of the value and transfers it through the channel",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The channel deletes the string without transferring it",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The `String` becomes `&str`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "This restriction applies only to debug builds",
+          "correct": false
+        }
+      ],
+      "explanation": "Sending a non-`Copy` value moves ownership through the channel.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-channel-ownership",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 16 — Smart Pointers and Concurrency, pp. 469–471",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-042",
+      "type": "multiple_choice",
+      "text": "What happens with `for received in rx`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The receiver yields messages",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The loop can wait for messages while the channel is open",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Iteration ends after all senders are dropped",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The number of messages must be known in advance",
+          "correct": false
+        }
+      ],
+      "explanation": "The receiver can be iterated until the channel closes.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-rx-iterator",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 16 — Smart Pointers and Concurrency, pp. 471–474",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-045",
+      "type": "single_choice",
+      "text": "Why does `counter.lock().unwrap()` return a guard?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The guard provides access to the data and releases the lock when dropped",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The guard is needed only for `Debug`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A `Mutex` contains no value",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To clone the value automatically",
+          "correct": false
+        }
+      ],
+      "explanation": "`MutexGuard` provides access to the protected data and automatic lock release.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-mutex-guard",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 16 — Smart Pointers and Concurrency, pp. 476–479",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-046",
+      "type": "multiple_choice",
+      "text": "Why is `Arc<Mutex<T>>` used with multiple threads? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Each thread gets an owning handle to the same `Mutex`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`Arc` provides shared ownership",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`Mutex` serializes mutable access",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`Arc` alone replaces `Mutex` for mutation",
+          "correct": false
+        }
+      ],
+      "explanation": "`Arc` solves shared ownership across threads, while `Mutex` synchronizes mutable access.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-arc-mutex-q046",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 16 — Smart Pointers and Concurrency, pp. 479–483",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-047",
+      "type": "single_choice",
+      "text": "Why is `Arc<T>` more expensive than `Rc<T>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Its reference count is updated atomically",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It stores two copies of `T`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It uses a file lock",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It does not implement `Clone`",
+          "correct": false
+        }
+      ],
+      "explanation": "Atomic reference-count updates provide thread safety at additional cost.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-arc-cost",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 16 — Smart Pointers and Concurrency, pp. 481–483",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-smart-pointers-concurrency-048",
+      "type": "multiple_choice",
+      "text": "What logical problem can still occur with `Mutex<T>`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Deadlock",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Two threads can hold different locks and wait for one another",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The compiler does not prevent every deadlock",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Safe Rust always detects deadlocks at compile time",
+          "correct": false
+        }
+      ],
+      "explanation": "`Mutex` protects memory access but does not eliminate all logical deadlocks.",
+      "source": {
+        "key": "rust1-smart-pointers-concurrency-deadlock",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Smart Pointers and Concurrency",
+        "locator": "Chapter 16 — Smart Pointers and Concurrency, pp. 483–484",
+        "url": null
+      }
+    }
+  ]
+}

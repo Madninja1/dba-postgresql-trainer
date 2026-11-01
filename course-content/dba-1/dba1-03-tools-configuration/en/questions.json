@@ -1,0 +1,731 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-tools-configuration",
+  "questions": [
+    {
+      "key": "dba1-tools-configuration-001",
+      "type": "single_choice",
+      "text": "Which file is PostgreSQL's main configuration file?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "postgresql.conf",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "postgresql.auto.conf",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "postmaster.pid",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_service.conf",
+          "correct": false
+        }
+      ],
+      "explanation": "The main configuration file is postgresql.conf. It contains server parameter values and is read when PostgreSQL starts.",
+      "source": {
+        "key": "dba1-tools-configuration-postgresql-conf",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "postgresql.conf",
+        "locator": "Slide 4 “postgresql.conf”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-002",
+      "type": "multiple_choice",
+      "text": "Which statements about postgresql.conf are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It is the main configuration file",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It can include additional configuration files",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "After changing some parameters, reloading the configuration is sufficient, while others require a server restart",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It is intended only for parameters of a particular client session",
+          "correct": false
+        }
+      ],
+      "explanation": "postgresql.conf is the main server configuration file and can include additional files. Configuration is reloaded to apply changes, although some parameters are read only at server startup.",
+      "source": {
+        "key": "dba1-tools-configuration-postgresql-conf-002",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "postgresql.conf",
+        "locator": "Slide 4 “postgresql.conf”; PostgreSQL 16 documentation, Section 20.1.2 “Parameter Interaction via the Configuration File”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-003",
+      "type": "single_choice",
+      "text": "How can you determine the location of the postgresql.conf file currently used by the server from within PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Check the value of the config_file parameter",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Check data_directory and always assume it is the path to postgresql.conf",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Execute ALTER SYSTEM RESET config_file",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Check the PSQL_PAGER variable",
+          "correct": false
+        }
+      ],
+      "explanation": "The location of the main configuration file is reflected by the config_file parameter. The notes specifically suggest using its value to determine the actual path to postgresql.conf.",
+      "source": {
+        "key": "dba1-tools-configuration-config-file",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice",
+        "locator": "Slide 11 “Practice”, note on the location of postgresql.conf",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-004",
+      "type": "multiple_choice",
+      "text": "Which methods can make a running server reread its configuration files? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_ctl reload",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "SELECT pg_reload_conf();",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Send SIGHUP to the main server process",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Execute SHOW ALL",
+          "correct": false
+        }
+      ],
+      "explanation": "A configuration reload can be initiated with pg_ctl reload, the pg_reload_conf() SQL function, or SIGHUP sent to the main server process. This does not mean that parameters that take effect only at startup can be changed without a restart.",
+      "source": {
+        "key": "dba1-tools-configuration-reload",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "postgresql.conf",
+        "locator": "Slide 4 “postgresql.conf”; PostgreSQL 16 documentation, Section 20.1.2",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-005",
+      "type": "multiple_choice",
+      "text": "Which statements about including additional configuration files are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The include directive includes the specified file",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "include_if_exists allows processing to continue if the included file is missing or unreadable",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "include_dir includes matching configuration files from a directory",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "include_dir applies files only in random order",
+          "correct": false
+        }
+      ],
+      "explanation": "PostgreSQL supports include, include_if_exists, and include_dir. include_dir allows configuration to be split into multiple .conf files, which are processed in a defined filename order.",
+      "source": {
+        "key": "dba1-tools-configuration-includes",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "postgresql.conf",
+        "locator": "Practice — include_dir directive; PostgreSQL 16 documentation, Section 20.1.5 “Managing Configuration File Contents”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-006",
+      "type": "single_choice",
+      "text": "A parameter is defined several times in configuration files read in sequence. Which value will PostgreSQL use?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The value read last",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The value from the first definition",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The average of all definitions",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "PostgreSQL always aborts startup because the parameter is duplicated",
+          "correct": false
+        }
+      ],
+      "explanation": "If a parameter is defined more than once, the last value read takes effect. Therefore, the order of included configuration files matters.",
+      "source": {
+        "key": "dba1-tools-configuration-precedence",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "postgresql.conf",
+        "locator": "Section on parameter reading order; PostgreSQL 16 documentation, Sections 20.1.2 and 20.1.5",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-007",
+      "type": "multiple_choice",
+      "text": "Which statements about postgresql.auto.conf are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It is used for parameters set through ALTER SYSTEM",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It is read after postgresql.conf",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It is always located in the PGDATA data directory",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The material recommends editing it manually instead of using ALTER SYSTEM",
+          "correct": false
+        }
+      ],
+      "explanation": "postgresql.auto.conf stores ALTER SYSTEM settings, resides in PGDATA, and is read after postgresql.conf. The notes emphasize that it should not be edited manually.",
+      "source": {
+        "key": "dba1-tools-configuration-auto-conf",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "postgresql.auto.conf",
+        "locator": "Slide 6 “postgresql.auto.conf”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-008",
+      "type": "single_choice",
+      "text": "What does ALTER SYSTEM RESET work_mem; do to the work_mem entry in postgresql.auto.conf?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Removes the corresponding setting from postgresql.auto.conf",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Writes the value 0 to postgresql.auto.conf",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Deletes the entire postgresql.auto.conf file",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Changes the parameter only until the end of the current transaction",
+          "correct": false
+        }
+      ],
+      "explanation": "ALTER SYSTEM RESET removes the specified parameter setting from postgresql.auto.conf. ALTER SYSTEM RESET ALL removes all parameters set this way.",
+      "source": {
+        "key": "dba1-tools-configuration-alter-system",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "postgresql.auto.conf",
+        "locator": "Slide 6 “postgresql.auto.conf”; PostgreSQL 16 documentation — ALTER SYSTEM",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-altersystem"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-009",
+      "type": "multiple_choice",
+      "text": "Which statements about ALTER SYSTEM are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The command changes parameters that apply cluster-wide",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It writes settings to postgresql.auto.conf",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It cannot be executed inside a transaction block",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every ALTER SYSTEM change takes effect immediately without a reload or restart",
+          "correct": false
+        }
+      ],
+      "explanation": "ALTER SYSTEM is the SQL interface for global parameters and modifies postgresql.auto.conf. The command works with the file system and cannot be executed inside a transaction block. A new value takes effect after a reload, or after a restart for parameters that are read only at startup.",
+      "source": {
+        "key": "dba1-tools-configuration-alter-system-009",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "postgresql.auto.conf",
+        "locator": "Slide 6 “postgresql.auto.conf”; PostgreSQL 16 documentation — ALTER SYSTEM, “Description” section",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-altersystem"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-010",
+      "type": "single_choice",
+      "text": "Which view should be used to inspect effective PostgreSQL parameter values?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_settings",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_file_settings",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_stat_database",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_database",
+          "correct": false
+        }
+      ],
+      "explanation": "The notes distinguish two views: pg_file_settings shows the contents of configuration files, while pg_settings shows effective parameter values.",
+      "source": {
+        "key": "dba1-tools-configuration-settings-views",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "postgresql.auto.conf",
+        "locator": "Slide 6 — pg_file_settings and pg_settings",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-011",
+      "type": "multiple_choice",
+      "text": "How can configuration parameters be changed for the current session? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "SET changes an allowed parameter for the current session",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "set_config can change a parameter programmatically through an SQL function",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "SHOW and current_setting can retrieve the current parameter value",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "SET in the current session automatically changes postgresql.conf",
+          "correct": false
+        }
+      ],
+      "explanation": "In the current session, values can be changed with SET or set_config and read with SHOW or current_setting. These changes do not mean editing the server's postgresql.conf file.",
+      "source": {
+        "key": "dba1-tools-configuration-session",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "In the Current Session",
+        "locator": "Slide 7 “In the Current Session”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-012",
+      "type": "single_choice",
+      "text": "Until when does a value set by SET LOCAL inside a transaction remain in effect?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Until the end of the current transaction",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Until the operating system restarts",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Until postgresql.auto.conf is deleted",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "For all subsequent connections to the cluster",
+          "correct": false
+        }
+      ],
+      "explanation": "The material distinguishes settings that last until the end of the session from settings that last until the end of the transaction. SET LOCAL limits the change to the current transaction.",
+      "source": {
+        "key": "dba1-tools-configuration-session-012",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "In the Current Session",
+        "locator": "Slide 7 “In the Current Session”, SET LOCAL",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-013",
+      "type": "multiple_choice",
+      "text": "Which value types are supported by PostgreSQL configuration parameters? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Boolean",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "String",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Integer or floating point",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Enumerated",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "An SQL table as a separate configuration-parameter type",
+          "correct": false
+        }
+      ],
+      "explanation": "The documentation lists five parameter types: Boolean, string, integer, floating point, and enumerated.",
+      "source": {
+        "key": "dba1-tools-configuration-parameter-values",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Changing Parameters",
+        "locator": "PostgreSQL 16 documentation, Section 20.1.1 “Parameter Names and Values”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-014",
+      "type": "single_choice",
+      "text": "When do values set for a database or role by ALTER DATABASE and ALTER ROLE begin to apply?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "On a new connection to the database",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Immediately in all already-open sessions",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only after postgresql.conf is deleted",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only after ALTER SYSTEM RESET ALL is executed",
+          "correct": false
+        }
+      ],
+      "explanation": "Values configured through ALTER DATABASE and ALTER ROLE are applied on new connections. They do not automatically change already-running sessions.",
+      "source": {
+        "key": "dba1-tools-configuration-sql-levels",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Managing Parameters through SQL",
+        "locator": "PostgreSQL 16 documentation, Section 20.1.3 “Parameter Interaction via SQL”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-015",
+      "type": "multiple_choice",
+      "text": "Which statements about setting parameters through the command line and client connection are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Parameters can be passed to the postgres server with the -c argument",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Server parameters passed with -c at startup have priority over postgresql.conf and ALTER SYSTEM",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "For a libpq client session, parameters can be passed through PGOPTIONS",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "PGOPTIONS changes parameter values immediately in all existing server sessions",
+          "correct": false
+        }
+      ],
+      "explanation": "The documentation allows parameters to be passed to the server with postgres -c; these values have higher priority than settings from configuration files and ALTER SYSTEM. PGOPTIONS can be used for an individual libpq session without affecting other sessions.",
+      "source": {
+        "key": "dba1-tools-configuration-command-line",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Managing Parameters on the Command Line",
+        "locator": "PostgreSQL 16 documentation, Section 20.1.4 “Parameter Interaction via the Shell”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-016",
+      "type": "single_choice",
+      "text": "Which two main connection-string formats does libpq accept?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "key=value format and URI",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only JSON and XML",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only YAML and URI",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "CSV format and postgresql.conf",
+          "correct": false
+        }
+      ],
+      "explanation": "Libpq supports two connection-string formats: a sequence of key=value pairs and a connection URI.",
+      "source": {
+        "key": "dba1-tools-configuration-connstring",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Connection Parameter Strings",
+        "locator": "PostgreSQL 16 documentation, Section 34.1.1 “Connection Strings”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/libpq-connect#LIBPQ-CONNSTRING"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-017",
+      "type": "multiple_choice",
+      "text": "Which strings follow the libpq key=value connection-string rules? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "host=localhost port=5432 dbname=mydb",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "host = localhost dbname = mydb",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "application_name='my app' dbname=mydb",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "host:localhost;port:5432;dbname:mydb",
+          "correct": false
+        }
+      ],
+      "explanation": "In key/value format, each parameter is specified as key=value. Whitespace around the equals sign is optional, and a value containing spaces can be enclosed in single quotes.",
+      "source": {
+        "key": "dba1-tools-configuration-connstring-key-value",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Connection Parameter Strings",
+        "locator": "PostgreSQL 16 documentation, Section 34.1.1.1 “Connection Strings in Keyword/Value Format”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/libpq-connect#LIBPQ-CONNSTRING"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-018",
+      "type": "single_choice",
+      "text": "Which string has a valid basic PostgreSQL connection URI form?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "postgresql://user@dbhost:5432/mydb",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "postgresql::user::dbhost::5432::mydb",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "postgresql=user@dbhost;5432;mydb",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "dbhost://postgresql/user/mydb/5432",
+          "correct": false
+        }
+      ],
+      "explanation": "The basic URI form is postgresql://[user@][host][/database][?parameters]. The postgres:// scheme is also accepted.",
+      "source": {
+        "key": "dba1-tools-configuration-connstring-uri",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Connection URIs",
+        "locator": "PostgreSQL 16 documentation, Section 34.1.1.2 “Connection URIs”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/libpq-connect#LIBPQ-CONNSTRING"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-019",
+      "type": "multiple_choice",
+      "text": "Which statements about multiple hosts in a libpq connection string are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A URI can list multiple host:port pairs separated by commas",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "In key=value format, host and port parameters can contain comma-separated lists",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Hosts and addresses are tried in order until a connection is established",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "After a successful connection followed by authentication failure, libpq must continue trying all remaining hosts",
+          "correct": false
+        }
+      ],
+      "explanation": "Libpq supports multiple hosts in both URI and key=value formats. Addresses are tried sequentially until a connection succeeds. If a connection is established but authentication fails, the remaining hosts are not tried.",
+      "source": {
+        "key": "dba1-tools-configuration-connstring-multihost",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Specifying Multiple Hosts",
+        "locator": "PostgreSQL 16 documentation, Section 34.1.1.3 “Specifying Multiple Hosts”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/libpq-connect#LIBPQ-CONNSTRING"
+      }
+    },
+    {
+      "key": "dba1-tools-configuration-020",
+      "type": "single_choice",
+      "text": "An invalid max_connections value was added to an extra configuration file and the server no longer starts. What should be the first diagnostic step?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Check the server message log",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Delete the entire PGDATA directory",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Run ALTER SYSTEM RESET ALL on the stopped server",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Ignore the error and repeatedly retry connecting with psql",
+          "correct": false
+        }
+      ],
+      "explanation": "The practical exercise proposes intentionally introducing an error into an included max_connections file, confirming that the server does not start, checking the server log, fixing the error, and starting the server again.",
+      "source": {
+        "key": "dba1-tools-configuration-practice-invalid",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice",
+        "locator": "Slide 11 “Practice”, task 2",
+        "url": null
+      }
+    }
+  ]
+}

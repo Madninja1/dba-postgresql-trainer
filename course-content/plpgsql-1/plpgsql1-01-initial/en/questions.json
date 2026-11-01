@@ -1,0 +1,694 @@
+{
+  "schema_version": 1,
+  "topic": "plpgsql1-initial",
+  "questions": [
+    {
+      "type": "single_choice",
+      "text": "What is PL/pgSQL intended for?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Creating server-side functions, procedures, and triggers with control structures on top of SQL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only for formatting psql output",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only for creating indexes",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "For managing systemd",
+          "correct": false
+        }
+      ],
+      "explanation": "PL/pgSQL is a procedural language that extends SQL with control structures and runs on the server.",
+      "source": {
+        "key": "plpgsql1-initial-overview",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.1. Overview",
+        "locator": "Purpose of PL/pgSQL",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-overview#PLPGSQL-ADVANTAGES"
+      },
+      "key": "plpgsql1-initial-001"
+    },
+    {
+      "type": "single_choice",
+      "text": "What are the main sections of a PL/pgSQL block?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "An optional DECLARE section and a mandatory BEGIN ... END section",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "FROM ... WHERE",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "TRY ... CATCH only",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "CLASS ... METHOD",
+          "correct": false
+        }
+      ],
+      "explanation": "PL/pgSQL is block-structured: declarations are optional, while the executable BEGIN/END section forms the block body.",
+      "source": {
+        "key": "plpgsql1-initial-block",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.2. Structure of PL/pgSQL",
+        "locator": "DECLARE / BEGIN / END",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-structure"
+      },
+      "key": "plpgsql1-initial-002"
+    },
+    {
+      "type": "single_choice",
+      "text": "Where are ordinary local variables of a block declared?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "In the DECLARE section",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "In WHERE",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "After END",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only in CREATE TABLE",
+          "correct": false
+        }
+      ],
+      "explanation": "Variables used in a block are declared in DECLARE, apart from special variables that PL/pgSQL creates automatically.",
+      "source": {
+        "key": "plpgsql1-initial-declare",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.3. Declarations",
+        "locator": "DECLARE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-declarations"
+      },
+      "key": "plpgsql1-initial-003"
+    },
+    {
+      "type": "single_choice",
+      "text": "What value does a variable without DEFAULT receive when entering a block?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "NULL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "0",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "An empty string",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A random value",
+          "correct": false
+        }
+      ],
+      "explanation": "If no default value is specified, the variable is initialized to SQL NULL.",
+      "source": {
+        "key": "plpgsql1-initial-default-null",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.3. Declarations",
+        "locator": "Initial variable value",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-declarations"
+      },
+      "key": "plpgsql1-initial-004"
+    },
+    {
+      "type": "single_choice",
+      "text": "Which assignment operators are accepted in PL/pgSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": ":= and =",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "<- only",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "== only",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "SET only",
+          "correct": false
+        }
+      ],
+      "explanation": "PL/pgSQL accepts both `:=` and `=` for assignment.",
+      "source": {
+        "key": "plpgsql1-initial-assignment",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.1. Assignment",
+        "locator": "variable := expression",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-initial-005"
+    },
+    {
+      "type": "single_choice",
+      "text": "How do you execute a SELECT whose result is not needed but whose side effects matter?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Use PERFORM",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Use DROP RESULT",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Always use RETURN QUERY",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Use VACUUM",
+          "correct": false
+        }
+      ],
+      "explanation": "PERFORM executes the query and discards its result.",
+      "source": {
+        "key": "plpgsql1-initial-perform",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.2. Executing SQL Commands",
+        "locator": "PERFORM",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-initial-006"
+    },
+    {
+      "type": "single_choice",
+      "text": "How do you capture one SELECT row into a PL/pgSQL variable?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Use SELECT ... INTO target",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Use SELECT TABLE",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Use \\gset",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only through a cursor",
+          "correct": false
+        }
+      ],
+      "explanation": "PL/pgSQL uses INTO to capture a SQL command result into record, row, or scalar targets.",
+      "source": {
+        "key": "plpgsql1-initial-select-into",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.3. Executing a Command with a Single-Row Result",
+        "locator": "SELECT ... INTO",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-initial-007"
+    },
+    {
+      "type": "single_choice",
+      "text": "What is the value of FOUND when a PL/pgSQL function is first entered?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "false",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "true",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Always NULL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The number of processed rows",
+          "correct": false
+        }
+      ],
+      "explanation": "FOUND is a special boolean variable initialized to false when the function is called.",
+      "source": {
+        "key": "plpgsql1-initial-found",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.5. Obtaining the Result Status",
+        "locator": "FOUND",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-initial-008"
+    },
+    {
+      "type": "single_choice",
+      "text": "Which statement ends a function that returns a single value and passes that value to the caller?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "RETURN expression",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "RAISE NOTICE",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "CONTINUE",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "PERFORM",
+          "correct": false
+        }
+      ],
+      "explanation": "RETURN with an expression terminates the function and returns that value.",
+      "source": {
+        "key": "plpgsql1-initial-return",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.6.1.1. RETURN",
+        "locator": "RETURN expression",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-control-structures"
+      },
+      "key": "plpgsql1-initial-009"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which capabilities does PL/pgSQL provide?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Creating functions, procedures, and triggers",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Control structures on top of SQL",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Complex computations",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Using SQL data types, functions, and operators",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Replacing the operating system",
+          "correct": false
+        }
+      ],
+      "explanation": "PL/pgSQL supports functions, procedures, and triggers, adds control structures, and enables complex computations together with SQL capabilities.",
+      "source": {
+        "key": "plpgsql1-initial-advantages",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.1. Overview",
+        "locator": "PL/pgSQL capabilities",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-overview#PLPGSQL-ADVANTAGES"
+      },
+      "key": "plpgsql1-initial-010"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about PL/pgSQL blocks are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Statements normally end with `;`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Blocks can be nested",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "BEGIN/END group PL/pgSQL statements and are not the same as SQL BEGIN/COMMIT",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A semicolon immediately after BEGIN is mandatory",
+          "correct": false
+        }
+      ],
+      "explanation": "The documentation explicitly distinguishes PL/pgSQL block BEGIN/END from SQL transaction control.",
+      "source": {
+        "key": "plpgsql1-initial-block-rules",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.2. Structure of PL/pgSQL",
+        "locator": "Block rules",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-structure"
+      },
+      "key": "plpgsql1-initial-011"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "What can be specified in a variable declaration?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "DEFAULT or :=/= for the initial value",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "CONSTANT",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "NOT NULL",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "COLLATE",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "ORDER BY",
+          "correct": false
+        }
+      ],
+      "explanation": "The general variable declaration syntax includes these modifiers and initialization forms.",
+      "source": {
+        "key": "plpgsql1-initial-variable-decl",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.3. Declarations",
+        "locator": "Variable declaration syntax",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-declarations"
+      },
+      "key": "plpgsql1-initial-012"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about function parameters are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They can be referenced as $1, $2, and so on",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Names can be assigned directly in CREATE FUNCTION",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "ALIAS FOR $n can be declared",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Parameters are available only through environment variables",
+          "correct": false
+        }
+      ],
+      "explanation": "PL/pgSQL supports positional parameter names and aliases for function parameters.",
+      "source": {
+        "key": "plpgsql1-initial-params",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.3.1. Declaring Function Parameters",
+        "locator": "$1 and ALIAS",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-declarations"
+      },
+      "key": "plpgsql1-initial-013"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which forms of conditional logic does PL/pgSQL support?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "IF ... THEN",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "IF ... THEN ... ELSE",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "IF ... ELSIF ... ELSE",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "CASE",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "switch as a mandatory keyword",
+          "correct": false
+        }
+      ],
+      "explanation": "The control-structures chapter defines several IF forms and two CASE forms.",
+      "source": {
+        "key": "plpgsql1-initial-conditionals",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.6.4. Conditional Statements",
+        "locator": "IF and CASE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-control-structures"
+      },
+      "key": "plpgsql1-initial-014"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which loop forms does PL/pgSQL support?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "LOOP",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "WHILE",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "FOR over an integer range",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "FOR over query results",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "FOREACH over an array",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "GOTO LOOP as the only loop form",
+          "correct": false
+        }
+      ],
+      "explanation": "PL/pgSQL supports LOOP, WHILE, integer FOR, query-result FOR, and FOREACH over arrays.",
+      "source": {
+        "key": "plpgsql1-initial-loops",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.6.5–43.6.7",
+        "locator": "Loops",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-control-structures"
+      },
+      "key": "plpgsql1-initial-015"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about PERFORM are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It executes a query and discards the result",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It uses SELECT-like query syntax with SELECT replaced by PERFORM",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It can change FOUND depending on whether rows are produced",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "PERFORM is allowed only for DDL",
+          "correct": false
+        }
+      ],
+      "explanation": "PERFORM executes a query for its effects, discards rows, and updates FOUND according to whether rows were produced.",
+      "source": {
+        "key": "plpgsql1-initial-perform-rules",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.2. Executing SQL Commands",
+        "locator": "PERFORM and FOUND",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-initial-016"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which operations change the value of the special variable FOUND?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "SELECT INTO",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "PERFORM",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "INSERT/UPDATE/DELETE/MERGE",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "FETCH",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "MOVE",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "RETURN QUERY",
+          "correct": true
+        },
+        {
+          "key": "g",
+          "text": "Plain EXECUTE always changes FOUND",
+          "correct": false
+        }
+      ],
+      "explanation": "SELECT INTO, PERFORM, DML commands, FETCH, MOVE, and RETURN QUERY change FOUND; plain EXECUTE itself does not change FOUND.",
+      "source": {
+        "key": "plpgsql1-initial-found-rules",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.5. Obtaining the Result Status",
+        "locator": "Statements that change FOUND",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-initial-017"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about RETURN NEXT and RETURN QUERY are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They append rows to the function result set",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "They do not immediately terminate the function",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "They can be combined in the same set-returning function",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every RETURN NEXT closes the transaction",
+          "correct": false
+        }
+      ],
+      "explanation": "RETURN NEXT and RETURN QUERY accumulate rows in the result set; execution then continues with the next statement.",
+      "source": {
+        "key": "plpgsql1-initial-return-set",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.6.1.2. RETURN NEXT and RETURN QUERY",
+        "locator": "Accumulating the result set",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-control-structures"
+      },
+      "key": "plpgsql1-initial-018"
+    }
+  ]
+}

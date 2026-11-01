@@ -1,0 +1,906 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-replica-logical",
+  "questions": [
+    {
+      "key": "dba1-replica-logical-001",
+      "type": "single_choice",
+      "text": "What does PostgreSQL logical replication transfer?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Changes to rows in selected tables",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A byte-for-byte copy of the entire cluster",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only the text of executed SQL commands",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only system catalog files",
+          "correct": false
+        }
+      ],
+      "explanation": "Logical replication transfers table row changes, not a physical copy of files and not the original SQL command text.",
+      "source": {
+        "key": "dba1-16-logical-overview",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Logical Replication",
+        "locator": "General principle of logical replication",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logical-replication"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-002",
+      "type": "multiple_choice",
+      "text": "Which properties of logical replication distinguish it from physical replication? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Individual tables can be replicated selectively",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Binary compatibility between servers is not required",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The data flow can be organized in different directions",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It always creates an exact copy of the entire cluster",
+          "correct": false
+        }
+      ],
+      "explanation": "Logical replication operates at a higher level: it allows selecting tables, does not require binary compatibility, and can be used in multidirectional topologies.",
+      "source": {
+        "key": "dba1-16-logical-properties",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Features",
+        "locator": "Comparison of physical and logical replication",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-logical-003",
+      "type": "single_choice",
+      "text": "Which model is used by PostgreSQL built-in logical replication?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Publication — subscription",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Shared disk array",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Two-phase commit across all servers",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Periodic pg_dump — pg_restore",
+          "correct": false
+        }
+      ],
+      "explanation": "A publication is defined on the publishing server, while another server creates a subscription and receives the corresponding changes.",
+      "source": {
+        "key": "dba1-16-pub-sub",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Publication and Subscription",
+        "locator": "Publication-subscription model",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logical-replication"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-004",
+      "type": "multiple_choice",
+      "text": "What can a publication define in PostgreSQL 16? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The set of published tables",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The set of published columns",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A row filter condition",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The physical directory where table files are stored on the subscriber",
+          "correct": false
+        }
+      ],
+      "explanation": "A publication defines a logical data set. The material specifically notes that only selected columns and rows of a table can be published.",
+      "source": {
+        "key": "postgresql-16-logical-publication",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Publication",
+        "locator": "Selecting tables, columns, and rows",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logical-replication-publication"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-005",
+      "type": "single_choice",
+      "text": "What does the logical replication worker do on the subscriber server?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Receives changes and applies them on the subscriber",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Creates a physical backup of the publishing server",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Runs CHECKPOINT on the publishing server",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Compiles received SQL code before sending it to the publisher",
+          "correct": false
+        }
+      ],
+      "explanation": "In the course diagram, the wal sender is on the source side, while the logical replication worker on the subscriber receives and applies changes.",
+      "source": {
+        "key": "dba1-16-worker",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Logical Replication",
+        "locator": "wal sender and logical replication worker",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-logical-006",
+      "type": "multiple_choice",
+      "text": "Which statements about data transfer between a publication and a subscription are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Row changes are replicated, not the original SQL commands",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The subscriber applies the received changes without normal parsing and planning of the original SQL command",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A logical replication slot is used for transfer",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The subscriber must re-execute the original query text from the publisher",
+          "correct": false
+        }
+      ],
+      "explanation": "Logical replication transfers the result of data changes at row level. The subscriber does not need to execute the publisher's original SQL command again.",
+      "source": {
+        "key": "postgresql-16-logical-message-flow",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Change Transfer",
+        "locator": "Logical replication message flow",
+        "url": "https://postgrespro.ru/docs/postgresql/16/protocol-logical-replication#PROTOCOL-LOGICAL-MESSAGES-FLOW"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-007",
+      "type": "single_choice",
+      "text": "What can happen when a subscription is created for tables that already contain data?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "An initial synchronization of table contents can be performed",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The schema of all tables is always created automatically from the publication DDL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The entire subscriber cluster is replaced with a physical copy of the publisher",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "All local subscriber data is always deleted",
+          "correct": false
+        }
+      ],
+      "explanation": "Initial data synchronization can be performed when a subscription is created, but the required tables must already exist on the subscriber.",
+      "source": {
+        "key": "postgresql-16-logical-subscription",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Subscription",
+        "locator": "Initial synchronization",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logical-replication-subscription"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-008",
+      "type": "multiple_choice",
+      "text": "Which statements about initial synchronization and table structure are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Table contents can be copied during initial synchronization",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Publication DDL commands are not transferred automatically",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Target tables on the subscriber must be prepared in advance",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "CREATE TABLE on the publisher automatically creates the same table on every subscriber",
+          "correct": false
+        }
+      ],
+      "explanation": "Logical replication synchronizes data but does not transfer schema automatically. DDL must be applied separately.",
+      "source": {
+        "key": "dba1-16-initial-sync",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Publication and Subscription",
+        "locator": "Initial synchronization and DDL",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-logical-009",
+      "type": "single_choice",
+      "text": "Why is replica identity required for UPDATE and DELETE in logical replication?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To identify the old version of the row being updated or deleted",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To select the directory for WAL files",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To determine the user who executed the query",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To encrypt the connection between servers",
+          "correct": false
+        }
+      ],
+      "explanation": "INSERT creates a new row, while for UPDATE and DELETE the subscriber must determine which existing row should be changed or removed.",
+      "source": {
+        "key": "postgresql-16-replica-identity",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Row Identification",
+        "locator": "ALTER TABLE and REPLICA IDENTITY",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-altertable"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-010",
+      "type": "multiple_choice",
+      "text": "Which row identification methods does PostgreSQL logical replication support? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Primary key columns",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A suitable unique index",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "All columns of the row",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Only the physical block number and row offset",
+          "correct": false
+        }
+      ],
+      "explanation": "The primary key is used by default, but REPLICA IDENTITY can select a suitable unique index or use all columns.",
+      "source": {
+        "key": "dba1-16-replica-identity-options",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Row Identification",
+        "locator": "Replica identity options",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-logical-011",
+      "type": "single_choice",
+      "text": "How does logical replication handle DDL commands?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "DDL is not replicated automatically; schema changes must be transferred separately",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "DDL is always executed automatically on all subscribers",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "DDL is replicated only for views",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "DDL is first converted into a physical WAL clone of the entire cluster",
+          "correct": false
+        }
+      ],
+      "explanation": "One of the main limitations of built-in logical replication is that schema changes are not transferred automatically.",
+      "source": {
+        "key": "postgresql-16-logical-restrictions-ddl",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Limitations",
+        "locator": "DDL is not replicated",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logical-replication-restrictions"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-012",
+      "type": "multiple_choice",
+      "text": "What is not replicated by built-in logical replication? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "DDL commands",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Sequence values",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Large objects (lo)",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Row changes in ordinary published tables",
+          "correct": false
+        }
+      ],
+      "explanation": "The course specifically lists DDL, sequence values, and large objects as data that standard logical replication does not transfer.",
+      "source": {
+        "key": "postgresql-16-logical-restrictions",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Limitations",
+        "locator": "Objects that are not replicated",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logical-replication-restrictions"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-013",
+      "type": "single_choice",
+      "text": "Which relations can directly participate in built-in logical replication?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Regular base tables and partitioned tables",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only regular views",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only materialized views",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only foreign tables",
+          "correct": false
+        }
+      ],
+      "explanation": "The material limits direct logical replication to regular base tables and partitioned tables; views and foreign tables are not included.",
+      "source": {
+        "key": "dba1-16-replicated-relations",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Limitations",
+        "locator": "Supported relation types",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-logical-014",
+      "type": "multiple_choice",
+      "text": "Which problems can occur because sequence values are not replicated? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Two servers can attempt to use the same surrogate key value",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A uniqueness constraint violation can occur",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Different identifier ranges can be assigned to servers to reduce the risk",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "PostgreSQL automatically synchronizes a sequence after every INSERT",
+          "correct": false
+        }
+      ],
+      "explanation": "If writes are possible on multiple servers, independent sequences can generate overlapping values. The course suggests separate ranges or UUIDs.",
+      "source": {
+        "key": "dba1-16-sequence-conflicts",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Limitations",
+        "locator": "Sequences and unique identifiers",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-logical-015",
+      "type": "single_choice",
+      "text": "What happens if applying a logically replicated change violates an integrity constraint on the subscriber?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Applying changes is paused until the conflict is resolved manually",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The subscriber automatically deletes the conflicting row",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The publishing server automatically rolls back the original transaction",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The conflict is ignored without a message",
+          "correct": false
+        }
+      ],
+      "explanation": "There is no universal automatic resolution for such conflicts. The apply process stops until an administrator fixes the cause.",
+      "source": {
+        "key": "postgresql-16-logical-conflicts",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Conflicts",
+        "locator": "Integrity constraint violations",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logical-replication-conflicts"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-016",
+      "type": "multiple_choice",
+      "text": "Which statements about logical replication conflicts are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A conflict can involve local data on the subscriber",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "An integrity constraint violation can cause a conflict",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Universal automatic conflict resolution is not supported",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every conflict is automatically resolved using last-write-wins",
+          "correct": false
+        }
+      ],
+      "explanation": "The subscriber remains a regular PostgreSQL database and can contain its own data, so applying incoming changes can conflict with that data.",
+      "source": {
+        "key": "postgresql-16-logical-conflicts-behavior",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Conflicts",
+        "locator": "Conflicts with local data",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logical-replication-conflicts"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-017",
+      "type": "single_choice",
+      "text": "Why is the subscription parameter streaming useful for long-running transactions?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It allows changes to be sent to the subscriber before a long transaction commits, reducing the need to retain them only on the publisher side",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It automatically converts logical replication into physical replication",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It prevents long-running transactions from executing",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It sends only DDL commands to the subscriber",
+          "correct": false
+        }
+      ],
+      "explanation": "The material notes the issue with long-running transactions and the ability of streaming to send changes earlier, storing or applying them on the subscriber side.",
+      "source": {
+        "key": "postgresql-16-alter-subscription-streaming",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Subscription",
+        "locator": "streaming parameter",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-altersubscription"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-018",
+      "type": "multiple_choice",
+      "text": "Which tasks can PostgreSQL logical replication solve? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Consolidating data from multiple branches",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Transferring changes in both directions between servers",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Moving between PostgreSQL major versions while reducing service interruption",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Byte-for-byte mirroring of the entire PostgreSQL file system",
+          "correct": false
+        }
+      ],
+      "explanation": "The course presents logical replication as a more flexible mechanism for selective data consolidation, multidirectional topologies, and migration between versions.",
+      "source": {
+        "key": "dba1-16-use-cases",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Logical Replication Use Cases",
+        "locator": "Use cases",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-logical-019",
+      "type": "single_choice",
+      "text": "Why can logical replication be used when moving between different PostgreSQL major versions?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It does not require binary compatibility between servers; protocol compatibility is sufficient",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It copies executables from the old version to the new server",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It forces the new server to use the old version's file format",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It automatically upgrades all extensions and DDL without preparation",
+          "correct": false
+        }
+      ],
+      "explanation": "Physical replication depends on binary compatibility, while logical replication transfers changes through a logical protocol, making migration between major versions possible.",
+      "source": {
+        "key": "dba1-16-major-upgrade",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Server Upgrade",
+        "locator": "Major version upgrade",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-logical-020",
+      "type": "multiple_choice",
+      "text": "What must be considered when building bidirectional logical replication for the same table between two servers? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Data can be changed locally on both servers",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The possibility of conflicts must be considered",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The uniqueness of generated identifiers must be planned",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Built-in logical replication automatically resolves any concurrent changes",
+          "correct": false
+        }
+      ],
+      "explanation": "A bidirectional topology is possible, but both servers remain active and can modify data. Therefore, constraints, sequences, and conflicts become a design and administration responsibility.",
+      "source": {
+        "key": "postgresql-16-logical-bidirectional",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Bidirectional Replication",
+        "locator": "Practice and limitations",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logical-replication-restrictions"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-021",
+      "type": "single_choice",
+      "text": "Which wal_level value is required on the publishing server for built-in logical replication?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "logical",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "minimal",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "replica without additional logical decoding information",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "off",
+          "correct": false
+        }
+      ],
+      "explanation": "Logical decoding requires wal_level = logical, which adds the information needed to interpret row changes.",
+      "source": {
+        "key": "dba1-16-wal-level-logical",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "WAL Levels",
+        "locator": "wal_level for logical decoding",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-logical-022",
+      "type": "multiple_choice",
+      "text": "What consequences can a logical replication slot that remains inactive for a long time have? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The publisher must retain WAL still needed by the subscriber",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The cleanup horizon can be held back",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Disk space consumption on the publisher can grow",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "An inactive slot automatically switches the subscriber to physical replication",
+          "correct": false
+        }
+      ],
+      "explanation": "The slot preserves data required by a lagging subscriber; prolonged inactivity requires monitoring WAL retention and cleanup.",
+      "source": {
+        "key": "dba1-16-inactive-slot",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Features",
+        "locator": "Inactive slot and resource retention",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-logical-023",
+      "type": "single_choice",
+      "text": "What is important when replicating TRUNCATE for tables related by foreign keys?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The required related tables must be present in the subscription; otherwise applying TRUNCATE can fail",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "TRUNCATE always ignores foreign keys on the subscriber",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "TRUNCATE is automatically converted into DELETE for every row",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "For TRUNCATE, it is sufficient to include only the sequence associated with the table",
+          "correct": false
+        }
+      ],
+      "explanation": "Logical replication restrictions require foreign keys to be considered: applying TRUNCATE must be valid on the subscriber side.",
+      "source": {
+        "key": "postgresql-16-logical-restrictions-truncate",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Limitations",
+        "locator": "TRUNCATE and foreign keys",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logical-replication-restrictions"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-024",
+      "type": "multiple_choice",
+      "text": "How should a logical subscription to a publication in the same cluster be created to avoid blocking during slot creation? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Create the logical replication slot separately",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Specify create_slot = false in CREATE SUBSCRIPTION",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Avoid having the same command wait for slot creation through its own connection",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A physical slot must be used instead of a logical one",
+          "correct": false
+        }
+      ],
+      "explanation": "In PostgreSQL 16, CREATE SUBSCRIPTION within the same cluster can hang if it also tries to create the slot; the documentation recommends creating the logical slot separately and using create_slot = false.",
+      "source": {
+        "key": "postgresql-16-create-subscription-same-cluster",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice",
+        "locator": "Subscription within the same cluster",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-createsubscription"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-025",
+      "type": "multiple_choice",
+      "text": "Which subscription parameters help configure bidirectional logical replication without recopying existing data or sending already received changes back to the source? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "copy_data = false — do not repeat the initial copy of existing rows",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "origin = none — request changes without a replication origin and reduce the risk of sending already received changes back",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Both parameters are specified when creating subscriptions on the two servers in the exercise",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "origin = any guarantees automatic resolution of master-master conflicts",
+          "correct": false
+        }
+      ],
+      "explanation": "The practical bidirectional topology in the course explicitly uses copy_data = false and origin = none; conflicts must still be prevented by design.",
+      "source": {
+        "key": "postgresql-16-bidirectional-subscription-params",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Bidirectional Replication",
+        "locator": "copy_data = false and origin = none",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-createsubscription"
+      }
+    }
+  ]
+}

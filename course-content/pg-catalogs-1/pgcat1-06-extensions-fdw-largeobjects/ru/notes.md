@@ -1,147 +1,229 @@
 # Расширения, FDW и большие объекты
 
-## 1. Тема
+## Ментальная модель
 
-Тема посвящена системным каталогам PostgreSQL и связям между ними: где сервер хранит метаданные объектов и какие поля позволяют восстановить структуру и состояние базы.
+Тема объединяет три относительно независимых механизма:
 
 ```text
-основной материал темы
-        ↓
-понимание механизма
-        ↓
-важные ограничения и связи
-        ↓
-факты, которые проверяются тестами
+extension metadata     → pg_extension
+foreign data access    → pg_foreign_data_wrapper
+                          ↓
+                        pg_foreign_server
+                          ↓
+                        pg_foreign_table
+                          +
+                        pg_user_mapping
+large objects          → pg_largeobject_metadata + pg_largeobject
 ```
 
-## 2. Механизм
+Ключ к пониманию — не смешивать **контейнер метаданных расширения**, **цепочку FDW** и **страничное хранение large object**.
 
-Тема объединяет три механизма: extensions, Foreign Data Wrappers и large objects.
+---
 
-### pg_extension
+## `pg_extension`: установленное расширение
 
-Содержит установленные расширения.
+`pg_extension` содержит информацию об установленных extensions.
 
 Основные поля:
 
-- `extname` — имя;
+- `extname` — имя extension;
 - `extowner` — владелец;
-- `extnamespace` — схема, содержащая все или большинство экспортируемых объектов;
-- `extrelocatable` — можно ли переместить расширение;
-- `extversion` — версия.
+- `extnamespace` — schema, содержащая экспортируемые extension objects;
+- `extrelocatable` — можно ли переместить extension в другую schema;
+- `extversion` — установленная версия;
+- `extconfig` — OID configuration tables extension;
+- `extcondition` — filters для этих configuration tables.
 
-Важно: `extnamespace` **не означает**, что само имя расширения schema-qualified. Расширение — объект уровня базы, а поле лишь указывает связанную схему объектов.
+### Что на самом деле означает `extnamespace`
 
-### Цепочка FDW
+Extension **не принадлежит schema как schema-qualified object**. Имена extensions не квалифицируются schema.
 
-Модель состоит из нескольких каталогов:
+`extnamespace` означает schema, в которой находятся все или большинство экспортируемых extension objects. Если `extrelocatable = true`, эта schema должна содержать все schema-aware objects extension.
 
-1. `pg_foreign_data_wrapper` — реализация wrapper;
-2. `pg_foreign_server` — конкретный внешний сервер;
-3. `pg_foreign_table` — свойства foreign table;
-4. `pg_user_mapping` — сопоставление локальной роли с внешним сервером.
-
-#### pg_foreign_server
-
-`srvfdw` указывает используемый FDW. Также есть `srvname`, `srvowner`, `srvoptions`.
-
-#### pg_foreign_table
-
-- `ftrelid` — OID записи foreign table в `pg_class`;
-- `ftserver` — внешний сервер;
-- `ftoptions` — параметры таблицы.
-
-#### pg_user_mapping
-
-- `umuser` — локальная роль или 0 для PUBLIC;
-- `umserver` — foreign server;
-- `umoptions` — параметры, потенциально содержащие чувствительные данные.
-
-Из-за возможных секретов прямой доступ к каталогу ограничен; для пользователей есть представление `pg_user_mappings`, скрывающее недоступные options.
-
-### Где лежат options
+Поэтому неверная модель:
 
 ```text
-pg_foreign_data_wrapper.fdwoptions
-pg_foreign_server.srvoptions
-pg_foreign_table.ftoptions
-pg_user_mapping.umoptions
+schema.extension_name
 ```
 
-Они не хранятся централизованно в `postgresql.conf`.
+Правильнее:
 
-### Large Objects
-
-#### pg_largeobject
-
-Содержит **данные** large object, разбитые на страницы:
-
-- `loid` — идентификатор объекта;
-- `pageno` — номер страницы, начиная с 0;
-- `data` — `bytea`.
-
-#### pg_largeobject_metadata
-
-Содержит метаданные large object:
-
-- OID объекта;
-- владелец;
-- ACL.
-
-Обычные пользователи не должны обходить SQL/large-object API прямым изменением этих каталогов.
+```text
+extension
+  └─ exported objects live primarily in extnamespace
+```
 
 ---
 
-## 3. Важные детали и покрытие тестов
+## Foreign Data Wrapper: четыре уровня
 
-Ниже собраны детали, которые проверяются вопросами этой темы. Они сгруппированы по разделам исходной документации, чтобы их можно было связывать с механизмом, а не запоминать как отдельный список ответов.
+### 1. `pg_foreign_data_wrapper`
 
-### 53.22. pg_extension
+Это описание самого FDW mechanism.
 
-- **Назначение pg_extension.** pg_extension содержит установленные extensions и их свойства.
-- **extname, extowner, extnamespace, extrelocatable, extversion.** extname — имя расширения. pg_extension хранит имя, владельца, namespace, relocatability, version и config-related fields.
-- **Примечание о extnamespace.** Он не означает, что само расширение принадлежит схеме; имена расширений не schema-qualified. Документация отдельно отмечает: extnamespace показывает место большинства/всех schema-bound объектов, но extension name не дополняется схемой.
+Поля:
 
-### 53.25. pg_foreign_table
+- `fdwname` — имя wrapper;
+- `fdwowner` — владелец;
+- `fdwhandler` — handler function или `0`;
+- `fdwvalidator` — options validator или `0`;
+- `fdwacl` — ACL;
+- `fdwoptions` — wrapper-level options.
 
-- **Связь foreign table с pg_class и foreign server.** pg_foreign_data_wrapper описывает FDW-механизм. FDW-объекты распределены по каталогам wrapper → server → foreign table/user mapping.
-- **ftrelid, ftserver, ftoptions.** ftrelid — OID записи pg_class для foreign table. pg_foreign_table хранит специфические свойства foreign table, дополняя основную запись в pg_class.
+### 2. `pg_foreign_server`
 
-### 53.24. pg_foreign_server
+Foreign server описывает конкретный внешний источник, доступный через FDW.
 
-- **Столбец srvfdw.** srvfdw — OID pg_foreign_data_wrapper для данного сервера.
+- `srvname` — имя server;
+- `srvowner` — владелец;
+- `srvfdw` → `pg_foreign_data_wrapper.oid`;
+- `srvtype`, `srvversion` — необязательные metadata;
+- `srvacl` — ACL;
+- `srvoptions` — server-level options.
 
-### 53.65. pg_user_mapping
+Связь:
 
-- **Назначение pg_user_mapping.** Сопоставления локальных пользователей/ролей с удалёнными через foreign server. pg_user_mapping содержит local-to-remote user mappings для foreign servers.
-- **Ограничение доступа и pg_user_mappings.** Обычные пользователи не имеют прямого доступа к каталогу. Документация направляет обычных пользователей к view pg_user_mappings.
+```text
+foreign server --uses--> foreign data wrapper
+```
 
-### 53.30. pg_largeobject
+### 3. `pg_foreign_table`
 
-- **Назначение pg_largeobject.** pg_largeobject хранит страницы данных large objects; metadata вынесены в отдельный каталог.
-- **loid, pageno, data.** loid — идентификатор large object. Строка pg_largeobject представляет страницу large object через loid, pageno и data.
+Foreign table уже имеет обычную строку в `pg_class`, как relation с `relkind = 'f'`. `pg_foreign_table` хранит только дополнительные свойства, специфичные для foreign table.
 
-### 53.31. pg_largeobject_metadata
+- `ftrelid` → `pg_class.oid` foreign table;
+- `ftserver` → `pg_foreign_server.oid`;
+- `ftoptions` — table-level options.
 
-- **lomowner и lomacl.** pg_largeobject_metadata содержит lomowner и lomacl; собственные bytes находятся в pg_largeobject.
+То есть:
 
-### 53.23. pg_foreign_data_wrapper
+```text
+pg_class        → общее описание relation
+pg_foreign_table→ foreign-specific properties
+```
 
-- **fdwoptions и структура FDW.** pg_foreign_data_wrapper.fdwoptions хранит параметры wrapper. Каждый уровень FDW имеет собственный массив options в соответствующем каталоге.
+### 4. `pg_user_mapping`
+
+User mapping связывает локальную роль с foreign server.
+
+- `umuser` — local role или `0` для mapping «для всех»;
+- `umserver` → `pg_foreign_server`;
+- `umoptions` — mapping-specific options.
+
+Каталог может содержать чувствительные connection options, поэтому обычным пользователям прямой доступ к нему не предоставляется. Для них предназначено представление `pg_user_mappings`.
 
 ---
 
-# Что запомнить
+## Где живут FDW options
 
-- **Назначение pg_extension** → pg_extension
-- **extname, extowner, extnamespace, extrelocatable, extversion** → extname — имя расширения
-- **Примечание о extnamespace** → Он не означает, что само расширение принадлежит схеме; имена расширений не schema-qualified
-- **Связь foreign table с pg_class и foreign server** → pg_foreign_data_wrapper описывает FDW-механизм
-- **Столбец srvfdw** → srvfdw
-- **ftrelid, ftserver, ftoptions** → ftrelid — OID записи pg_class для foreign table
-- **Назначение pg_user_mapping** → Сопоставления локальных пользователей/ролей с удалёнными через foreign server
-- **Ограничение доступа и pg_user_mappings** → Обычные пользователи не имеют прямого доступа к каталогу
-- **Назначение pg_largeobject** → pg_largeobject
-- **loid, pageno, data** → loid — идентификатор large object
-- **lomowner и lomacl** → pg_largeobject_metadata
-- **fdwoptions и структура FDW** → pg_foreign_data_wrapper.fdwoptions хранит параметры wrapper
+У каждого уровня свои options:
+
+```text
+pg_foreign_data_wrapper.fdwoptions  → wrapper
+pg_foreign_server.srvoptions        → server
+pg_foreign_table.ftoptions          → foreign table
+pg_user_mapping.umoptions           → user mapping
+```
+
+Это не четыре копии одного и того же поля, а четыре уровня конфигурации.
+
+При диагностике полезно идти сверху вниз:
+
+```text
+wrapper
+  ↓
+server
+  ↓
+foreign table
+  +
+user mapping
+```
+
+---
+
+## `pg_largeobject`: данные large object
+
+Large object в PostgreSQL идентифицируется OID и физически разбивается на страницы, которые помещаются в строки `pg_largeobject`.
+
+Поля:
+
+- `loid` — OID large object;
+- `pageno` — номер страницы, начиная с `0`;
+- `data` — `bytea` с данными этой страницы.
+
+Размер страницы large object задаётся `LOBLKSIZE`, который в обычной конфигурации равен `BLCKSZ/4`.
+
+Смещение данных страницы:
+
+```text
+pageno * LOBLKSIZE
+```
+
+Хранилище может быть sparse: страницы могут отсутствовать или быть короче обычного размера. Пропущенные области читаются как нулевые байты.
+
+---
+
+## `pg_largeobject_metadata`: владелец и ACL
+
+Данные и metadata large object разделены:
+
+```text
+pg_largeobject          → pages/data
+pg_largeobject_metadata → owner + ACL
+```
+
+`pg_largeobject_metadata` содержит:
+
+- `oid` — идентификатор large object;
+- `lomowner` — владелец;
+- `lomacl` — права доступа.
+
+Такое разделение связано в том числе с безопасностью: прямое чтение содержимого large objects не должно автоматически давать возможность перечислять/читать все объекты без проверки прав.
+
+---
+
+## Практическая навигация по FDW
+
+```sql
+SELECT
+    ft.ftrelid::regclass AS foreign_table,
+    s.srvname,
+    w.fdwname
+FROM pg_foreign_table AS ft
+JOIN pg_foreign_server AS s
+  ON s.oid = ft.ftserver
+JOIN pg_foreign_data_wrapper AS w
+  ON w.oid = s.srvfdw;
+```
+
+Этот запрос показывает естественное направление связей:
+
+```text
+foreign table → server → wrapper
+```
+
+User mappings присоединяются отдельно по `umserver` и роли.
+
+---
+
+## Что запомнить
+
+```text
+pg_extension → installed extension metadata
+extnamespace → schema экспортируемых объектов, а не schema-qualified extension name
+
+FDW chain:
+pg_foreign_data_wrapper
+        ↓
+pg_foreign_server
+        ↓
+pg_foreign_table
+        +
+pg_user_mapping
+
+large object:
+pg_largeobject_metadata → owner/ACL
+pg_largeobject          → data pages
+```
+
+При диагностике FDW сначала выясните, на каком уровне находится свойство: wrapper, server, table или user mapping. При работе с large objects отдельно рассматривайте metadata и сами binary pages.

@@ -126,10 +126,16 @@ class WorldRepository(context: Context) {
         )
         val lastShiftReport = loadShiftReport()
         val lastMonthlyReport = loadMonthlyReport()
-        val lastSalaryPeriodKey = preferences.getInt(
-            KEY_LAST_SALARY_PERIOD,
-            clock.date.year * 12 + clock.date.month,
-        )
+        val currentSalaryPeriodKey = clock.date.year * 12 + clock.date.month
+        val lastSalaryPeriodKey = if (saveVersion < SAVE_VERSION_2045_EPOCH) {
+            // 0.7.7 moves the fictional DBA World epoch from 2026 to 2045.
+            // Clock day/minute stay intact, but carrying the old absolute
+            // salary period into the new epoch would award ~19 years of
+            // catch-up salaries on the next active-time tick.
+            currentSalaryPeriodKey
+        } else {
+            preferences.getInt(KEY_LAST_SALARY_PERIOD, currentSalaryPeriodKey)
+        }
 
         // MVP 0.1 points 1-7 had no incident/save schema. Upgrade only those old saves.
         if (incident == null && saveVersion < 2 && completed.isEmpty()) {
@@ -521,7 +527,8 @@ class WorldRepository(context: Context) {
     }
 
     private companion object {
-        const val CURRENT_SAVE_VERSION = 7
+        const val CURRENT_SAVE_VERSION = 8
+        const val SAVE_VERSION_2045_EPOCH = 8
         const val KEY_WORLD_EXISTS = "world_exists"
         const val KEY_SAVE_VERSION = "save_version"
         const val KEY_COMPANY_ID = "company_id"

@@ -1,0 +1,674 @@
+{
+  "schema_version": 1,
+  "topic": "psql1-strong",
+  "questions": [
+    {
+      "type": "single_choice",
+      "text": "What does the `-1` / `--single-transaction` option do?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Wraps processing of all -c/-f options in one transaction",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Opens one connection without transactions",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Limits output to one row",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Executes only the first -c",
+          "correct": false
+        }
+      ],
+      "explanation": "psql sends BEGIN before the first -c/-f and COMMIT after the last; with ON_ERROR_STOP, an error causes ROLLBACK.",
+      "source": {
+        "key": "psql1-strong-single-transaction",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Options",
+        "locator": "-1 / --single-transaction",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-001"
+    },
+    {
+      "type": "single_choice",
+      "text": "Which exit code does psql return for a script error when ON_ERROR_STOP is set?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "3",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "0",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "1",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "2",
+          "correct": false
+        }
+      ],
+      "explanation": "The exit-status documentation reserves code 3 for a script error when ON_ERROR_STOP is set.",
+      "source": {
+        "key": "psql1-strong-exit-code",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Exit Status",
+        "locator": "Code 3",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-002"
+    },
+    {
+      "type": "single_choice",
+      "text": "What does ON_ERROR_STOP do?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Stops script processing on an error instead of continuing normally",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Disables stderr",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Stops the PostgreSQL server",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Automatically ignores SQLSTATE",
+          "correct": false
+        }
+      ],
+      "explanation": "ON_ERROR_STOP changes psql behavior on script errors and affects the exit code.",
+      "source": {
+        "key": "psql1-strong-on-error-stop",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Variables",
+        "locator": "ON_ERROR_STOP",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-003"
+    },
+    {
+      "type": "single_choice",
+      "text": "What does `\\gexec` do?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Executes each non-null result field as an SQL command",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Stores the result in variables",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Displays only the result description",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Executes a shell command",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\gexec` first executes the query buffer, then treats the result fields as SQL to execute.",
+      "source": {
+        "key": "psql1-strong-gexec",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Meta-Commands",
+        "locator": "\\gexec",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-004"
+    },
+    {
+      "type": "single_choice",
+      "text": "What does `\\bind` do?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Sets parameters for the next query execution and uses the extended query protocol",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Creates a permanent server prepared statement",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Binds a role to a user",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Changes search_path",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\bind` sets values for `$1` and similar placeholders for the next query execution.",
+      "source": {
+        "key": "psql1-strong-bind",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Meta-Commands",
+        "locator": "\\bind",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-005"
+    },
+    {
+      "type": "single_choice",
+      "text": "What is `\\errverbose` used for?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Repeat the last server error message with maximum detail",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Show all queries from history",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Enable EXPLAIN VERBOSE",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Change client_encoding",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\errverbose` repeats the last server error as if VERBOSITY=verbose and SHOW_CONTEXT=always.",
+      "source": {
+        "key": "psql1-strong-errverbose",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Meta-Commands",
+        "locator": "\\errverbose",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-006"
+    },
+    {
+      "type": "single_choice",
+      "text": "How do you safely substitute a psql variable as an SQL literal?",
+      "answers": [
+        {
+          "key": "a",
+          "text": ":'variable_name'",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": ":variable_name without quotes is always safe for a literal",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "@name",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "${name}",
+          "correct": false
+        }
+      ],
+      "explanation": "The `:'name'` form quotes and escapes the value as an SQL literal; for an identifier use `:\"name\"`.",
+      "source": {
+        "key": "psql1-strong-safe-interpolation",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "SQL Interpolation",
+        "locator": "Quoting variable substitutions",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-007"
+    },
+    {
+      "type": "single_choice",
+      "text": "What does ECHO_HIDDEN=on mean?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Before a database-accessing meta-command, display the underlying SQL query",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Hide all errors",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Do not execute queries at all",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Print only shell commands",
+          "correct": false
+        }
+      ],
+      "explanation": "ECHO_HIDDEN helps you inspect the SQL that psql generates for backslash commands.",
+      "source": {
+        "key": "psql1-strong-echo-hidden",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Variables",
+        "locator": "ECHO_HIDDEN",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-008"
+    },
+    {
+      "type": "single_choice",
+      "text": "What does FETCH_COUNT > 0 mean?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "SELECT results are fetched and displayed in groups of the specified size",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "LIMIT is automatically added to the SQL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A server-side pagination API is enabled",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The query always returns at most FETCH_COUNT rows",
+          "correct": false
+        }
+      ],
+      "explanation": "FETCH_COUNT limits client memory usage by displaying the result in groups of rows.",
+      "source": {
+        "key": "psql1-strong-fetch-count",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Variables",
+        "locator": "FETCH_COUNT",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-009"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about `-1` and ON_ERROR_STOP are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "-1 works with one or more -c/-f options",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "psql sends BEGIN before the first and COMMIT after the last",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "If an error occurs and ON_ERROR_STOP is set, ROLLBACK is sent instead of COMMIT",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "-1 is guaranteed to work as intended even if the script itself contains BEGIN/COMMIT/ROLLBACK",
+          "correct": false
+        }
+      ],
+      "explanation": "The documentation explicitly warns about transaction-control statements inside the script.",
+      "source": {
+        "key": "psql1-strong-single-transaction-rules",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Options",
+        "locator": "-1 with ON_ERROR_STOP",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-010"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which mappings between psql exit codes and their meanings are correct?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "0 — normal completion",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "1 — fatal error in psql itself",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "2 — bad connection in a non-interactive session",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "3 — script error with ON_ERROR_STOP",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "255 — the only normal code",
+          "correct": false
+        }
+      ],
+      "explanation": "psql uses code 0 for normal completion, 1 for a fatal psql error, 2 for a failed non-interactive connection, and 3 for a script error when ON_ERROR_STOP is set.",
+      "source": {
+        "key": "psql1-strong-exit-codes",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Exit Status",
+        "locator": "0, 1, 2, 3",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-011"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about `\\gexec` are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "NULL result fields are ignored",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Generated SQL commands are executed in row order, left to right across columns",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "After an error, remaining commands continue unless ON_ERROR_STOP is set",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Generated values are interpreted as psql meta-commands",
+          "correct": false
+        }
+      ],
+      "explanation": "`\\gexec` sends result fields literally to the server as SQL commands.",
+      "source": {
+        "key": "psql1-strong-gexec-rules",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Meta-Commands",
+        "locator": "\\gexec behavior",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-012"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about `\\gset` are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The query must return exactly one row",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Each column is stored in a separate psql variable",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A prefix can be added to variable names",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "If a column is NULL, the corresponding variable is unset",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "If the query returns multiple rows, psql automatically takes the last one",
+          "correct": false
+        }
+      ],
+      "explanation": "The `\\gset` documentation defines strict rules requiring a single result row.",
+      "source": {
+        "key": "psql1-strong-gset-rules",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Meta-Commands",
+        "locator": "\\gset behavior",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-013"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which psql variable-substitution forms are described for SQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": ":name",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": ":'name'",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": ":\"name\"",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": ":{?name}",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "${name} is the primary psql SQL form",
+          "correct": false
+        }
+      ],
+      "explanation": "psql supports ordinary substitution, literal and identifier quoting, and testing whether a variable exists.",
+      "source": {
+        "key": "psql1-strong-interpolation-forms",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "SQL Interpolation",
+        "locator": ":name forms",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-014"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about AUTOCOMMIT are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "on is the default value",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "With on, a successful command is normally committed automatically",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "With off, psql does not commit changes until an explicit COMMIT/END",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "With off, psql can implicitly start a transaction before an appropriate command",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "With off, exiting without COMMIT still saves the changes",
+          "correct": false
+        }
+      ],
+      "explanation": "The special-variables section describes AUTOCOMMIT behavior and the loss of uncommitted changes on exit.",
+      "source": {
+        "key": "psql1-strong-autocommit",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Variables",
+        "locator": "AUTOCOMMIT",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-015"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about advanced `\\d*` patterns are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A dot separates the schema pattern from the object pattern",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`*.*` shows objects regardless of current visibility",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Regular-expression elements such as character classes are supported",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A pattern containing a dot never refers to a schema",
+          "correct": false
+        }
+      ],
+      "explanation": "The Patterns section explains schema.object matching and advanced pattern matching.",
+      "source": {
+        "key": "psql1-strong-advanced-patterns",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Patterns",
+        "locator": "schema.object and regexp elements",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-016"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about `\\watch` are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It repeats the current query buffer",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "By default it waits 2 seconds between executions",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The number of executions can be limited with count",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It works only with SELECT statements without parameters",
+          "correct": false
+        }
+      ],
+      "explanation": "The `\\watch` documentation describes interval and count.",
+      "source": {
+        "key": "psql1-strong-watch-rules",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Meta-Commands",
+        "locator": "\\watch interval/count",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-017"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about `-c` with multiple SQL commands in one string are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "One -c string is sent to the server as one query",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Multiple SQL commands in that string are normally executed by the server in one transaction unless explicit BEGIN/COMMIT commands split it",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "To avoid that grouping, you can use multiple -c options",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every semicolon inside one -c is guaranteed to create a separate client connection",
+          "correct": false
+        }
+      ],
+      "explanation": "The `-c` documentation separately describes the transactional behavior of a string containing multiple SQL commands.",
+      "source": {
+        "key": "psql1-strong-command-transaction",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — psql",
+        "section": "Options",
+        "locator": "Transactional behavior of -c",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql?lang=ru&utm_source=chatgpt.com"
+      },
+      "key": "psql1-strong-018"
+    }
+  ]
+}

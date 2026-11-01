@@ -1,0 +1,499 @@
+{
+  "schema_version": 1,
+  "topic": "pgcat1-functions-operators-language",
+  "questions": [
+    {
+      "key": "pgcat1-functions-operators-language-001",
+      "type": "single_choice",
+      "text": "How are pg_aggregate and pg_proc related for an aggregate function?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A pg_aggregate row supplements the corresponding pg_proc row",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Aggregates exist only in pg_aggregate and have no pg_proc row",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_proc stores only triggers",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_aggregate stores tables while pg_proc stores indexes",
+          "correct": false
+        }
+      ],
+      "explanation": "For an aggregate, pg_proc stores the general routine properties, while pg_aggregate stores aggregate-specific properties.",
+      "source": {
+        "key": "pgcat1-pg-aggregate-3d25f932",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.2. pg_aggregate",
+        "locator": "Relationship between pg_aggregate and pg_proc rows",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-aggregate"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-002",
+      "type": "multiple_choice",
+      "text": "Which `pg_aggregate.aggkind` values represent supported aggregate kinds?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`n` — normal",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`o` — ordered-set",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`h` — hypothetical-set",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`w` — window-only",
+          "correct": false
+        }
+      ],
+      "explanation": "aggkind distinguishes normal, ordered-set, and hypothetical-set aggregates.",
+      "source": {
+        "key": "pgcat1-pg-aggregate-c2a29d61",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.2. pg_aggregate",
+        "locator": "aggkind column",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-aggregate"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-003",
+      "type": "single_choice",
+      "text": "What does pg_proc store?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Functions, procedures, aggregate functions, and window functions",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only roles",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only indexes",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only publications",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_proc describes routines: functions, procedures, aggregate functions, and window functions.",
+      "source": {
+        "key": "pgcat1-pg-proc-6955bbc4",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.39. pg_proc",
+        "locator": "Purpose of the pg_proc catalog",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-proc"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-004",
+      "type": "multiple_choice",
+      "text": "Which pg_proc.prokind values are correct?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`f` — function",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`p` — procedure",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`a` — aggregate function",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`w` — window function",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`t` — table",
+          "correct": false
+        }
+      ],
+      "explanation": "prokind encodes the four routine kinds listed in the documentation.",
+      "source": {
+        "key": "pgcat1-pg-proc-9f16b1fa",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.39. pg_proc",
+        "locator": "prokind column",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-proc"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-005",
+      "type": "single_choice",
+      "text": "Which pg_proc.provolatile value means an immutable function?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "i",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "s",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "v",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "p",
+          "correct": false
+        }
+      ],
+      "explanation": "provolatile: i — immutable, s — stable, v — volatile.",
+      "source": {
+        "key": "pgcat1-pg-proc-200f559b",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.39. pg_proc",
+        "locator": "provolatile column",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-proc"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-006",
+      "type": "multiple_choice",
+      "text": "Which `pg_proc.proparallel` values classify a function's parallel safety?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`s` — safe to execute in parallel mode",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`r` — restricted to the leader process of a parallel group",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`u` — unsafe for parallel mode",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`i` — immutable parallel mode",
+          "correct": false
+        }
+      ],
+      "explanation": "proparallel distinguishes safe, restricted, and unsafe execution in parallel mode.",
+      "source": {
+        "key": "pgcat1-pg-proc-a37bd549",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.39. pg_proc",
+        "locator": "proparallel column",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-proc"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-007",
+      "type": "single_choice",
+      "text": "Which catalog stores SQL operator definitions?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_operator",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_opclass",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_amop",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_cast",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_operator contains the operator name, operand/result types, and implementation function.",
+      "source": {
+        "key": "pgcat1-pg-operator-16060894",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.34. pg_operator",
+        "locator": "Purpose of pg_operator",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-operator"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-008",
+      "type": "multiple_choice",
+      "text": "Which statements about pg_cast are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "castsource — source type",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "casttarget — target type",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "castcontext=`e` means explicit casts only",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "castcontext=`i` allows implicit casts",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "castmethod=`f` means castfunc is used",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "castmethod=`b` means castfunc must be called",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_cast describes the source/target types, allowed cast context, and execution mechanism.",
+      "source": {
+        "key": "pgcat1-pg-cast-129c5f1e",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.10. pg_cast",
+        "locator": "castsource, casttarget, castcontext, castmethod",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-cast"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-009",
+      "type": "single_choice",
+      "text": "Which catalog registers languages in which functions and procedures can be written?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_language",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_proc",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_transform",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_conversion",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_language contains registered procedural languages and their handler/validator functions.",
+      "source": {
+        "key": "pgcat1-pg-language-2f8b50ca",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.29. pg_language",
+        "locator": "Purpose of pg_language",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-language"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-010",
+      "type": "multiple_choice",
+      "text": "What does pg_language.lanpltrusted mean?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "true means the language is trusted",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Functions in a trusted language may be created by users other than superusers",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Functions in untrusted languages can be created only by superusers",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The field defines the database encoding",
+          "correct": false
+        }
+      ],
+      "explanation": "lanpltrusted indicates whether the language is trusted; the material notes the restriction on creating functions in untrusted languages.",
+      "source": {
+        "key": "pgcat1-pg-language-787a22f2",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.29. pg_language",
+        "locator": "lanpltrusted column",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-language"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-011",
+      "type": "single_choice",
+      "text": "What is pg_transform used for?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Adapting data types when exchanging values with procedural languages",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Storing roles",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Storing partition bounds",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Storing statistics targets",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_transform describes type conversions between SQL and procedural languages.",
+      "source": {
+        "key": "pgcat1-pg-transform-d7ccba2e",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.57. pg_transform",
+        "locator": "Purpose of pg_transform",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-transform"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-012",
+      "type": "multiple_choice",
+      "text": "Which statements about pg_conversion and pg_range are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_conversion describes encoding-conversion functions",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_conversion.condefault marks the default conversion",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_range.rngsubtype identifies the range element type",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_range.rngcanonical can reference a canonicalization function",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "pg_range stores replication roles",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_conversion concerns encoding conversions, while pg_range supplements pg_type with information about range types.",
+      "source": {
+        "key": "pgcat1-pg-range-56022770",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.43. pg_range",
+        "locator": "Purpose of pg_range; rngsubtype; rngcanonical",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-range"
+      }
+    },
+    {
+      "key": "pgcat1-functions-operators-language-013",
+      "type": "multiple_choice",
+      "text": "Which pg_conversion fields describe an encoding conversion?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "conforencoding — source encoding ID",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "contoencoding — target encoding ID",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "conproc — conversion function",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "condefault=true — default conversion",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "conname — backend PID",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_conversion stores the name and function for converting between source and target encodings, along with the default-conversion flag.",
+      "source": {
+        "key": "pgcat1-pg-conversion-2f4b2f7d",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.14. pg_conversion",
+        "locator": "conforencoding, contoencoding, conproc, condefault",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-conversion"
+      }
+    }
+  ]
+}

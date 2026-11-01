@@ -722,7 +722,6 @@ internal fun DbaWorldComputerScreen(
     russian: Boolean,
     onOpenTerminal: () -> Unit,
     onOpenMonitoring: () -> Unit,
-    onOpenLearningCenter: () -> Unit,
     onOpenServerRoom: () -> Unit,
     onCloseComputer: () -> Unit,
     onCloseShift: () -> Unit,
@@ -806,25 +805,13 @@ internal fun DbaWorldComputerScreen(
                 )
             }
 
-            Row(
+            DesktopAppTile(
+                title = if (russian) "Серверная" else "Server Room",
+                subtitle = if (russian) "Физическая инфраструктура" else "Physical infrastructure",
+                badge = world.incident != null,
+                onClick = onOpenServerRoom,
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                DesktopAppTile(
-                    title = if (russian) "Учебный центр" else "Learning Center",
-                    subtitle = "${world.player.credits} CR",
-                    badge = false,
-                    onClick = onOpenLearningCenter,
-                    modifier = Modifier.weight(1f),
-                )
-                DesktopAppTile(
-                    title = if (russian) "Серверная" else "Server Room",
-                    subtitle = if (russian) "Физическая инфраструктура" else "Physical infrastructure",
-                    badge = world.incident != null,
-                    onClick = onOpenServerRoom,
-                    modifier = Modifier.weight(1f),
-                )
-            }
+            )
 
             Spacer(modifier = Modifier.height(4.dp))
 
@@ -1320,12 +1307,10 @@ private fun weatherLabel(environment: WorldEnvironment, russian: Boolean): Strin
 
 private fun shellClockLabel(clock: WorldClock): String {
     val date = clock.date
-    return "%02d.%02d.%04d · %02d:%02d".format(
+    return "%02d.%02d.%04d".format(
         date.dayOfMonth,
         date.month,
         date.year,
-        clock.hour,
-        clock.minute,
     )
 }
 

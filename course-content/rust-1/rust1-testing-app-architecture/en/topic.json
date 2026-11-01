@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "rust-1",
+  "slug": "rust1-testing-app-architecture",
+  "notes_part": 11,
+  "topic_number": 11,
+  "title": "Testing and Application Architecture",
+  "description": "Automated Rust tests, unit and integration tests, testing panic and Result, and splitting a CLI application into main.rs and lib.rs with Config and run.",
+  "sort_order": 110
+}

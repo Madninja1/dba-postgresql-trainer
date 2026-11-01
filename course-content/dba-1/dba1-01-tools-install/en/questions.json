@@ -1,0 +1,2130 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-tools-install",
+  "questions": [
+    {
+      "key": "dba1-tools-001",
+      "type": "single_choice",
+      "text": "Which tools traditionally form the basis of building PostgreSQL from source?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "GNU Make and Autoconf",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Cargo and rustc",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Gradle and CMake",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Ninja and Cargo",
+          "correct": false
+        }
+      ],
+      "explanation": "The traditional way to build PostgreSQL from source is based on GNU Make and Autoconf.",
+      "source": {
+        "key": "dba1-tools-build-overview",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Tools and Installation",
+        "locator": "Slide 5 — Required Software",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-002",
+      "type": "single_choice",
+      "text": "Starting with which PostgreSQL version can Meson be used for building?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "14",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "15",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "16",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "17",
+          "correct": false
+        }
+      ],
+      "explanation": "The course material states that the Meson build system can be used starting with PostgreSQL 16.",
+      "source": {
+        "key": "dba1-tools-meson-version",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Tools and Installation",
+        "locator": "Slide 5 — Required Software",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-003",
+      "type": "multiple_choice",
+      "text": "Which capabilities does the readline library provide?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Command-line editing",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Command history",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Completion",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Checking PostgreSQL page checksums",
+          "correct": false
+        }
+      ],
+      "explanation": "readline provides command-line editing, command history, and completion.",
+      "source": {
+        "key": "dba1-tools-readline",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Tools and Installation",
+        "locator": "Slide 5 — Required Software",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-004",
+      "type": "single_choice",
+      "text": "Which build tool does Meson use by default to compile PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "GNU Make",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Ninja",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Cargo",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Ant",
+          "correct": false
+        }
+      ],
+      "explanation": "Meson uses Ninja by default. After configuring the build directory, compilation is performed with the ninja command.",
+      "source": {
+        "key": "pg16-install-meson-ninja",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "Building and Installing with Meson",
+        "locator": "Short Version: meson setup, ninja, ninja install",
+        "url": "https://postgrespro.ru/docs/postgresql/16/install-meson"
+      }
+    },
+    {
+      "key": "dba1-tools-005",
+      "type": "multiple_choice",
+      "text": "Which commands are part of the short traditional PostgreSQL build and installation sequence using Autoconf and Make?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "./configure",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "make",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "make install",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "cargo build",
+          "correct": false
+        }
+      ],
+      "explanation": "The short traditional build procedure consists of configuration with ./configure, compilation with make, and installation with make install.",
+      "source": {
+        "key": "pg16-install-make-short",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "Building and Installing with Autoconf and Make",
+        "locator": "17.3.1. Short Version",
+        "url": "https://postgrespro.ru/docs/postgresql/16/install-make"
+      }
+    },
+    {
+      "key": "dba1-tools-006",
+      "type": "single_choice",
+      "text": "What is the initdb utility used for?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Creating a new PostgreSQL database cluster",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Restarting a running server",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Creating a logical backup",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Executing SQL scripts",
+          "correct": false
+        }
+      ],
+      "explanation": "initdb creates a new PostgreSQL database cluster.",
+      "source": {
+        "key": "pg16-initdb-purpose",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — initdb",
+        "section": "Description",
+        "locator": "Creating a New PostgreSQL Database Cluster",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-initdb"
+      }
+    },
+    {
+      "key": "dba1-tools-007",
+      "type": "multiple_choice",
+      "text": "Which statements about the user who runs initdb are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "initdb should be run as the user under which the PostgreSQL server will run",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The user needs full access to the cluster files and directories being created",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The PostgreSQL server must not run as the operating-system superuser",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "initdb must be run as root",
+          "correct": false
+        }
+      ],
+      "explanation": "initdb must be run as the owner of the future server process; running it as the operating-system superuser is not allowed.",
+      "source": {
+        "key": "pg16-initdb-os-user",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — initdb",
+        "section": "Description",
+        "locator": "User Running initdb and the PostgreSQL Server",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-initdb"
+      }
+    },
+    {
+      "key": "dba1-tools-008",
+      "type": "multiple_choice",
+      "text": "How can the cluster data directory be specified to initdb?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "With the -D option",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "With the --pgdata option",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "With the PGDATA environment variable",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "With the PGPORT environment variable",
+          "correct": false
+        }
+      ],
+      "explanation": "The data directory is specified with -D/--pgdata or the PGDATA environment variable.",
+      "source": {
+        "key": "pg16-initdb-pgdata",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — initdb",
+        "section": "Options",
+        "locator": "-D/--pgdata and PGDATA",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-initdb"
+      }
+    },
+    {
+      "key": "dba1-tools-009",
+      "type": "single_choice",
+      "text": "Which locale provider does initdb use by default?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "ICU",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "libc",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Java Locale",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "PostgreSQL does not use a locale provider",
+          "correct": false
+        }
+      ],
+      "explanation": "By default, initdb uses the libc locale provider.",
+      "source": {
+        "key": "pg16-initdb-locale-provider",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — initdb",
+        "section": "Locales",
+        "locator": "libc Provider Is Used by Default",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-initdb"
+      }
+    },
+    {
+      "key": "dba1-tools-010",
+      "type": "multiple_choice",
+      "text": "Which statements about initdb -k/--data-checksums are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It enables data-page checksums",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Checksums are calculated for all objects in all databases in the cluster",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Checksum errors are reflected in pg_stat_database",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Checksums apply only to system catalogs",
+          "correct": false
+        }
+      ],
+      "explanation": "-k/--data-checksums enables data-page checksums; when enabled, they apply to all objects in all databases in the cluster.",
+      "source": {
+        "key": "pg16-initdb-checksums",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — initdb",
+        "section": "Options",
+        "locator": "-k/--data-checksums",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-initdb"
+      }
+    },
+    {
+      "key": "dba1-tools-011",
+      "type": "multiple_choice",
+      "text": "Which statements about initdb --no-sync are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "initdb can finish faster",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "After an unexpected operating-system failure, the data directory can become corrupted",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The option can be useful for testing",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The option is recommended for production",
+          "correct": false
+        }
+      ],
+      "explanation": "--no-sync disables waiting for files to be safely written to disk. This can make initdb faster, but it increases the risk of data corruption after a failure and is not recommended for production.",
+      "source": {
+        "key": "pg16-initdb-no-sync",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — initdb",
+        "section": "Options",
+        "locator": "-N/--no-sync",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-initdb"
+      }
+    },
+    {
+      "key": "dba1-tools-012",
+      "type": "single_choice",
+      "text": "What does the initdb -U/--username option set?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The name of the initial PostgreSQL superuser",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The data-directory name",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The WAL segment name",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The operating-system name",
+          "correct": false
+        }
+      ],
+      "explanation": "-U/--username sets the name of the initial superuser; by default, the name of the operating-system user running initdb is used.",
+      "source": {
+        "key": "pg16-initdb-username",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — initdb",
+        "section": "Options",
+        "locator": "-U/--username",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-initdb"
+      }
+    },
+    {
+      "key": "dba1-tools-013",
+      "type": "single_choice",
+      "text": "What is initdb -X/--waldir used for?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Specifying the directory where WAL is stored",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Specifying the directory for logical backups",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Selecting the pg_hba.conf configuration directory",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Setting the extension directory",
+          "correct": false
+        }
+      ],
+      "explanation": "-X/--waldir sets the directory where the write-ahead log (WAL) will be stored.",
+      "source": {
+        "key": "pg16-initdb-waldir",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — initdb",
+        "section": "Options",
+        "locator": "-X/--waldir",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-initdb"
+      }
+    },
+    {
+      "key": "dba1-tools-014",
+      "type": "multiple_choice",
+      "text": "Which operations does pg_ctl support?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Starting the server",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Stopping the server",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Reloading configuration",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Automatically running VACUUM on all databases",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_ctl is used to initialize and manage the server: start, stop, restart, reload, status, promote, and other operations.",
+      "source": {
+        "key": "pg16-pgctl-operations",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_ctl",
+        "section": "Description",
+        "locator": "pg_ctl Commands",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pg-ctl"
+      }
+    },
+    {
+      "key": "dba1-tools-015",
+      "type": "multiple_choice",
+      "text": "Which shutdown modes does pg_ctl stop support?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "smart",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "fast",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "immediate",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "graceful",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_ctl stop supports smart, fast, and immediate modes.",
+      "source": {
+        "key": "pg16-pgctl-stop-modes",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_ctl",
+        "section": "Stopping the Server",
+        "locator": "smart, fast, and immediate Modes",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pg-ctl"
+      }
+    },
+    {
+      "key": "dba1-tools-016",
+      "type": "single_choice",
+      "text": "Which pg_ctl shutdown mode is used by default?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "smart",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "fast",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "immediate",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A mode must always be specified explicitly",
+          "correct": false
+        }
+      ],
+      "explanation": "If -m is not specified, pg_ctl uses fast mode.",
+      "source": {
+        "key": "pg16-pgctl-default-stop",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_ctl",
+        "section": "Options",
+        "locator": "-m/--mode: fast Is the Default",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pg-ctl"
+      }
+    },
+    {
+      "key": "dba1-tools-017",
+      "type": "multiple_choice",
+      "text": "What happens during PostgreSQL shutdown in smart mode?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "New connections are rejected",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The server waits for existing clients to disconnect",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "All server processes are terminated immediately",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Crash recovery is always required",
+          "correct": false
+        }
+      ],
+      "explanation": "Smart shutdown rejects new connections and waits for existing clients to disconnect.",
+      "source": {
+        "key": "pg16-pgctl-smart",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_ctl",
+        "section": "Stopping the Server",
+        "locator": "Smart Mode",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pg-ctl"
+      }
+    },
+    {
+      "key": "dba1-tools-018",
+      "type": "multiple_choice",
+      "text": "Which statements about pg_ctl stop -m immediate are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Server processes are terminated immediately",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The normal clean-shutdown procedure is not performed",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Crash recovery will be required at the next startup",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The server waits for all user sessions to finish",
+          "correct": false
+        }
+      ],
+      "explanation": "Immediate shutdown terminates server processes immediately without a clean shutdown, so crash recovery will be required at the next startup.",
+      "source": {
+        "key": "pg16-pgctl-immediate",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_ctl",
+        "section": "Stopping the Server",
+        "locator": "Immediate Mode",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pg-ctl"
+      }
+    },
+    {
+      "key": "dba1-tools-019",
+      "type": "single_choice",
+      "text": "What does pg_ctl reload do?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Sends SIGHUP to the postgres process so configuration is reread",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Completely stops and restarts the server",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Creates a new cluster",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Deletes postmaster.pid",
+          "correct": false
+        }
+      ],
+      "explanation": "reload sends SIGHUP to the server, after which PostgreSQL rereads postgresql.conf, pg_hba.conf, and other configuration files.",
+      "source": {
+        "key": "pg16-pgctl-reload",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_ctl",
+        "section": "reload Command",
+        "locator": "SIGHUP and Reloading Configuration Files",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pg-ctl"
+      }
+    },
+    {
+      "key": "dba1-tools-020",
+      "type": "single_choice",
+      "text": "What does pg_ctl status show when the server is running?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The server PID and startup command-line options",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only the PostgreSQL version",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A list of all tables in the cluster",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The contents of postgresql.conf",
+          "correct": false
+        }
+      ],
+      "explanation": "For a running server, pg_ctl status displays the PID and command-line options used to start it.",
+      "source": {
+        "key": "pg16-pgctl-status",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_ctl",
+        "section": "status Command",
+        "locator": "Server PID and Command-Line Options",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pg-ctl"
+      }
+    },
+    {
+      "key": "dba1-tools-021",
+      "type": "single_choice",
+      "text": "What state must the server be in before running pg_checksums?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The server must be shut down cleanly",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The server must run in read-only mode",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The server must be in recovery mode",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The server state does not matter",
+          "correct": false
+        }
+      ],
+      "explanation": "Before running pg_checksums, the PostgreSQL server must be shut down cleanly.",
+      "source": {
+        "key": "pg16-pgchecksums-server-state",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_checksums",
+        "section": "Description",
+        "locator": "The Server Must Be Stopped Before Running pg_checksums",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgchecksums"
+      }
+    },
+    {
+      "key": "dba1-tools-022",
+      "type": "multiple_choice",
+      "text": "Which main operations does pg_checksums support?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Checking checksums",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Enabling checksums",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Disabling checksums",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Automatically repairing corrupted pages",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_checksums can check, enable, or disable data checksums for a cluster.",
+      "source": {
+        "key": "pg16-pgchecksums-operations",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_checksums",
+        "section": "Description",
+        "locator": "check, enable, and disable",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgchecksums"
+      }
+    },
+    {
+      "key": "dba1-tools-023",
+      "type": "multiple_choice",
+      "text": "Which statements about pg_checksums --no-sync are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The operation can finish faster",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "If the operating system fails, the directory containing modified files can be corrupted",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The option is not recommended for production",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "In --check mode the option speeds up checksum verification",
+          "correct": false
+        }
+      ],
+      "explanation": "--no-sync disables waiting for files to be safely written. It is mainly useful for testing and has no effect in --check mode.",
+      "source": {
+        "key": "pg16-pgchecksums-no-sync",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_checksums",
+        "section": "Options",
+        "locator": "-N/--no-sync",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgchecksums"
+      }
+    },
+    {
+      "key": "dba1-tools-024",
+      "type": "multiple_choice",
+      "text": "What happens to cluster files when checksums are enabled and disabled with pg_checksums?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "When enabling, checksums are calculated for relation-file blocks",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "When enabling, relation blocks are rewritten in place",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "When disabling, only pg_control is changed",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "When disabling, all relation files are completely rewritten",
+          "correct": false
+        }
+      ],
+      "explanation": "When enabling checksums, pg_checksums calculates a checksum for each relation block and rewrites the blocks; when disabling checksums, only pg_control is changed.",
+      "source": {
+        "key": "pg16-pgchecksums-files",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_checksums",
+        "section": "Description",
+        "locator": "File Changes during enable and disable",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgchecksums"
+      }
+    },
+    {
+      "key": "dba1-tools-025",
+      "type": "single_choice",
+      "text": "What is a PostgreSQL database cluster?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "One postgres process",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "A set of server configuration files",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The set of databases served simultaneously by one PostgreSQL instance",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A set of operating-system users",
+          "correct": false
+        }
+      ],
+      "explanation": "A single PostgreSQL instance works with multiple databases at the same time; this set of databases is called a database cluster.",
+      "source": {
+        "key": "dba1-course-cluster-definition",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Tools and Installation",
+        "locator": "Slide 3 — Database Cluster and Server",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-026",
+      "type": "single_choice",
+      "text": "What is a PostgreSQL server (server instance)?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The PGDATA directory",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "The program that manages a database cluster",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Any individual database",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A set of WAL files",
+          "correct": false
+        }
+      ],
+      "explanation": "The cluster is the data stored in files, while the server or server instance is the program that manages that cluster.",
+      "source": {
+        "key": "dba1-course-server-definition",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Tools and Installation",
+        "locator": "Slide 3 — Database Cluster and Server",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-027",
+      "type": "multiple_choice",
+      "text": "When is installing PostgreSQL from source useful?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "When only standard build options must be used",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "When nonstandard build options are needed",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "When a build for a specific architecture is required",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "When you need to understand how the PostgreSQL build process works",
+          "correct": true
+        }
+      ],
+      "explanation": "The material emphasizes the value of understanding source builds for nonstandard options, specific architectures, and a general understanding of the installation process.",
+      "source": {
+        "key": "dba1-course-source-build-purpose",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Tools and Installation",
+        "locator": "Slide 4 — Source Code",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-028",
+      "type": "multiple_choice",
+      "text": "How does obtaining source from the git repository differ from using a source archive?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Git can build a version at a specific commit, including the latest development state",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Building from git normally requires a broader set of tools",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The archive already contains some generated C files",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "An archive can build only PostgreSQL 16, while git can build only PostgreSQL 17",
+          "correct": false
+        }
+      ],
+      "explanation": "Git gives access to any commit but requires additional tools; release archives already contain some generated files.",
+      "source": {
+        "key": "dba1-course-git-vs-archive",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Tools and Installation",
+        "locator": "Slide 4 — Source Code",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-029",
+      "type": "multiple_choice",
+      "text": "Which software is required for a traditional PostgreSQL build from source?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "JDK and Maven",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "tar and gzip/bzip2",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "GNU make",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A C compiler (C89)",
+          "correct": true
+        }
+      ],
+      "explanation": "The required software listed in the material includes tar, gzip/bzip2, GNU make, and a C compiler.",
+      "source": {
+        "key": "dba1-course-required-build-tools",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Tools and Installation",
+        "locator": "Slide 5 — Required Software",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-030",
+      "type": "single_choice",
+      "text": "What are the zlib, lz4, and zstd libraries used for when building PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "User authentication",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Unicode support",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Compression",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Managing system services",
+          "correct": false
+        }
+      ],
+      "explanation": "The material explicitly states that zlib, lz4, and zstd are used for compression.",
+      "source": {
+        "key": "dba1-course-compression-libs",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Tools and Installation",
+        "locator": "Slide 5 — Required Software",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-031",
+      "type": "single_choice",
+      "text": "When might the readline library be unnecessary in a PostgreSQL server installation?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "If psql will not be run interactively in a terminal",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "If page checksums are used",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "If the server listens on TCP/IP",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "If WAL archiving is enabled",
+          "correct": false
+        }
+      ],
+      "explanation": "Readline is primarily needed for a convenient interactive command line; the material notes that it may be unnecessary if psql is not used interactively in a terminal.",
+      "source": {
+        "key": "dba1-course-readline-optional",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Tools and Installation",
+        "locator": "Slide 5 — Required Software",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-032",
+      "type": "multiple_choice",
+      "text": "Which languages may be needed as additional dependencies for PostgreSQL procedural languages?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Java",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Perl",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Python",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Tcl",
+          "correct": true
+        }
+      ],
+      "explanation": "The material lists Perl, Python, and Tcl for using PL/Perl, PL/Python, and PL/Tcl.",
+      "source": {
+        "key": "dba1-course-procedural-languages",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Tools and Installation",
+        "locator": "Slide 5 — Required Software",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-033",
+      "type": "multiple_choice",
+      "text": "Which components can be used for authentication and encryption when building PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Kerberos",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "OpenSSL",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "OpenLDAP and PAM",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Ninja",
+          "correct": false
+        }
+      ],
+      "explanation": "In the optional software section, the material associates Kerberos, OpenSSL, OpenLDAP, and PAM with authentication and encryption.",
+      "source": {
+        "key": "dba1-course-auth-libs",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Tools and Installation",
+        "locator": "Slide 5 — Required Software",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-034",
+      "type": "single_choice",
+      "text": "What can the ICU library be used for when building PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "For cross-platform Unicode support",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "For WAL compression",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "For building the Linux kernel",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "For managing PostgreSQL processes",
+          "correct": false
+        }
+      ],
+      "explanation": "ICU is listed as a library for cross-platform Unicode support.",
+      "source": {
+        "key": "dba1-course-icu",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Tools and Installation",
+        "locator": "Slide 5 — Required Software",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-035",
+      "type": "multiple_choice",
+      "text": "What is true about make check when building PostgreSQL with Autoconf/Make?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It should be run only after make install",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "It runs regression tests on the built server before installation",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It should be run as a regular user, not root",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It can be repeated later for another check",
+          "correct": true
+        }
+      ],
+      "explanation": "The documentation recommends make check after building and before installation; tests are run as a regular user, not root.",
+      "source": {
+        "key": "pg16-install-make-check",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "17.3.2. Installation Procedure",
+        "locator": "Regression Tests: make check",
+        "url": "https://postgrespro.ru/docs/postgresql/16/install-make"
+      }
+    },
+    {
+      "key": "dba1-tools-036",
+      "type": "single_choice",
+      "text": "How does make world-bin differ from make world?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "world-bin builds only the server without utilities",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "world-bin builds documentation while world does not",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "world-bin includes contrib but not documentation; world includes both contrib and documentation",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "There is no difference",
+          "correct": false
+        }
+      ],
+      "explanation": "make world includes additional modules and documentation, while make world-bin includes additional modules without documentation.",
+      "source": {
+        "key": "pg16-install-make-world",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "17.3.2. Installation Procedure",
+        "locator": "make world and make world-bin Targets",
+        "url": "https://postgrespro.ru/docs/postgresql/16/install-make"
+      }
+    },
+    {
+      "key": "dba1-tools-037",
+      "type": "single_choice",
+      "text": "Which configure option is normally used to change the PostgreSQL installation root directory?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "--pgdata",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "--prefix",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "--waldir",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "--runtime-dir",
+          "correct": false
+        }
+      ],
+      "explanation": "The --prefix option sets the installation tree prefix instead of the default /usr/local/pgsql.",
+      "source": {
+        "key": "pg16-install-make-prefix",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "17.3.3. configure Options",
+        "locator": "--prefix",
+        "url": "https://postgrespro.ru/docs/postgresql/16/install-make"
+      }
+    },
+    {
+      "key": "dba1-tools-038",
+      "type": "multiple_choice",
+      "text": "Which configure options enable the corresponding optional PostgreSQL features?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "--with-python — PL/Python",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "--with-lz4 — LZ4 compression support",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "--with-zstd — Zstandard support",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "--with-cargo — built-in Rust support",
+          "correct": false
+        }
+      ],
+      "explanation": "The documentation describes --with-python, --with-lz4, and --with-zstd as options that enable the corresponding capabilities.",
+      "source": {
+        "key": "pg16-install-make-features",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "17.3.3. configure Options",
+        "locator": "--with-python, --with-lz4, --with-zstd",
+        "url": "https://postgrespro.ru/docs/postgresql/16/install-make"
+      }
+    },
+    {
+      "key": "dba1-tools-039",
+      "type": "single_choice",
+      "text": "What is the consequence of building with --without-readline?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Command-line editing and history are disabled in psql",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "WAL is disabled",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "TCP/IP use is prohibited",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Data checksums are disabled",
+          "correct": false
+        }
+      ],
+      "explanation": "--without-readline disables Readline/libedit, so psql loses command-line editing and history.",
+      "source": {
+        "key": "pg16-install-make-without-readline",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "17.3.3. configure Options",
+        "locator": "--without-readline",
+        "url": "https://postgrespro.ru/docs/postgresql/16/install-make"
+      }
+    },
+    {
+      "key": "dba1-tools-040",
+      "type": "single_choice",
+      "text": "What does meson setup build do during the PostgreSQL build process?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Creates and configures the build directory named build",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Starts the PostgreSQL server",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Creates a database cluster",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Removes the results of a previous installation",
+          "correct": false
+        }
+      ],
+      "explanation": "meson setup creates and configures the build directory; the builddir argument is mandatory for this command.",
+      "source": {
+        "key": "pg16-install-meson-setup",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "17.4.2. Installation Procedure",
+        "locator": "meson setup build",
+        "url": "https://postgrespro.ru/docs/postgresql/16/install-meson"
+      }
+    },
+    {
+      "key": "dba1-tools-041",
+      "type": "single_choice",
+      "text": "Which Meson command changes settings of an already-created build directory?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "meson restart",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "ninja configure",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "meson configure",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "meson initdb",
+          "correct": false
+        }
+      ],
+      "explanation": "After the initial meson setup, build-directory settings are changed with meson configure.",
+      "source": {
+        "key": "pg16-install-meson-configure",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "17.4.2. Installation Procedure",
+        "locator": "meson configure",
+        "url": "https://postgrespro.ru/docs/postgresql/16/install-meson"
+      }
+    },
+    {
+      "key": "dba1-tools-042",
+      "type": "multiple_choice",
+      "text": "What is true about meson test when building PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It is intended only to delete the build directory",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "It runs regression tests on the built server",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It should be run as a regular user, not root",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It can be run before PostgreSQL is installed",
+          "correct": true
+        }
+      ],
+      "explanation": "The documentation recommends meson test for regression testing after building and before installation, as a regular user.",
+      "source": {
+        "key": "pg16-install-meson-test",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "17.4.2. Installation Procedure",
+        "locator": "Regression Tests: meson test",
+        "url": "https://postgrespro.ru/docs/postgresql/16/install-meson"
+      }
+    },
+    {
+      "key": "dba1-tools-043",
+      "type": "multiple_choice",
+      "text": "Which commands correctly belong to the Meson/Ninja PostgreSQL build lifecycle?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "ninja initdb — initialize the build directory",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "ninja install — install the built files",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "ninja clean — clean built files",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "ninja uninstall — undo installation",
+          "correct": true
+        }
+      ],
+      "explanation": "The documentation describes ninja install, ninja clean, and ninja uninstall for installation, cleanup, and removal of the installed files.",
+      "source": {
+        "key": "pg16-install-meson-ninja-lifecycle",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "17.4.2. Installation Procedure",
+        "locator": "ninja install, ninja uninstall, ninja clean",
+        "url": "https://postgrespro.ru/docs/postgresql/16/install-meson"
+      }
+    },
+    {
+      "key": "dba1-tools-044",
+      "type": "single_choice",
+      "text": "What does the initdb --pwfile option do?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Reads the initial superuser password from the first line of the specified file",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Writes the superuser password to postgresql.conf",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Creates pg_hba.conf without authentication rules",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Selects the WAL directory",
+          "correct": false
+        }
+      ],
+      "explanation": "--pwfile makes initdb read the initial superuser password from the first line of the specified file.",
+      "source": {
+        "key": "pg16-initdb-pwfile",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — initdb",
+        "section": "Options",
+        "locator": "--pwfile",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-initdb"
+      }
+    },
+    {
+      "key": "dba1-tools-045",
+      "type": "single_choice",
+      "text": "What is initdb --sync-only intended for?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Creating only the system catalogs",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Safely synchronizing database files to disk without performing the other initdb operations",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Permanently disabling fsync",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Checking configuration SQL syntax",
+          "correct": false
+        }
+      ],
+      "explanation": "--sync-only synchronizes database files to disk and exits without performing the other initdb operations.",
+      "source": {
+        "key": "pg16-initdb-sync-only",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — initdb",
+        "section": "Options",
+        "locator": "-S/--sync-only",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-initdb"
+      }
+    },
+    {
+      "key": "dba1-tools-046",
+      "type": "multiple_choice",
+      "text": "Which statements about initdb --wal-segsize are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The default WAL segment size is 16 MB",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The value is specified in megabytes and must be a power of two within the allowed range",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The size can be freely changed after cluster initialization",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "This parameter is set when the cluster is initialized",
+          "correct": true
+        }
+      ],
+      "explanation": "The WAL segment size is set at initdb time; the default is 16 MB, and it cannot later be changed with this option.",
+      "source": {
+        "key": "pg16-initdb-wal-segsize",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — initdb",
+        "section": "Options",
+        "locator": "--wal-segsize",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-initdb"
+      }
+    },
+    {
+      "key": "dba1-tools-047",
+      "type": "single_choice",
+      "text": "What does pg_ctl restart actually do?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Only sends SIGHUP",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Checks status and changes nothing",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Stops the server and then starts it again",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Creates a new cluster",
+          "correct": false
+        }
+      ],
+      "explanation": "restart is a stop followed by a start and can be used for changes that require a full server restart.",
+      "source": {
+        "key": "pg16-pgctl-restart",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_ctl",
+        "section": "Description",
+        "locator": "restart Command",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pg-ctl"
+      }
+    },
+    {
+      "key": "dba1-tools-048",
+      "type": "single_choice",
+      "text": "What is pg_ctl promote used for?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Taking a standby server out of standby mode and switching it to read/write operation",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Promoting an ordinary user to superuser",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Upgrading the PostgreSQL version",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Enabling checksums",
+          "correct": false
+        }
+      ],
+      "explanation": "promote takes a server out of standby mode and switches it to normal read/write operation.",
+      "source": {
+        "key": "pg16-pgctl-promote",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_ctl",
+        "section": "Description",
+        "locator": "promote Command",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pg-ctl"
+      }
+    },
+    {
+      "key": "dba1-tools-049",
+      "type": "single_choice",
+      "text": "What task does the -l option solve with pg_ctl start?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Specifies a file for server output",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Sets the cluster locale",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Enables LZ4",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Specifies the extension directory",
+          "correct": false
+        }
+      ],
+      "explanation": "When starting the server, the -l option to pg_ctl directs server output to the specified log file.",
+      "source": {
+        "key": "pg16-pgctl-log-file",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_ctl",
+        "section": "Description",
+        "locator": "start and the -l Option",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pg-ctl"
+      }
+    },
+    {
+      "key": "dba1-tools-050",
+      "type": "single_choice",
+      "text": "Why can startup and maintenance commands for a packaged PostgreSQL installation differ from commands for a 'clean' PostgreSQL source build?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Because packaged PostgreSQL does not use operating-system processes",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Because the package vendor can integrate installation and startup with the system's standard tools",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Because pg_ctl exists only in the source version",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Because the packaged version has no data directory",
+          "correct": false
+        }
+      ],
+      "explanation": "The runtime chapter notes that packaged products are usually integrated by the vendor with the system's installation and startup mechanisms, so details may differ from a 'clean' source build.",
+      "source": {
+        "key": "pg16-runtime-packaged-product",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16",
+        "section": "Chapter 19. Server Setup and Operation",
+        "locator": "Assumptions about “Clean” PostgreSQL and Packaged Products",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime"
+      }
+    },
+    {
+      "key": "dba1-tools-051",
+      "type": "multiple_choice",
+      "text": "Why is installing PostgreSQL from prebuilt packages usually preferable to building from source?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Such installation is clearer and supported by system tools",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It is usually easier to update",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It always contains the newest development branch from git",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The PGDG repository can be used for current versions",
+          "correct": true
+        }
+      ],
+      "explanation": "The material describes package installation as clear, supported, and easy to update; the PGDG repository is mentioned for obtaining a current version.",
+      "source": {
+        "key": "dba1-course-packages-preferred",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Tools and Installation",
+        "locator": "Slide 11 — Package Installation",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-052",
+      "type": "multiple_choice",
+      "text": "What is true about pg_createcluster on Ubuntu?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It is a wrapper around initdb",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Package installation creates a cluster named main",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Checksums are enabled by default during this initialization",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Package installation configures automatic server startup/shutdown together with the operating system",
+          "correct": true
+        }
+      ],
+      "explanation": "On Ubuntu, pg_createcluster wraps initdb; the package creates a cluster named main, checksums are disabled by default, and server startup/shutdown is integrated with the operating system.",
+      "source": {
+        "key": "dba1-course-pg-createcluster",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Tools and Installation",
+        "locator": "Slide 12 — Creating a Cluster",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-053",
+      "type": "multiple_choice",
+      "text": "Which statements about pg_dropcluster and pg_createcluster are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_dropcluster is used to remove a cluster",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Both utilities are Ubuntu-specific in the context of the material",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Other systems always require pg_createcluster",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "On other systems, a cluster can be initialized explicitly with initdb",
+          "correct": true
+        }
+      ],
+      "explanation": "The material identifies pg_createcluster and pg_dropcluster as Ubuntu-specific; on other systems initdb and appropriate operating-system tools are used.",
+      "source": {
+        "key": "dba1-course-pg-dropcluster",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Tools and Installation",
+        "locator": "Slide 12 — Creating a Cluster",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-054",
+      "type": "single_choice",
+      "text": "How should a PostgreSQL instance from Ubuntu packages be managed instead of invoking pg_ctl directly?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Only through the pg_ctl() SQL function",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Through the special pg_ctlcluster wrapper",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Through initdb --control",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Through meson control",
+          "correct": false
+        }
+      ],
+      "explanation": "In the Ubuntu package distribution, pg_ctlcluster is used as a wrapper around pg_ctl; on other systems pg_ctl can be used directly.",
+      "source": {
+        "key": "dba1-course-pg-ctlcluster",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Tools and Installation",
+        "locator": "Slide 14 — Server Management",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-055",
+      "type": "multiple_choice",
+      "text": "Which differences are typical between PostgreSQL in a virtual machine and managed PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A virtual environment has virtualization overhead",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "In a virtual machine, the administrator can have full access to the instance",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "In a managed service, the provider handles much of the administration",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A managed service always provides full access to the instance and operating system",
+          "correct": false
+        }
+      ],
+      "explanation": "The material compares virtualization overhead and full administrative access in a VM with restricted access and greater provider responsibility in DBaaS.",
+      "source": {
+        "key": "dba1-course-cloud",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Tools and Installation",
+        "locator": "Slide 16 — Cloud Solutions",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-056",
+      "type": "single_choice",
+      "text": "What is the correct sequence for enabling checksums in an existing PostgreSQL cluster with pg_checksums?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Enable checksums → stop the server → check → start",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Stop the server → check checksum state → enable checksums → start the server",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Start the server → enable checksums → stop → check",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Check checksums on a running server → enable → restart",
+          "correct": false
+        }
+      ],
+      "explanation": "The practice specifies this order: stop the server, check the checksum state, enable checksums, and then start the server.",
+      "source": {
+        "key": "dba1-course-checksum-practice",
+        "kind": "course_material",
+        "module": "DBA-1",
+        "section": "Tools and Installation",
+        "locator": "Slide 18 — Practice: Enabling Checksums",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-057",
+      "type": "multiple_choice",
+      "text": "What is true about pg_checksums --check mode?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It is the default mode if no other mode is specified",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "If no errors are found, the command returns a zero exit status",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "If at least one error is found, a nonzero status is returned",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "This mode automatically repairs damaged pages",
+          "correct": false
+        }
+      ],
+      "explanation": "--check is the default mode; the exit status indicates whether checksum errors were found.",
+      "source": {
+        "key": "pg16-pgchecksums-check-status",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_checksums",
+        "section": "Description and Options",
+        "locator": "--check and Exit Statuses",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgchecksums"
+      }
+    },
+    {
+      "key": "dba1-tools-059",
+      "type": "multiple_choice",
+      "text": "Which precautions are important when enabling or disabling checksums in a large or replicated cluster?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Until the operation finishes, do not start the server or other programs that write to the data directory",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "With block-level file copying, checksum mode must be changed consistently across nodes",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A safe option is to recreate standby servers after the operation on the primary",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "For speed, it is recommended to run the server in parallel and write to the cluster",
+          "correct": false
+        }
+      ],
+      "explanation": "The documentation warns about long-running operations and the risks of concurrent writes; with block-level replication, checksum mode must be consistent across nodes.",
+      "source": {
+        "key": "pg16-pgchecksums-replication-safety",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_checksums",
+        "section": "Notes",
+        "locator": "Safety of enable/disable and Replication",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgchecksums"
+      }
+    },
+    {
+      "key": "dba1-tools-060",
+      "type": "single_choice",
+      "text": "What happens to the checksum configuration if pg_checksums is interrupted during enable or disable?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It is necessarily switched partially to the new state",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "The cluster is automatically deleted",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The checksum configuration remains unchanged, and the operation can be run again",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "PostgreSQL permanently prevents pg_checksums from being run again",
+          "correct": false
+        }
+      ],
+      "explanation": "If pg_checksums is interrupted during enable or disable, the checksum configuration state remains unchanged and the operation can be repeated.",
+      "source": {
+        "key": "pg16-pgchecksums-interrupted",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — pg_checksums",
+        "section": "Notes",
+        "locator": "Interrupting enable/disable",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgchecksums"
+      }
+    }
+  ]
+}

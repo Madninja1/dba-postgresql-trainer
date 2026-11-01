@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "psql-1",
+  "slug": "psql1-middle",
+  "notes_part": 2,
+  "topic_number": 2,
+  "title": "Middle — confident psql usage",
+  "description": "Scripting and productive psql workflows: variables, the query buffer, output formatting, \\copy, \\gset, \\watch, and object patterns.",
+  "sort_order": 20
+}

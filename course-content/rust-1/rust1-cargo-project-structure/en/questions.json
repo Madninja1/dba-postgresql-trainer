@@ -1,0 +1,978 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-cargo-project-structure",
+  "questions": [
+    {
+      "key": "rust1-cargo-project-structure-001",
+      "type": "single_choice",
+      "text": "Which tool manages Rust versions and related tooling?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "rustup",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "cargo",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "rustfmt",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "rustc",
+          "correct": false
+        }
+      ],
+      "explanation": "`rustup` is described as the command-line tool for managing Rust versions and related tools.",
+      "source": {
+        "key": "rust1-cargo-project-structure-rustup",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Installation",
+        "locator": "Chapter 1 — Installation, pp. 9",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-006",
+      "type": "single_choice",
+      "text": "Which function is the first code executed in every Rust executable?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "start",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "run",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "main",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "init",
+          "correct": false
+        }
+      ],
+      "explanation": "The `main` function is identified as the first code that runs in every executable Rust program.",
+      "source": {
+        "key": "rust1-cargo-project-structure-main",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Hello, World!",
+        "locator": "Chapter 1 — Hello, World!, pp. 14–15",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-007",
+      "type": "single_choice",
+      "text": "What does the exclamation mark in `println!` indicate?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It calls a macro rather than an ordinary function",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It forces output to stderr",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It terminates the program",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It creates a mutable string",
+          "correct": false
+        }
+      ],
+      "explanation": "The material explains that `!` marks a macro invocation; without it, the syntax would look like a function call.",
+      "source": {
+        "key": "rust1-cargo-project-structure-println-macro",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Hello, World!",
+        "locator": "Chapter 1 — Hello, World!, pp. 15",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-008",
+      "type": "single_choice",
+      "text": "Which command compiles a standalone `main.rs` file without Cargo?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "cargo main.rs",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "rustc main.rs",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "rustup main.rs",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "rustfmt main.rs",
+          "correct": false
+        }
+      ],
+      "explanation": "The example compiles the file with `rustc main.rs` before running it.",
+      "source": {
+        "key": "rust1-cargo-project-structure-rustc",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Hello, World!",
+        "locator": "Chapter 1 — Hello, World!, pp. 15–16",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-009",
+      "type": "single_choice",
+      "text": "What practical consequence follows from Rust being ahead-of-time compiled?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The program normally has to be interpreted on every run",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Compilation produces an executable that can run without the Rust compiler",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Every Rust binary requires a JVM at runtime",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Source code is compiled only when each function is called for the first time",
+          "correct": false
+        }
+      ],
+      "explanation": "Rust compiles the program ahead of time into an executable; running the finished binary does not require the Rust compiler.",
+      "source": {
+        "key": "rust1-cargo-project-structure-compiled-language",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Hello, World!",
+        "locator": "Chapter 1 — Hello, World!, pp. 16",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-010",
+      "type": "single_choice",
+      "text": "What is Cargo's primary role in the Rust ecosystem?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Managing installed Rust toolchain versions",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Building projects and managing their packages and dependencies",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Compiling source code instead of `rustc` without using `rustc` internally",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only formatting source code",
+          "correct": false
+        }
+      ],
+      "explanation": "Cargo is Rust's build system and package manager: it manages dependencies and coordinates project builds.",
+      "source": {
+        "key": "rust1-cargo-project-structure-cargo-role",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Hello, Cargo!",
+        "locator": "Chapter 1 — Hello, Cargo!, pp. 17",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-011",
+      "type": "single_choice",
+      "text": "Which command creates a new Cargo project named `hello_cargo`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "cargo init-file hello_cargo",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "cargo new hello_cargo",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "rustc new hello_cargo",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "cargo build hello_cargo",
+          "correct": false
+        }
+      ],
+      "explanation": "The example creates the project with `cargo new hello_cargo`.",
+      "source": {
+        "key": "rust1-cargo-project-structure-cargo-new",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Hello, Cargo!",
+        "locator": "Chapter 1 — Hello, Cargo!, pp. 17",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-012",
+      "type": "single_choice",
+      "text": "Where does Cargo expect a project's source files?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "In the `src` directory",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only in the project root",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "In `target/debug`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "In `.git`",
+          "correct": false
+        }
+      ],
+      "explanation": "The material says Cargo expects source files inside the `src` directory.",
+      "source": {
+        "key": "rust1-cargo-project-structure-project-layout",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Hello, Cargo!",
+        "locator": "Chapter 1 — Hello, Cargo!, pp. 18–19",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-013",
+      "type": "single_choice",
+      "text": "Which file is Cargo's TOML configuration file?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Cargo.lock",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "main.rs",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Cargo.toml",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": ".gitignore",
+          "correct": false
+        }
+      ],
+      "explanation": "`Cargo.toml` is described as Cargo's configuration file in TOML format.",
+      "source": {
+        "key": "rust1-cargo-project-structure-cargo-toml",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Hello, Cargo!",
+        "locator": "Chapter 1 — Hello, Cargo!, pp. 18",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-014",
+      "type": "single_choice",
+      "text": "What is the `[dependencies]` section of `Cargo.toml` used for?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Listing the project's external dependencies",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Storing the `main` source code",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Storing compiler output",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Storing Git commits",
+          "correct": false
+        }
+      ],
+      "explanation": "The `[dependencies]` section starts the list of external packages on which the project depends.",
+      "source": {
+        "key": "rust1-cargo-project-structure-dependencies",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Hello, Cargo!",
+        "locator": "Chapter 1 — Hello, Cargo!, pp. 18",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-015",
+      "type": "single_choice",
+      "text": "Where is the binary from a normal Cargo debug build placed?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "target/release",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "target/debug",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "src/bin",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The project root",
+          "correct": false
+        }
+      ],
+      "explanation": "A normal build uses the debug profile, so Cargo places the binary in `target/debug`.",
+      "source": {
+        "key": "rust1-cargo-project-structure-debug-build",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Hello, Cargo!",
+        "locator": "Chapter 1 — Hello, Cargo!, pp. 19",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-016",
+      "type": "single_choice",
+      "text": "What does `Cargo.lock` store?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The exact versions of project dependencies",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The program source text",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only the Rust version number",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Git history",
+          "correct": false
+        }
+      ],
+      "explanation": "`Cargo.lock` stores exact dependency versions and is used for reproducible builds.",
+      "source": {
+        "key": "rust1-cargo-project-structure-cargo-lock",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Hello, Cargo!",
+        "locator": "Chapter 1 — Hello, Cargo!, pp. 19; 32",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-017",
+      "type": "single_choice",
+      "text": "What does `cargo run` do?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Only formats the code",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Compiles the project and runs the resulting binary",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Only checks the code without producing a binary",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Deletes `target`",
+          "correct": false
+        }
+      ],
+      "explanation": "`cargo run` combines building and running the project in one command.",
+      "source": {
+        "key": "rust1-cargo-project-structure-cargo-run",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Hello, Cargo!",
+        "locator": "Chapter 1 — Hello, Cargo!, pp. 20",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-018",
+      "type": "single_choice",
+      "text": "What does `cargo check` do?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Creates a release binary",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Checks whether the code compiles without creating an executable",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Creates a new project",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Updates every dependency beyond the Cargo.toml constraints",
+          "correct": false
+        }
+      ],
+      "explanation": "`cargo check` quickly verifies that the code compiles while skipping creation of the executable.",
+      "source": {
+        "key": "rust1-cargo-project-structure-cargo-check",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Hello, Cargo!",
+        "locator": "Chapter 1 — Hello, Cargo!, pp. 20–21",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-019",
+      "type": "single_choice",
+      "text": "Which command creates an optimized release build?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "cargo release",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "cargo build --release",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "cargo run --debug",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "rustc --check",
+          "correct": false
+        }
+      ],
+      "explanation": "The material uses `cargo build --release` for the final optimized build.",
+      "source": {
+        "key": "rust1-cargo-project-structure-release",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Hello, Cargo!",
+        "locator": "Chapter 1 — Hello, Cargo!, pp. 21",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-020",
+      "type": "single_choice",
+      "text": "Why must the string passed to `std::io::Stdin::read_line` be provided through a mutable reference?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`read_line` writes the input into the supplied `String`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Every `String` in Rust must be mutable",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Immutable references cannot be passed to standard-library functions",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`String::new()` returns an immutable reference that must be converted",
+          "correct": false
+        }
+      ],
+      "explanation": "`read_line` appends user input to the supplied `String`, so it requires a `&mut String`.",
+      "source": {
+        "key": "rust1-cargo-project-structure-guess-input",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Programming a Guessing Game",
+        "locator": "Chapter 2 — Programming a Guessing Game, pp. 25–27",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-021",
+      "type": "single_choice",
+      "text": "What does `std::io::Stdin::read_line` return when reading into a `String`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`std::io::Result<usize>`, where the `usize` is the number of bytes read",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A bare `usize` with no way to report an error",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`Option<String>` containing a copy of the input",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`Result<String, std::io::Error>` containing a new string",
+          "correct": false
+        }
+      ],
+      "explanation": "`read_line` mutates the supplied buffer and returns `io::Result<usize>`; on success the value is the number of bytes read.",
+      "source": {
+        "key": "rust1-cargo-project-structure-read-line-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Programming a Guessing Game",
+        "locator": "Chapter 2 — Programming a Guessing Game, pp. 27–28",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-022",
+      "type": "single_choice",
+      "text": "What does `expect` do when a `Result` contains `Err`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Returns an empty string",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Terminates the program and prints the supplied message",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Silently ignores the error",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Automatically retries the read",
+          "correct": false
+        }
+      ],
+      "explanation": "If the `Result` is `Err`, `expect` terminates the program and displays the supplied message.",
+      "source": {
+        "key": "rust1-cargo-project-structure-expect",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Programming a Guessing Game",
+        "locator": "Chapter 2 — Programming a Guessing Game, pp. 28",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-033",
+      "type": "multiple_choice",
+      "text": "Which tasks does Cargo perform? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Building code",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Downloading dependency libraries",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Building those libraries",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Automatically writing the program's business logic",
+          "correct": false
+        }
+      ],
+      "explanation": "Cargo builds code, downloads dependencies, and builds them; it does not write business logic.",
+      "source": {
+        "key": "rust1-cargo-project-structure-cargo-tasks",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Hello, Cargo!",
+        "locator": "Chapter 1 — Hello, Cargo!, pp. 17",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-035",
+      "type": "multiple_choice",
+      "text": "Which information is specified in the `[package]` section of `Cargo.toml`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Package name",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Package version",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Rust edition (`edition`)",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Contents of `src/main.rs`",
+          "correct": false
+        }
+      ],
+      "explanation": "In the example, `[package]` contains `name`, `version`, and `edition`.",
+      "source": {
+        "key": "rust1-cargo-project-structure-package-section",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Hello, Cargo!",
+        "locator": "Chapter 1 — Hello, Cargo!, pp. 18",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-038",
+      "type": "multiple_choice",
+      "text": "Which statements are true about running `cargo run` again without making changes? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Cargo can detect that the files have not changed",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Cargo can skip rebuilding the project",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The already built binary is simply run",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Cargo always deletes `target` and rebuilds everything",
+          "correct": false
+        }
+      ],
+      "explanation": "The material shows that when nothing has changed, Cargo skips unnecessary rebuilding and runs the binary.",
+      "source": {
+        "key": "rust1-cargo-project-structure-incremental-run",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Hello, Cargo!",
+        "locator": "Chapter 1 — Hello, Cargo!, pp. 20",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-039",
+      "type": "multiple_choice",
+      "text": "How does `cargo check` differ from `cargo build`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`cargo check` verifies that the code compiles",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`cargo check` does not create an executable",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`cargo check` is often faster than `cargo build`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`cargo build` never creates an executable",
+          "correct": false
+        }
+      ],
+      "explanation": "`cargo check` skips binary code generation and is therefore often faster; `cargo build` creates an executable.",
+      "source": {
+        "key": "rust1-cargo-project-structure-check-build",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Hello, Cargo!",
+        "locator": "Chapter 1 — Hello, Cargo!, pp. 20–21",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-040",
+      "type": "multiple_choice",
+      "text": "Which properties are characteristic of a Cargo release build? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It is created with `cargo build --release`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The binary is placed in `target/release`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It enables optimizations",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It compiles faster than a debug build specifically because of the optimizations",
+          "correct": false
+        }
+      ],
+      "explanation": "The release profile enables optimizations and places the binary in `target/release`, but optimizations increase compilation time.",
+      "source": {
+        "key": "rust1-cargo-project-structure-release-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Hello, Cargo!",
+        "locator": "Chapter 1 — Hello, Cargo!, pp. 21",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-043",
+      "type": "multiple_choice",
+      "text": "Which statements about `String::new()` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It is an associated function of the `String` type",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It creates a new empty string",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The `::` syntax associates the function name with the `String` type",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It reads a line from stdin by itself",
+          "correct": false
+        }
+      ],
+      "explanation": "`String::new` is described as an associated function that creates an empty `String`; input is performed by a separate `read_line` call.",
+      "source": {
+        "key": "rust1-cargo-project-structure-string-new",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Programming a Guessing Game",
+        "locator": "Chapter 2 — Programming a Guessing Game, pp. 26",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-047",
+      "type": "multiple_choice",
+      "text": "Which statements about the external crate `rand` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It is added to the `[dependencies]` section of Cargo.toml",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Cargo downloads required dependencies from the registry associated with Crates.io",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Cargo can also download `rand`'s own dependencies",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "In this section, `rand` is a built-in part of Rust's standard library",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter emphasizes that random-number functionality here is not part of the standard library; `rand` is added as an external dependency, and Cargo also downloads its transitive dependencies.",
+      "source": {
+        "key": "rust1-cargo-project-structure-rand-dependency",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Programming a Guessing Game",
+        "locator": "Chapter 2 — Programming a Guessing Game, pp. 30–31",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-048",
+      "type": "multiple_choice",
+      "text": "Which statements about reproducible builds with `Cargo.lock` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Cargo records the selected dependency versions in `Cargo.lock`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "On later builds Cargo uses the recorded versions",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "This helps rebuild the same artifact with the same versions",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`Cargo.lock` forces Cargo to ignore Cargo.toml constraints whenever an explicit update is requested",
+          "correct": false
+        }
+      ],
+      "explanation": "The lock file records selected versions for later builds; an explicit update can change it within the declared specifications.",
+      "source": {
+        "key": "rust1-cargo-project-structure-reproducible-builds",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Programming a Guessing Game",
+        "locator": "Chapter 2 — Programming a Guessing Game, pp. 32",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-project-structure-049",
+      "type": "multiple_choice",
+      "text": "Which actions does `cargo update` perform in the described scenario? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Ignores the currently locked versions in Cargo.lock while searching for an update",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Finds the latest versions that satisfy the Cargo.toml requirements",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Writes the selected versions back to Cargo.lock",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Always moves to any later incompatible major/minor version regardless of Cargo.toml",
+          "correct": false
+        }
+      ],
+      "explanation": "`cargo update` recalculates versions according to the `Cargo.toml` specifications and updates `Cargo.lock`; versions incompatible with the constraints are not selected automatically.",
+      "source": {
+        "key": "rust1-cargo-project-structure-cargo-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Programming a Guessing Game",
+        "locator": "Chapter 2 — Programming a Guessing Game, pp. 32–33",
+        "url": null
+      }
+    }
+  ]
+}

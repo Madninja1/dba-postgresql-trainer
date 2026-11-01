@@ -41,7 +41,7 @@
     {
       "key": "dba1-access-privileges-002",
       "type": "multiple_choice",
-      "text": "Какие привилегии для таблиц перечислены в занятии? Выберите все правильные варианты.",
+      "text": "Какие из перечисленных привилегий применимы к таблицам PostgreSQL? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -185,7 +185,7 @@
     {
       "key": "dba1-access-privileges-006",
       "type": "multiple_choice",
-      "text": "Что можно делать командами GRANT и REVOKE в контексте занятия? Выберите все правильные варианты.",
+      "text": "Что можно делать командами GRANT и REVOKE? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -221,7 +221,7 @@
     {
       "key": "dba1-access-privileges-007",
       "type": "single_choice",
-      "text": "Какая категория ролей в модели занятия обходит обычные проверки разграничения доступа?",
+      "text": "Какая категория ролей обходит обычные проверки разграничения доступа?",
       "answers": [
         {
           "key": "a",
@@ -257,7 +257,7 @@
     {
       "key": "dba1-access-privileges-008",
       "type": "multiple_choice",
-      "text": "Какие утверждения о владельце объекта соответствуют материалу? Выберите все правильные варианты.",
+      "text": "Какие утверждения о владельце объекта верны? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -365,7 +365,7 @@
     {
       "key": "dba1-access-privileges-011",
       "type": "single_choice",
-      "text": "Что представляет собой псевдороль public согласно конспекту?",
+      "text": "Что представляет собой псевдороль public?",
       "answers": [
         {
           "key": "a",
@@ -401,7 +401,7 @@
     {
       "key": "dba1-access-privileges-012",
       "type": "multiple_choice",
-      "text": "Какие утверждения о членстве и атрибутах ролей соответствуют материалу? Выберите все правильные варианты.",
+      "text": "Какие утверждения о членстве и атрибутах ролей верны? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -437,7 +437,7 @@
     {
       "key": "dba1-access-privileges-013",
       "type": "single_choice",
-      "text": "Как в psql согласно материалу вывести роли, включая предопределённые системные роли?",
+      "text": "Как в psql вывести роли, включая предопределённые системные роли?",
       "answers": [
         {
           "key": "a",
@@ -509,7 +509,7 @@
     {
       "key": "dba1-access-privileges-015",
       "type": "single_choice",
-      "text": "Какая единственная объектная привилегия для функций и процедур выделена в занятии?",
+      "text": "Какая объектная привилегия применяется к функциям и процедурам PostgreSQL?",
       "answers": [
         {
           "key": "a",
@@ -576,6 +576,196 @@
         "section": "Подпрограммы",
         "locator": "SECURITY INVOKER и SECURITY DEFINER",
         "url": null
+      }
+    },
+    {
+      "key": "dba1-access-privileges-017",
+      "type": "multiple_choice",
+      "text": "Какие соответствия типов объектов и привилегий PostgreSQL верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Табличное пространство — CREATE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "База данных — CONNECT, CREATE и TEMPORARY",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Схема — USAGE и CREATE",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Последовательность — SELECT, UPDATE и USAGE",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Функция — TRUNCATE",
+          "correct": false
+        }
+      ],
+      "explanation": "Набор привилегий зависит от типа объекта: tablespace имеет CREATE; database — CONNECT/CREATE/TEMPORARY; schema — USAGE/CREATE; sequence — SELECT/UPDATE/USAGE.",
+      "source": {
+        "key": "dba1-13-object-privileges",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Привилегии",
+        "locator": "Слайд 10 и таблица прав PostgreSQL 16",
+        "url": "https://postgrespro.ru/docs/postgresql/16/ddl-priv"
+      }
+    },
+    {
+      "key": "dba1-access-privileges-018",
+      "type": "multiple_choice",
+      "text": "Какие привилегии PostgreSQL 16 выдаёт роли PUBLIC по умолчанию для новых объектов соответствующих типов? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "CONNECT и TEMPORARY для баз данных",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "EXECUTE для функций и процедур",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "USAGE для языков и типов данных",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "SELECT для всех новых пользовательских таблиц",
+          "correct": false
+        }
+      ],
+      "explanation": "В PostgreSQL 16 PUBLIC получает некоторые права автоматически: CONNECT/TEMPORARY на базы, EXECUTE на функции и процедуры и USAGE на языки и типы. SELECT на пользовательские таблицы по умолчанию PUBLIC не выдаётся.",
+      "source": {
+        "key": "dba1-13-public-defaults",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Привилегии по умолчанию",
+        "locator": "Default privileges for PUBLIC",
+        "url": "https://postgrespro.ru/docs/postgresql/16/ddl-priv"
+      }
+    },
+    {
+      "key": "dba1-access-privileges-019",
+      "type": "single_choice",
+      "text": "Для чего предназначены функции семейства has_*_privilege в PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Проверять, имеет ли роль указанную привилегию на объект",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Менять метод аутентификации в pg_hba.conf",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Перестраивать таблицы без блокировок",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Создавать пароль роли автоматически",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал после разбора категорий ролей указывает семейство has_*_privilege как способ программно проверить наличие конкретного права на объект.",
+      "source": {
+        "key": "dba1-13-privilege-check",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Категории ролей",
+        "locator": "Функции has_*_privilege",
+        "url": "https://postgrespro.ru/docs/postgresql/16/functions-info"
+      }
+    },
+    {
+      "key": "dba1-access-privileges-020",
+      "type": "multiple_choice",
+      "text": "Какие меры относятся к безопасному использованию SECURITY DEFINER функции? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Исключить из search_path схемы, доступные на запись недоверенным пользователям",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Поместить pg_temp в конец безопасного search_path",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Ограничить EXECUTE, если функция не должна быть доступна всем через PUBLIC",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Обязательно выдать вызывающим ролям SUPERUSER",
+          "correct": false
+        }
+      ],
+      "explanation": "SECURITY DEFINER выполняется с правами владельца, поэтому связанная документация требует защищённого search_path; для чувствительных функций также следует контролировать автоматически выдаваемый PUBLIC EXECUTE.",
+      "source": {
+        "key": "dba1-13-security-definer",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Подпрограммы",
+        "locator": "Разработка защищённых функций SECURITY DEFINER",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-createfunction"
+      }
+    },
+    {
+      "key": "dba1-access-privileges-021",
+      "type": "multiple_choice",
+      "text": "Какие соответствия предопределённых ролей PostgreSQL и их назначения верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_read_all_settings — чтение всех параметров сервера",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_read_all_stats — расширенный доступ к статистике",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_read_all_data — чтение данных во всех таблицах, представлениях и последовательностях с необходимым USAGE схем",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_write_all_data — запись данных без автоматического BYPASSRLS",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "pg_monitor — автоматическое получение SUPERUSER",
+          "correct": false
+        }
+      ],
+      "explanation": "Предопределённые роли позволяют делегировать административные возможности без SUPERUSER. pg_monitor и связанные роли мониторинга дают ограниченный доступ к системной информации, а pg_read_all_data/pg_write_all_data — к данным без автоматического обхода RLS.",
+      "source": {
+        "key": "dba1-13-predefined-roles",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Предопределённые роли",
+        "locator": "Слайд 15 и раздел 22.5 PostgreSQL 16",
+        "url": "https://postgrespro.ru/docs/postgresql/16/predefined-roles"
       }
     }
   ]

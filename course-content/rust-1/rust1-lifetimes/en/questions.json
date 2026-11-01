@@ -1,0 +1,1235 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-lifetimes",
+  "questions": [
+    {
+      "key": "rust1-lifetimes-001",
+      "type": "single_choice",
+      "text": "What is a lifetime in the context of Rust references?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The region in which a reference remains valid",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The number of bytes occupied by a reference",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The execution time of a function in milliseconds",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The number of owners of a value",
+          "correct": false
+        }
+      ],
+      "explanation": "Lifetimes describe reference validity and help the compiler prevent references to data that has already been destroyed.",
+      "source": {
+        "key": "rust1-lifetimes-intro",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Validating References with Lifetimes",
+        "locator": "Chapter 10 — Validating References with Lifetimes, pp. 260–263",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-002",
+      "type": "multiple_choice",
+      "text": "What problems do lifetimes help solve? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Check that references remain valid",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Prevent dangling references",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Describe relationships among the lifetimes of multiple references",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Automatically extend local values until the end of the program",
+          "correct": false
+        }
+      ],
+      "explanation": "Lifetime annotations provide information for checking references, but they do not change how long the data actually exists.",
+      "source": {
+        "key": "rust1-lifetimes-intro",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Validating References with Lifetimes",
+        "locator": "Chapter 10 — Validating References with Lifetimes, pp. 260–263",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-003",
+      "type": "single_choice",
+      "text": "Why does code with a reference `r` to a local variable `x` fail to compile when `x` goes out of scope before `r`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Because after `x` goes out of scope, `r` would become invalid",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Because `i32` values cannot be referenced",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Because references must always be mutable",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Because `println!` does not accept references",
+          "correct": false
+        }
+      ],
+      "explanation": "The borrow checker compares scopes and rejects a reference that would outlive the data it points to.",
+      "source": {
+        "key": "rust1-lifetimes-borrow-checker",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Borrow Checker",
+        "locator": "Chapter 10 — The Borrow Checker, pp. 262–263",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-006",
+      "type": "multiple_choice",
+      "text": "Which statements about borrow-checker validation are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It happens at compile time",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It compares the lifetimes of references and data",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It prevents safely used references from pointing to already-destroyed values",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It requires a garbage collector at runtime",
+          "correct": false
+        }
+      ],
+      "explanation": "Lifetime checking is part of Rust's compile-time analysis.",
+      "source": {
+        "key": "rust1-lifetimes-borrow-checker",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Borrow Checker",
+        "locator": "Chapter 10 — The Borrow Checker, pp. 262–263",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-007",
+      "type": "single_choice",
+      "text": "Why does `fn longest(x: &str, y: &str) -> &str` require additional lifetime information?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The compiler does not know which input reference the returned `&str` is tied to",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Because `&str` cannot be returned from functions",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Because the function takes two parameters of the same type",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Because `String` must always be returned by value",
+          "correct": false
+        }
+      ],
+      "explanation": "The returned reference must be tied to input data, but with two input references that relationship is ambiguous without annotations.",
+      "source": {
+        "key": "rust1-lifetimes-functions",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Generic Lifetimes in Functions",
+        "locator": "Chapter 10 — Generic Lifetimes in Functions, pp. 263–269",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-010",
+      "type": "multiple_choice",
+      "text": "Which reference forms correctly use lifetime syntax? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`&i32` — a reference without an explicit annotation",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`&'a i32` — a reference with lifetime `'a`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`&'a mut i32` — a mutable reference with lifetime `'a`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`mut &'a i32` as the standard syntax shown",
+          "correct": false
+        }
+      ],
+      "explanation": "A lifetime is written after `&`, before `mut` and the referenced type.",
+      "source": {
+        "key": "rust1-lifetimes-syntax",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Lifetime Annotation Syntax",
+        "locator": "Chapter 10 — Lifetime Annotation Syntax, pp. 264–266",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-012",
+      "type": "multiple_choice",
+      "text": "Which statements about lifetime annotations are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They do not themselves change how long values actually live",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "They describe relationships between references",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "They let the compiler verify those relationships",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "They can make a local value live longer merely by writing `'a`",
+          "correct": false
+        }
+      ],
+      "explanation": "An annotation describes a dependency; it is not a command to extend memory lifetime.",
+      "source": {
+        "key": "rust1-lifetimes-syntax",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Lifetime Annotation Syntax",
+        "locator": "Chapter 10 — Lifetime Annotation Syntax, pp. 264–266",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-013",
+      "type": "single_choice",
+      "text": "What does `fn longest<'a>(x: &'a str, y: &'a str) -> &'a str` mean?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The result is valid only in a region where both input references satisfy the `'a` relationship",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Both strings must exist until the end of the program",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`x` and `y` must refer to the same object",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The function always returns `y`",
+          "correct": false
+        }
+      ],
+      "explanation": "Using the same lifetime parameter ties the inputs and output together; the actual valid region is determined by their overlap.",
+      "source": {
+        "key": "rust1-lifetimes-longest",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Lifetime Annotations in Function Signatures",
+        "locator": "Chapter 10 — Lifetime Annotations in Function Signatures, pp. 266–269",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-014",
+      "type": "multiple_choice",
+      "text": "How does the compiler interpret `'a` for a particular call to `longest`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It substitutes the actual lifetimes of the arguments",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It chooses a region that satisfies the relationships in the signature",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The result cannot safely be used longer than the shorter of the related input lifetimes",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It always assigns `'static`",
+          "correct": false
+        }
+      ],
+      "explanation": "For a call, the limiting region is the overlap of the input-reference lifetimes.",
+      "source": {
+        "key": "rust1-lifetimes-longest",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Lifetime Annotations in Function Signatures",
+        "locator": "Chapter 10 — Lifetime Annotations in Function Signatures, pp. 266–269",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-015",
+      "type": "single_choice",
+      "text": "Why can a call to `longest` be valid when one `String` lives longer than the other but the result is used only inside the shorter scope?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Because the result does not outlive the shorter input reference",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Because the function copies both strings",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Because `&str` is always `static`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Because the borrow checker ignores the result",
+          "correct": false
+        }
+      ],
+      "explanation": "If `result` is used only while both input references remain valid, the lifetime relationship is satisfied.",
+      "source": {
+        "key": "rust1-lifetimes-longest",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Lifetime Annotations in Function Signatures",
+        "locator": "Chapter 10 — Lifetime Annotations in Function Signatures, pp. 266–269",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-016",
+      "type": "multiple_choice",
+      "text": "What makes the example invalid when the result of `longest` is stored and used after the shorter-lived string goes out of scope? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The result could refer to the shorter-lived string",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The signature ties the result to the common valid region of the inputs",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Using the result after that region ends is unsafe",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The compiler must guess that the longer-lived string was actually returned and allow the code",
+          "correct": false
+        }
+      ],
+      "explanation": "The compiler follows the contract in the signature rather than analyzing every possible runtime result to weaken it.",
+      "source": {
+        "key": "rust1-lifetimes-longest",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Lifetime Annotations in Function Signatures",
+        "locator": "Chapter 10 — Lifetime Annotations in Function Signatures, pp. 266–269",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-017",
+      "type": "single_choice",
+      "text": "If a function always returns `x`, must the lifetime of `y` also be tied to the result?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "No. The result lifetime can be tied only to `x`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Yes. Every function parameter must have the same lifetime as the result",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Yes. Otherwise all references become `static`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "No, because lifetimes are never needed for references",
+          "correct": false
+        }
+      ],
+      "explanation": "Lifetime annotations should reflect real relationships; an unrelated `y` does not need to participate in the result dependency.",
+      "source": {
+        "key": "rust1-lifetimes-longest",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Lifetime Annotations in Function Signatures",
+        "locator": "Chapter 10 — Lifetime Annotations in Function Signatures, pp. 266–269",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-019",
+      "type": "single_choice",
+      "text": "Why can a function not return `result.as_str()` when `result` is a local `String`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`result` is destroyed when the function returns, so the returned reference would dangle",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`String::as_str` always returns an owned `String`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Local variables cannot be read",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Because `&str` is forbidden as a return type",
+          "correct": false
+        }
+      ],
+      "explanation": "The local owner is destroyed at the end of the function, so a reference to its data cannot be returned.",
+      "source": {
+        "key": "rust1-lifetimes-longest",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Lifetime Annotations in Function Signatures",
+        "locator": "Chapter 10 — Lifetime Annotations in Function Signatures, pp. 266–269",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-021",
+      "type": "single_choice",
+      "text": "How should a function be designed if it creates a local `String` but needs to return the created string contents to its caller?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Return the owned `String` instead of a reference",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Return `&str` with an arbitrary `'a`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Make the local variable `mut`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Add `clone` only to the reference",
+          "correct": false
+        }
+      ],
+      "explanation": "Transferring ownership of the result to the caller makes the data independent of the function's local scope.",
+      "source": {
+        "key": "rust1-lifetimes-longest",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Lifetime Annotations in Function Signatures",
+        "locator": "Chapter 10 — Lifetime Annotations in Function Signatures, pp. 266–269",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-022",
+      "type": "multiple_choice",
+      "text": "Which statements are true about the meaning of lifetime annotations in a signature? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They are part of the contract between arguments and the result",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "They help the compiler allow safe operations",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "They help reject operations that would create invalid references",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "They define the exact number of seconds a value lives",
+          "correct": false
+        }
+      ],
+      "explanation": "Lifetimes describe logical relationships between reference scopes, not wall-clock time.",
+      "source": {
+        "key": "rust1-lifetimes-longest",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Lifetime Annotations in Function Signatures",
+        "locator": "Chapter 10 — Lifetime Annotations in Function Signatures, pp. 266–269",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-023",
+      "type": "single_choice",
+      "text": "Why does a struct with a reference field need a lifetime annotation?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To tie the validity of the struct instance to the data referenced by the field",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To make the field automatically mutable",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To make the struct `Copy`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To make the field an owned `String`",
+          "correct": false
+        }
+      ],
+      "explanation": "A struct with a borrowed field must not outlive the source of that reference.",
+      "source": {
+        "key": "rust1-lifetimes-struct",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Lifetime Annotations in Struct Definitions",
+        "locator": "Chapter 10 — Lifetime Annotations in Struct Definitions, pp. 269–270",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-025",
+      "type": "single_choice",
+      "text": "A struct stores a field `part: &'a str` that refers to part of an external `String`. What condition is required to use the struct safely?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The source `String` must remain valid for as long as the `part` reference is used",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Creating an `&str` automatically makes the data `'static`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Storing a reference in a struct disables the borrow checker",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The struct must implicitly copy the entire source `String`",
+          "correct": false
+        }
+      ],
+      "explanation": "The struct's lifetime parameter ties the lifetime of the reference field to the lifetime of the data it points to.",
+      "source": {
+        "key": "rust1-lifetimes-struct",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Lifetime Annotations in Struct Definitions",
+        "locator": "Chapter 10 — Lifetime Annotations in Struct Definitions, pp. 269–270",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-027",
+      "type": "single_choice",
+      "text": "What are lifetime elision rules?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A deterministic set of compiler rules for inferring lifetimes in common signatures",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A random choice of lifetime when the signature is ambiguous",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A runtime memory-release mechanism",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Formatting rules used by `rustfmt`",
+          "correct": false
+        }
+      ],
+      "explanation": "Elision lets common, obvious lifetime annotations be omitted.",
+      "source": {
+        "key": "rust1-lifetimes-elision",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Lifetime Elision Rules",
+        "locator": "Chapter 10 — Lifetime Elision Rules, pp. 270–273",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-028",
+      "type": "multiple_choice",
+      "text": "Which statements about elision rules are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The compiler applies them automatically",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "They are not requirements that the programmer must manually repeat",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "If ambiguity remains after applying them, the compiler reports an error",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "When ambiguous, the compiler guesses a lifetime",
+          "correct": false
+        }
+      ],
+      "explanation": "The compiler applies the rules, but it does not guess when the available information is insufficient.",
+      "source": {
+        "key": "rust1-lifetimes-elision",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Lifetime Elision Rules",
+        "locator": "Chapter 10 — Lifetime Elision Rules, pp. 270–273",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-031",
+      "type": "single_choice",
+      "text": "How is the first lifetime elision rule stated?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Each reference parameter gets its own lifetime",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "All input references always get one shared lifetime",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Every output gets `static`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`self` never gets a lifetime",
+          "correct": false
+        }
+      ],
+      "explanation": "With two input references, the first rule assigns two independent input lifetimes.",
+      "source": {
+        "key": "rust1-lifetimes-elision",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Lifetime Elision Rules",
+        "locator": "Chapter 10 — Lifetime Elision Rules, pp. 270–273",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-033",
+      "type": "single_choice",
+      "text": "How is the second lifetime elision rule stated?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "If there is exactly one input lifetime, it is assigned to every output reference",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "If there are two inputs, the longer one is chosen",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Every output is always `static`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The result always receives the lifetime of `self`",
+          "correct": false
+        }
+      ],
+      "explanation": "A single input lifetime unambiguously determines the lifetime of returned references.",
+      "source": {
+        "key": "rust1-lifetimes-elision",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Lifetime Elision Rules",
+        "locator": "Chapter 10 — Lifetime Elision Rules, pp. 270–273",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-034",
+      "type": "multiple_choice",
+      "text": "Why does `fn first_word(s: &str) -> &str` compile without explicit lifetimes? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The first rule assigns a lifetime to the input reference `s`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Because there is one input lifetime, the second rule assigns it to the output reference",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "After those rules, all relationships among references in the signature are determined",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Because every `&str` automatically has `static` lifetime",
+          "correct": false
+        }
+      ],
+      "explanation": "This is the classic example where the first two elision rules fully determine the relationship.",
+      "source": {
+        "key": "rust1-lifetimes-elision",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Lifetime Elision Rules",
+        "locator": "Chapter 10 — Lifetime Elision Rules, pp. 270–273",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-035",
+      "type": "single_choice",
+      "text": "Why can the lifetimes in `fn longest(x: &str, y: &str) -> &str` not be inferred using only the elision rules?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "There are two input lifetimes and no `self`, so the output lifetime remains undetermined",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Because elision rules do not apply to functions",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Because `&str` cannot appear twice in the arguments",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Because Rust forbids generic lifetimes",
+          "correct": false
+        }
+      ],
+      "explanation": "The first rule creates two input lifetimes, the second does not apply, and the third requires a method with `self`.",
+      "source": {
+        "key": "rust1-lifetimes-elision",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Lifetime Elision Rules",
+        "locator": "Chapter 10 — Lifetime Elision Rules, pp. 270–273",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-037",
+      "type": "single_choice",
+      "text": "Why do methods often not require explicit lifetime annotations when returning a reference to data in `self`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The third elision rule ties the output lifetime to the lifetime of `self`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Methods completely ignore the borrow checker",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`self` is always `static`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "All methods return owned values",
+          "correct": false
+        }
+      ],
+      "explanation": "With `&self`, the compiler can infer the common relationship between a returned reference and the receiver.",
+      "source": {
+        "key": "rust1-lifetimes-methods",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Lifetime Annotations in Method Definitions",
+        "locator": "Chapter 10 — Lifetime Annotations in Method Definitions, pp. 273–274",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-039",
+      "type": "single_choice",
+      "text": "What does the `'static` lifetime mean?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A reference can live for the entire duration of the program",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A reference lives only until the end of the current function",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The data must be stored on the stack",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The reference automatically becomes mutable",
+          "correct": false
+        }
+      ],
+      "explanation": "`'static` is the special lifetime for references that can remain valid for the entire program.",
+      "source": {
+        "key": "rust1-lifetimes-static",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Static Lifetime",
+        "locator": "Chapter 10 — The Static Lifetime, pp. 273–274",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-040",
+      "type": "multiple_choice",
+      "text": "Which statements about string literals are true in the context of `'static`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "String literals have the `'static` lifetime",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Their contents are stored in the program binary",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "They are available for the duration of the program",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every created `String` automatically has the reference lifetime `'static`",
+          "correct": false
+        }
+      ],
+      "explanation": "String literals are the standard example of data with the `'static` lifetime.",
+      "source": {
+        "key": "rust1-lifetimes-static",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Static Lifetime",
+        "locator": "Chapter 10 — The Static Lifetime, pp. 273–274",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-041",
+      "type": "single_choice",
+      "text": "How should you treat a compiler suggestion to add `'static` when resolving a lifetime error?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Check whether the reference truly must be available for the whole program instead of using `'static` as a universal patch",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Always accept the suggestion without analysis",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Add `'static` to all local references",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Remove all references from the program",
+          "correct": false
+        }
+      ],
+      "explanation": "The material warns that a `'static` suggestion can be a symptom of an invalid reference or an incorrectly described lifetime relationship.",
+      "source": {
+        "key": "rust1-lifetimes-static",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Static Lifetime",
+        "locator": "Chapter 10 — The Static Lifetime, pp. 273–274",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-042",
+      "type": "multiple_choice",
+      "text": "Which problems can be hidden behind an error where the compiler suggests `'static`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "An attempt to create an invalid reference",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A mismatch in the actual lifetime relationships",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "An incorrectly described dependency between references",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A mandatory need to make the data global",
+          "correct": false
+        }
+      ],
+      "explanation": "You should fix the actual lifetime problem unless the data really is intended to live for the whole program.",
+      "source": {
+        "key": "rust1-lifetimes-static",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Static Lifetime",
+        "locator": "Chapter 10 — The Static Lifetime, pp. 273–274",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-043",
+      "type": "single_choice",
+      "text": "Where are a lifetime parameter and a generic type parameter placed when a function uses both?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "In one angle-bracket list after the function name",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The lifetime only in `Cargo.toml` and `T` in the signature",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The lifetime after `where` and `T` before `fn`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "They cannot be used together",
+          "correct": false
+        }
+      ],
+      "explanation": "In the final example, `'a` and `T` are declared together as generic parameters of the function.",
+      "source": {
+        "key": "rust1-lifetimes-combined",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Generic Type Parameters, Trait Bounds, and Lifetimes Together",
+        "locator": "Chapter 10 — Generic Type Parameters, Trait Bounds, and Lifetimes Together, pp. 274",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-044",
+      "type": "multiple_choice",
+      "text": "Which elements can appear together in a function signature that uses lifetime parameters? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A lifetime parameter",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A generic type parameter `T`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A trait bound such as `Display` through `where`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A prohibition on references when generic `T` is present",
+          "correct": false
+        }
+      ],
+      "explanation": "The material demonstrates generics, trait bounds, and lifetimes being used together in one function.",
+      "source": {
+        "key": "rust1-lifetimes-combined",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Generic Type Parameters, Trait Bounds, and Lifetimes Together",
+        "locator": "Chapter 10 — Generic Type Parameters, Trait Bounds, and Lifetimes Together, pp. 274",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-046",
+      "type": "multiple_choice",
+      "text": "Which general statements about lifetimes in Rust are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Lifetimes help the compiler verify reference validity",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Annotations are especially needed where relationships cannot be inferred automatically",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The analysis happens at compile time",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Lifetime annotations add runtime checks on every reference access",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter emphasizes compile-time analysis that adds no runtime lifetime-checking cost.",
+      "source": {
+        "key": "rust1-lifetimes-intro",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Validating References with Lifetimes",
+        "locator": "Chapter 10 — Validating References with Lifetimes, pp. 260–263",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-047",
+      "type": "single_choice",
+      "text": "What happens if the output lifetime still cannot be determined after all elision rules have been applied?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The compiler reports an error and requires more information",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The compiler randomly chooses the longest lifetime",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The output automatically becomes `static`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The function is compiled without validation",
+          "correct": false
+        }
+      ],
+      "explanation": "The rules are not exhaustive: if ambiguity remains, Rust reports an error rather than guessing.",
+      "source": {
+        "key": "rust1-lifetimes-elision",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Lifetime Elision Rules",
+        "locator": "Chapter 10 — Lifetime Elision Rules, pp. 270–273",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-048",
+      "type": "multiple_choice",
+      "text": "Which statements reflect the correct model of lifetime annotations? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They are not an ownership mechanism by themselves",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "They do not copy data",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "They do not extend the owner's lifetime",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "They describe relationships checked by the borrow checker",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Lifetime annotations force the data owner to live longer",
+          "correct": false
+        }
+      ],
+      "explanation": "Lifetimes are a descriptive part of reference type checking, not an operation on the data itself.",
+      "source": {
+        "key": "rust1-lifetimes-syntax",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Lifetime Annotation Syntax",
+        "locator": "Chapter 10 — Lifetime Annotation Syntax, pp. 264–266",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-lifetimes-050",
+      "type": "multiple_choice",
+      "text": "Which situations especially require precise lifetime relationships? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A function returns a reference tied to one of several input references",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A struct stores a reference in a field",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The compiler cannot apply the elision rules unambiguously",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A function works only with owned `i32` values and contains no references",
+          "correct": false
+        }
+      ],
+      "explanation": "Explicit lifetimes are needed where types contain references and automatic inference is not sufficient.",
+      "source": {
+        "key": "rust1-lifetimes-functions",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Generic Lifetimes in Functions",
+        "locator": "Chapter 10 — Generic Lifetimes in Functions, pp. 263–269",
+        "url": null
+      }
+    }
+  ]
+}

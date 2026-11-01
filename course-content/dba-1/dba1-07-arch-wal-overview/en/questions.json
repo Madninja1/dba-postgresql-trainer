@@ -1,0 +1,870 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-arch-wal-overview",
+  "questions": [
+    {
+      "key": "dba1-arch-wal-overview-001",
+      "type": "single_choice",
+      "text": "What does PostgreSQL use the buffer cache for?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To reduce operating-system accesses and disk I/O",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To completely replace persistent storage",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To store only committed transactions",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To perform logical replication without WAL",
+          "correct": false
+        }
+      ],
+      "explanation": "The buffer cache smooths out the speed difference between RAM and disk. Once a page is loaded into the cache, PostgreSQL can access it repeatedly without rereading it through the operating system.",
+      "source": {
+        "key": "dba1-07-buffer-cache",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Buffer cache",
+        "locator": "Slide 3, “Buffer cache”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-002",
+      "type": "multiple_choice",
+      "text": "Which statements about the PostgreSQL buffer cache are correct? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It is an array of buffers",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A buffer contains a data page and additional information about it",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The normal data-page size is 8 KB",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The size of each page changes automatically depending on the table size",
+          "correct": false
+        }
+      ],
+      "explanation": "The lecture describes the buffer cache as an array of buffers containing data pages and service information. The normal page size is 8 KB; it can be changed when PostgreSQL is built.",
+      "source": {
+        "key": "dba1-07-buffer-cache-002",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Buffer cache",
+        "locator": "Slide 3, buffer cache structure",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-003",
+      "type": "single_choice",
+      "text": "When does a PostgreSQL buffer become “dirty”?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "When a process modifies data in the page stored in that buffer",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Immediately after any page is read from disk",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only after CHECKPOINT is executed",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "After the page is evicted from the cache",
+          "correct": false
+        }
+      ],
+      "explanation": "If the data in a cached page has been modified, the corresponding buffer is dirty and must eventually be written to disk.",
+      "source": {
+        "key": "dba1-07-buffer-cache-003",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Buffer cache",
+        "locator": "Slide 3, “Dirty” buffers",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-004",
+      "type": "multiple_choice",
+      "text": "What happens when a page is evicted from the buffer cache? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A page that has been used less recently than others is selected",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "If the selected buffer is dirty, its page is written to disk",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Another page can be read into the freed buffer",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The corresponding table is always deleted during eviction",
+          "correct": false
+        }
+      ],
+      "explanation": "The lecture describes an LRU-like principle: a page that has not been used for a long time is selected; a dirty page is written first, after which the buffer can be reused for another page.",
+      "source": {
+        "key": "dba1-07-eviction",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Eviction",
+        "locator": "Slide 4, “Eviction”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-005",
+      "type": "single_choice",
+      "text": "What problem does write-ahead logging primarily solve?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Loss during a crash of changes that still existed only in RAM",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Insufficient memory for query sorting",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Missing indexes on tables",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Object-name conflicts across schemas",
+          "correct": false
+        }
+      ],
+      "explanation": "Buffering improves performance, but RAM contents can be lost during a crash. WAL makes it possible to replay the necessary changes and restore a consistent state.",
+      "source": {
+        "key": "dba1-07-wal-purpose",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Write-ahead log (WAL)",
+        "locator": "Slide 6, purpose of WAL",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-006",
+      "type": "multiple_choice",
+      "text": "Which objects and data are protected by WAL? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Pages of regular tables",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Index pages",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Transaction status",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Temporary-table data",
+          "correct": false
+        }
+      ],
+      "explanation": "The lecture states that WAL protects tables, indexes, other WAL-logged objects, and transaction status. Changes to temporary tables are not written to WAL.",
+      "source": {
+        "key": "dba1-07-wal-coverage",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Write-ahead log (WAL)",
+        "locator": "Slide 6, objects protected by WAL",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-007",
+      "type": "single_choice",
+      "text": "What is the core principle of write-ahead logging?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The WAL record describing a change must reach persistent storage before the changed data page",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The data page must always be written before WAL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "WAL is created only after a checkpoint completes",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "All data pages must be written at the same time as WAL",
+          "correct": false
+        }
+      ],
+      "explanation": "The ordering “WAL first, changed data later” makes it possible to restore changes after a crash. The documentation defines this as the core idea of WAL.",
+      "source": {
+        "key": "postgresql-16-wal-intro",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Write-ahead log (WAL)",
+        "locator": "Section 30.3, core WAL principle",
+        "url": "https://postgrespro.ru/docs/postgresql/16/wal-intro"
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-008",
+      "type": "multiple_choice",
+      "text": "Which statements about WAL are correct? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A WAL record contains information needed to replay a change",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "WAL files are stored in PGDATA/pg_wal",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Unlogged tables are not protected by WAL",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Temporary tables are always fully WAL-logged",
+          "correct": false
+        }
+      ],
+      "explanation": "The lecture presents WAL as a stream of information used to replay lost operations; files are stored in pg_wal. Temporary and unlogged tables are excluded from normal WAL protection.",
+      "source": {
+        "key": "dba1-07-wal-purpose-008",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Write-ahead log (WAL)",
+        "locator": "Slide 6, WAL contents and location",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-009",
+      "type": "single_choice",
+      "text": "What happens to an unlogged table after a crash?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It is truncated",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It is automatically converted into a temporary table",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It is restored exclusively from indexes",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It is necessarily dropped together with its schema",
+          "correct": false
+        }
+      ],
+      "explanation": "Unlogged tables can be faster because they do not have normal WAL protection, but after a crash their contents are not recovered: the tables are truncated.",
+      "source": {
+        "key": "dba1-07-wal-coverage-009",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Write-ahead log (WAL)",
+        "locator": "Slide 6, unlogged tables",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-010",
+      "type": "multiple_choice",
+      "text": "What happens when PostgreSQL recovers after a crash? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The server enters recovery mode",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "PostgreSQL reads WAL and replays the required records in order",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Recovery begins from the last completed checkpoint",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "All tables are always reread in full regardless of WAL",
+          "correct": false
+        }
+      ],
+      "explanation": "After an abnormal shutdown, the server restores consistency starting from the last completed checkpoint and replaying the necessary WAL records.",
+      "source": {
+        "key": "dba1-07-crash-recovery",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Checkpoint",
+        "locator": "Slide 8, crash recovery",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-011",
+      "type": "single_choice",
+      "text": "During recovery, how is a transaction treated if its commit record did not reach WAL before the crash?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "As aborted",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "As definitely committed",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "As read-only",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "As a prepared two-phase transaction",
+          "correct": false
+        }
+      ],
+      "explanation": "The lecture explicitly states that if the commit record did not make it into WAL, the transaction is treated as aborted after the crash.",
+      "source": {
+        "key": "dba1-07-crash-recovery-011",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Checkpoint",
+        "locator": "Slide 8, transaction recovery",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-012",
+      "type": "multiple_choice",
+      "text": "What tasks does a checkpoint perform? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Ensures that all buffers that were dirty at the checkpoint boundary are written to disk",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Guarantees that changes made before the checkpoint boundary are present on disk",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Limits the amount of WAL needed for crash recovery",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Removes all rows belonging to unfinished transactions from the database",
+          "correct": false
+        }
+      ],
+      "explanation": "A checkpoint writes the relevant dirty buffers and creates a reference point from which later recovery can begin.",
+      "source": {
+        "key": "dba1-07-checkpoint",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Checkpoint",
+        "locator": "Slide 8, “Checkpoint”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-013",
+      "type": "single_choice",
+      "text": "When is a checkpoint considered complete?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "When all buffers that were dirty when the checkpoint began have been written",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Immediately after the checkpointer process starts",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "After the first new WAL file appears",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only after the server is restarted",
+          "correct": false
+        }
+      ],
+      "explanation": "The checkpoint position corresponds to the start of writing accumulated dirty buffers, but the checkpoint is complete only after those writes finish.",
+      "source": {
+        "key": "dba1-07-checkpoint-013",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Checkpoint",
+        "locator": "Slide 8, checkpoint position and completion",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-014",
+      "type": "multiple_choice",
+      "text": "Why can WAL be more efficient than writing changed data pages at every transaction commit? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "WAL records are usually smaller than a whole data page",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "WAL is written sequentially",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A single WAL synchronization can confirm several small transactions",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "WAL completely eliminates the need to ever write data pages",
+          "correct": false
+        }
+      ],
+      "explanation": "The documentation emphasizes sequential WAL writes and lower synchronization costs compared with writing many changed data files.",
+      "source": {
+        "key": "postgresql-16-wal-intro-014",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Write-ahead log (WAL)",
+        "locator": "Section 30.3, WAL efficiency",
+        "url": "https://postgrespro.ru/docs/postgresql/16/wal-intro"
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-015",
+      "type": "single_choice",
+      "text": "What is fsync used for during synchronous commit?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To ensure WAL is moved from the operating-system cache to nonvolatile storage",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To remove a committed transaction from WAL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To read all table pages into the buffer cache",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To force all indexes to be rebuilt",
+          "correct": false
+        }
+      ],
+      "explanation": "The lecture explains fsync as necessary to avoid leaving a WAL record only in the OS cache and to ensure that it reaches nonvolatile storage.",
+      "source": {
+        "key": "dba1-07-wal-performance",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Performance",
+        "locator": "Slide 10, synchronous mode and fsync",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-016",
+      "type": "multiple_choice",
+      "text": "Which statements about synchronous and asynchronous WAL write modes are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "With synchronous commit, the backend waits for WAL to be written",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Asynchronous WAL writing is performed by walwriter",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Asynchronous mode improves performance at the cost of a weaker guarantee that a just-acknowledged transaction survives a crash",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "In asynchronous mode PostgreSQL can no longer restore database consistency after a crash",
+          "correct": false
+        }
+      ],
+      "explanation": "Asynchronous writing avoids waiting for an immediate fsync at every commit, but WAL is still used to restore consistency after a crash.",
+      "source": {
+        "key": "dba1-07-wal-performance-016",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Performance",
+        "locator": "Slide 10, synchronous and asynchronous modes",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-017",
+      "type": "single_choice",
+      "text": "How does PostgreSQL obey the WAL rule if a data page must be flushed while the corresponding WAL record is not yet on disk?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It first writes the corresponding WAL record synchronously",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It flushes the data page and deletes the WAL record",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It rolls the entire database back to the previous checkpoint",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It ignores WAL if walwriter is running",
+          "correct": false
+        }
+      ],
+      "explanation": "Even if WAL records were previously flushed asynchronously, before writing the corresponding data page PostgreSQL must ensure that the required WAL has reached disk.",
+      "source": {
+        "key": "dba1-07-wal-performance-017",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Performance",
+        "locator": "Slide 10, interaction of write modes",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-018",
+      "type": "multiple_choice",
+      "text": "Which mappings between PostgreSQL processes and their tasks are correct? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "walwriter — asynchronous WAL writes to disk",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "checkpointer — performing checkpoints and flushing the dirty buffers associated with them",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "bgwriter — background writing of some dirty buffers",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "bgwriter — mandatory commit processing for every user transaction",
+          "correct": false
+        }
+      ],
+      "explanation": "The lecture separates responsibilities: walwriter services WAL, checkpointer performs checkpoints, and the background writer proactively cleans some dirty buffers that are likely to be evicted.",
+      "source": {
+        "key": "dba1-07-processes",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Main processes",
+        "locator": "Slide 11, “Main processes”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-019",
+      "type": "single_choice",
+      "text": "Why does the background writer proactively write some dirty buffers?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To reduce the chance that a backend must wait for a dirty buffer to be written during eviction",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To replace walwriter",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To prevent pages from being evicted from the cache",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To perform logical decoding of WAL",
+          "correct": false
+        }
+      ],
+      "explanation": "Bgwriter tries to write buffers that are likely to be evicted soon, reducing backend latency.",
+      "source": {
+        "key": "dba1-07-processes-019",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Main processes",
+        "locator": "Slide 11, background writer",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-020",
+      "type": "multiple_choice",
+      "text": "Which statements about wal_level values are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "minimal contains enough information for crash recovery",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "replica adds information needed for backup and replication",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "logical adds information needed to obtain logical row changes",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "minimal is intended for logical replication of row changes",
+          "correct": false
+        }
+      ],
+      "explanation": "The material lists minimal, replica, and logical with increasing amounts of WAL information and corresponding additional capabilities.",
+      "source": {
+        "key": "dba1-07-wal-level",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "WAL levels",
+        "locator": "Slide 12, “WAL levels”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-021",
+      "type": "single_choice",
+      "text": "Which wal_level is used by default?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "replica",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "minimal",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "logical",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "archive",
+          "correct": false
+        }
+      ],
+      "explanation": "The WAL-level slide identifies replica as the default level.",
+      "source": {
+        "key": "dba1-07-wal-level-021",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "WAL levels",
+        "locator": "Slide 12, replica level",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-022",
+      "type": "multiple_choice",
+      "text": "What happens when PostgreSQL is stopped in fast mode? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Open connections are terminated",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A checkpoint is performed before shutdown",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Consistent data is written to disk, so the next startup does not require crash recovery",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The server deliberately leaves data in a state similar to a hardware crash",
+          "correct": false
+        }
+      ],
+      "explanation": "In fast mode, the server terminates connections and performs a checkpoint. Shutdown may take longer, but crash recovery is not required at the next startup.",
+      "source": {
+        "key": "dba1-07-practice-shutdown",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice",
+        "locator": "Slide 14, fast shutdown",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-023",
+      "type": "single_choice",
+      "text": "How does an immediate PostgreSQL shutdown fundamentally differ from a fast shutdown?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Immediate shutdown does not perform a checkpoint before stopping, so startup requires WAL recovery",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Immediate shutdown always waits for all client transactions to finish",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Immediate shutdown completely deletes WAL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Immediate shutdown automatically switches wal_level to logical",
+          "correct": false
+        }
+      ],
+      "explanation": "Immediate mode stops the server without a checkpoint. The on-disk state is similar to a crash, and PostgreSQL restores consistency from WAL at the next startup.",
+      "source": {
+        "key": "dba1-07-practice-shutdown-023",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice",
+        "locator": "Slide 14, immediate shutdown",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-wal-overview-024",
+      "type": "multiple_choice",
+      "text": "What additional capabilities does WAL provide besides recovery from an ordinary crash? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Creating physical backups without requiring an instantaneous snapshot of every file",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Point-in-time recovery to a moment available in retained WAL data",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Supporting replication between servers",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Automatically fixing any user logical error without a backup",
+          "correct": false
+        }
+      ],
+      "explanation": "The documentation connects WAL not only with REDO after a crash but also with physical backup and point-in-time recovery. The lecture additionally emphasizes WAL as the basis for replication.",
+      "source": {
+        "key": "postgresql-16-wal-intro-024",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Write-ahead log (WAL)",
+        "locator": "Section 30.3, backup and recovery with WAL",
+        "url": "https://postgrespro.ru/docs/postgresql/16/wal-intro"
+      }
+    }
+  ]
+}

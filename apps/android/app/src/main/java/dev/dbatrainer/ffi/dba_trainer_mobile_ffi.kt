@@ -2341,6 +2341,8 @@ data class MobileAchievementProgress (
     val `current`: kotlin.ULong
     , 
     val `target`: kotlin.ULong
+    , 
+    val `rewardXp`: kotlin.ULong
     
 ){
     
@@ -2362,6 +2364,7 @@ public object FfiConverterTypeMobileAchievementProgress: FfiConverterRustBuffer<
             FfiConverterBoolean.read(buf),
             FfiConverterULong.read(buf),
             FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
         )
     }
 
@@ -2370,7 +2373,8 @@ public object FfiConverterTypeMobileAchievementProgress: FfiConverterRustBuffer<
             FfiConverterTypeMobileAchievementRarity.allocationSize(value.`rarity`) +
             FfiConverterBoolean.allocationSize(value.`unlocked`) +
             FfiConverterULong.allocationSize(value.`current`) +
-            FfiConverterULong.allocationSize(value.`target`)
+            FfiConverterULong.allocationSize(value.`target`) +
+            FfiConverterULong.allocationSize(value.`rewardXp`)
     )
 
     override fun write(value: MobileAchievementProgress, buf: ByteBuffer) {
@@ -2379,6 +2383,7 @@ public object FfiConverterTypeMobileAchievementProgress: FfiConverterRustBuffer<
             FfiConverterBoolean.write(value.`unlocked`, buf)
             FfiConverterULong.write(value.`current`, buf)
             FfiConverterULong.write(value.`target`, buf)
+            FfiConverterULong.write(value.`rewardXp`, buf)
     }
 }
 
@@ -4276,17 +4281,25 @@ public object FfiConverterTypeMobileXpRule: FfiConverterRustBuffer<MobileXpRule>
 
 enum class MobileAchievementKind {
     
-    FIRST_ANSWER,
-    HUNDRED_ANSWERS,
-    PERFECT_TWENTY,
-    QUIZ_VETERAN,
-    FIRST_SQL,
-    ONE_SHOT,
-    QUERY_NINJA,
-    SEVEN_DAY_STREAK,
-    THIRTY_DAY_STREAK,
-    COURSE_MASTER,
-    MAD_NINJA;
+    FIRST_STEP,
+    PERFECT_QUIZ,
+    CONFIDENT_KNOWLEDGE,
+    FIRST_TOPIC_MASTERY,
+    COURSE_COMPLETED,
+    PERFECTIONIST,
+    SQL_MASTER,
+    RUST_MASTER,
+    POSTGRES_DBA,
+    PL_PG_SQL_DEVELOPER,
+    WAVE,
+    FLAWLESS_STREAK,
+    IRON_FOCUS,
+    LEARN_FROM_MISTAKES,
+    FIXED_TEN,
+    CLOSED_GAPS,
+    EXPLORER,
+    UNIVERSAL,
+    FULL_DBA_STACK;
 
     
 
@@ -4526,8 +4539,10 @@ enum class MobileProgressRank {
     PSQL_TRAINEE,
     QUERY_ADEPT,
     SCHEMA_KEEPER,
+    CATALOG_ANALYST,
     PLAN_READER,
     WAL_OPERATOR,
+    REPLICATION_ENGINEER,
     POSTGRES_GUARDIAN,
     MAD_NINJA_DBA;
 

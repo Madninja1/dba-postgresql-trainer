@@ -1,0 +1,1266 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-borrowing-slices",
+  "questions": [
+    {
+      "key": "rust1-borrowing-slices-002",
+      "type": "single_choice",
+      "text": "How does a reference differ from an ordinary pointer in the explanation?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It is guaranteed to point to a valid value of a particular type for the lifetime of the reference",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It is always null",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It necessarily owns the data",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It can exist only for `String`",
+          "correct": false
+        }
+      ],
+      "explanation": "The material emphasizes the guarantee that a reference remains valid for its lifetime.",
+      "source": {
+        "key": "rust1-borrowing-slices-reference-validity",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "References and Borrowing",
+        "locator": "Chapter 4 — References and Borrowing, pp. 95",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-005",
+      "type": "single_choice",
+      "text": "What happens if a function receives `&String` and tries to call `push_str` through that reference?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The code does not compile because an immutable reference does not permit mutation",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The string is modified",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The string is automatically cloned",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The reference automatically becomes `&mut String`",
+          "correct": false
+        }
+      ],
+      "explanation": "Like variables, references are immutable by default; a `String` cannot be modified through `&String`.",
+      "source": {
+        "key": "rust1-borrowing-slices-immutable-reference",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "References and Borrowing",
+        "locator": "Chapter 4 — References and Borrowing, pp. 97",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-006",
+      "type": "single_choice",
+      "text": "Which reference type is needed by a function that must modify a passed `String`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "&String",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "&mut String",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "String::ref",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "mut String without `&` is always required",
+          "correct": false
+        }
+      ],
+      "explanation": "A mutable reference `&mut String` is used to modify a borrowed value.",
+      "source": {
+        "key": "rust1-borrowing-slices-mutable-reference",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "References and Borrowing",
+        "locator": "Chapter 4 — References and Borrowing, pp. 97–98",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-007",
+      "type": "single_choice",
+      "text": "Why does `let r1 = &mut s; let r2 = &mut s; println!(\"{r1}, {r2}\");` not compile?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Two active mutable references to the same value cannot exist at the same time",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`String` cannot be declared `mut`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`println!` forbids references",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`&mut` works only with numbers",
+          "correct": false
+        }
+      ],
+      "explanation": "A mutable reference is exclusive: the second mutable borrow conflicts with the first while the first is still used.",
+      "source": {
+        "key": "rust1-borrowing-slices-one-mutable",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "References and Borrowing",
+        "locator": "Chapter 4 — References and Borrowing, pp. 98–99",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-009",
+      "type": "single_choice",
+      "text": "What is forbidden while immutable references `r1` and `r2` to `s` are active?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Creating `&mut s` if the immutable references will still be used",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Creating a second immutable reference",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Reading through `r1`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Ending the scope",
+          "correct": false
+        }
+      ],
+      "explanation": "You cannot have an active immutable borrow and a mutable borrow of the same data at the same time.",
+      "source": {
+        "key": "rust1-borrowing-slices-mixed-borrows",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "References and Borrowing",
+        "locator": "Chapter 4 — References and Borrowing, pp. 99–100",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-011",
+      "type": "single_choice",
+      "text": "When does an immutable borrow stop preventing creation of a mutable reference in the same lexical scope?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "After the immutable reference's last use, provided the borrows no longer overlap",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only at the closing brace of the current block",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Immediately after the reference is created, even if it will be used later",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only after explicitly calling `drop` on the original owner",
+          "correct": false
+        }
+      ],
+      "explanation": "With non-lexical lifetimes, a borrow can end after the reference's last use, before the lexical block ends.",
+      "source": {
+        "key": "rust1-borrowing-slices-reference-scope",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "References and Borrowing",
+        "locator": "Chapter 4 — References and Borrowing, pp. 100",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-012",
+      "type": "single_choice",
+      "text": "Why is the following code valid?\n\n```rust\nlet mut s = String::from(\"hi\");\nlet r1 = &s;\nlet r2 = &s;\nprintln!(\"{r1} {r2}\");\nlet r3 = &mut s;\nr3.push('!');\n```",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The last uses of `r1` and `r2` occur before `r3` is created, so the borrows do not overlap",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`println!` converts `r1` and `r2` into owned copies of the `String`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A mutable reference may coexist with any number of active immutable references",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`r3` is not considered a reference because it is used only to call a method",
+          "correct": false
+        }
+      ],
+      "explanation": "The immutable borrows end after the last uses of `r1` and `r2`; a non-overlapping `&mut s` can then be created.",
+      "source": {
+        "key": "rust1-borrowing-slices-non-overlap",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "References and Borrowing",
+        "locator": "Chapter 4 — References and Borrowing, pp. 100",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-014",
+      "type": "single_choice",
+      "text": "Why is `fn dangle() -> &String { let s = String::from(\"hello\"); &s }` rejected?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`s` is dropped when the function ends, so the returned reference would become invalid",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A `String` cannot be created inside a function",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The function must return `usize`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "References can only be returned from `main`",
+          "correct": false
+        }
+      ],
+      "explanation": "The local `s` leaves scope and is freed, so a reference to it cannot be returned.",
+      "source": {
+        "key": "rust1-borrowing-slices-dangle-code",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "References and Borrowing",
+        "locator": "Chapter 4 — References and Borrowing, pp. 101–102",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-017",
+      "type": "single_choice",
+      "text": "What is a slice in Rust?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A reference to a contiguous sequence of elements in a collection",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "An owned copy of the entire collection",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only an index marking the end of a string",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A type available only for arrays",
+          "correct": false
+        }
+      ],
+      "explanation": "A slice refers to a contiguous sequence of elements and is a kind of reference.",
+      "source": {
+        "key": "rust1-borrowing-slices-slice-definition",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Slice Type",
+        "locator": "Chapter 4 — The Slice Type, pp. 103",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-018",
+      "type": "single_choice",
+      "text": "Does a slice own its data?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "No; a slice is a reference and does not own the data",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Yes, always",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only string slices own data",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only array slices own data",
+          "correct": false
+        }
+      ],
+      "explanation": "The material explicitly says that a slice, as a kind of reference, does not have ownership.",
+      "source": {
+        "key": "rust1-borrowing-slices-slice-ownership",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Slice Type",
+        "locator": "Chapter 4 — The Slice Type, pp. 103",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-019",
+      "type": "single_choice",
+      "text": "What problem exists in the version of `first_word` that returns only a `usize`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The index is detached from the state of the `String` and may become stale after the string changes",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`usize` cannot be returned from a function",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The index is always zero",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A `String` cannot be cleared",
+          "correct": false
+        }
+      ],
+      "explanation": "A separate index is not tied to the data; after the string changes, the index can lose its meaning.",
+      "source": {
+        "key": "rust1-borrowing-slices-index-problem",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Slice Type",
+        "locator": "Chapter 4 — The Slice Type, pp. 103–105",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-021",
+      "type": "single_choice",
+      "text": "How is the string-slice type written?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "&str",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "String",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "str[]",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "&StringSlice",
+          "correct": false
+        }
+      ],
+      "explanation": "The type `&str` is used for a string slice.",
+      "source": {
+        "key": "rust1-borrowing-slices-str-type",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Slice Type",
+        "locator": "Chapter 4 — The Slice Type, pp. 107–108",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-022",
+      "type": "single_choice",
+      "text": "What does `&s[0..5]` denote?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A slice from index 0 up to but not including index 5",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A slice containing only byte 5",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A slice with indices 0 through 5 inclusive",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A copy of the whole string",
+          "correct": false
+        }
+      ],
+      "explanation": "The range `[starting_index..ending_index]` includes the start and excludes the end.",
+      "source": {
+        "key": "rust1-borrowing-slices-slice-range",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Slice Type",
+        "locator": "Chapter 4 — The Slice Type, pp. 105",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-025",
+      "type": "single_choice",
+      "text": "What type does the string literal `\"Hello, world!\"` have in the explanation after slices are introduced?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "&str",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "String",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "char",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "&mut String",
+          "correct": false
+        }
+      ],
+      "explanation": "String literals are treated as `&str` string slices pointing to data stored in the binary.",
+      "source": {
+        "key": "rust1-borrowing-slices-literal-str",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Slice Type",
+        "locator": "Chapter 4 — The Slice Type, pp. 109",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-028",
+      "type": "multiple_choice",
+      "text": "Which statements about simultaneous mutable references are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Two active `&mut` references to the same data cannot exist at once",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The restriction makes mutation controlled",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The restriction helps prevent data races",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "There is no limit on simultaneous `&mut` references to the same data",
+          "correct": false
+        }
+      ],
+      "explanation": "The material connects exclusivity of mutable references with preventing data races.",
+      "source": {
+        "key": "rust1-borrowing-slices-mutable-exclusivity",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "References and Borrowing",
+        "locator": "Chapter 4 — References and Borrowing, pp. 98–99",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-029",
+      "type": "multiple_choice",
+      "text": "Which conditions are required for a data race? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Two or more pointers access the same data at the same time",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "At least one pointer is used to write the data",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "There is no mechanism synchronizing access",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "All participants only read immutable data",
+          "correct": false
+        }
+      ],
+      "explanation": "A data race requires shared access, at least one writer, and no synchronization.",
+      "source": {
+        "key": "rust1-borrowing-slices-data-race",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "References and Borrowing",
+        "locator": "Chapter 4 — References and Borrowing, pp. 99",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-030",
+      "type": "multiple_choice",
+      "text": "Which approaches allow multiple mutable references to one value sequentially rather than simultaneously? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Limit the first reference to a separate block",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Create the second reference after the first reference's scope ends",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Do not use the references at the same time",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Create both before the block and use them together",
+          "correct": false
+        }
+      ],
+      "explanation": "Non-overlapping scopes allow mutable references to be created sequentially.",
+      "source": {
+        "key": "rust1-borrowing-slices-sequential-mut",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "References and Borrowing",
+        "locator": "Chapter 4 — References and Borrowing, pp. 99",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-031",
+      "type": "multiple_choice",
+      "text": "Which combinations of references to one value are permitted when their active scopes overlap? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "One mutable reference",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Multiple immutable references",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Any number of mutable and immutable references simultaneously",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Two mutable references if both are used later",
+          "correct": false
+        }
+      ],
+      "explanation": "The rule is either one mutable reference or any number of immutable references, but not both modes at the same time.",
+      "source": {
+        "key": "rust1-borrowing-slices-borrow-combinations",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "References and Borrowing",
+        "locator": "Chapter 4 — References and Borrowing, pp. 99–102",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-032",
+      "type": "multiple_choice",
+      "text": "Why does an active mutable reference conflict with an active immutable reference? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A user of an immutable reference expects the data not to change unexpectedly",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A mutable reference can change the value",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The rule prevents overlapping reads and writes",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Because an immutable reference automatically owns the data",
+          "correct": false
+        }
+      ],
+      "explanation": "The material motivates the rule through predictable reads: data must not change beneath an active immutable reader.",
+      "source": {
+        "key": "rust1-borrowing-slices-read-write-conflict",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "References and Borrowing",
+        "locator": "Chapter 4 — References and Borrowing, pp. 100",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-033",
+      "type": "multiple_choice",
+      "text": "What follows from non-lexical lifetime rules for a sequence of several `&T` borrows followed by an `&mut T` borrow? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Immutable borrows may end before the end of the block after their last use",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "An `&mut T` is allowed after all earlier immutable borrows have ended",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The key requirement is that an active `&mut T` must not overlap active `&T` borrows of the same value",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every reference remains active until the closing brace regardless of its last use",
+          "correct": false
+        }
+      ],
+      "explanation": "NLL can end a borrow after its last use; the rules prohibit overlapping conflicting borrows rather than requiring every borrow to last to the block end.",
+      "source": {
+        "key": "rust1-borrowing-slices-last-use",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "References and Borrowing",
+        "locator": "Chapter 4 — References and Borrowing, pp. 100",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-034",
+      "type": "multiple_choice",
+      "text": "Which statements about dangling references are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They may point to memory that has already been freed",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The Rust compiler tries to prevent them",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The data must not go out of scope before the reference to it",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The `dangle` function in the material compiles successfully unchanged",
+          "correct": false
+        }
+      ],
+      "explanation": "The `dangle` example specifically demonstrates a compilation error that prevents a dangling reference.",
+      "source": {
+        "key": "rust1-borrowing-slices-dangling-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "References and Borrowing",
+        "locator": "Chapter 4 — References and Borrowing, pp. 101–102",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-035",
+      "type": "multiple_choice",
+      "text": "A function creates a local `String`. How can it safely return that newly created string to the caller? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Return the `String` by value",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Move ownership of the string from the function to the caller",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "This avoids leaving a reference to a destroyed local value",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Return an `&String` pointing to the local variable after the function ends",
+          "correct": false
+        }
+      ],
+      "explanation": "Returning an owned `String` moves the value out. Returning a reference to a local `String` that will be destroyed is not allowed.",
+      "source": {
+        "key": "rust1-borrowing-slices-no-dangle-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "References and Borrowing",
+        "locator": "Chapter 4 — References and Borrowing, pp. 102",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-036",
+      "type": "multiple_choice",
+      "text": "Which borrowing rules apply to references in Rust? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Either one mutable reference or any number of immutable references",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "All references must be valid",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Mutable and immutable references to the same data can be freely mixed at the same time",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Any number of dangling references are allowed as long as they are not dereferenced",
+          "correct": false
+        }
+      ],
+      "explanation": "The section ends with two rules: exclusive write versus multiple readers, and validity of every reference.",
+      "source": {
+        "key": "rust1-borrowing-slices-rules-summary",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "References and Borrowing",
+        "locator": "Chapter 4 — References and Borrowing, pp. 102",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-039",
+      "type": "multiple_choice",
+      "text": "Why is storing only a numeric index into a `String` more fragile than storing an `&str` slice? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A numeric index by itself does not borrow the source string",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "After the string is changed or cleared, the saved number may no longer describe the same logical data",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "From a plain `usize`, the compiler cannot tie use of the index to the validity of a particular string",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A `usize` automatically prevents modification of the string from which it was once computed",
+          "correct": false
+        }
+      ],
+      "explanation": "A plain index carries no borrowing relationship to the string. A slice is tied to the source data and is checked by the borrow checker.",
+      "source": {
+        "key": "rust1-borrowing-slices-stale-index",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Slice Type",
+        "locator": "Chapter 4 — The Slice Type, pp. 104–105",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-040",
+      "type": "multiple_choice",
+      "text": "What data does a string slice conceptually store? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A reference to the starting point",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The slice length",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A relationship to the original data",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "An independent deep copy of the whole `String`",
+          "correct": false
+        }
+      ],
+      "explanation": "A slice is represented by a reference to the start and a length; it borrows the original data.",
+      "source": {
+        "key": "rust1-borrowing-slices-slice-layout",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Slice Type",
+        "locator": "Chapter 4 — The Slice Type, pp. 105–106",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-041",
+      "type": "multiple_choice",
+      "text": "Which slice-expression pairs are stated to be equivalent? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`&s[0..2]` and `&s[..2]`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`&s[3..len]` and `&s[3..]`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`&s[0..len]` and `&s[..]`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`&s[0..2]` and `&s[0..=2]`",
+          "correct": false
+        }
+      ],
+      "explanation": "The material shows shorthand by omitting a zero start or the final end bound; an inclusive range is not equivalent here.",
+      "source": {
+        "key": "rust1-borrowing-slices-slice-shortcuts",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Slice Type",
+        "locator": "Chapter 4 — The Slice Type, pp. 106–107",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-042",
+      "type": "multiple_choice",
+      "text": "Which requirements for string-slice indices are stated? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They must lie on valid UTF-8 character boundaries",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Cutting through a multibyte character can cause an error",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The introductory example assumes ASCII for simplicity",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "An index is always measured in user-perceived characters regardless of bytes",
+          "correct": false
+        }
+      ],
+      "explanation": "The section warns about UTF-8 boundaries and then assumes ASCII for the simple example.",
+      "source": {
+        "key": "rust1-borrowing-slices-utf8-boundary",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Slice Type",
+        "locator": "Chapter 4 — The Slice Type, pp. 107",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-043",
+      "type": "multiple_choice",
+      "text": "What advantages does returning an `&str` have over returning a standalone index for part of a source string? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The result directly refers to a range of the source data",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Borrowing rules prevent incompatible mutation of the string while the used slice is active",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The result type expresses a relationship between the found part and the source string",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The function must take ownership of the whole source `String` to do this",
+          "correct": false
+        }
+      ],
+      "explanation": "A slice encodes a relationship to the source string and lets the borrow checker protect it, unlike a standalone numeric index.",
+      "source": {
+        "key": "rust1-borrowing-slices-first-word-slice",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Slice Type",
+        "locator": "Chapter 4 — The Slice Type, pp. 107–109",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-044",
+      "type": "multiple_choice",
+      "text": "Why does `s.clear()` conflict with an active `word: &str`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`word` is an immutable borrow of part of `s`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`clear` requires mutable access to `s`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`word` is used after `clear`, so the immutable borrow is still active",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`clear` does not modify the string, so there is no reason for a conflict",
+          "correct": false
+        }
+      ],
+      "explanation": "Requiring a mutable borrow while an immutable borrow is still active violates the borrowing rules.",
+      "source": {
+        "key": "rust1-borrowing-slices-clear-borrow",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Slice Type",
+        "locator": "Chapter 4 — The Slice Type, pp. 108–109",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-045",
+      "type": "multiple_choice",
+      "text": "Which statements about string literals as slices are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Their type is `&str`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "They point to a specific location in the binary",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "They are immutable",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every literal has type `String` and owns heap memory",
+          "correct": false
+        }
+      ],
+      "explanation": "After slices are introduced, the material explains literals as immutable `&str` values.",
+      "source": {
+        "key": "rust1-borrowing-slices-literal-slice",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Slice Type",
+        "locator": "Chapter 4 — The Slice Type, pp. 109",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-046",
+      "type": "multiple_choice",
+      "text": "Which arguments are valid for `fn first_word(s: &str) -> &str`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Part of a `String`: `&my_string[0..6]`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "An entire `String` as `&my_string[..]`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A reference `&my_string`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Only an owned `String` passed without `&`",
+          "correct": false
+        }
+      ],
+      "explanation": "The `&str` signature makes the function flexible enough for slices and references to `String`.",
+      "source": {
+        "key": "rust1-borrowing-slices-str-param-string",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Slice Type",
+        "locator": "Chapter 4 — The Slice Type, pp. 109–110",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-047",
+      "type": "multiple_choice",
+      "text": "Which values can be passed to an `&str` parameter without transferring ownership of a `String`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A string literal",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A slice of a string literal",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A slice of a `String`, such as `&s[..]`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Only a new `String` created with `String::from` and passed by value",
+          "correct": false
+        }
+      ],
+      "explanation": "An `&str` can refer to string literals or to data inside a `String`; ownership of the buffer is not transferred.",
+      "source": {
+        "key": "rust1-borrowing-slices-str-param-literal",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Slice Type",
+        "locator": "Chapter 4 — The Slice Type, pp. 110",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-048",
+      "type": "multiple_choice",
+      "text": "Why is an `&str` parameter usually more flexible than an `&String` parameter for a function that only needs to read string data? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It directly accepts string literals",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It accepts string slices",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "An `&String` can be coerced to `&str` when calling such a function",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "An `&str` requires ownership of the string buffer to be transferred",
+          "correct": false
+        }
+      ],
+      "explanation": "An `&str` interface works with a broader set of string sources without requiring ownership of a `String`.",
+      "source": {
+        "key": "rust1-borrowing-slices-str-api",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Slice Type",
+        "locator": "Chapter 4 — The Slice Type, pp. 109–110",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-049",
+      "type": "multiple_choice",
+      "text": "Which statements about an array slice are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "For `let a = [1,2,3,4,5]`, `&a[1..3]` gives the elements `[2,3]`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The type of such a slice is `&[i32]`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It stores a reference to the first element and a length",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It owns an independent copy of the array",
+          "correct": false
+        }
+      ],
+      "explanation": "Other slices work like string slices: reference plus length, without ownership.",
+      "source": {
+        "key": "rust1-borrowing-slices-array-slice",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Slice Type",
+        "locator": "Chapter 4 — The Slice Type, pp. 110–111",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-borrowing-slices-050",
+      "type": "multiple_choice",
+      "text": "Which Rust concepts provide compile-time memory safety? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Ownership",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Borrowing",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Slices",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Automatically running all tests",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter summary explicitly names ownership, borrowing, and slices.",
+      "source": {
+        "key": "rust1-borrowing-slices-chapter-summary",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The Slice Type",
+        "locator": "Chapter 4 — The Slice Type, pp. 111",
+        "url": null
+      }
+    }
+  ]
+}

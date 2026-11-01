@@ -4,7 +4,7 @@
   "questions": [
     {
       "type": "single_choice",
-      "text": "Что такое psql согласно документации?",
+      "text": "Что такое psql?",
       "answers": [
         {
           "key": "a",
@@ -328,7 +328,7 @@
     },
     {
       "type": "multiple_choice",
-      "text": "Какие параметры подключения перечислены в документации psql?",
+      "text": "Какие параметры командной строки psql задают параметры подключения?",
       "answers": [
         {
           "key": "a",
@@ -544,7 +544,7 @@
     },
     {
       "type": "multiple_choice",
-      "text": "Какие варианты справки предоставляет `psql --help[=тема]`?",
+      "text": "Какие значения можно указать как тему в `psql --help=тема`?",
       "answers": [
         {
           "key": "a",
@@ -567,7 +567,7 @@
           "correct": false
         }
       ],
-      "explanation": "Документация перечисляет темы options, commands и variables.",
+      "explanation": "Для `psql --help=тема` поддерживаются темы options, commands и variables.",
       "source": {
         "key": "psql1-initial-help",
         "kind": "postgresql_docs",

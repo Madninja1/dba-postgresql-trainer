@@ -1,0 +1,499 @@
+{
+  "schema_version": 1,
+  "topic": "pgcat1-indexes-access-methods",
+  "questions": [
+    {
+      "key": "pgcat1-indexes-access-methods-001",
+      "type": "single_choice",
+      "text": "What does pg_am describe?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Relation access methods",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Autovacuum parameters",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Role membership",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Subscription states",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_am contains one row for each access method supported by the system; in the current description, access methods are defined for tables and indexes.",
+      "source": {
+        "key": "pgcat1-pg-am-8663c1f8",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.3. pg_am",
+        "locator": "Purpose of pg_am",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-am"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-002",
+      "type": "multiple_choice",
+      "text": "Which pg_am.amtype values are correct?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`t` — table access method",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`i` — index access method",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`v` — view access method",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`r` — replication method",
+          "correct": false
+        }
+      ],
+      "explanation": "amtype distinguishes table (`t`) and index (`i`) access methods.",
+      "source": {
+        "key": "pgcat1-pg-am-ad455b94",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.3. pg_am",
+        "locator": "amtype column",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-am"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-003",
+      "type": "single_choice",
+      "text": "What does pg_amop describe?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Operators that are members of access-method operator families",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Support functions of operator families",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only ordinary SQL functions",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only physical-storage tablespaces",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_amop stores operators belonging to access-method families; an operator can be used for search or ordering.",
+      "source": {
+        "key": "pgcat1-pg-amop-d57ca57c",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.4. pg_amop",
+        "locator": "Purpose of pg_amop",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-amop"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-004",
+      "type": "multiple_choice",
+      "text": "Which values are valid for `pg_amop.amoppurpose`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`s` — search",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`o` — ordering",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`a` — aggregate",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`t` — trigger",
+          "correct": false
+        }
+      ],
+      "explanation": "amoppurpose uses `s` for search and `o` for ordering.",
+      "source": {
+        "key": "pgcat1-pg-amop-fd14ed32",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.4. pg_amop",
+        "locator": "amoppurpose column",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-amop"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-005",
+      "type": "single_choice",
+      "text": "Which catalog stores support functions for access-method operator families?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_amproc",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_amop",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_proc",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_opclass",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_amproc describes support functions that belong to access-method operator families.",
+      "source": {
+        "key": "pgcat1-pg-amproc-7243b2b8",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.5. pg_amproc",
+        "locator": "Purpose of pg_amproc",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-amproc"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-006",
+      "type": "multiple_choice",
+      "text": "Which statements about pg_opclass and pg_opfamily are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_opclass associates an indexed data type with an access method and operator family",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_opfamily represents a family of compatible operators and procedures",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "opcmethod references pg_am",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "opcfamily references pg_opfamily",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "pg_opfamily stores only cluster databases",
+          "correct": false
+        }
+      ],
+      "explanation": "An operator class defines how a family applies to a type/access method, while an operator family groups compatible operators and support procedures.",
+      "source": {
+        "key": "pgcat1-pg-opclass-4d390ff5",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.33. pg_opclass",
+        "locator": "Purpose of pg_opclass and references opcmethod/opcfamily",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-opclass"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-007",
+      "type": "single_choice",
+      "text": "Which catalog stores part of the index information that supplements pg_class?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_index",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_am",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_opclass",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_partitioned_table",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_index contains index-specific properties, while general relation information is stored in pg_class.",
+      "source": {
+        "key": "pgcat1-pg-index-2e33066d",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.26. pg_index",
+        "locator": "Purpose of pg_index",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-index"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-008",
+      "type": "multiple_choice",
+      "text": "Which pg_index flags describe index state or purpose?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "indisunique — unique index",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "indisprimary — index represents a PRIMARY KEY",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "indisvalid — index may be used in queries",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "indisready — index is ready to accept data",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "indislive=false — index is being dropped",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "indisready=false means the index can safely be used in queries",
+          "correct": false
+        }
+      ],
+      "explanation": "These fields distinguish uniqueness/primary-key status and the readiness, validity, and deletion phases of an index.",
+      "source": {
+        "key": "pgcat1-pg-index-d3a24ef8",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.26. pg_index",
+        "locator": "indisunique, indisprimary, indisvalid, indisready, indislive",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-index"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-009",
+      "type": "single_choice",
+      "text": "What does a zero element in pg_index.indkey mean?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The corresponding index attribute is defined by an expression rather than a simple column reference",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It always means the first table column",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The entire index is invalid",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The column has type integer",
+          "correct": false
+        }
+      ],
+      "explanation": "In indkey, ordinary numbers correspond to pg_attribute.attnum, while 0 identifies an expression index attribute.",
+      "source": {
+        "key": "pgcat1-pg-index-0effb7cf",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.26. pg_index",
+        "locator": "indkey column",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-index"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-010",
+      "type": "multiple_choice",
+      "text": "What is stored in pg_partitioned_table?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Information about partition keys",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "partstrat: hash/list/range encoded as h/l/r",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "partnatts — number of partition-key attributes",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "partattrs — partition-key column numbers or 0 for an expression",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Logical replication subscription states",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_partitioned_table describes the strategy and composition of a partition key.",
+      "source": {
+        "key": "pgcat1-pg-partitioned-table-ab575ac2",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.37. pg_partitioned_table",
+        "locator": "partstrat, partnatts, partattrs",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-partitioned-table"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-011",
+      "type": "single_choice",
+      "text": "Which catalog stores direct parent-child relationships for table and index inheritance?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_inherits",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_depend",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_partitioned_table",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_class",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_inherits contains one row for each direct parent-child relationship.",
+      "source": {
+        "key": "pgcat1-pg-inherits-de96e976",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.27. pg_inherits",
+        "locator": "Purpose of pg_inherits",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-inherits"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-012",
+      "type": "multiple_choice",
+      "text": "Which statements about pg_inherits fields are correct?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "inhrelid — OID of the child table/index",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "inhparent — OID of the parent table/index",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "inhseqno defines inherited-column order when there are multiple parents",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "inhdetachpending=true for a partition currently being detached",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "inhparent stores the database name",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_inherits stores the child, parent, sequence number, and pending-detach flag.",
+      "source": {
+        "key": "pgcat1-pg-inherits-bf4d85c4",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.27. pg_inherits",
+        "locator": "inhrelid, inhparent, inhseqno, inhdetachpending",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-inherits"
+      }
+    },
+    {
+      "key": "pgcat1-indexes-access-methods-013",
+      "type": "single_choice",
+      "text": "What does pg_opfamily represent?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A family of compatible operators and support procedures for an access method",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A list of roles allowed to CREATE INDEX",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A planner statistics table",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Partition-detach state",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_opfamily defines operator families; most family information also resides in related pg_amop, pg_amproc, and pg_opclass rows.",
+      "source": {
+        "key": "pgcat1-pg-opfamily-b530768e",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.35. pg_opfamily",
+        "locator": "Purpose and relationship to pg_amop/pg_amproc/pg_opclass",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-opfamily"
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "dba-1",
+  "slug": "dba1-data-tablespaces",
+  "notes_part": 10,
+  "topic_number": 10,
+  "title": "Tablespaces",
+  "description": "Physical placement of PostgreSQL data, standard and user-defined tablespaces, the database default tablespace, filesystem directories, and access-cost parameters",
+  "sort_order": 100
+}

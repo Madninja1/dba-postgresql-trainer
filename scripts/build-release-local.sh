@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="${1:-0.6.0}"
+VERSION="${1:-0.7.0}"
 KEYSTORE="${DBA_TRAINER_KEYSTORE:-./dba-trainer-release.jks}"
 KEY_ALIAS="${DBA_TRAINER_KEY_ALIAS:-dba-trainer}"
 
@@ -17,10 +17,18 @@ cargo check --workspace
 cargo test --workspace
 cargo clippy --workspace --all-targets
 
-echo "== Android native libraries =="
+echo "== Android native libraries (arm64-v8a release) =="
+# jniLibs is source input, so Gradle clean does not remove stale ABI folders.
+# Keep the direct-download APK ARM64-only; emulator/x86 builds can be produced
+# separately when needed.
+rm -rf \
+  apps/android/app/src/main/jniLibs/arm64-v8a \
+  apps/android/app/src/main/jniLibs/armeabi-v7a \
+  apps/android/app/src/main/jniLibs/x86 \
+  apps/android/app/src/main/jniLibs/x86_64
+
 cargo ndk \
   -t arm64-v8a \
-  -t x86_64 \
   -o apps/android/app/src/main/jniLibs \
   build \
   --release \

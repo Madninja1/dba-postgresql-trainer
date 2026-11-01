@@ -1,0 +1,550 @@
+{
+  "schema_version": 1,
+  "topic": "pgcat1-core-relations-types",
+  "questions": [
+    {
+      "key": "pgcat1-core-relations-types-001",
+      "type": "single_choice",
+      "text": "What are PostgreSQL system catalogs?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Ordinary tables where PostgreSQL stores metadata and internal information",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only virtual views that are never stored on disk",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A set of postgresql.conf configuration files",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A separate external metadata service",
+          "correct": false
+        }
+      ],
+      "explanation": "System catalogs are ordinary PostgreSQL tables that store metadata and internal information. They normally should not be modified manually; SQL commands are provided for that purpose.",
+      "source": {
+        "key": "pgcat1-overview-fac038e5",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.1. Overview",
+        "locator": "Overview of system catalogs and the recommendation not to modify them manually",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalogs-overview"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-002",
+      "type": "multiple_choice",
+      "text": "Which statements about the scope of system catalogs are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Most catalogs are copied from the template database and belong to a specific database",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Some catalogs are physically shared by all databases in a cluster",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_database exists as a single catalog for the whole cluster",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every system catalog necessarily has a separate copy in each database",
+          "correct": false
+        }
+      ],
+      "explanation": "Most catalogs belong to a specific database, but some are shared by the whole cluster; pg_database is one such catalog.",
+      "source": {
+        "key": "pgcat1-overview-13f47aa0",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.1. Overview",
+        "locator": "Overview: database-local and shared catalogs",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalogs-overview"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-003",
+      "type": "single_choice",
+      "text": "Which catalog describes tables, indexes, sequences, views, and other relations?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_class",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_attribute",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_namespace",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_database",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_class contains rows for different kinds of relations: tables, indexes, sequences, views, materialized views, TOAST tables, and other objects.",
+      "source": {
+        "key": "pgcat1-pg-class-12682512",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.11. pg_class",
+        "locator": "Catalog purpose; relkind",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-class"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-004",
+      "type": "multiple_choice",
+      "text": "Which mappings of pg_class.relkind values are correct?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`r` — ordinary table",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`i` — index",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`v` — view",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`m` — materialized view",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`p` — partitioned table",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "`x` — foreign server",
+          "correct": false
+        }
+      ],
+      "explanation": "relkind encodes the relation kind. The material lists r, i, S, t, v, m, c, f, p, and I; `x` is not used for a foreign server.",
+      "source": {
+        "key": "pgcat1-pg-class-c9161989",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.11. pg_class",
+        "locator": "relkind column",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-class"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-005",
+      "type": "single_choice",
+      "text": "What does pg_class.reltuples mean?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "An approximate estimate of the number of live rows used by the planner",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The exact row count, recalculated on every SELECT",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The number of user columns",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The number of pages marked all-visible in the visibility map",
+          "correct": false
+        }
+      ],
+      "explanation": "reltuples is an approximate estimate of the number of live rows. It is updated by VACUUM, ANALYZE, and some DDL commands; -1 means the row count is unknown.",
+      "source": {
+        "key": "pgcat1-pg-class-2cbb240f",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.11. pg_class",
+        "locator": "reltuples column",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-class"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-006",
+      "type": "multiple_choice",
+      "text": "Which statements about pg_attribute are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "There is a row in pg_attribute for every column of every relation",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "attname stores the column name",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "attnum for ordinary columns starts at 1",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "System columns usually have negative attnum values",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "A dropped column immediately disappears from pg_attribute without a trace",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_attribute describes attributes/columns. Dropped columns can remain as rows with attisdropped=true.",
+      "source": {
+        "key": "pgcat1-pg-attribute-db5b35f0",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.7. pg_attribute",
+        "locator": "Purpose; attname; attnum; attisdropped",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-attribute"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-007",
+      "type": "single_choice",
+      "text": "Where is the actual DEFAULT expression for a column stored when it is explicitly defined?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_attrdef",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_attribute.attnotnull",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_class.reloptions",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_type.typdefault for all columns",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_attribute.atthasdef only indicates that a default/generated expression exists; the column expression itself is stored in pg_attrdef.",
+      "source": {
+        "key": "pgcat1-pg-attrdef-5b61cfe7",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.6. pg_attrdef",
+        "locator": "Purpose of pg_attrdef; adbin",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-attrdef"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-008",
+      "type": "multiple_choice",
+      "text": "Which statements about pg_namespace are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The catalog stores namespaces on which SQL schemas are based",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "nspname is the namespace name",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "nspowner references pg_authid.oid",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "nspacl stores access privileges",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Each pg_namespace row describes a separate database",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_namespace describes namespaces/schemas: their name, owner, and ACL.",
+      "source": {
+        "key": "pgcat1-pg-namespace-16531017",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.32. pg_namespace",
+        "locator": "Purpose; nspname; nspowner; nspacl",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-namespace"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-009",
+      "type": "single_choice",
+      "text": "Which pg_type.typtype value means a domain?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "d",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "c",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "e",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "r",
+          "correct": false
+        }
+      ],
+      "explanation": "In pg_type.typtype: b — base, c — composite, d — domain, e — enum, p — pseudo-type, r — range, m — multirange.",
+      "source": {
+        "key": "pgcat1-pg-type-27f4187e",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.64. pg_type",
+        "locator": "typtype column",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-type"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-010",
+      "type": "multiple_choice",
+      "text": "Which statements about pg_database are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "datname stores the database name",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "datallowconn=false prohibits connections to the database",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "datconnlimit=-1 means there is no connection limit",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_database is shared by all databases in the cluster",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Each database has its own separate copy of pg_database",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_database is a cluster-wide shared catalog. Among other properties, it stores the database name, whether connections are allowed, and the connection limit.",
+      "source": {
+        "key": "pgcat1-pg-database-bb4d6051",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.15. pg_database",
+        "locator": "Purpose; datname; datallowconn; datconnlimit",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-database"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-011",
+      "type": "single_choice",
+      "text": "Which catalog contains sequence parameters such as start, increment, minimum, maximum, cache, and cycle?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_sequence",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_class",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_enum",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_attribute",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_sequence stores seqstart, seqincrement, seqmax, seqmin, seqcache, and seqcycle; the sequence name and schema are stored in pg_class.",
+      "source": {
+        "key": "pgcat1-pg-sequence-9f8a87bd",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.47. pg_sequence",
+        "locator": "Purpose and sequence parameters",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-sequence"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-012",
+      "type": "multiple_choice",
+      "text": "Which statements about pg_enum and pg_collation are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_enum.enumlabel stores the text label of an enum value",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_enum.enumsortorder defines the value order within an enum",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_collation.collprovider can identify libc or ICU",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_collation.collencoding=-1 means the collation applies to any encoding",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "pg_enum stores role definitions",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_enum describes enum values and their ordering, while pg_collation describes available collations and their provider/encoding.",
+      "source": {
+        "key": "pgcat1-pg-enum-572db962",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.20. pg_enum",
+        "locator": "enumlabel and enumsortorder",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-enum"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-013",
+      "type": "single_choice",
+      "text": "Which catalog stores available tablespaces and is shared by all databases in the cluster?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_tablespace",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_database",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_class",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_namespace",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_tablespace stores available tablespaces and is shared across the entire cluster.",
+      "source": {
+        "key": "pgcat1-pg-tablespace-0355a567",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.56. pg_tablespace",
+        "locator": "Purpose of pg_tablespace; shared catalog",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-tablespace"
+      }
+    },
+    {
+      "key": "pgcat1-core-relations-types-014",
+      "type": "multiple_choice",
+      "text": "Which statements about pg_collation are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "collname is the collation name",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "collprovider=`c` means libc",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "collprovider=`i` means ICU",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "collencoding=-1 means the collation applies to any encoding",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "collversion stores the provider-defined collation version",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "All of these properties are stored only in pg_database",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_collation describes collations, their provider, encoding, and version.",
+      "source": {
+        "key": "pgcat1-pg-collation-274d51c2",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.12. pg_collation",
+        "locator": "collname, collprovider, collencoding, collversion",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-collation"
+      }
+    }
+  ]
+}

@@ -31,7 +31,7 @@ data class WorldEnvironment(
 )
 
 object WorldEnvironmentEngine {
-    fun environmentFor(clock: WorldClock): WorldEnvironment {
+    fun environmentFor(clock: WorldClock, visualHour: Int = clock.hour): WorldEnvironment {
         val date = clock.date
         val season = when (date.month) {
             12, 1, 2 -> WorldSeason.WINTER
@@ -39,7 +39,7 @@ object WorldEnvironmentEngine {
             6, 7, 8 -> WorldSeason.SUMMER
             else -> WorldSeason.AUTUMN
         }
-        val dayPhase = when (clock.hour) {
+        val dayPhase = when (visualHour.coerceIn(0, 23)) {
             in 6..9 -> WorldDayPhase.MORNING
             in 10..17 -> WorldDayPhase.DAY
             in 18..21 -> WorldDayPhase.EVENING

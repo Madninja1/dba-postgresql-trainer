@@ -1,0 +1,1106 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-advanced-rust",
+  "questions": [
+    {
+      "key": "rust1-advanced-rust-001",
+      "type": "single_choice",
+      "text": "What is the key difference between `T: Draw` and `dyn Draw`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`T: Draw` uses a known concrete type and static dispatch, while `dyn Draw` allows runtime polymorphism",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`dyn Draw` is always faster than monomorphization",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`T: Draw` allows several different concrete types in one `Vec<T>`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "There is no difference between them",
+          "correct": false
+        }
+      ],
+      "explanation": "Generics are monomorphized for concrete types, while trait objects hide the concrete type and choose method implementations at runtime.",
+      "source": {
+        "key": "rust1-advanced-rust-trait-objects",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 17 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 493–497",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-002",
+      "type": "multiple_choice",
+      "text": "What does `Vec<Box<dyn Draw>>` allow? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Store values of different concrete types as long as they implement `Draw`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Call `Draw` methods on every element without knowing its concrete type",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Check the required trait at compile time",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Store only one concrete type in the entire vector",
+          "correct": false
+        }
+      ],
+      "explanation": "A trait object expresses shared behavior, so `Screen` can hold different components and call `draw`; the compiler rejects a type that does not implement `Draw`.",
+      "source": {
+        "key": "rust1-advanced-rust-trait-objects-q002",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 17 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 494–496",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-003",
+      "type": "multiple_choice",
+      "text": "Which statements about dynamic dispatch are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The concrete method is selected at runtime",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It is used for calls through trait objects",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It has runtime cost and can limit some optimizations",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It is another name for generic monomorphization",
+          "correct": false
+        }
+      ],
+      "explanation": "The book contrasts dynamic dispatch through trait objects with static dispatch and generic monomorphization.",
+      "source": {
+        "key": "rust1-advanced-rust-dynamic-dispatch",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 17 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 496–498",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-004",
+      "type": "single_choice",
+      "text": "Why is a trait object usually written behind a pointer, such as `&dyn Trait` or `Box<dyn Trait>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`dyn Trait` is dynamically sized, so it is used behind a pointer with known size",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A trait object must be a global variable",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The pointer is needed only to call `Drop`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Without a pointer, the trait automatically becomes an enum",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter on dynamically sized types states that DST values are used behind pointers; trait objects are such dynamically sized types.",
+      "source": {
+        "key": "rust1-advanced-rust-dst",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 19 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 560–561",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-006",
+      "type": "multiple_choice",
+      "text": "What advantages come from encoding states as separate types (`DraftPost -> PendingReviewPost -> Post`)? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Invalid operations can be absent from a type and rejected by the compiler",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "State becomes part of the type system",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Some invalid states can be made impossible to represent in well-typed code",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "All transitions must be selected through dynamic dispatch",
+          "correct": false
+        }
+      ],
+      "explanation": "The alternative moves state restrictions from runtime checks into types, so methods exist only in states where the operation is valid.",
+      "source": {
+        "key": "rust1-advanced-rust-state-types",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 17 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 507–511",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-009",
+      "type": "single_choice",
+      "text": "Why is an ordinary `let Some(x) = value;` generally not suitable for `Option<T>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`Some(x)` may fail to match `None`, while ordinary `let` requires an irrefutable pattern",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`let` cannot work with enums at all",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`Some` always moves the value to another thread",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`Option<T>` cannot be destructured",
+          "correct": false
+        }
+      ],
+      "explanation": "Ordinary `let` has no branch for a mismatch, so refutable patterns require constructs such as `if let`.",
+      "source": {
+        "key": "rust1-advanced-rust-refutability-q009",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 18 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 518–519",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-011",
+      "type": "multiple_choice",
+      "text": "Which destructuring capabilities do Rust patterns support? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Destructuring struct fields",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Destructuring enum variants and their inner data",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Destructuring tuples",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Nesting patterns inside one another",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Automatically calling value methods when a pattern matches",
+          "correct": false
+        }
+      ],
+      "explanation": "Patterns can mirror the structure of values and extract parts from nested enums, structs, and tuples.",
+      "source": {
+        "key": "rust1-advanced-rust-destructuring",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 18 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 522–526",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-012",
+      "type": "multiple_choice",
+      "text": "How does `_` differ from a name such as `_value` in a pattern? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`_` matches a value but creates no binding",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`_value` creates an ordinary binding while suppressing the unused-variable warning",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`_value` can participate in ownership moves because it is a binding",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`_` always clones the matched value",
+          "correct": false
+        }
+      ],
+      "explanation": "A bare `_` ignores the value without binding it, while a leading-underscore name is still a variable and follows ordinary ownership rules.",
+      "source": {
+        "key": "rust1-advanced-rust-ignore-patterns",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 18 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 526–529",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-013",
+      "type": "single_choice",
+      "text": "What is a match guard such as `Some(x) if x > 10 => ...` used for?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Adding an extra condition after the pattern matches",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Making `match` a lazy iterator",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Disabling type checking",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Replacing an enum with a struct",
+          "correct": false
+        }
+      ],
+      "explanation": "A match guard adds a logical condition to an arm after the pattern has matched.",
+      "source": {
+        "key": "rust1-advanced-rust-match-guards",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 18 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 530–532",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-014",
+      "type": "single_choice",
+      "text": "What does the pattern `id @ 3..=7` allow?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Check the range and bind the matched value to `id` at the same time",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Create a mutable reference named `id`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Ignore the value of `id`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Invoke an `@` macro",
+          "correct": false
+        }
+      ],
+      "explanation": "`@` lets you bind the value while also checking it against a more specific pattern.",
+      "source": {
+        "key": "rust1-advanced-rust-at-binding",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 18 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 532–533",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-015",
+      "type": "multiple_choice",
+      "text": "Which actions are among the five special capabilities enabled by `unsafe`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Dereferencing a raw pointer",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Calling an unsafe function or method",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Reading or modifying a mutable static",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Implementing an unsafe trait",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Completely disabling the borrow checker for the current module",
+          "correct": false
+        }
+      ],
+      "explanation": "The book lists five unsafe capabilities; four are represented here, and the fifth is accessing a `union` field.",
+      "source": {
+        "key": "rust1-advanced-rust-unsafe-powers",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 19 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 534–544",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-016",
+      "type": "multiple_choice",
+      "text": "Which statements about raw pointers are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They have the forms `*const T` and `*mut T`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "They can be created in safe code",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Dereferencing a raw pointer requires `unsafe`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "They automatically receive all guarantees of ordinary `&T` and `&mut T` references",
+          "correct": false
+        }
+      ],
+      "explanation": "Creating a raw pointer itself does not require `unsafe`, but dereferencing one does because ordinary reference guarantees are not provided.",
+      "source": {
+        "key": "rust1-advanced-rust-raw-pointers",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 19 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 536–538",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-017",
+      "type": "multiple_choice",
+      "text": "What characterizes a good approach to using `unsafe` in Rust? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Localize unsafe code to a small area",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Check required invariants before the dangerous operation",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Expose a safe public API over the unsafe implementation when possible",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Use `unsafe` to silently bypass any borrow-checker error",
+          "correct": false
+        }
+      ],
+      "explanation": "`split_at_mut` demonstrates a safe abstraction around a small unsafe block: the programmer checks invariants before the low-level operation.",
+      "source": {
+        "key": "rust1-advanced-rust-safe-abstraction",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 19 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 539–542",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-019",
+      "type": "multiple_choice",
+      "text": "Which statements about macros are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Macros are metaprogramming tools that generate Rust code",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`macro_rules!` is used for declarative macros",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Macros are expanded before normal program execution",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Macros can accept a variable number of syntactic arguments",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Macros execute like ordinary functions only at runtime",
+          "correct": false
+        }
+      ],
+      "explanation": "The material contrasts functions and macros: macros work with code at compile time, and `macro_rules!` performs declarative syntax matching.",
+      "source": {
+        "key": "rust1-advanced-rust-macros",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 19 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 565–569",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-020",
+      "type": "multiple_choice",
+      "text": "Which kinds of procedural macros exist in Rust? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Custom derive",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Attribute-like",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Function-like",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`macro_rules!` as a fourth kind of procedural macro",
+          "correct": false
+        }
+      ],
+      "explanation": "Procedural macros are divided into custom derive, attribute-like, and function-like macros; `macro_rules!` belongs to the separate declarative family.",
+      "source": {
+        "key": "rust1-advanced-rust-procedural-macros",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 19 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 569–576",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-029",
+      "type": "single_choice",
+      "text": "How does `match` differ from `if let` with respect to exhaustiveness?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The compiler checks `match` exhaustiveness, while `if let` may omit cases",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`if let` is always exhaustive",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`match` cannot destructure",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "There is no difference",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter emphasizes exhaustiveness checking for `match`.",
+      "source": {
+        "key": "rust1-advanced-rust-match-exhaustive",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 18 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 512–514",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-030",
+      "type": "multiple_choice",
+      "text": "What is the pattern in `for (index, value) in v.iter().enumerate()`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`(index, value)`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It destructures a tuple",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`enumerate` yields pairs to match",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Only the word `for` is a pattern",
+          "correct": false
+        }
+      ],
+      "explanation": "In a `for` loop, the position before `in` is a pattern.",
+      "source": {
+        "key": "rust1-advanced-rust-for-pattern",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 18 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 514–515",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-033",
+      "type": "single_choice",
+      "text": "What does the pattern `1 | 2` mean?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Match either value 1 or value 2",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Bitwise OR of expressions",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A range of floating-point values",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Creation of two variables",
+          "correct": false
+        }
+      ],
+      "explanation": "`|` combines alternative patterns.",
+      "source": {
+        "key": "rust1-advanced-rust-or-pattern",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 18 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 520–522",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-034",
+      "type": "single_choice",
+      "text": "For which value types can a `..=` range be used in patterns?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Numeric values and `char`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Arbitrary `String` and `Vec<T>` values",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only `bool`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only `&T` references",
+          "correct": false
+        }
+      ],
+      "explanation": "The material states that numeric values and `char` support these range patterns.",
+      "source": {
+        "key": "rust1-advanced-rust-range-pattern",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 18 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 521–522",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-035",
+      "type": "single_choice",
+      "text": "What happens to an outer `y` when a pattern contains `Some(y)`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A new `y` is created in the arm, shadowing the outer one",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The inner value is compared with the outer `y`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The outer `y` becomes mutable",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Duplicate names are forbidden",
+          "correct": false
+        }
+      ],
+      "explanation": "A named variable in a pattern creates a new binding and can shadow an outer variable.",
+      "source": {
+        "key": "rust1-advanced-rust-pattern-shadowing",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 18 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 520–522",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-036",
+      "type": "multiple_choice",
+      "text": "How can parts of a value be ignored in a pattern? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`_`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A name such as `_value`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`..`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Only by removing the field from the type",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter demonstrates `_`, leading-underscore names, and `..` as ways to ignore data.",
+      "source": {
+        "key": "rust1-advanced-rust-ignore-patterns-q036",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 18 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 526–530",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-037",
+      "type": "single_choice",
+      "text": "Why do `_x` and `_` affect ownership of a `String` differently?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`_x` creates a binding and can move the `String`, while `_` creates no binding",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`_` always moves and `_x` never does",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Both clone the value",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "They are equivalent",
+          "correct": false
+        }
+      ],
+      "explanation": "`_x` is still a binding, while bare `_` ignores a value without binding it.",
+      "source": {
+        "key": "rust1-advanced-rust-underscore-ownership",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 18 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 527–529",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-038",
+      "type": "multiple_choice",
+      "text": "What does `..` allow in patterns? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Ignore remaining struct fields",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Ignore part of a tuple",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Focus on the needed parts",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Use `..` many times in one tuple pattern without ambiguity",
+          "correct": false
+        }
+      ],
+      "explanation": "`..` skips remaining parts, but ambiguous repeated use is not allowed.",
+      "source": {
+        "key": "rust1-advanced-rust-dotdot",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 18 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 529–530",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-040",
+      "type": "multiple_choice",
+      "text": "What does `unsafe { ... }` permit, and what does it not do? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It permits the special unsafe operations",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It does not disable checks for safe code and ordinary references",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It does not guarantee that unsafe operations are correct",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It transfers responsibility for invariants to the programmer",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "It completely disables the borrow checker for all code in the block",
+          "correct": false
+        }
+      ],
+      "explanation": "Unsafe enables a limited set of operations while preserving the rest of Rust's checks.",
+      "source": {
+        "key": "rust1-advanced-rust-unsafe-scope",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 19 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 535–536",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-041",
+      "type": "single_choice",
+      "text": "Which operation on a raw pointer requires `unsafe`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Dereferencing it and accessing the pointed-to data",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Creating a `*const i32` from a reference",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Storing the pointer in a variable",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Comparing two numbers",
+          "correct": false
+        }
+      ],
+      "explanation": "Raw pointers can be created in safe Rust; dereferencing them requires `unsafe`.",
+      "source": {
+        "key": "rust1-advanced-rust-raw-deref",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 19 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 536–538",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-043",
+      "type": "single_choice",
+      "text": "Why can a safe `split_at_mut` use `unsafe` internally?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It checks invariants and hides the unsafe implementation behind a safe API",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Any unsafe code inside a safe function is automatically correct",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Slices are not subject to borrowing rules",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The function returns only numbers",
+          "correct": false
+        }
+      ],
+      "explanation": "This is an example of a safe abstraction built on raw pointers and `from_raw_parts_mut`.",
+      "source": {
+        "key": "rust1-advanced-rust-split-at-mut",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 19 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 538–541",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-044",
+      "type": "multiple_choice",
+      "text": "Which statements about `extern \"C\"` are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It specifies the C ABI",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Calling an external function declared in an extern block requires `unsafe`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "An ABI defines the calling convention",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`extern \"C\"` automatically makes every external function call safe",
+          "correct": false
+        }
+      ],
+      "explanation": "`extern \"C\"` selects the C ABI, while calling foreign code requires `unsafe` because Rust cannot verify its guarantees.",
+      "source": {
+        "key": "rust1-advanced-rust-ffi",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 19 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 541–543",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-046",
+      "type": "multiple_choice",
+      "text": "Which statements about associated types are true using `Iterator` as the example? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The trait declares `type Item`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "An implementation chooses the concrete `Item`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "One implementation ties `Item` to a concrete type",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "An associated type is completely equivalent to a generic parameter with many independent choices for one implementation",
+          "correct": false
+        }
+      ],
+      "explanation": "An associated type is tied to a particular trait implementation.",
+      "source": {
+        "key": "rust1-advanced-rust-associated-types",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 19 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 545–548",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-048",
+      "type": "multiple_choice",
+      "text": "When is fully qualified syntax such as `<Type as Trait>::function()` needed for a trait associated function? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "When multiple implementations provide same-named associated functions and the call is ambiguous",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "When there is no `self` value from which the compiler can select the intended implementation",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "When the trait whose implementation should be called must be specified explicitly",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Only inside declarative `macro_rules!` macros",
+          "correct": false
+        }
+      ],
+      "explanation": "Fully qualified syntax explicitly names both the type and the trait, resolving ambiguity when selecting an associated function.",
+      "source": {
+        "key": "rust1-advanced-rust-fully-qualified",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 19 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 550–554",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-advanced-rust-050",
+      "type": "multiple_choice",
+      "text": "Which statements distinguish a newtype from a type alias? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A newtype creates a new distinct type",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A newtype can help satisfy the orphan rule through a local wrapper",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A type alias creates a synonym rather than a new type",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A type alias provides the same type safety as a newtype",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter contrasts a new tuple-struct type with a simple alternative name for an existing type.",
+      "source": {
+        "key": "rust1-advanced-rust-newtype-alias",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Complete Language Model: Trait Objects, Patterns, Unsafe, Macros",
+        "locator": "Chapter 19 — Complete Language Model: Trait Objects, Patterns, Unsafe, Macros, pp. 554–559",
+        "url": null
+      }
+    }
+  ]
+}

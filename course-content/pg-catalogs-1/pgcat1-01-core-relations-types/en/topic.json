@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "pg-catalogs-1",
+  "slug": "pgcat1-core-relations-types",
+  "notes_part": 53,
+  "topic_number": 1,
+  "title": "Catalog Core: Relations, Columns, Types, and Databases",
+  "description": "pg_class, pg_attribute, pg_attrdef, pg_namespace, pg_type, pg_database, pg_tablespace, pg_sequence, pg_enum, and pg_collation",
+  "sort_order": 10
+}

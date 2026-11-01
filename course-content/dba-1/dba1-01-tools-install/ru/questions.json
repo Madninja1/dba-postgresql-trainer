@@ -869,7 +869,7 @@
     {
       "key": "dba1-tools-025",
       "type": "single_choice",
-      "text": "Что в терминологии материала называется кластером баз данных PostgreSQL?",
+      "text": "Что такое кластер баз данных PostgreSQL?",
       "answers": [
         {
           "key": "a",
@@ -905,7 +905,7 @@
     {
       "key": "dba1-tools-026",
       "type": "single_choice",
-      "text": "Что такое сервер (экземпляр сервера) PostgreSQL в формулировке материала?",
+      "text": "Что такое сервер (экземпляр сервера) PostgreSQL?",
       "answers": [
         {
           "key": "a",
@@ -941,7 +941,7 @@
     {
       "key": "dba1-tools-027",
       "type": "multiple_choice",
-      "text": "В каких случаях материал считает полезной установку PostgreSQL из исходных кодов?",
+      "text": "В каких случаях полезна установка PostgreSQL из исходных кодов?",
       "answers": [
         {
           "key": "a",
@@ -1013,7 +1013,7 @@
     {
       "key": "dba1-tools-029",
       "type": "multiple_choice",
-      "text": "Что относится к обязательному ПО для традиционной сборки PostgreSQL, указанному в материале?",
+      "text": "Что относится к обязательному ПО для традиционной сборки PostgreSQL из исходных кодов?",
       "answers": [
         {
           "key": "a",
@@ -1121,7 +1121,7 @@
     {
       "key": "dba1-tools-032",
       "type": "multiple_choice",
-      "text": "Какие языки упомянуты в материале как дополнительные зависимости для соответствующих процедурных языков PostgreSQL?",
+      "text": "Какие языки могут потребоваться как дополнительные зависимости для процедурных языков PostgreSQL?",
       "answers": [
         {
           "key": "a",
@@ -1157,7 +1157,7 @@
     {
       "key": "dba1-tools-033",
       "type": "multiple_choice",
-      "text": "Какие компоненты в материале связаны с аутентификацией и шифрованием?",
+      "text": "Какие компоненты могут использоваться для аутентификации и шифрования при сборке PostgreSQL?",
       "answers": [
         {
           "key": "a",
@@ -1193,7 +1193,7 @@
     {
       "key": "dba1-tools-034",
       "type": "single_choice",
-      "text": "Для чего в материале упоминается библиотека ICU?",
+      "text": "Для чего при сборке PostgreSQL может использоваться библиотека ICU?",
       "answers": [
         {
           "key": "a",
@@ -1805,7 +1805,7 @@
     {
       "key": "dba1-tools-051",
       "type": "multiple_choice",
-      "text": "Почему материал называет готовые пакеты предпочтительным способом установки PostgreSQL?",
+      "text": "Почему установка PostgreSQL из готовых пакетов обычно предпочтительнее сборки из исходных кодов?",
       "answers": [
         {
           "key": "a",
@@ -1841,7 +1841,7 @@
     {
       "key": "dba1-tools-052",
       "type": "multiple_choice",
-      "text": "Что верно о pg_createcluster в Ubuntu согласно материалу?",
+      "text": "Что верно о pg_createcluster в Ubuntu?",
       "answers": [
         {
           "key": "a",
@@ -1913,7 +1913,7 @@
     {
       "key": "dba1-tools-054",
       "type": "single_choice",
-      "text": "Как в пакетном дистрибутиве Ubuntu материал предлагает обращаться к pg_ctl?",
+      "text": "Как следует управлять экземпляром PostgreSQL из пакетного дистрибутива Ubuntu вместо прямого вызова pg_ctl?",
       "answers": [
         {
           "key": "a",
@@ -1949,7 +1949,7 @@
     {
       "key": "dba1-tools-055",
       "type": "multiple_choice",
-      "text": "Какие различия между PostgreSQL в виртуальной машине и managed PostgreSQL отмечены в материале?",
+      "text": "Какие различия характерны для PostgreSQL в виртуальной машине и managed PostgreSQL?",
       "answers": [
         {
           "key": "a",
@@ -1985,7 +1985,7 @@
     {
       "key": "dba1-tools-056",
       "type": "single_choice",
-      "text": "Какова правильная последовательность действий в практике по включению контрольных сумм?",
+      "text": "Какова правильная последовательность действий для включения контрольных сумм в существующем кластере PostgreSQL с помощью pg_checksums?",
       "answers": [
         {
           "key": "a",
@@ -2051,42 +2051,6 @@
         "module": "PostgreSQL 16 — pg_checksums",
         "section": "Описание и параметры",
         "locator": "--check и коды завершения",
-        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgchecksums"
-      }
-    },
-    {
-      "key": "dba1-tools-058",
-      "type": "multiple_choice",
-      "text": "Что верно о pg_checksums --no-sync?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "В режиме --check этот параметр не оказывает влияния",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Он может ускорить операции, не дожидаясь надёжной записи изменённых файлов",
-          "correct": true
-        },
-        {
-          "key": "c",
-          "text": "Его рекомендуется включать в production для надёжности",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "При сбое ОС каталог с изменёнными файлами может повредиться",
-          "correct": true
-        }
-      ],
-      "explanation": "--no-sync может ускорить изменяющие операции ценой риска при сбое и не рекомендуется в production; для --check он не влияет.",
-      "source": {
-        "key": "pg16-pgchecksums-no-sync-details",
-        "kind": "postgresql_docs",
-        "module": "PostgreSQL 16 — pg_checksums",
-        "section": "Параметры",
-        "locator": "-N/--no-sync",
         "url": "https://postgrespro.ru/docs/postgresql/16/app-pgchecksums"
       }
     },

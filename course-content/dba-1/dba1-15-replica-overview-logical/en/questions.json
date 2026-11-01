@@ -1,0 +1,870 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-replica-physical",
+  "questions": [
+    {
+      "key": "dba1-replica-physical-001",
+      "type": "single_choice",
+      "text": "What mechanism is PostgreSQL physical replication based on?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Transmitting WAL records to a standby and applying them there",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Periodically running pg_dump for every table",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Transmitting only SQL INSERT commands",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Copying only the system catalog",
+          "correct": false
+        }
+      ],
+      "explanation": "Physical replication transfers changes through WAL, and the standby server applies the received log records.",
+      "source": {
+        "key": "dba1-15-physical-replication",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Physical replication",
+        "locator": "Slide 5, core mechanism",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-002",
+      "type": "multiple_choice",
+      "text": "Which statements about PostgreSQL physical replication are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It creates an exact copy of the entire cluster",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It is one-way",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It requires binary compatibility between servers",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It allows individual tables to be selected independently for replication",
+          "correct": false
+        }
+      ],
+      "explanation": "The summary describes physical replication as a one-way mechanism that creates an exact copy of the entire cluster and requires binary compatibility.",
+      "source": {
+        "key": "dba1-15-summary",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Summary",
+        "locator": "Slide 17",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-003",
+      "type": "single_choice",
+      "text": "What is a standby server for physical replication initially created from?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A physical backup of the primary server",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "An empty initdb cluster without copying data",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only a pg_dumpall SQL script",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only an archive of configuration files",
+          "correct": false
+        }
+      ],
+      "explanation": "The lesson starts building a standby from a physical copy of the primary server; the standby then continues receiving and applying new WAL.",
+      "source": {
+        "key": "dba1-15-replica-base",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Physical replication",
+        "locator": "Creating a standby from a physical backup",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-004",
+      "type": "multiple_choice",
+      "text": "Which processes participate in streaming physical replication? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "wal sender on the primary server",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "wal receiver on the standby",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "startup on the standby",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "autovacuum launcher as the WAL transmitter",
+          "correct": false
+        }
+      ],
+      "explanation": "In the lesson scheme, wal sender transmits the WAL stream, wal receiver receives it, and the changes are applied on the standby during recovery.",
+      "source": {
+        "key": "dba1-15-processes",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Physical replication",
+        "locator": "Primary, wal sender, wal receiver, startup scheme",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-005",
+      "type": "single_choice",
+      "text": "Which standby process connects to the primary server's wal sender during streaming replication?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "wal receiver",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "checkpointer",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "autovacuum worker",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "logger",
+          "correct": false
+        }
+      ],
+      "explanation": "In streaming mode, the standby wal receiver connects to the primary wal sender through the replication protocol.",
+      "source": {
+        "key": "dba1-15-streaming-processes",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Streaming replication",
+        "locator": "wal receiver and wal sender",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-006",
+      "type": "multiple_choice",
+      "text": "Which statements about streaming replication are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The standby receives a stream of WAL records through the replication protocol",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It can minimize replication lag",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "With the appropriate synchronous configuration, commit can wait for confirmation from a standby",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Transmission starts only after each WAL segment is completely filled",
+          "correct": false
+        }
+      ],
+      "explanation": "Unlike a file archive, streaming replication transmits WAL records directly through a replication connection.",
+      "source": {
+        "key": "postgresql-16-high-availability-streaming",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Streaming replication",
+        "locator": "Streaming replication and standby servers",
+        "url": "https://postgrespro.ru/docs/postgresql/16/high-availability"
+      }
+    },
+    {
+      "key": "dba1-replica-physical-007",
+      "type": "single_choice",
+      "text": "Why does file-based replication usually lag further behind the primary than streaming replication?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The archive is updated only after a WAL segment switch",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "File-based replication does not use WAL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The standby applies only every second segment",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The archive transmits only DDL commands",
+          "correct": false
+        }
+      ],
+      "explanation": "A file archive receives completed WAL segments, so an additional delay occurs between segment arrivals.",
+      "source": {
+        "key": "dba1-15-file-replication",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Physical replication",
+        "locator": "File-based and streaming replication",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-008",
+      "type": "multiple_choice",
+      "text": "Which statements about file-based and streaming replication are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "File-based replication is possible when continuous WAL archiving is configured",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "File-based replication usually has higher lag",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "In practice, a file archive can supplement streaming replication",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Streaming and file-based replication fundamentally cannot be used together",
+          "correct": false
+        }
+      ],
+      "explanation": "The material recommends treating the WAL archive as an additional WAL source for a streaming standby.",
+      "source": {
+        "key": "dba1-15-replication-sources",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Physical replication",
+        "locator": "Streaming and file-based WAL delivery",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-009",
+      "type": "single_choice",
+      "text": "Which parameter determines how much information is written to WAL in the context of enabling physical replication?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "wal_level",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "hot_standby_feedback",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "max_connections",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "work_mem",
+          "correct": false
+        }
+      ],
+      "explanation": "wal_level controls the contents of WAL. For replication, the log must contain all information required about changes.",
+      "source": {
+        "key": "dba1-15-wal-level",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "WAL level",
+        "locator": "wal_level",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-010",
+      "type": "multiple_choice",
+      "text": "What is true for wal_level = replica as presented? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The level contains information required for physical replication",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It allows hot physical backups to be used",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "According to the material, it is the default level in PostgreSQL 10 and later",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It is intended only for crash recovery and does not support replication",
+          "correct": false
+        }
+      ],
+      "explanation": "The notes contrast the old minimal level with replica: replica contains the data required for hot backup and physical replication.",
+      "source": {
+        "key": "dba1-15-wal-level-replica",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "WAL level",
+        "locator": "minimal and replica",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-011",
+      "type": "single_choice",
+      "text": "What does synchronous physical replication add to the wait during transaction commit in the scheme discussed?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Waiting for confirmation that the synchronous standby received the WAL records",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Waiting for a SELECT to complete on the standby",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Waiting for a complete logical database dump",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Waiting for automatic switching of master and replica roles",
+          "correct": false
+        }
+      ],
+      "explanation": "Synchronous mode increases durability at the cost of additional waiting during COMMIT.",
+      "source": {
+        "key": "dba1-15-synchronous-replication",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Using a standby",
+        "locator": "Data durability",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-012",
+      "type": "multiple_choice",
+      "text": "What are the consequences of synchronous replication mode? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Durability of committed data is increased",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "COMMIT can take longer because it waits for the standby",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "synchronous_standby_names is used to select the synchronous standby",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Any reads from different servers automatically receive one shared consistent snapshot",
+          "correct": false
+        }
+      ],
+      "explanation": "Synchronization concerns commit acknowledgment; it does not create a common consistent snapshot for arbitrary simultaneous reads from different servers.",
+      "source": {
+        "key": "postgresql-16-high-availability-sync",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Synchronous replication",
+        "locator": "Synchronous and asynchronous modes",
+        "url": "https://postgrespro.ru/docs/postgresql/16/high-availability"
+      }
+    },
+    {
+      "key": "dba1-replica-physical-013",
+      "type": "single_choice",
+      "text": "What is a client allowed to do on a standby in hot standby mode?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Connect and execute read-only queries",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Execute arbitrary INSERT, UPDATE, and DELETE statements",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Create permanent and temporary tables",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Run VACUUM and REINDEX",
+          "correct": false
+        }
+      ],
+      "explanation": "Hot standby allows read queries while WAL is being applied, but operations that modify data are prohibited.",
+      "source": {
+        "key": "postgresql-16-hot-standby",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Hot standby",
+        "locator": "Allowed connections and queries",
+        "url": "https://postgrespro.ru/docs/postgresql/16/hot-standby"
+      }
+    },
+    {
+      "key": "dba1-replica-physical-014",
+      "type": "multiple_choice",
+      "text": "Which actions are unavailable on a standby in hot standby mode? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "DDL commands that change object structure",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "SELECT FOR UPDATE and other locks that imply modification",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "VACUUM, ANALYZE, and REINDEX",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "An ordinary SELECT that does not modify data",
+          "correct": false
+        }
+      ],
+      "explanation": "Reading is allowed on a hot standby, but actions that directly or indirectly modify database state are prohibited.",
+      "source": {
+        "key": "postgresql-16-hot-standby-restrictions",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Hot standby",
+        "locator": "Query restrictions on a standby",
+        "url": "https://postgrespro.ru/docs/postgresql/16/hot-standby"
+      }
+    },
+    {
+      "key": "dba1-replica-physical-015",
+      "type": "single_choice",
+      "text": "What happens to client connections to a standby server if hot_standby = off is set?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Connections are unavailable during recovery",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Write operations become allowed",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The standby automatically becomes the primary server",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "WAL application stops",
+          "correct": false
+        }
+      ],
+      "explanation": "The notes call this a warm standby: recovery continues, but client connections to the standby are not allowed.",
+      "source": {
+        "key": "dba1-15-warm-standby",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Hot standby",
+        "locator": "hot_standby = off",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-016",
+      "type": "multiple_choice",
+      "text": "Which situations can cause a conflict between a read query on a hot standby and WAL application? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The standby needs to apply a change that is incompatible with the running query",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The primary removes row versions that are still required by a query on the standby",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "WAL application cannot wait indefinitely for every read query",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Any SELECT always and automatically blocks WAL application forever",
+          "correct": false
+        }
+      ],
+      "explanation": "A hot standby serves read queries while applying changes from the primary, so conflicts can arise between these activities.",
+      "source": {
+        "key": "postgresql-16-hot-standby-conflicts",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Conflicts on a standby",
+        "locator": "Handling Query Conflicts",
+        "url": "https://postgrespro.ru/docs/postgresql/16/hot-standby"
+      }
+    },
+    {
+      "key": "dba1-replica-physical-017",
+      "type": "single_choice",
+      "text": "Which parameter controls the allowed delay when applying conflicting WAL records on a standby?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "max_standby_streaming_delay",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "synchronous_standby_names",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "wal_level",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "archive_command",
+          "correct": false
+        }
+      ],
+      "explanation": "The exercise directly associates max_standby_streaming_delay with delaying the application of conflicting records on the standby server.",
+      "source": {
+        "key": "dba1-15-max-standby-delay",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice+",
+        "locator": "max_standby_streaming_delay",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-018",
+      "type": "multiple_choice",
+      "text": "Which statements about hot_standby_feedback are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The parameter enables feedback from the standby to the primary server",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It helps prevent the primary from removing row versions still required by standby queries",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Using it can allow a long-running query on the standby to avoid cancellation caused by cleanup on the primary",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It switches the standby into write mode",
+          "correct": false
+        }
+      ],
+      "explanation": "The exercise demonstrates feedback: when it is enabled, cleanup on the primary can be delayed for queries running on the standby.",
+      "source": {
+        "key": "dba1-15-hot-standby-feedback",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice+",
+        "locator": "hot_standby_feedback",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-019",
+      "type": "single_choice",
+      "text": "Why connect several physical standbys in a cascade?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To reduce load on the primary server and redistribute network traffic",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To allow writes on all standbys at the same time",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To eliminate WAL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "So each standby contains only one database",
+          "correct": false
+        }
+      ],
+      "explanation": "With cascading, some standbys receive WAL from another standby rather than directly from the primary, reducing load on the source node and nearby network.",
+      "source": {
+        "key": "dba1-15-cascade",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Using a standby",
+        "locator": "Cascading standbys",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-020",
+      "type": "multiple_choice",
+      "text": "Which tasks can PostgreSQL physical replication solve? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Increasing data durability",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Using a standby server for read workloads",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Reducing load on the primary with multiple or cascading standbys",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Independently modifying different rows of one cluster in both directions on all servers",
+          "correct": false
+        }
+      ],
+      "explanation": "Replication is presented as a basic mechanism for improving durability and distributing read and network load, while remaining one-way physical replication.",
+      "source": {
+        "key": "postgresql-16-high-availability",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Using a standby",
+        "locator": "High Availability, Load Balancing, and Replication",
+        "url": "https://postgrespro.ru/docs/postgresql/16/high-availability"
+      }
+    },
+    {
+      "key": "dba1-replica-physical-021",
+      "type": "multiple_choice",
+      "text": "What must be considered when using multiple hot standbys for read workloads? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Automatic distribution of client connections requires external tools",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Different standbys can be at different WAL positions",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Reads from different nodes do not automatically form one consistent snapshot",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Synchronous replication guarantees the same snapshot for every SELECT on all servers",
+          "correct": false
+        }
+      ],
+      "explanation": "Physical replication provides readable copies, but balancing is handled externally and a consistent cross-server snapshot is not guaranteed.",
+      "source": {
+        "key": "dba1-15-multiple-replicas",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Multiple standbys",
+        "locator": "Read workload and consistency across nodes",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-022",
+      "type": "multiple_choice",
+      "text": "Which statements about cascading physical replication are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A standby can receive WAL from another standby instead of directly from the primary",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Cascading can reduce load and network traffic on the primary",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The farther a node is down the chain, the greater its lag can be",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The primary automatically waits for synchronous confirmation from every node in any cascade",
+          "correct": false
+        }
+      ],
+      "explanation": "A cascade reduces load on the primary but adds potential lag; primary synchronization applies to directly connected synchronous standbys.",
+      "source": {
+        "key": "dba1-15-cascading",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Cascading replication",
+        "locator": "Purpose and limitations of cascading",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-023",
+      "type": "single_choice",
+      "text": "What is an intentionally delayed physical standby used for?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To provide a window for viewing and recovering the state before an erroneous data change",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To allow writes on primary and standby at the same time",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To replace WAL with logical SQL commands",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To automatically synchronize DDL between different PostgreSQL versions",
+          "correct": false
+        }
+      ],
+      "explanation": "Delayed WAL application creates a time window between primary and standby and can help recover from user error.",
+      "source": {
+        "key": "dba1-15-delayed-standby",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Delayed replication",
+        "locator": "Standby as a “time machine”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-physical-024",
+      "type": "multiple_choice",
+      "text": "Which statements about switching to a physical standby are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A planned switchover can be used for maintenance on the primary",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Failover is required when the primary fails",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Core PostgreSQL allows a standby to be promoted manually",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Fully automatic failure detection and client reconfiguration appear automatically after streaming replication is enabled",
+          "correct": false
+        }
+      ],
+      "explanation": "Streaming replication provides a standby that can be promoted, but automatic failover management requires additional cluster software and external client routing.",
+      "source": {
+        "key": "dba1-15-failover",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Switching to a standby",
+        "locator": "Planned switchover and failover",
+        "url": null
+      }
+    }
+  ]
+}

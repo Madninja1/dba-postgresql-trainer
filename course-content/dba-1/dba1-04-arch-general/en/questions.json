@@ -1,0 +1,1106 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-arch-general",
+  "questions": [
+    {
+      "key": "dba1-arch-general-001",
+      "type": "single_choice",
+      "text": "In PostgreSQL's general architecture, how does a client application normally interact with the server?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Through a driver that implements the PostgreSQL protocol",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only by directly reading cluster files",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only through the server's shared memory segment",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Through the system catalog without a network protocol",
+          "correct": false
+        }
+      ],
+      "explanation": "The client and server must use the same communication protocol. Normally the client works through a driver that implements the PostgreSQL protocol; a driver may use libpq or implement the protocol itself.",
+      "source": {
+        "key": "dba1-arch-general-client-server",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Client and Server",
+        "locator": "Slide 3 “Client and Server”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/protocol"
+      }
+    },
+    {
+      "key": "dba1-arch-general-002",
+      "type": "multiple_choice",
+      "text": "Which actions are part of the basic interaction between a PostgreSQL client and server? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Connecting to one of the databases in the cluster",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Authenticating the connecting client",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Sending SQL queries to the server and receiving results",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Directly modifying data pages on disk from the client",
+          "correct": false
+        }
+      ],
+      "explanation": "The protocol allows a client to connect to a database in the cluster; the server authenticates the client, then accepts SQL queries, executes them, and returns results. The client does not modify data files directly.",
+      "source": {
+        "key": "dba1-arch-general-client-server",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Client and Server",
+        "locator": "Slide 3 “Client and Server”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/protocol"
+      }
+    },
+    {
+      "key": "dba1-arch-general-003",
+      "type": "multiple_choice",
+      "text": "Which properties are included in ACID? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Atomicity",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Consistency",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Isolation",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Durability",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Automatic backup",
+          "correct": false
+        }
+      ],
+      "explanation": "ACID stands for atomicity, consistency, isolation, and durability. Backup itself is not one of the ACID properties.",
+      "source": {
+        "key": "dba1-arch-general-transactions",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Transactions",
+        "locator": "Slide 4 “Transactions”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transactions"
+      }
+    },
+    {
+      "key": "dba1-arch-general-004",
+      "type": "single_choice",
+      "text": "What does transaction atomicity mean?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A transaction is performed completely or not at all",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "All transactions must execute sequentially",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The transaction result is stored only in memory",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A transaction cannot contain more than one SQL command",
+          "correct": false
+        }
+      ],
+      "explanation": "Atomicity means 'all or nothing': a transaction's changes are either committed as a whole or not committed.",
+      "source": {
+        "key": "dba1-arch-general-transactions",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Transactions",
+        "locator": "Slide 4 “Transactions”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transactions"
+      }
+    },
+    {
+      "key": "dba1-arch-general-005",
+      "type": "multiple_choice",
+      "text": "Which statements about ending a transaction are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "BEGIN marks the start of a transaction",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "COMMIT makes changes permanent",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "ROLLBACK cancels transaction changes",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "COMMIT starts a new transaction and cancels the previous one",
+          "correct": false
+        }
+      ],
+      "explanation": "In the material, BEGIN marks the start of a transaction, COMMIT makes changes permanent, and ROLLBACK cancels them.",
+      "source": {
+        "key": "dba1-arch-general-transactions",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Transactions",
+        "locator": "Slide 4 “Transactions”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transactions"
+      }
+    },
+    {
+      "key": "dba1-arch-general-006",
+      "type": "single_choice",
+      "text": "Who normally controls transaction boundaries in PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The client application",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The operating system",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The query planner",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The buffer cache",
+          "correct": false
+        }
+      ],
+      "explanation": "As a rule, the client application determines which commands belong to a transaction and performs commit or rollback. On the server side, transactions can also be controlled by stored procedures.",
+      "source": {
+        "key": "dba1-arch-general-transactions",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Transactions",
+        "locator": "Slide 4 “Transactions”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transactions"
+      }
+    },
+    {
+      "key": "dba1-arch-general-007",
+      "type": "multiple_choice",
+      "text": "Which main stages does an ordinary PostgreSQL query pass through? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Parsing",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Rewriting",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Planning",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Execution",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Mandatory compilation of the PostgreSQL server",
+          "correct": false
+        }
+      ],
+      "explanation": "The material identifies parsing, rewriting, planning, and execution as query-processing stages.",
+      "source": {
+        "key": "dba1-arch-general-query-execution",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Query Execution",
+        "locator": "Slide 6 “Query Execution”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/query-path"
+      }
+    },
+    {
+      "key": "dba1-arch-general-008",
+      "type": "single_choice",
+      "text": "Why is the system catalog needed during semantic analysis of a query?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To obtain metadata about database objects",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To store the result rows of every SELECT",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To replace WAL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To manage the client's TCP connection",
+          "correct": false
+        }
+      ],
+      "explanation": "The system catalog contains database metadata needed, for example, to determine whether tables and other objects referenced by a query exist.",
+      "source": {
+        "key": "dba1-arch-general-query-execution",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Query Execution",
+        "locator": "Slide 6 “Query Execution”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/query-path"
+      }
+    },
+    {
+      "key": "dba1-arch-general-009",
+      "type": "single_choice",
+      "text": "What task does the query planner perform?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It chooses an execution plan, including whether to use indexes",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It checks the client's password during connection",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It creates table files at the operating-system level",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It commits every transaction on behalf of the client",
+          "correct": false
+        }
+      ],
+      "explanation": "SQL is a declarative language: a query describes the required data, while the planner determines how to obtain it, for example whether an index should be used.",
+      "source": {
+        "key": "dba1-arch-general-query-execution",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Query Execution",
+        "locator": "Slide 6 “Query Execution”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/query-path"
+      }
+    },
+    {
+      "key": "dba1-arch-general-010",
+      "type": "multiple_choice",
+      "text": "Which information helps the planner choose a good plan? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Table sizes",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Data distribution in tables",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Statistics",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The current user's password",
+          "correct": false
+        }
+      ],
+      "explanation": "Planning needs statistics containing information about table sizes and data distribution. A user's password is not relevant to plan selection.",
+      "source": {
+        "key": "dba1-arch-general-query-execution",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Query Execution",
+        "locator": "Slide 6 “Query Execution”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/query-path"
+      }
+    },
+    {
+      "key": "dba1-arch-general-011",
+      "type": "multiple_choice",
+      "text": "What does preparing a statement in the extended query protocol provide? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Parsing and rewriting can be done in advance",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The parse tree can be stored",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Actual parameter values are bound during execution",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every execution must repeat syntactic parsing",
+          "correct": false
+        }
+      ],
+      "explanation": "A prepared statement allows parsing and rewriting to be performed in advance and the parse tree to be stored; actual parameter values are bound at execution time.",
+      "source": {
+        "key": "dba1-arch-general-prepared-statements",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Preparing Statements",
+        "locator": "Slide 7 “Preparing Statements”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-prepare"
+      }
+    },
+    {
+      "key": "dba1-arch-general-012",
+      "type": "single_choice",
+      "text": "At which stage of a prepared parameterized query are actual parameter values supplied?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "At the bind stage",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "At the authentication stage",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "When postmaster starts",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "When a page is written to WAL",
+          "correct": false
+        }
+      ],
+      "explanation": "After a statement is prepared, actual parameter values are supplied during the bind stage.",
+      "source": {
+        "key": "dba1-arch-general-prepared-statements",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Preparing Statements",
+        "locator": "Slide 7 “Preparing Statements”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-prepare"
+      }
+    },
+    {
+      "key": "dba1-arch-general-013",
+      "type": "multiple_choice",
+      "text": "Which statements about PostgreSQL prepared statements are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "PostgreSQL can sometimes retain a plan and avoid replanning",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Using them prevents SQL-code injection",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "They require a separate backend for each execution of the same query",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "They always bypass the planner regardless of the situation",
+          "correct": false
+        }
+      ],
+      "explanation": "The material notes that a plan can sometimes be reused and that prepared statements help protect against SQL injection. Replanning is not unconditionally excluded.",
+      "source": {
+        "key": "dba1-arch-general-prepared-statements",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Preparing Statements",
+        "locator": "Slide 7 “Preparing Statements”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-prepare"
+      }
+    },
+    {
+      "key": "dba1-arch-general-014",
+      "type": "single_choice",
+      "text": "What are cursors used for in the extended query protocol?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To fetch a result in parts as needed",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To change the data-page size",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To restart a backend after an error",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To store server parameters instead of postgresql.conf",
+          "correct": false
+        }
+      ],
+      "explanation": "A cursor allows a result set to be processed iteratively instead of retrieving the entire result at once.",
+      "source": {
+        "key": "dba1-arch-general-cursors",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Cursors",
+        "locator": "Slide 9 “Cursors”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-declare"
+      }
+    },
+    {
+      "key": "dba1-arch-general-015",
+      "type": "multiple_choice",
+      "text": "Which statements about a cursor are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "An open cursor is represented by a portal on the server",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A cursor can process a result row by row",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The cursor's query is implicitly prepared",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A cursor must return the entire result to the client in one message",
+          "correct": false
+        }
+      ],
+      "explanation": "A cursor allows iterative retrieval of data; an open cursor is represented by a portal, and the query used by it is implicitly prepared.",
+      "source": {
+        "key": "dba1-arch-general-cursors",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Cursors",
+        "locator": "Slide 9 “Cursors”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-declare"
+      }
+    },
+    {
+      "key": "dba1-arch-general-016",
+      "type": "single_choice",
+      "text": "What is the role of the postmaster process in PostgreSQL architecture?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It starts the other processes, monitors them, and accepts new connections",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It is the local cache of every client process",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It performs only SQL query planning",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It replaces the connection-pool manager",
+          "correct": false
+        }
+      ],
+      "explanation": "When the server starts, postmaster is launched: it creates the other processes, monitors them, and listens for incoming connections.",
+      "source": {
+        "key": "dba1-arch-general-processes-memory",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Processes and Memory",
+        "locator": "Slide 11 “Processes and Memory”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-017",
+      "type": "multiple_choice",
+      "text": "What is stored or allocated in the local memory of a backend process? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Parsed queries and their plans",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "State of open cursors",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "System-catalog cache",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Space for sorts and joins",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "The shared buffer cache available to all backends",
+          "correct": false
+        }
+      ],
+      "explanation": "Backend local memory is used for the state of a specific serviced connection and for executing its queries. The shared buffer cache is located in shared memory.",
+      "source": {
+        "key": "dba1-arch-general-processes-memory",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Processes and Memory",
+        "locator": "Slide 11 “Processes and Memory”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-018",
+      "type": "single_choice",
+      "text": "What happens when a new client connects in PostgreSQL's classic process model?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Postmaster creates a separate backend and the client communicates with it thereafter",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "All clients are always served by one single backend",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The client receives direct access to server shared memory",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A separate PostgreSQL cluster is created",
+          "correct": false
+        }
+      ],
+      "explanation": "For each new client, postmaster starts a backend process; that process also performs authentication.",
+      "source": {
+        "key": "dba1-arch-general-processes-memory",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Processes and Memory",
+        "locator": "Slide 11 “Processes and Memory”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-019",
+      "type": "multiple_choice",
+      "text": "Which mechanisms are used when many processes operate concurrently? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Short-lived locks for shared-memory objects",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "MVCC and data snapshots for table data",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Locking only conflicting changes to data that has not yet been committed",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A global halt of all reads until any transaction finishes",
+          "correct": false
+        }
+      ],
+      "explanation": "Short-lived locks are used for shared memory. For table data, PostgreSQL relies on MVCC and snapshots, trying to lock only conflicting changes.",
+      "source": {
+        "key": "dba1-arch-general-many-clients",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Many Clients",
+        "locator": "Slide 12 “Many Clients”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-020",
+      "type": "single_choice",
+      "text": "Which transaction properties are primarily provided by multiversioning?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Atomicity, consistency, and isolation",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only durability",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only consistency and durability",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only atomicity",
+          "correct": false
+        }
+      ],
+      "explanation": "The material names multiversion concurrency control as the main mechanism supporting the first three transaction properties: atomicity, consistency, and isolation.",
+      "source": {
+        "key": "dba1-arch-general-many-clients",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Many Clients",
+        "locator": "Slide 12 “Many Clients”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-021",
+      "type": "single_choice",
+      "text": "When does it make sense to use a connection pool?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "When there are too many clients or connections are opened and closed too frequently",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only when the server has no WAL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only to change the data-page size",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only to run VACUUM",
+          "correct": false
+        }
+      ],
+      "explanation": "A connection pool should be considered when there are many clients or connections are frequently opened and closed.",
+      "source": {
+        "key": "dba1-arch-general-connection-pool",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Connection Pooling",
+        "locator": "Slide 13 “Connection Pooling”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-022",
+      "type": "multiple_choice",
+      "text": "How does a connection pool manager work? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Clients connect to the pool manager instead of directly to PostgreSQL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The manager keeps several server connections open",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A free server connection is used for a client's request",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every request must create a new backend and immediately destroy it",
+          "correct": false
+        }
+      ],
+      "explanation": "The pool manager accepts client connections and reuses a limited set of open PostgreSQL connections.",
+      "source": {
+        "key": "dba1-arch-general-connection-pool",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Connection Pooling",
+        "locator": "Slide 13 “Connection Pooling”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-023",
+      "type": "multiple_choice",
+      "text": "What should be considered when using a connection pool? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Different clients may use the same backend in turn",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Backend local memory can retain state such as prepared queries",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "From the server's perspective, the number of connections can be kept relatively constant",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Pooling makes backend local memory shared among all PostgreSQL processes",
+          "correct": false
+        }
+      ],
+      "explanation": "With pooling, multiple clients may share one backend over time, while the backend retains local state. This state must therefore be considered when designing applications.",
+      "source": {
+        "key": "dba1-arch-general-connection-pool",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Connection Pooling",
+        "locator": "Slide 13 “Connection Pooling”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-024",
+      "type": "single_choice",
+      "text": "What is the normal PostgreSQL data-page size?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "8 KB",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "512 bytes",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "64 KB",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "1 MB",
+          "correct": false
+        }
+      ],
+      "explanation": "Files are logically divided into pages (blocks); the normal page size is 8 KB. A different size can be selected only when building the server.",
+      "source": {
+        "key": "dba1-arch-general-storage-pages",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Data Storage",
+        "locator": "Slide 14 “Data Storage”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-025",
+      "type": "multiple_choice",
+      "text": "Which statements about PostgreSQL storage pages are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A page contains a header and useful data",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Free space can remain between them",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A running cluster uses one page size",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Each page size is selected dynamically for every SELECT",
+          "correct": false
+        }
+      ],
+      "explanation": "A page has an internal layout, contains a header and data, and may contain free space when not full. The page size is fixed for the built server, not selected per query.",
+      "source": {
+        "key": "dba1-arch-general-storage-pages",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Data Storage",
+        "locator": "Slide 14 “Data Storage”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-026",
+      "type": "single_choice",
+      "text": "Where is PostgreSQL's buffer cache located?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "In shared memory accessible to PostgreSQL processes",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only in the local memory of one backend",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only in Cargo.lock",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only on the client side",
+          "correct": false
+        }
+      ],
+      "explanation": "PostgreSQL's buffer cache is in shared memory so that different server processes can use cached pages.",
+      "source": {
+        "key": "dba1-arch-general-storage-wal",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Data Storage",
+        "locator": "Slide 15 “Data Storage”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-027",
+      "type": "multiple_choice",
+      "text": "Which statements about caching and disk I/O are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "PostgreSQL accesses disks through the operating system",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The operating system has its own data cache",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "If a page is not in PostgreSQL's buffer cache, it may still be in the OS cache",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A modified page must be synchronously written to disk immediately after every change",
+          "correct": false
+        }
+      ],
+      "explanation": "In addition to PostgreSQL's shared buffer cache, there is an operating-system cache. Modified pages may be written to disk later, so durability requires an additional mechanism.",
+      "source": {
+        "key": "dba1-arch-general-storage-wal",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Data Storage",
+        "locator": "Slide 15 “Data Storage”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-028",
+      "type": "single_choice",
+      "text": "Why does PostgreSQL continuously maintain WAL in the context of durability?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To replay lost operations after a failure and restore a consistent state",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To replace the system catalog",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To store all client passwords",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To choose a page size for every query",
+          "correct": false
+        }
+      ],
+      "explanation": "After a failure, the contents of RAM can be lost together with pages that have not yet been written to disk. The journal allows lost changes to be recovered and data to be returned to a consistent state.",
+      "source": {
+        "key": "dba1-arch-general-storage-wal",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Data Storage",
+        "locator": "Slide 15 “Data Storage”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-029",
+      "type": "multiple_choice",
+      "text": "Which capabilities can PostgreSQL extensions add? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "New data types and operators",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "New index types",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Background worker processes",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Access to external data sources",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Mandatory replacement of PostgreSQL's process model with a single thread",
+          "correct": false
+        }
+      ],
+      "explanation": "PostgreSQL's architecture supports extensions that add types and operators, index access methods, background tasks, access to external sources, and other capabilities.",
+      "source": {
+        "key": "dba1-arch-general-extensibility",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Extensibility",
+        "locator": "Slide 16 “Extensibility”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-general-030",
+      "type": "single_choice",
+      "text": "How are most PostgreSQL extensions typically installed?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Most extensions can be installed online without restarting the server",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Every extension requires rebuilding the PostgreSQL core",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Extensions are available only to client applications",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The cluster must be deleted before installing any extension",
+          "correct": false
+        }
+      ],
+      "explanation": "The notes emphasize PostgreSQL's extensibility and point out that most extensions can be installed without restarting the server.",
+      "source": {
+        "key": "dba1-arch-general-extensibility",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Extensibility",
+        "locator": "Slide 16 “Extensibility”",
+        "url": null
+      }
+    }
+  ]
+}

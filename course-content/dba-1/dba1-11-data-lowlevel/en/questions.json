@@ -1,0 +1,741 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-data-lowlevel",
+  "questions": [
+    {
+      "key": "dba1-data-lowlevel-001",
+      "type": "single_choice",
+      "text": "Which PostgreSQL objects are normally represented physically by one or more relation forks?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Objects that store data: tables, indexes, sequences, and materialized views",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Tables only",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Entire databases only",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Views and functions only",
+          "correct": false
+        }
+      ],
+      "explanation": "For objects that physically store data, PostgreSQL uses relations represented by several forks.",
+      "source": {
+        "key": "dba1-11-relation-forks",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Object Forks",
+        "locator": "Slide 3, objects and forks",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-002",
+      "type": "multiple_choice",
+      "text": "Which relation forks exist in PostgreSQL? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "main",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "fsm",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "vm",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "init",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "wal",
+          "correct": false
+        }
+      ],
+      "explanation": "The material covers the main fork, free space map, visibility map, and initialization fork. WAL is not a relation fork from this set.",
+      "source": {
+        "key": "dba1-11-fork-types",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Forks",
+        "locator": "Slide 4, main, init, vm, fsm",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-003",
+      "type": "single_choice",
+      "text": "What is stored in a relation's main fork?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The actual data: table row versions or index entries",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only free-space information",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only page-visibility information",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A backup empty copy of the relation after a crash",
+          "correct": false
+        }
+      ],
+      "explanation": "The main fork contains the relation's actual data. It exists for objects that physically store data.",
+      "source": {
+        "key": "dba1-11-main",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Forks",
+        "locator": "Slide 4, main fork",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-004",
+      "type": "multiple_choice",
+      "text": "Which statements about relation file segments are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A large fork is split into segments",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The typical maximum size of one segment is 1 GB",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Subsequent segments can have suffixes .1, .2, and so on",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Each segment must correspond to a separate SQL table",
+          "correct": false
+        }
+      ],
+      "explanation": "As a relation fork grows, it is split into physical segments. The lesson shows files NNN, NNN.1, NNN.2 and a 1 GB segment size.",
+      "source": {
+        "key": "dba1-11-segments",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Object Forks",
+        "locator": "Slide 3, 1 GB segments",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-005",
+      "type": "single_choice",
+      "text": "What suffix does a free space map fork file have?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "_fsm",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "_vm",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "_init",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "_wal",
+          "correct": false
+        }
+      ],
+      "explanation": "Free space map files have the suffix _fsm.",
+      "source": {
+        "key": "postgresql-16-fsm",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Free Space Map",
+        "locator": "Storage Page Layout / Free Space Map",
+        "url": "https://postgrespro.ru/docs/postgresql/16/storage-fsm"
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-006",
+      "type": "multiple_choice",
+      "text": "Which statements about the FSM fork are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It stores free-space information",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It helps find pages suitable for placing new data",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It can exist for both tables and indexes",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It contains the table row versions themselves",
+          "correct": false
+        }
+      ],
+      "explanation": "FSM is the free space map. The notes separately emphasize that this fork is used for both tables and indexes.",
+      "source": {
+        "key": "dba1-11-fsm",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Forks",
+        "locator": "Slide 4, free space map",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-007",
+      "type": "single_choice",
+      "text": "What suffix does a visibility map file have?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "_vm",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "_fsm",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "_init",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "_visibility",
+          "correct": false
+        }
+      ],
+      "explanation": "Visibility map files have the suffix _vm.",
+      "source": {
+        "key": "postgresql-16-vm",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Visibility Map",
+        "locator": "Visibility Map",
+        "url": "https://postgrespro.ru/docs/postgresql/16/storage-vm"
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-008",
+      "type": "multiple_choice",
+      "text": "Which statements about the visibility map are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It is a visibility bitmap",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The file for this fork has the suffix _vm",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "In the model used here, the fork exists for tables",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It is the main file containing row versions",
+          "correct": false
+        }
+      ],
+      "explanation": "VM stores service information about page visibility and is a separate table fork rather than the main row storage.",
+      "source": {
+        "key": "dba1-11-vm",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Forks",
+        "locator": "Slide 4, visibility map",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-009",
+      "type": "single_choice",
+      "text": "For which objects is the init fork created?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "For unlogged tables and their indexes",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "For all ordinary tables",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only for system catalogs",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only for temporary views",
+          "correct": false
+        }
+      ],
+      "explanation": "The initialization fork has the suffix _init and exists for UNLOGGED relations.",
+      "source": {
+        "key": "postgresql-16-init-fork",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Initialization Fork",
+        "locator": "Database File Layout, init fork",
+        "url": "https://postgrespro.ru/docs/postgresql/16/storage-init"
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-010",
+      "type": "multiple_choice",
+      "text": "What is characteristic of unlogged tables and their init fork? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Changes to such tables are not written to WAL in the normal way",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "They can be faster because ordinary WAL logging is absent",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "After a crash, the main fork can be restored from the init fork state",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The init fork is intended to store current user rows during normal operation",
+          "correct": false
+        }
+      ],
+      "explanation": "Init represents the initial empty state of an unlogged relation and is used after a crash because the contents of an UNLOGGED table cannot be recovered from WAL.",
+      "source": {
+        "key": "dba1-11-init",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Forks",
+        "locator": "Slide 4, init and UNLOGGED",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-011",
+      "type": "single_choice",
+      "text": "What restriction on a row version creates the need for TOAST?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A row version must fit on one page",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A row cannot contain more than one text field",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A row must always fit in one 1-GB segment",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "All variable-length values must be stored separately",
+          "correct": false
+        }
+      ],
+      "explanation": "TOAST solves the problem of large values under the requirement that a row version must physically fit on a single page.",
+      "source": {
+        "key": "dba1-11-toast-row",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "TOAST",
+        "locator": "Slide 6, row version and TOAST",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-012",
+      "type": "multiple_choice",
+      "text": "What actions can PostgreSQL apply to large values through TOAST? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Compress the value",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Move the value to a separate TOAST table",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Compress first and then move it out if necessary",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Move the entire database to another tablespace",
+          "correct": false
+        }
+      ],
+      "explanation": "The material lists compression, out-of-line storage, and a combination of the two as ways to reduce the size of the main row version.",
+      "source": {
+        "key": "postgresql-16-toast-mechanisms",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "TOAST",
+        "locator": "TOAST, compression and out-of-line storage",
+        "url": "https://postgrespro.ru/docs/postgresql/16/storage-toast"
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-013",
+      "type": "single_choice",
+      "text": "In which schema are ordinary TOAST tables stored?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_toast",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "public",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_catalog",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "information_schema",
+          "correct": false
+        }
+      ],
+      "explanation": "When needed, a service TOAST table is created for the main table in the pg_toast schema.",
+      "source": {
+        "key": "dba1-11-toast-schema",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "TOAST",
+        "locator": "Slide 6, pg_toast schema",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-014",
+      "type": "multiple_choice",
+      "text": "Which statements about TOAST tables are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It has its own index",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Large values are stored in it as fragments",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Access to it is transparent to the application",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It replaces the main fork of the original table",
+          "correct": false
+        }
+      ],
+      "explanation": "A TOAST table is an auxiliary relation: it contains fragments of long values, is served by an index, and is used transparently by PostgreSQL.",
+      "source": {
+        "key": "dba1-11-toast-table",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "TOAST",
+        "locator": "Slide 6, TOAST table properties",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-015",
+      "type": "single_choice",
+      "text": "What happens to an already out-of-line TOAST value if UPDATE creates a new main-row version but the long field itself does not change?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The new row version can reference the same TOAST value",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The TOAST value must always be fully duplicated",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The field is automatically replaced with NULL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The entire TOAST table is recreated",
+          "correct": false
+        }
+      ],
+      "explanation": "TOAST has independent versioning. If the long value did not change, the new main-row version can continue referencing the existing value, saving space.",
+      "source": {
+        "key": "postgresql-16-toast-mvcc",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "TOAST",
+        "locator": "TOAST and reuse of unchanged values",
+        "url": "https://postgrespro.ru/docs/postgresql/16/storage-toast"
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-016",
+      "type": "multiple_choice",
+      "text": "Which PostgreSQL functions can determine the sizes of relations and related objects? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_relation_size",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_table_size",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_indexes_size",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_total_relation_size",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "pg_database_size",
+          "correct": false
+        }
+      ],
+      "explanation": "The material successively covers the size of an individual fork, a table with TOAST, indexes, and the full relation size. `pg_database_size` measures a database, not a relation or related objects from this list.",
+      "source": {
+        "key": "dba1-11-size-functions",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Table Size",
+        "locator": "Slide 8, size functions",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-017",
+      "type": "single_choice",
+      "text": "What does pg_table_size show for a regular table?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The size of the table together with its TOAST part, excluding the table's regular indexes",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only the size of the main fork",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only the total size of all regular indexes",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The full size of the entire database",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_table_size includes the table itself and its TOAST part with the TOAST index, but not the ordinary indexes of the main table.",
+      "source": {
+        "key": "dba1-11-pg-table-size",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Table Size",
+        "locator": "Slide 8, pg_table_size",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-018",
+      "type": "multiple_choice",
+      "text": "Which function-to-result mappings are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_relation_size — size of the selected relation fork",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_indexes_size — total size of the table's regular indexes",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_total_relation_size — full size of the table including its indexes",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_indexes_size — size of the entire database including WAL",
+          "correct": false
+        }
+      ],
+      "explanation": "Each function has its own scope: an individual fork, indexes, or a full relation with dependent structures.",
+      "source": {
+        "key": "dba1-11-size-comparison",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Table Size",
+        "locator": "Slide 8, comparing size functions",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-019",
+      "type": "single_choice",
+      "text": "For an UNLOGGED table, the presence of which file confirms that its initialization fork exists?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A file with the _init suffix",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A file with the _vm suffix",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A file with the _fsm suffix",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A file with the _toast suffix",
+          "correct": false
+        }
+      ],
+      "explanation": "The exercise asks you to create an unlogged table and directly verify the presence of the init fork, whose file has the _init suffix.",
+      "source": {
+        "key": "dba1-11-practice-init",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice",
+        "locator": "Practice, task 1",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-lowlevel-020",
+      "type": "multiple_choice",
+      "text": "Which actions can be used to investigate TOAST behavior for a text column? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Create a table with a text column",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Determine the storage strategy of that column",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Change the strategy to external and insert short and long values",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Inspect the TOAST table with a direct query and explain the result",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Restart the PostgreSQL server before inspecting the TOAST table",
+          "correct": false
+        }
+      ],
+      "explanation": "The exercise connects storage-strategy configuration with observing which values actually end up in the TOAST table. Restarting the server is not one of the listed exercise steps.",
+      "source": {
+        "key": "dba1-11-practice-toast",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice",
+        "locator": "Practice, task 2",
+        "url": null
+      }
+    }
+  ]
+}

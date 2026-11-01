@@ -90,7 +90,6 @@ fun DbaWorldRootScreen(
                     russian = russian,
                     onOpenTerminal = controller::openTerminal,
                     onOpenMonitoring = controller::openMonitoring,
-                    onOpenLearningCenter = controller::openLearningCenter,
                     onOpenServerRoom = controller::openServerRoom,
                     onCloseComputer = controller::openWorkstation,
                     onCloseShift = controller::closeShift,
@@ -208,12 +207,6 @@ private fun DbaWorldOverviewScreen(
                     modifier = Modifier.weight(1f),
                 ) {
                     Text(if (russian) "← Рабочее место" else "← Workstation")
-                }
-                OutlinedButton(
-                    onClick = controller::openLearningCenter,
-                    modifier = Modifier.weight(1f),
-                ) {
-                    Text(if (russian) "Учебный центр" else "Learning Center")
                 }
                 world.lastIncidentEvaluation?.let { evaluation ->
                     Surface(
@@ -1494,7 +1487,7 @@ private fun KnowledgeGateCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    text = "Knowledge Gate",
+                    text = if (russian) "Знания" else "Knowledge",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                 )
@@ -1542,8 +1535,7 @@ private fun KnowledgeRequirementRow(
     val stateLabel = when {
         access.passed -> if (russian) "Пройдено" else "Mastered"
         progress?.started == true -> if (russian) "Начато" else "Discovered"
-        access.purchased -> if (russian) "Куплен доступ" else "Access purchased"
-        else -> if (russian) "Не начато" else "Not started"
+        else -> if (russian) "Не изучено" else "Not studied"
     }
 
     Column(
@@ -1595,9 +1587,9 @@ private fun gateDescription(
     russian: Boolean,
 ): String = when (state) {
     KnowledgeGateState.LOCKED -> if (russian) {
-        "Требуемые темы ещё не начаты. Инцидент доступен как ознакомительный сценарий с Guided Mode."
+        "Требуемые темы ещё не изучались. Материалы доступны в режиме «Обучение», а инцидент остаётся доступен здесь в Guided Mode."
     } else {
-        "Required topics have not been started yet. The incident remains available as a guided discovery scenario."
+        "Required topics have not been studied yet. The materials remain available in Learning, while this incident stays playable in Guided Mode."
     }
 
     KnowledgeGateState.DISCOVERED -> if (russian) {
@@ -1812,8 +1804,6 @@ private fun severityLabel(
 }
 
 private fun clockLabel(clock: WorldClock, russian: Boolean): String {
-    val hh = clock.hour.toString().padStart(2, '0')
-    val mm = clock.minute.toString().padStart(2, '0')
     val date = clock.date
     return if (russian) {
         val month = listOf(
@@ -1830,10 +1820,10 @@ private fun clockLabel(clock: WorldClock, russian: Boolean): String {
             "ноября",
             "декабря",
         )[date.month - 1]
-        "${date.dayOfMonth} $month ${date.year} · $hh:$mm"
+        "${date.dayOfMonth} $month ${date.year}"
     } else {
         val month = date.month.toString().padStart(2, '0')
         val day = date.dayOfMonth.toString().padStart(2, '0')
-        "$day.$month.${date.year} · $hh:$mm"
+        "$day.$month.${date.year}"
     }
 }

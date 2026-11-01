@@ -1,0 +1,870 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-data-databases",
+  "questions": [
+    {
+      "key": "dba1-data-databases-001",
+      "type": "single_choice",
+      "text": "Which databases are created when a new PostgreSQL cluster is initialized?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "postgres, template0, and template1",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "postgres, public, and template1",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "postgres, pg_catalog, and template0",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only postgres",
+          "correct": false
+        }
+      ],
+      "explanation": "Cluster initialization creates three databases: postgres, template0, and template1. Other databases are subsequently created by cloning an existing database.",
+      "source": {
+        "key": "dba1-08-database-cluster",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Database cluster",
+        "locator": "Slide 3, databases created during initialization",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-002",
+      "type": "multiple_choice",
+      "text": "Which statements about the cluster's standard databases are correct? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "template1 is used by default as the template for new databases",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "template0 should normally be kept free of user changes",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The postgres database is used as the default database for connections",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every new database is necessarily created empty and never uses a template",
+          "correct": false
+        }
+      ],
+      "explanation": "template1 is the standard CREATE DATABASE template, template0 is kept as a clean original template, and postgres is intended, among other uses, for normal connections to the cluster.",
+      "source": {
+        "key": "dba1-08-database-templates",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Databases and templates",
+        "locator": "Slide 3, purpose of postgres, template0, and template1",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-003",
+      "type": "single_choice",
+      "text": "What does CREATE DATABASE actually do when no template database is specified explicitly?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Copies template1",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Copies postgres",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Copies template0",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Creates a completely empty file structure without system objects",
+          "correct": false
+        }
+      ],
+      "explanation": "CREATE DATABASE is implemented as a copy of an existing database. The default template is template1.",
+      "source": {
+        "key": "postgresql-16-template-databases",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Database templates",
+        "locator": "Section 23.3, template1 as the default template",
+        "url": "https://postgrespro.ru/docs/postgresql/16/manage-ag-templatedbs"
+      }
+    },
+    {
+      "key": "dba1-data-databases-004",
+      "type": "multiple_choice",
+      "text": "When is using template0 especially appropriate? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "When restoring a database from a pg_dump into a clean database",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "When creating a database with encoding or locale settings different from template1",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "When a database without user objects added to template1 is required",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "When all local additions from template1 must be copied automatically",
+          "correct": false
+        }
+      ],
+      "explanation": "template0 preserves the original contents and provides a clean database. This is useful for dump restoration and for creating a database with different encoding and locale settings.",
+      "source": {
+        "key": "postgresql-16-template-zero",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Database templates",
+        "locator": "Section 23.3, purpose of template0",
+        "url": "https://postgrespro.ru/docs/postgresql/16/manage-ag-templatedbs"
+      }
+    },
+    {
+      "key": "dba1-data-databases-005",
+      "type": "single_choice",
+      "text": "What happens if you try to clone a database while active connections to the source database remain?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "CREATE DATABASE fails with an error",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Active connections are automatically moved to the new database",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only system objects are copied",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "PostgreSQL automatically COMMITs every connection and continues copying",
+          "correct": false
+        }
+      ],
+      "explanation": "To copy a template database, existing connections to it must be closed. If other sessions are connected, CREATE DATABASE reports an error.",
+      "source": {
+        "key": "postgresql-16-template-copy",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Database templates",
+        "locator": "Section 23.3, restrictions when copying a database",
+        "url": "https://postgrespro.ru/docs/postgresql/16/manage-ag-templatedbs"
+      }
+    },
+    {
+      "key": "dba1-data-databases-006",
+      "type": "multiple_choice",
+      "text": "What purposes do PostgreSQL schemas serve? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They create namespaces for objects inside a database",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "They allow objects to be grouped logically",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "They allow objects with the same name to exist in different schemas",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "They allow one SQL session to connect to multiple cluster databases at once",
+          "correct": false
+        }
+      ],
+      "explanation": "A schema is a namespace inside one database. It is used to organize objects logically and prevent name conflicts.",
+      "source": {
+        "key": "dba1-08-schemas",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Schemas",
+        "locator": "Slide 5, “Schemas”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-007",
+      "type": "single_choice",
+      "text": "How many cluster databases is an ordinary client session connected to at one time?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "One database",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "All databases in the cluster",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "template1 and one user database at the same time",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "One database for each schema being used",
+          "correct": false
+        }
+      ],
+      "explanation": "A client connects to one database but can access objects in different schemas within it.",
+      "source": {
+        "key": "dba1-08-databases-and-schemas",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Cluster databases and schemas",
+        "locator": "Slide 6, client connection to a database",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-008",
+      "type": "multiple_choice",
+      "text": "Which statements about search_path are correct? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It defines the lookup order for objects referenced without a schema name",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Schemas are searched in the order defined by the search path",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Schemas that do not exist or are not accessible to the user can be omitted from the effective path",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It can search for an object in another database of the cluster",
+          "correct": false
+        }
+      ],
+      "explanation": "search_path applies to schemas of the current database. For an unqualified name, PostgreSQL searches objects through accessible schemas in the effective path in order.",
+      "source": {
+        "key": "dba1-08-search-path",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Search path",
+        "locator": "Slide 8, “Search path”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-009",
+      "type": "single_choice",
+      "text": "In which schema is a table created by CREATE TABLE t(...) when no schema is specified explicitly?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The first suitable schema in the search path",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Always pg_catalog",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Always template1",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A randomly selected accessible schema",
+          "correct": false
+        }
+      ],
+      "explanation": "If a creation command does not contain a qualified name, PostgreSQL uses the first schema in search_path that is suitable for object creation.",
+      "source": {
+        "key": "postgresql-16-schema-path",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Schema search path",
+        "locator": "Section 5.9.3, current schema and object creation",
+        "url": "https://postgrespro.ru/docs/postgresql/16/ddl-schemas#DDL-SCHEMAS-PATH"
+      }
+    },
+    {
+      "key": "dba1-data-databases-010",
+      "type": "multiple_choice",
+      "text": "What does the default value search_path = \"$user\", public mean? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "$user means a schema named after the current user, if such an accessible schema exists",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "public is considered after the user schema",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "If the user-named schema does not exist, that path element is ignored",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "$user means the operating-system user that runs the server",
+          "correct": false
+        }
+      ],
+      "explanation": "The default search_path is \"$user\", public. The special $user component substitutes the current user name when a corresponding accessible schema exists.",
+      "source": {
+        "key": "postgresql-16-search-path-default",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "search_path",
+        "locator": "Section 20.11.1, search_path parameter",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config-client#GUC-SEARCH-PATH"
+      }
+    },
+    {
+      "key": "dba1-data-databases-011",
+      "type": "single_choice",
+      "text": "How does PostgreSQL determine the schema for the name app.orders?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It uses the explicitly specified app schema and does not search for orders in the other search_path schemas",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It first searches for orders in public",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It first searches for orders in pg_catalog",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It selects the first schema containing a table named orders regardless of app",
+          "correct": false
+        }
+      ],
+      "explanation": "A name of the form schema.object is qualified: the schema is selected directly by that qualifier.",
+      "source": {
+        "key": "dba1-08-search-path-011",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Search path",
+        "locator": "Slide 8, qualified name",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-012",
+      "type": "multiple_choice",
+      "text": "Which statements about the special system-catalog schemas are correct? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_catalog contains system catalog objects",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The system catalog contains metadata about PostgreSQL objects",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "information_schema provides a standardized SQL representation of metadata",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "public is a physical copy of pg_catalog",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_catalog contains PostgreSQL system catalogs, while information_schema provides another, standardized SQL representation of metadata.",
+      "source": {
+        "key": "dba1-08-special-schemas",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Special schemas",
+        "locator": "Slide 9, pg_catalog and information_schema",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-013",
+      "type": "single_choice",
+      "text": "What happens to pg_catalog if that schema is not explicitly present in search_path?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It is implicitly searched before explicitly listed ordinary schemas",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "System objects become inaccessible",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It is automatically appended at the end",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "PostgreSQL replaces it with information_schema",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_catalog always participates in name lookup. If it is not listed explicitly, PostgreSQL searches it before ordinary path elements.",
+      "source": {
+        "key": "postgresql-16-search-path-catalog",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "search_path",
+        "locator": "Section 20.11.1, implicit inclusion of pg_catalog",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config-client#GUC-SEARCH-PATH"
+      }
+    },
+    {
+      "key": "dba1-data-databases-014",
+      "type": "multiple_choice",
+      "text": "Which statements about PostgreSQL temporary tables are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They can exist only for a session or transaction",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Their changes are not WAL-logged in the normal way",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Their pages are not placed in the shared buffer cache",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "After a crash they are recovered together with permanent tables",
+          "correct": false
+        }
+      ],
+      "explanation": "Temporary tables have session or transaction lifetime. They do not need crash recovery and use local temporary buffers of the backend process instead of the shared buffer cache.",
+      "source": {
+        "key": "dba1-08-temporary-tables",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Special schemas",
+        "locator": "Slide 11, temporary tables",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-015",
+      "type": "single_choice",
+      "text": "What does the name pg_temp mean in the current session?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "An alias for the current session's concrete temporary schema pg_temp_N",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "An alias for the public schema",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The name of a cluster-wide temporary database",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A synonym for the pg_wal directory",
+          "correct": false
+        }
+      ],
+      "explanation": "The actual temporary schema has a name such as pg_temp_N. The universal name pg_temp refers to the temporary schema of the current session.",
+      "source": {
+        "key": "dba1-08-pg-temp",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Special schemas",
+        "locator": "Slide 11, pg_temp_N schema",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-016",
+      "type": "multiple_choice",
+      "text": "Which statements about the current session's temporary schema are correct? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "If pg_temp is not listed in search_path, it is implicitly considered before the other schemas",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Objects in the temporary schema are removed when the session ends",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "PostgreSQL may retain the physical schema for reuse by later sessions",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "All sessions use the same temporary tables simultaneously through pg_temp",
+          "correct": false
+        }
+      ],
+      "explanation": "Each session gets its own temporary schema. The pg_temp alias resolves to it; objects are removed at session end, while the schema itself can be reused.",
+      "source": {
+        "key": "dba1-08-pg-temp-016",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Special schemas",
+        "locator": "Slide 11, pg_temp lookup and lifecycle",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-017",
+      "type": "single_choice",
+      "text": "How can you obtain the effective search path including implicitly added schemas?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "current_schemas(true)",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "current_database(true)",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_schema_path()",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "SHOW current_schema",
+          "correct": false
+        }
+      ],
+      "explanation": "The material separately notes that the configured search_path value and the effective path can differ. current_schemas(true) shows the path including implicit schemas.",
+      "source": {
+        "key": "dba1-08-search-path-017",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Search path",
+        "locator": "Slide 8, current_schemas function",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-018",
+      "type": "multiple_choice",
+      "text": "Which schema privileges have the stated purpose? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "USAGE allows access to objects in the schema when the required privileges on those objects are also present",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "CREATE allows new objects to be created in the schema",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "USAGE alone does not automatically grant all privileges on tables in the schema",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "CREATE on a schema automatically grants permission to modify every existing table in that schema",
+          "correct": false
+        }
+      ],
+      "explanation": "Schema privileges and privileges on objects inside the schema are separate. USAGE allows use of the namespace, while CREATE allows object creation; privileges on individual tables and other objects are granted separately.",
+      "source": {
+        "key": "postgresql-16-schema-privileges",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Schemas and privileges",
+        "locator": "Section 5.9.4, USAGE and CREATE privileges",
+        "url": "https://postgrespro.ru/docs/postgresql/16/ddl-schemas"
+      }
+    },
+    {
+      "key": "dba1-data-databases-019",
+      "type": "single_choice",
+      "text": "How can a configuration parameter be set so that its default value applies to new sessions of a specific database?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "ALTER DATABASE name SET parameter TO value",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "ALTER SCHEMA name SET parameter TO value",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "CREATE DATABASE name WITH SESSION parameter",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "SET DATABASE parameter TO value",
+          "correct": false
+        }
+      ],
+      "explanation": "ALTER DATABASE ... SET defines a default session value for a parameter at the level of a specific database. It takes effect for new connections.",
+      "source": {
+        "key": "postgresql-16-alter-database-set",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "ALTER DATABASE",
+        "locator": "ALTER DATABASE ... SET description",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-alterdatabase"
+      }
+    },
+    {
+      "key": "dba1-data-databases-020",
+      "type": "multiple_choice",
+      "text": "Which statements about temp_buffers are correct? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It sets the maximum amount of memory for temporary buffers in one session",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "These buffers are used only for temporary tables",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The PostgreSQL 16 default is 8 MB",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "temp_buffers is one shared global memory pool for all server sessions",
+          "correct": false
+        }
+      ],
+      "explanation": "temp_buffers is configured per session and applies to buffers for temporary tables. In PostgreSQL 16 the default is 8 MB.",
+      "source": {
+        "key": "postgresql-16-temp-buffers",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Resource consumption",
+        "locator": "Section 20.4, temp_buffers parameter",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config-resource#GUC-TEMP-BUFFERS"
+      }
+    },
+    {
+      "key": "dba1-data-databases-021",
+      "type": "single_choice",
+      "text": "If the default temp_buffers value is 8MB, which value is four times larger?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "32MB",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "16MB",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "64MB",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "4MB",
+          "correct": false
+        }
+      ],
+      "explanation": "The default temp_buffers value is 8 MB. Four times that value is 32 MB; it can be set for a database with ALTER DATABASE ... SET.",
+      "source": {
+        "key": "dba1-08-practice-temp-buffers",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice+",
+        "locator": "Slide 15, temp_buffers four times the default",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config-resource#GUC-TEMP-BUFFERS"
+      }
+    },
+    {
+      "key": "dba1-data-databases-022",
+      "type": "multiple_choice",
+      "text": "A database has schemas app and a schema named after the current user. Tables in both schemas must be accessible without qualification, with the user schema taking priority. Which actions satisfy this requirement? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Place the user schema before app in search_path",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Include both schemas in search_path",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "If both schemas contain a table with the same name, the table in the earlier schema in search_path is found",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Place app first so that the user schema has higher priority",
+          "correct": false
+        }
+      ],
+      "explanation": "For an unqualified name, schemas are searched from left to right. Therefore the user schema must precede app to have higher priority.",
+      "source": {
+        "key": "dba1-08-practice-search-path",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice",
+        "locator": "Slide 14, configuring the search path for two schemas",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-databases-023",
+      "type": "single_choice",
+      "text": "What is the postgres.bki file used for during PostgreSQL bootstrap?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It contains commands and initial data used by the server to create and initially populate the system catalogs",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It stores WAL records of unfinished transactions",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It contains user search_path settings",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It is the cluster users' password file",
+          "correct": false
+        }
+      ],
+      "explanation": "The documentation describes postgres.bki as a bootstrap file from which the server obtains commands and initial data used to build the system catalogs during initialization.",
+      "source": {
+        "key": "postgresql-16-bki-bootstrap",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Initial contents of system catalogs",
+        "locator": "Chapter 75, purpose of postgres.bki",
+        "url": "https://postgrespro.ru/docs/postgresql/16/bki"
+      }
+    },
+    {
+      "key": "dba1-data-databases-024",
+      "type": "multiple_choice",
+      "text": "Which statements about template databases and pg_database flags are correct? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "datistemplate indicates whether the database may be used as a generally available template by users with CREATEDB",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "datallowconn controls whether new connections to the database are allowed",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "New connections to template0 are normally disabled to reduce the risk of modifying it",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "datallowconn = false automatically removes all already-open sessions",
+          "correct": false
+        }
+      ],
+      "explanation": "In pg_database, datistemplate and datallowconn are used to manage template databases. Clearing datallowconn prevents new connections but does not itself terminate existing ones.",
+      "source": {
+        "key": "postgresql-16-template-flags",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Database templates",
+        "locator": "Section 23.3, datistemplate and datallowconn",
+        "url": "https://postgrespro.ru/docs/postgresql/16/manage-ag-templatedbs"
+      }
+    }
+  ]
+}

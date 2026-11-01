@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "rust-1",
+  "slug": "rust1-generics-traits",
+  "notes_part": 9,
+  "topic_number": 9,
+  "title": "Generics and Traits",
+  "description": "Generic types, methods, and enums, monomorphization, traits, trait bounds, impl Trait, where clauses, the orphan rule, and conditional implementations.",
+  "sort_order": 90
+}

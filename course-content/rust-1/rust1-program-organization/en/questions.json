@@ -1,0 +1,1374 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-program-organization",
+  "questions": [
+    {
+      "key": "rust1-program-organization-001",
+      "type": "single_choice",
+      "text": "What is a crate in Rust?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The smallest amount of code the Rust compiler considers at one time",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Any directory containing Cargo.toml",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only a library published on crates.io",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A group of modules that must contain several files",
+          "correct": false
+        }
+      ],
+      "explanation": "A crate is the smallest amount of code the compiler considers at one time; even a single file passed to rustc is treated as a crate.",
+      "source": {
+        "key": "rust1-program-organization-crates",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Packages and Crates",
+        "locator": "Chapter 7 — Packages and Crates, pp. 158–159",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-002",
+      "type": "multiple_choice",
+      "text": "Which statements about crate types are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A binary crate compiles to an executable",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A binary crate must have a main function",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A library crate is intended to provide functionality for other projects",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A library crate must contain main",
+          "correct": false
+        }
+      ],
+      "explanation": "Binary crates produce runnable programs and have main. Library crates provide functionality to other projects and do not require main.",
+      "source": {
+        "key": "rust1-program-organization-crates",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Packages and Crates",
+        "locator": "Chapter 7 — Packages and Crates, pp. 158–159",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-003",
+      "type": "single_choice",
+      "text": "What is a package in Cargo?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "One or more crates that provide functionality and are described by Cargo.toml",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only one binary crate with no libraries",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Any module declared with pub mod",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A source file passed to rustc",
+          "correct": false
+        }
+      ],
+      "explanation": "A package groups one or more crates and contains a Cargo.toml describing how they are built.",
+      "source": {
+        "key": "rust1-program-organization-crates",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Packages and Crates",
+        "locator": "Chapter 7 — Packages and Crates, pp. 158–159",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-004",
+      "type": "multiple_choice",
+      "text": "Which restrictions apply to the contents of a Cargo package? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A package must contain at least one crate",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A package may contain any number of binary crates",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A package may contain at most one library crate",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A package must contain both a binary and a library crate",
+          "correct": false
+        }
+      ],
+      "explanation": "The material permits any number of binary crates, at most one library crate, and requires at least one crate of either kind.",
+      "source": {
+        "key": "rust1-program-organization-crates",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Packages and Crates",
+        "locator": "Chapter 7 — Packages and Crates, pp. 158–159",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-005",
+      "type": "single_choice",
+      "text": "How does Cargo treat `src/main.rs` in an ordinary package?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "As the crate-root module of a binary crate with the same name as the package",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "As the package configuration file",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "As the crate-root module of a library crate",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "As a file Cargo ignores unless Cargo.toml explicitly names it",
+          "correct": false
+        }
+      ],
+      "explanation": "By convention, Cargo treats src/main.rs as the root of a binary crate whose name matches the package name.",
+      "source": {
+        "key": "rust1-program-organization-crates",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Packages and Crates",
+        "locator": "Chapter 7 — Packages and Crates, pp. 158–159",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-006",
+      "type": "multiple_choice",
+      "text": "Which Cargo conventions about crate files are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "src/lib.rs is the crate-root module of a library crate",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "If src/main.rs and src/lib.rs both exist, the package contains a binary and a library crate",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Files in src/bin can form separate binary crates",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Having src/lib.rs forbids src/main.rs",
+          "correct": false
+        }
+      ],
+      "explanation": "Cargo recognizes src/lib.rs as the library root, src/main.rs as a binary root, and each file in src/bin can be a separate binary crate.",
+      "source": {
+        "key": "rust1-program-organization-crates",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Packages and Crates",
+        "locator": "Chapter 7 — Packages and Crates, pp. 158–159",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-007",
+      "type": "single_choice",
+      "text": "What is a crate-root module?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The source file from which the compiler starts building the crate's root module",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The first public module alphabetically",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Any file named mod.rs",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only Cargo.toml",
+          "correct": false
+        }
+      ],
+      "explanation": "The crate root is the source file from which Rust starts forming that crate's module tree.",
+      "source": {
+        "key": "rust1-program-organization-crates",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Packages and Crates",
+        "locator": "Chapter 7 — Packages and Crates, pp. 158–159",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-008",
+      "type": "multiple_choice",
+      "text": "Which tasks does Rust’s module system solve? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Organizing code",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Controlling scope",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Hiding or exposing paths to items",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Automatically managing reference lifetimes",
+          "correct": false
+        }
+      ],
+      "explanation": "Chapter 7 connects modules and use with organization, scopes, and path visibility; lifetimes are covered elsewhere.",
+      "source": {
+        "key": "rust1-program-organization-overview",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Managing Growing Projects with Packages, Crates, and Modules",
+        "locator": "Chapter 7 — Managing Growing Projects with Packages, Crates, and Modules, pp. 157",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-010",
+      "type": "multiple_choice",
+      "text": "After declaring `mod garden;` in the crate root, where can the compiler find the `garden` module's code? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "In the same file if the module is defined with a block instead of a semicolon",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "In src/garden.rs",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "In src/garden/mod.rs",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Only in Cargo.toml",
+          "correct": false
+        }
+      ],
+      "explanation": "The cheat sheet lists three forms: an inline block, src/garden.rs, and src/garden/mod.rs.",
+      "source": {
+        "key": "rust1-program-organization-modules",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining Modules to Control Scope and Privacy",
+        "locator": "Chapter 7 — Defining Modules to Control Scope and Privacy, pp. 160–164",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-011",
+      "type": "single_choice",
+      "text": "What can `mod vegetables;` in `src/garden.rs` be used for?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Declaring the `vegetables` submodule of the `garden` module",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Importing an external crate named vegetables",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Re-exporting every item in garden",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Creating a new Cargo package",
+          "correct": false
+        }
+      ],
+      "explanation": "A parent module file can declare submodules; `mod vegetables` tells the compiler about the child module.",
+      "source": {
+        "key": "rust1-program-organization-modules",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining Modules to Control Scope and Privacy",
+        "locator": "Chapter 7 — Defining Modules to Control Scope and Privacy, pp. 160–164",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-012",
+      "type": "multiple_choice",
+      "text": "Where can the code for submodule `vegetables`, declared in `src/garden.rs`, be located? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "In an inline block after mod vegetables",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "In src/garden/vegetables.rs",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "In src/garden/vegetables/mod.rs",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Only in src/vegetables.rs",
+          "correct": false
+        }
+      ],
+      "explanation": "For a child module, the compiler looks for an inline definition or a file under the parent module's directory.",
+      "source": {
+        "key": "rust1-program-organization-modules",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining Modules to Control Scope and Privacy",
+        "locator": "Chapter 7 — Defining Modules to Control Scope and Privacy, pp. 160–164",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-014",
+      "type": "multiple_choice",
+      "text": "Which items can be inside a Rust module? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Functions",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Structures and enums",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Constants and traits",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Only other modules, with no other item types",
+          "correct": false
+        }
+      ],
+      "explanation": "A module can contain other modules as well as functions, structs, enums, constants, traits, and other definitions.",
+      "source": {
+        "key": "rust1-program-organization-modules",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining Modules to Control Scope and Privacy",
+        "locator": "Chapter 7 — Defining Modules to Control Scope and Privacy, pp. 160–164",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-016",
+      "type": "multiple_choice",
+      "text": "Which relationships exist between items in a module tree? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Modules defined within the same parent are siblings",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A nested module is a child of its containing module",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The containing module is the parent of the nested module",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every sibling is automatically public",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter uses parent/child/sibling relationships to describe the tree; these relationships do not automatically change privacy.",
+      "source": {
+        "key": "rust1-program-organization-modules",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining Modules to Control Scope and Privacy",
+        "locator": "Chapter 7 — Defining Modules to Control Scope and Privacy, pp. 160–164",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-017",
+      "type": "single_choice",
+      "text": "What does an absolute path to an item in the current crate begin with?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`crate`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`super`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`self` necessarily",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The name of the current function",
+          "correct": false
+        }
+      ],
+      "explanation": "For an item in the current crate, an absolute path starts with `crate`. For an external crate, it starts with the external crate's name.",
+      "source": {
+        "key": "rust1-program-organization-paths",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Paths for Referring to an Item in the Module Tree",
+        "locator": "Chapter 7 — Paths for Referring to an Item in the Module Tree, pp. 165–166",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-018",
+      "type": "multiple_choice",
+      "text": "Which statements about relative paths are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They start from the current module",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "They can begin with self",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "They can begin with super or an identifier in the current module",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "They must begin with crate",
+          "correct": false
+        }
+      ],
+      "explanation": "Relative paths start from the current module and can use self, super, or a local identifier; crate indicates an absolute path in the current crate.",
+      "source": {
+        "key": "rust1-program-organization-paths",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Paths for Referring to an Item in the Module Tree",
+        "locator": "Chapter 7 — Paths for Referring to an Item in the Module Tree, pp. 165–166",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-021",
+      "type": "single_choice",
+      "text": "Why can code with a structurally correct path still fail to compile?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Because one of the modules or items on the path may be private",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Because Rust forbids paths longer than two segments",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Because `crate` can only be used in main.rs",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Because functions cannot be called through modules",
+          "correct": false
+        }
+      ],
+      "explanation": "Path correctness and accessibility are separate checks. Listing 7-4 has a structurally correct path, but access is blocked by the private hosting module.",
+      "source": {
+        "key": "rust1-program-organization-privacy",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Exposing Paths with the `pub` Keyword",
+        "locator": "Chapter 7 — Exposing Paths with the `pub` Keyword, pp. 167–170",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-022",
+      "type": "multiple_choice",
+      "text": "Which privacy rules are stated for parent and child modules? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Items are private to parent modules by default",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A parent cannot access private items in a child",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A child can access items in its ancestor modules",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Privacy prevents a child module from seeing its parent's context",
+          "correct": false
+        }
+      ],
+      "explanation": "Privacy hides child-module details from outer ancestors, while child modules can see the context of their ancestors.",
+      "source": {
+        "key": "rust1-program-organization-privacy",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Exposing Paths with the `pub` Keyword",
+        "locator": "Chapter 7 — Exposing Paths with the `pub` Keyword, pp. 167–170",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-023",
+      "type": "single_choice",
+      "text": "What does `pub mod hosting` do?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Makes the hosting module itself accessible but does not automatically make its contents public",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Makes every function, structure, and field inside hosting public",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only imports hosting into the current scope",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Creates a library crate named hosting",
+          "correct": false
+        }
+      ],
+      "explanation": "`pub` on a module exposes the container. A function inside also needs its own `pub` to be publicly accessible.",
+      "source": {
+        "key": "rust1-program-organization-privacy",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Exposing Paths with the `pub` Keyword",
+        "locator": "Chapter 7 — Exposing Paths with the `pub` Keyword, pp. 167–170",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-024",
+      "type": "multiple_choice",
+      "text": "What is required for `crate::front_of_house::hosting::add_to_waitlist()` to pass privacy checks from an accessible context? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Access to front_of_house from the current module",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "hosting must be accessible along that path",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "add_to_waitlist must be public",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The crate root itself must explicitly be declared public",
+          "correct": false
+        }
+      ],
+      "explanation": "Every segment through which external code descends into child scopes must be accessible, and the function must be public. The crate root needs no separate annotation.",
+      "source": {
+        "key": "rust1-program-organization-privacy",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Exposing Paths with the `pub` Keyword",
+        "locator": "Chapter 7 — Exposing Paths with the `pub` Keyword, pp. 167–170",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-026",
+      "type": "multiple_choice",
+      "text": "Which benefits come from splitting a package into a library crate and a binary crate? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Other projects can reuse the library functionality",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The binary crate uses the library's public API like an external user",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The author simultaneously tests the usability of the public API from a user's perspective",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The binary crate gains access to all private library items",
+          "correct": false
+        }
+      ],
+      "explanation": "The binary crate acts as a separate consumer of the library API and sees only its public part, which helps design a good interface.",
+      "source": {
+        "key": "rust1-program-organization-bin-lib",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Best Practices for Packages with Binary and Library Crates",
+        "locator": "Chapter 7 — Best Practices for Packages with Binary and Library Crates, pp. 171",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-027",
+      "type": "single_choice",
+      "text": "What does `super::deliver_order()` mean inside a child module?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Go to the parent module and find deliver_order there",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Go to an external crate named super",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Call a supertrait method",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Make deliver_order public",
+          "correct": false
+        }
+      ],
+      "explanation": "`super` starts a relative path from the parent module, similarly to `..` in a filesystem path.",
+      "source": {
+        "key": "rust1-program-organization-super",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Starting Relative Paths with `super`",
+        "locator": "Chapter 7 — Starting Relative Paths with `super`, pp. 171–172",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-029",
+      "type": "single_choice",
+      "text": "What happens to structure fields when declaring `pub struct Breakfast`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The structure itself becomes public, but fields remain private unless they also have `pub`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "All fields automatically become public",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The structure stays private until every field is public",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Private fields are removed from the structure",
+          "correct": false
+        }
+      ],
+      "explanation": "For a structure, `pub` exposes the type, but fields still follow the normal privacy rule and require their own `pub`.",
+      "source": {
+        "key": "rust1-program-organization-pub-types",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Making Structs and Enums Public",
+        "locator": "Chapter 7 — Making Structs and Enums Public, pp. 172–174",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-031",
+      "type": "single_choice",
+      "text": "What happens to enum variants when the enum itself is declared `pub`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Its variants become public",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Each variant still needs its own `pub`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The enum becomes private to its parent",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Variants can only be used inside an impl",
+          "correct": false
+        }
+      ],
+      "explanation": "Unlike structure fields, variants of a public enum are accessible without separate `pub` annotations.",
+      "source": {
+        "key": "rust1-program-organization-pub-types",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Making Structs and Enums Public",
+        "locator": "Chapter 7 — Making Structs and Enums Public, pp. 172–174",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-032",
+      "type": "multiple_choice",
+      "text": "Which statements about `use` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`use` creates a convenient short name for a path in the current scope",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The path introduced by `use` is still checked for accessibility",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A `use` alias exists only in the scope where it is declared",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`use` makes a private item public",
+          "correct": false
+        }
+      ],
+      "explanation": "`use` shortens path notation but does not bypass privacy rules and has an ordinary scope.",
+      "source": {
+        "key": "rust1-program-organization-use",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Bringing Paths into Scope with `use`",
+        "locator": "Chapter 7 — Bringing Paths into Scope with `use`, pp. 175–180",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-033",
+      "type": "single_choice",
+      "text": "Why might `hosting::add_to_waitlist()` inside child module `customer` fail to see `hosting` if `use crate::front_of_house::hosting;` is written in the parent module?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Because a name introduced by `use` is not automatically imported into a separate child scope",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Because use works only in main",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Because child modules can never see names in parents even through super",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Because hosting must be an external crate",
+          "correct": false
+        }
+      ],
+      "explanation": "A `use` declaration creates a name in its own scope. The child can import it again or refer to the parent's name through super.",
+      "source": {
+        "key": "rust1-program-organization-use",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Bringing Paths into Scope with `use`",
+        "locator": "Chapter 7 — Bringing Paths into Scope with `use`, pp. 175–180",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-034",
+      "type": "multiple_choice",
+      "text": "Which two fixes for the `use` scope problem are suggested for the `customer` module? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Move the use declaration inside customer",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Refer to the parent's alias as super::hosting",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Replace use with mod hosting without other changes",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Make the main function public",
+          "correct": false
+        }
+      ],
+      "explanation": "The material suggests importing the name in the required scope or referring to the name in the parent through super.",
+      "source": {
+        "key": "rust1-program-organization-use",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Bringing Paths into Scope with `use`",
+        "locator": "Chapter 7 — Bringing Paths into Scope with `use`, pp. 175–180",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-036",
+      "type": "multiple_choice",
+      "text": "Which statements about `use` idioms are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "For structures and enums, the full path to the type itself is usually imported",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "For functions, the parent module is usually imported",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "This is a readability convention rather than a compiler requirement",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Rust forbids importing a structure directly",
+          "correct": false
+        }
+      ],
+      "explanation": "The book distinguishes idioms for functions and types and emphasizes that this is a convention, not a syntax restriction.",
+      "source": {
+        "key": "rust1-program-organization-use",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Bringing Paths into Scope with `use`",
+        "locator": "Chapter 7 — Bringing Paths into Scope with `use`, pp. 175–180",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-038",
+      "type": "multiple_choice",
+      "text": "Which ways of working with two `Result` types from different modules are valid? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Import the parent modules and write `fmt::Result` and `io::Result`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Import one Result under an alias with as",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Import both under the bare name Result into the same scope without renaming",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Stop using both types entirely",
+          "correct": false
+        }
+      ],
+      "explanation": "The material shows two idiomatic solutions: qualification through parent modules or aliasing one type.",
+      "source": {
+        "key": "rust1-program-organization-use",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Bringing Paths into Scope with `use`",
+        "locator": "Chapter 7 — Bringing Paths into Scope with `use`, pp. 175–180",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-039",
+      "type": "single_choice",
+      "text": "What does `pub use` do?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Introduces a name into scope and re-exports it for external code",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only makes the current module private",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Compiles the named file as a separate crate",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Removes the item's original path",
+          "correct": false
+        }
+      ],
+      "explanation": "`pub use` performs a re-export: the item is introduced locally and exposed to users through a new public path.",
+      "source": {
+        "key": "rust1-program-organization-use",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Bringing Paths into Scope with `use`",
+        "locator": "Chapter 7 — Bringing Paths into Scope with `use`, pp. 175–180",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-040",
+      "type": "multiple_choice",
+      "text": "Why can `pub use` re-exports be useful? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They let the external API have a more convenient structure than the internal module organization",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "They can hide part of the internal path hierarchy from users",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "They let the library remain convenient for both authors and users",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "They automatically make all private fields of the re-exported type public",
+          "correct": false
+        }
+      ],
+      "explanation": "A re-export separates internal module organization from the public path without changing privacy of the type's internal details.",
+      "source": {
+        "key": "rust1-program-organization-use",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Bringing Paths into Scope with `use`",
+        "locator": "Chapter 7 — Bringing Paths into Scope with `use`, pp. 175–180",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-041",
+      "type": "single_choice",
+      "text": "What is required to use an external package such as `rand`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Add the dependency to Cargo.toml and bring the required items into scope with use",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only write use without Cargo.toml",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Copy rand's source code into src",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Rename the package to std",
+          "correct": false
+        }
+      ],
+      "explanation": "Cargo must know about the external dependency, after which its items can be brought into scope with use.",
+      "source": {
+        "key": "rust1-program-organization-use",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Bringing Paths into Scope with `use`",
+        "locator": "Chapter 7 — Bringing Paths into Scope with `use`, pp. 175–180",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-042",
+      "type": "multiple_choice",
+      "text": "Which statements about the standard library `std` in the context of `use` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`std` is a crate external to our package",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`std` does not need to be added to Cargo.toml because it ships with Rust",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Some `std` items are still brought into scope with use",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`std` can only be used from a library crate",
+          "correct": false
+        }
+      ],
+      "explanation": "The standard library ships with Rust, so Cargo.toml need not change, but its items may still be brought into scope through use.",
+      "source": {
+        "key": "rust1-program-organization-use",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Bringing Paths into Scope with `use`",
+        "locator": "Chapter 7 — Bringing Paths into Scope with `use`, pp. 175–180",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-044",
+      "type": "multiple_choice",
+      "text": "Which capabilities do nested `use` paths support? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Combining imports with a shared prefix",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Using `self` when one import is the shared path itself",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Reducing the number of separate use lines",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Changing private/public access rules",
+          "correct": false
+        }
+      ],
+      "explanation": "Nested use is a compact notation for imports and does not affect privacy.",
+      "source": {
+        "key": "rust1-program-organization-nested-use",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Using Nested Paths to Clean Up Large `use` Lists",
+        "locator": "Chapter 7 — Using Nested Paths to Clean Up Large `use` Lists, pp. 181–182",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-045",
+      "type": "single_choice",
+      "text": "What does `use std::io::{self, Write};` mean?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Bring both `std::io` and `std::io::Write` into scope",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Bring only Write into scope and ignore self",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Make io public",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Declare a Write submodule inside io",
+          "correct": false
+        }
+      ],
+      "explanation": "`self` in a nested path refers to the shared path itself, so both io and Write enter scope.",
+      "source": {
+        "key": "rust1-program-organization-nested-use",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Using Nested Paths to Clean Up Large `use` Lists",
+        "locator": "Chapter 7 — Using Nested Paths to Clean Up Large `use` Lists, pp. 181–182",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-046",
+      "type": "multiple_choice",
+      "text": "Which statements are true about the glob operator `*` in `use std::collections::*;`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It brings all public items from the path into the current scope",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It can make the origin of names harder to understand",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The book notes that it is often used in tests and prelude-like patterns",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It makes private items public",
+          "correct": false
+        }
+      ],
+      "explanation": "A glob imports public names but reduces scope transparency; it does not expose private items.",
+      "source": {
+        "key": "rust1-program-organization-nested-use",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Using Nested Paths to Clean Up Large `use` Lists",
+        "locator": "Chapter 7 — Using Nested Paths to Clean Up Large `use` Lists, pp. 181–182",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-047",
+      "type": "single_choice",
+      "text": "What does `mod front_of_house;` mean in `src/lib.rs` after moving the module definition to a separate file?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Declare the module and let the compiler find its code in the corresponding file",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Textually insert the file at this point like a preprocessor",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Create a new Cargo package",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Import the module only inside a local function",
+          "correct": false
+        }
+      ],
+      "explanation": "The book emphasizes that mod declares a module in the tree; it is not a textual include operation.",
+      "source": {
+        "key": "rust1-program-organization-files",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Separating Modules into Different Files",
+        "locator": "Chapter 7 — Separating Modules into Different Files, pp. 183–185",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-048",
+      "type": "multiple_choice",
+      "text": "Which statements are correct about moving module `front_of_house` to `src/front_of_house.rs`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "src/lib.rs keeps the declaration `mod front_of_house;`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The module code moves to src/front_of_house.rs",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The module tree can remain unchanged by this move",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every call must get a new path containing the file name",
+          "correct": false
+        }
+      ],
+      "explanation": "Files are where module code is stored, while the logical module tree and paths can stay the same.",
+      "source": {
+        "key": "rust1-program-organization-files",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Separating Modules into Different Files",
+        "locator": "Chapter 7 — Separating Modules into Different Files, pp. 183–185",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-program-organization-049",
+      "type": "single_choice",
+      "text": "Where should the `hosting` submodule file be located if it is declared inside `front_of_house`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "In src/front_of_house/hosting.rs or the supported older path src/front_of_house/hosting/mod.rs",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only in src/hosting.rs",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "In target/hosting.rs",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "At the project root next to Cargo.toml, outside src",
+          "correct": false
+        }
+      ],
+      "explanation": "A submodule file path follows its place in the module tree and resides under the parent module's directory.",
+      "source": {
+        "key": "rust1-program-organization-files",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Separating Modules into Different Files",
+        "locator": "Chapter 7 — Separating Modules into Different Files, pp. 183–185",
+        "url": null
+      }
+    }
+  ]
+}

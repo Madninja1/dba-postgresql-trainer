@@ -143,20 +143,24 @@ pub enum ProgressRank {
     PsqlTrainee,
     QueryAdept,
     SchemaKeeper,
+    CatalogAnalyst,
     PlanReader,
     WalOperator,
+    ReplicationEngineer,
     PostgresGuardian,
     MadNinjaDba,
 }
 
 impl ProgressRank {
-    pub const ALL: [Self; 8] = [
+    pub const ALL: [Self; 10] = [
         Self::Init,
         Self::PsqlTrainee,
         Self::QueryAdept,
         Self::SchemaKeeper,
+        Self::CatalogAnalyst,
         Self::PlanReader,
         Self::WalOperator,
+        Self::ReplicationEngineer,
         Self::PostgresGuardian,
         Self::MadNinjaDba,
     ];
@@ -167,10 +171,12 @@ impl ProgressRank {
             Self::PsqlTrainee => 100,
             Self::QueryAdept => 300,
             Self::SchemaKeeper => 700,
-            Self::PlanReader => 1_400,
-            Self::WalOperator => 2_500,
-            Self::PostgresGuardian => 4_000,
-            Self::MadNinjaDba => 6_000,
+            Self::CatalogAnalyst => 1_400,
+            Self::PlanReader => 2_500,
+            Self::WalOperator => 4_000,
+            Self::ReplicationEngineer => 6_000,
+            Self::PostgresGuardian => 8_500,
+            Self::MadNinjaDba => 12_000,
         }
     }
 
@@ -179,9 +185,11 @@ impl ProgressRank {
             Self::Init => Some(Self::PsqlTrainee),
             Self::PsqlTrainee => Some(Self::QueryAdept),
             Self::QueryAdept => Some(Self::SchemaKeeper),
-            Self::SchemaKeeper => Some(Self::PlanReader),
+            Self::SchemaKeeper => Some(Self::CatalogAnalyst),
+            Self::CatalogAnalyst => Some(Self::PlanReader),
             Self::PlanReader => Some(Self::WalOperator),
-            Self::WalOperator => Some(Self::PostgresGuardian),
+            Self::WalOperator => Some(Self::ReplicationEngineer),
+            Self::ReplicationEngineer => Some(Self::PostgresGuardian),
             Self::PostgresGuardian => Some(Self::MadNinjaDba),
             Self::MadNinjaDba => None,
         }
@@ -206,17 +214,120 @@ pub enum AchievementRarity {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AchievementKind {
-    FirstAnswer,
-    HundredAnswers,
-    PerfectTwenty,
-    QuizVeteran,
-    FirstSql,
-    OneShot,
-    QueryNinja,
-    SevenDayStreak,
-    ThirtyDayStreak,
-    CourseMaster,
-    MadNinja,
+    FirstStep,
+    PerfectQuiz,
+    ConfidentKnowledge,
+    FirstTopicMastery,
+    CourseCompleted,
+    Perfectionist,
+    SqlMaster,
+    RustMaster,
+    PostgresDba,
+    PlPgSqlDeveloper,
+    Wave,
+    FlawlessStreak,
+    IronFocus,
+    LearnFromMistakes,
+    FixedTen,
+    ClosedGaps,
+    Explorer,
+    Universal,
+    FullDbaStack,
+}
+
+impl AchievementKind {
+    pub const ALL: [Self; 19] = [
+        Self::FirstStep,
+        Self::PerfectQuiz,
+        Self::ConfidentKnowledge,
+        Self::FirstTopicMastery,
+        Self::CourseCompleted,
+        Self::Perfectionist,
+        Self::SqlMaster,
+        Self::RustMaster,
+        Self::PostgresDba,
+        Self::PlPgSqlDeveloper,
+        Self::Wave,
+        Self::FlawlessStreak,
+        Self::IronFocus,
+        Self::LearnFromMistakes,
+        Self::FixedTen,
+        Self::ClosedGaps,
+        Self::Explorer,
+        Self::Universal,
+        Self::FullDbaStack,
+    ];
+
+    pub const fn key(self) -> &'static str {
+        match self {
+            Self::FirstStep => "first_step",
+            Self::PerfectQuiz => "perfect_quiz",
+            Self::ConfidentKnowledge => "confident_knowledge",
+            Self::FirstTopicMastery => "first_topic_mastery",
+            Self::CourseCompleted => "course_completed",
+            Self::Perfectionist => "perfectionist",
+            Self::SqlMaster => "sql_master",
+            Self::RustMaster => "rust_master",
+            Self::PostgresDba => "postgres_dba",
+            Self::PlPgSqlDeveloper => "plpgsql_developer",
+            Self::Wave => "wave",
+            Self::FlawlessStreak => "flawless_streak",
+            Self::IronFocus => "iron_focus",
+            Self::LearnFromMistakes => "learn_from_mistakes",
+            Self::FixedTen => "fixed_ten",
+            Self::ClosedGaps => "closed_gaps",
+            Self::Explorer => "explorer",
+            Self::Universal => "universal",
+            Self::FullDbaStack => "full_dba_stack",
+        }
+    }
+
+    pub const fn rarity(self) -> AchievementRarity {
+        match self {
+            Self::FirstStep
+            | Self::ConfidentKnowledge
+            | Self::FirstTopicMastery
+            | Self::Wave
+            | Self::LearnFromMistakes
+            | Self::Explorer => AchievementRarity::Common,
+            Self::PerfectQuiz
+            | Self::CourseCompleted
+            | Self::SqlMaster
+            | Self::RustMaster
+            | Self::PlPgSqlDeveloper
+            | Self::FlawlessStreak
+            | Self::FixedTen
+            | Self::ClosedGaps => AchievementRarity::Rare,
+            Self::Perfectionist | Self::PostgresDba | Self::IronFocus | Self::Universal => {
+                AchievementRarity::Epic
+            }
+            Self::FullDbaStack => AchievementRarity::Legendary,
+        }
+    }
+
+    pub const fn reward_xp(self) -> usize {
+        match self {
+            Self::FirstStep => 25,
+            Self::PerfectQuiz => 50,
+            Self::ConfidentKnowledge => 25,
+            Self::FirstTopicMastery => 25,
+            Self::CourseCompleted => 50,
+            Self::Perfectionist => 100,
+            Self::SqlMaster => 75,
+            Self::RustMaster => 75,
+            Self::PostgresDba => 100,
+            Self::PlPgSqlDeveloper => 75,
+            Self::Wave => 10,
+            Self::FlawlessStreak => 25,
+            Self::IronFocus => 50,
+            Self::LearnFromMistakes => 10,
+            Self::FixedTen => 25,
+            Self::ClosedGaps => 50,
+            Self::Explorer => 25,
+            Self::Universal => 75,
+            Self::FullDbaStack => 150,
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -226,6 +337,7 @@ pub struct AchievementProgress {
     pub unlocked: bool,
     pub current: usize,
     pub target: usize,
+    pub reward_xp: usize,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -428,7 +540,16 @@ mod tests {
         assert_eq!(ProgressRank::from_xp(99), ProgressRank::Init);
         assert_eq!(ProgressRank::from_xp(100), ProgressRank::PsqlTrainee);
         assert_eq!(ProgressRank::from_xp(1_399), ProgressRank::SchemaKeeper);
-        assert_eq!(ProgressRank::from_xp(6_000), ProgressRank::MadNinjaDba);
+        assert_eq!(ProgressRank::from_xp(1_400), ProgressRank::CatalogAnalyst);
+        assert_eq!(
+            ProgressRank::from_xp(6_000),
+            ProgressRank::ReplicationEngineer
+        );
+        assert_eq!(
+            ProgressRank::from_xp(11_999),
+            ProgressRank::PostgresGuardian
+        );
+        assert_eq!(ProgressRank::from_xp(12_000), ProgressRank::MadNinjaDba);
     }
 
     #[test]

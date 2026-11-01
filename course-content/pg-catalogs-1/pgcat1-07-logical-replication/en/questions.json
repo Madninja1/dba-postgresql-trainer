@@ -1,0 +1,499 @@
+{
+  "schema_version": 1,
+  "topic": "pgcat1-logical-replication",
+  "questions": [
+    {
+      "key": "pgcat1-logical-replication-001",
+      "type": "single_choice",
+      "text": "Which catalog contains logical replication publications created in the current database?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_publication",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_subscription",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_publication_rel",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_replication_origin",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_publication stores logical replication publications.",
+      "source": {
+        "key": "pgcat1-pg-publication-c2fb7a63",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.40. pg_publication",
+        "locator": "Purpose of pg_publication",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-publication"
+      }
+    },
+    {
+      "key": "pgcat1-logical-replication-002",
+      "type": "multiple_choice",
+      "text": "Which pg_publication flags define which operations are published?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pubinsert",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pubupdate",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pubdelete",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pubtruncate",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "puballtables",
+          "correct": false
+        }
+      ],
+      "explanation": "pubinsert/pubupdate/pubdelete/pubtruncate control DML operation types; puballtables separately means that all tables are automatically included.",
+      "source": {
+        "key": "pgcat1-pg-publication-856b5247",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.40. pg_publication",
+        "locator": "pubinsert, pubupdate, pubdelete, pubtruncate",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-publication"
+      }
+    },
+    {
+      "key": "pgcat1-logical-replication-003",
+      "type": "single_choice",
+      "text": "What does pg_publication.puballtables=true mean?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The publication automatically includes all tables in the database, including tables created in the future",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The publication contains only system tables",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The subscription is disabled",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Replication is performed only for TRUNCATE",
+          "correct": false
+        }
+      ],
+      "explanation": "puballtables=true includes all tables in the database, including future tables.",
+      "source": {
+        "key": "pgcat1-pg-publication-23dc57f7",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.40. pg_publication",
+        "locator": "puballtables column",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-publication"
+      }
+    },
+    {
+      "key": "pgcat1-logical-replication-004",
+      "type": "multiple_choice",
+      "text": "What do pg_publication_namespace and pg_publication_rel store?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_publication_namespace — many-to-many mapping between schemas and publications",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_publication_rel — many-to-many mapping between relations and publications",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "prqual can store a publication row-filter condition",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "prattrs can restrict the published columns",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Both catalogs store subscriber passwords",
+          "correct": false
+        }
+      ],
+      "explanation": "These catalogs associate publications with schemas and relations; pg_publication_rel also stores row and column filters.",
+      "source": {
+        "key": "pgcat1-pg-publication-rel-b3f154c2",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.42. pg_publication_rel",
+        "locator": "Purpose; prqual; prattrs",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-publication-rel"
+      }
+    },
+    {
+      "key": "pgcat1-logical-replication-005",
+      "type": "single_choice",
+      "text": "Which catalog contains all existing logical replication subscriptions?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_subscription",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_publication",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_subscription_rel",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_replication_origin",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_subscription stores subscriptions and is a shared catalog.",
+      "source": {
+        "key": "pgcat1-pg-subscription-73d5b050",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.54. pg_subscription",
+        "locator": "Purpose of pg_subscription",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-subscription"
+      }
+    },
+    {
+      "key": "pgcat1-logical-replication-006",
+      "type": "multiple_choice",
+      "text": "Which statements about pg_subscription are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The catalog is shared by all databases in the cluster",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "subenabled shows whether the subscription is enabled",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "subslotname is the replication slot name on the publisher",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "subpublications is an array of publication names",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Ordinary users have full access to subconninfo including its password",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_subscription is shared between databases. subconninfo can contain a password, so ordinary users have restricted access to it.",
+      "source": {
+        "key": "pgcat1-pg-subscription-f3962192",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.54. pg_subscription",
+        "locator": "Shared catalog; subenabled; subslotname; subpublications; subconninfo",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-subscription"
+      }
+    },
+    {
+      "key": "pgcat1-logical-replication-007",
+      "type": "single_choice",
+      "text": "Why is access to pg_subscription.subconninfo restricted for ordinary users?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The connection string can contain a password in plain text",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The field contains binary WAL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The field is a system PID",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The field stores a table OID",
+          "correct": false
+        }
+      ],
+      "explanation": "The documentation explicitly warns that subconninfo can contain a plain-text password.",
+      "source": {
+        "key": "pgcat1-pg-subscription-f6b4131b",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.54. pg_subscription",
+        "locator": "Access restriction for subconninfo",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-subscription"
+      }
+    },
+    {
+      "key": "pgcat1-logical-replication-008",
+      "type": "multiple_choice",
+      "text": "What does pg_subscription.substream mean?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`f` — do not stream in-progress transactions",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`t` — spill changes from in-progress transactions to disk and apply them after the publisher commit",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`p` — apply changes directly with a parallel apply worker when available",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`r` — always make the subscription read-only",
+          "correct": false
+        }
+      ],
+      "explanation": "substream controls streaming of in-progress transactions with the f/t/p codes.",
+      "source": {
+        "key": "pgcat1-pg-subscription-e94bf716",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.54. pg_subscription",
+        "locator": "substream column",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-subscription"
+      }
+    },
+    {
+      "key": "pgcat1-logical-replication-009",
+      "type": "single_choice",
+      "text": "What does pg_subscription_rel store?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The state of each replicated relation in each subscription",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Publication definitions",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "VACUUM history",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Index access methods",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_subscription_rel is a many-to-many subscription/relation mapping with synchronization state.",
+      "source": {
+        "key": "pgcat1-pg-subscription-rel-4453af70",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.55. pg_subscription_rel",
+        "locator": "Purpose of pg_subscription_rel",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-subscription-rel"
+      }
+    },
+    {
+      "key": "pgcat1-logical-replication-010",
+      "type": "multiple_choice",
+      "text": "Which `pg_subscription_rel.srsubstate` values represent subscription table synchronization states?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`i` — initialization",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`d` — data copy",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`f` — table copy finished",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`s` — synchronized",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`r` — ready/normal replication",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "`x` — subscription deleted",
+          "correct": false
+        }
+      ],
+      "explanation": "srsubstate encodes the stages of preparing a relation for normal logical replication.",
+      "source": {
+        "key": "pgcat1-pg-subscription-rel-5dede4e2",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.55. pg_subscription_rel",
+        "locator": "srsubstate column",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-subscription-rel"
+      }
+    },
+    {
+      "key": "pgcat1-logical-replication-011",
+      "type": "single_choice",
+      "text": "Which catalog contains registered replication origins?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_replication_origin",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_subscription",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_publication",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_shdepend",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_replication_origin contains registered replication origins and is shared by all databases in the cluster.",
+      "source": {
+        "key": "pgcat1-pg-replication-origin-995e4be4",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.44. pg_replication_origin",
+        "locator": "Purpose of pg_replication_origin",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-replication-origin"
+      }
+    },
+    {
+      "key": "pgcat1-logical-replication-012",
+      "type": "multiple_choice",
+      "text": "Which statements about pg_replication_origin are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "roident is an internal identifier unique within the cluster",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "roname is a user-defined external name",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The catalog is shared by all databases in the cluster",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "roident is intended to be sent outside the system as a stable external ID",
+          "correct": false
+        }
+      ],
+      "explanation": "roident is unique inside the cluster and, according to the documentation, should not leave the system; roname is the external name.",
+      "source": {
+        "key": "pgcat1-pg-replication-origin-4c9b5933",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.44. pg_replication_origin",
+        "locator": "roident and roname",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-replication-origin"
+      }
+    },
+    {
+      "key": "pgcat1-logical-replication-013",
+      "type": "single_choice",
+      "text": "What does pg_publication_namespace store?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A many-to-many mapping between schemas and publications",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Subscription connection strings",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Relation synchronization states",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Replication-origin sources",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_publication_namespace links publications and schemas through pnpubid and pnnspid.",
+      "source": {
+        "key": "pgcat1-pg-publication-namespace-6234dfdd",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.41. pg_publication_namespace",
+        "locator": "Purpose; pnpubid; pnnspid",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-publication-namespace"
+      }
+    }
+  ]
+}

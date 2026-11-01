@@ -5,7 +5,7 @@
     {
       "key": "dba1-access-roles-authentication-001",
       "type": "single_choice",
-      "text": "Для каких двух основных задач используются роли PostgreSQL согласно материалу?",
+      "text": "Для каких двух основных задач используются роли PostgreSQL?",
       "answers": [
         {
           "key": "a",
@@ -113,7 +113,7 @@
     {
       "key": "dba1-access-roles-authentication-004",
       "type": "multiple_choice",
-      "text": "Какие утверждения о создании ролей соответствуют материалу? Выберите все правильные варианты.",
+      "text": "Какие утверждения о создании ролей верны? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -185,7 +185,7 @@
     {
       "key": "dba1-access-roles-authentication-006",
       "type": "multiple_choice",
-      "text": "Какие поля учитываются при выборе подходящей записи pg_hba.conf в показанной в занятии структуре? Выберите все правильные варианты.",
+      "text": "Какие поля учитываются при выборе подходящей записи pg_hba.conf? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -293,7 +293,7 @@
     {
       "key": "dba1-access-roles-authentication-009",
       "type": "single_choice",
-      "text": "Что означает тип подключения local в pg_hba.conf в примере занятия?",
+      "text": "Что означает тип подключения local в pg_hba.conf?",
       "answers": [
         {
           "key": "a",
@@ -329,7 +329,7 @@
     {
       "key": "dba1-access-roles-authentication-010",
       "type": "multiple_choice",
-      "text": "Какие соответствия методов аутентификации и их смысла приведены в занятии? Выберите все правильные варианты.",
+      "text": "Какие соответствия методов аутентификации PostgreSQL и их назначения верны? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -365,7 +365,7 @@
     {
       "key": "dba1-access-roles-authentication-011",
       "type": "single_choice",
-      "text": "Какой метод в приведённом конспекте запрашивает сведения о пользователе у операционной системы для локального подключения?",
+      "text": "Какой метод аутентификации для локального подключения получает имя пользователя от операционной системы?",
       "answers": [
         {
           "key": "a",
@@ -401,7 +401,7 @@
     {
       "key": "dba1-access-roles-authentication-012",
       "type": "multiple_choice",
-      "text": "Какие методы из приведённого материала относятся к парольной аутентификации? Выберите все правильные варианты.",
+      "text": "Какие методы относятся к парольной аутентификации? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -473,7 +473,7 @@
     {
       "key": "dba1-access-roles-authentication-014",
       "type": "multiple_choice",
-      "text": "Какие условия должны быть выполнены для успешного подключения в модели, показанной в занятии? Выберите все правильные варианты.",
+      "text": "Какие условия должны быть выполнены для успешного подключения в модели,? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -509,7 +509,7 @@
     {
       "key": "dba1-access-roles-authentication-015",
       "type": "single_choice",
-      "text": "В практическом задании для alice и bob включён peer. Почему одного изменения pg_hba.conf недостаточно для успешного входа?",
+      "text": "Для ролей alice и bob включён метод peer. Почему одного изменения pg_hba.conf недостаточно для успешного входа?",
       "answers": [
         {
           "key": "a",
@@ -545,7 +545,7 @@
     {
       "key": "dba1-access-roles-authentication-016",
       "type": "multiple_choice",
-      "text": "Какие действия входят в практику по настройке аутентификации alice и bob? Выберите все правильные варианты.",
+      "text": "Какие действия нужны, чтобы настроить и проверить правила аутентификации для ролей alice и bob? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -575,6 +575,186 @@
         "module": "DBA1",
         "section": "Практика+",
         "locator": "alice и bob, задания по pg_hba.conf",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-017",
+      "type": "multiple_choice",
+      "text": "Какими способами клиент PostgreSQL может передать пароль? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Ввести пароль вручную",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Передать пароль через PGPASSWORD",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Использовать файл ~/.pgpass",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Записать пароль в pg_hba.conf",
+          "correct": false
+        }
+      ],
+      "explanation": "В блоке парольной аутентификации перечислены ручной ввод, переменная PGPASSWORD и файл ~/.pgpass. pg_hba.conf выбирает метод аутентификации, но не хранит пароль роли.",
+      "source": {
+        "key": "dba1-13-password-client",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Парольная аутентификация",
+        "locator": "Слайд 7: ввод пароля на клиенте",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-018",
+      "type": "single_choice",
+      "text": "Какие права доступа должен иметь файл ~/.pgpass в Unix?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "0600 — читать и изменять файл может только владелец",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "0644 — файл обязательно должен быть читаем всеми",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "0777 — нужны права выполнения для всех",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Права файла не проверяются клиентом PostgreSQL",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал указывает, что ~/.pgpass должен быть доступен только владельцу; при более широких правах PostgreSQL игнорирует этот файл.",
+      "source": {
+        "key": "dba1-13-pgpass-permissions",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Парольная аутентификация",
+        "locator": "Слайд 7: ~/.pgpass и права 600",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-019",
+      "type": "multiple_choice",
+      "text": "Какие утверждения о применении настроек подключения верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "После изменения pg_hba.conf сервер должен перечитать конфигурацию",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_reload_conf() можно использовать для перечитывания pg_hba.conf",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "listen_addresses определяет сетевые интерфейсы, на которых PostgreSQL принимает TCP-подключения",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Изменение pg_hba.conf автоматически создаёт новые роли с LOGIN",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_hba.conf применяется после reload. Параметр listen_addresses отвечает за сетевое прослушивание, а pg_hba.conf — за допуск и метод аутентификации пришедшего подключения.",
+      "source": {
+        "key": "dba1-13-hba-reload",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Подключение к серверу",
+        "locator": "Слайд 5: pg_hba.conf, reload и listen_addresses",
+        "url": "https://postgrespro.ru/docs/postgresql/16/client-authentication"
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-020",
+      "type": "single_choice",
+      "text": "В каком системном каталоге PostgreSQL хранится информация о паролях ролей, недоступная обычным пользователям?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_authid",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_stat_activity",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_tablespace",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_hba.conf",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал по парольной аутентификации указывает pg_authid как системный каталог, где хранится verifier/хеш пароля роли.",
+      "source": {
+        "key": "dba1-13-password-storage",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Парольная аутентификация",
+        "locator": "Слайд 7: пароль хранится в pg_authid",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-021",
+      "type": "single_choice",
+      "text": "Для чего используется pg_ident.conf вместе с методом peer?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для сопоставления имени пользователя операционной системы с ролью PostgreSQL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для хранения хеша пароля роли",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Для настройки табличных пространств",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Для выбора размера WAL-сегмента",
+          "correct": false
+        }
+      ],
+      "explanation": "В практике DBA1 pg_ident.conf задаёт карту, позволяющую методу peer сопоставить пользователя ОС student с ролями PostgreSQL alice и bob.",
+      "source": {
+        "key": "dba1-13-peer-map",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика+",
+        "locator": "Слайд 23: pg_ident.conf и карта stmap",
         "url": null
       }
     }

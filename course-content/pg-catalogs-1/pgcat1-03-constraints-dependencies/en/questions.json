@@ -1,0 +1,519 @@
+{
+  "schema_version": 1,
+  "topic": "pgcat1-constraints-dependencies",
+  "questions": [
+    {
+      "key": "pgcat1-constraints-dependencies-001",
+      "type": "single_choice",
+      "text": "Where does PostgreSQL store CHECK, UNIQUE, PRIMARY KEY, FOREIGN KEY, and EXCLUDE constraints?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_constraint",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_attribute",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_depend",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_trigger",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_constraint contains the main table and domain constraints, including CHECK, UNIQUE, PRIMARY KEY, FOREIGN KEY, and EXCLUDE.",
+      "source": {
+        "key": "pgcat1-pg-constraint-3f971b66",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.13. pg_constraint",
+        "locator": "Catalog purpose",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-constraint"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-002",
+      "type": "multiple_choice",
+      "text": "Which pg_constraint.contype mappings are correct?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`c` — CHECK",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`f` — FOREIGN KEY",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`p` — PRIMARY KEY",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`u` — UNIQUE",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`x` — EXCLUDE",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "`n` — NOT NULL",
+          "correct": false
+        }
+      ],
+      "explanation": "NOT NULL is not represented as a contype in pg_constraint; it is stored in pg_attribute.attnotnull.",
+      "source": {
+        "key": "pgcat1-pg-constraint-5fa69194",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.13. pg_constraint",
+        "locator": "contype column; note about NOT NULL",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-constraint"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-003",
+      "type": "single_choice",
+      "text": "Where is a column NOT NULL constraint stored?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "In pg_attribute.attnotnull",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "In pg_constraint with contype=`n`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "In pg_index.indisprimary",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "In pg_type.typnotnull for all table columns",
+          "correct": false
+        }
+      ],
+      "explanation": "The pg_constraint documentation explicitly notes that NULL constraints are represented elsewhere, in pg_attribute.",
+      "source": {
+        "key": "pgcat1-pg-constraint-d66f8c58",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.13. pg_constraint",
+        "locator": "NOT NULL is stored in pg_attribute",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-constraint"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-004",
+      "type": "multiple_choice",
+      "text": "Which pg_constraint fields are used for a foreign key?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "conrelid — table containing the constraint",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "confrelid — table referenced by the FK",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "conkey — columns of the constraint",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "confkey — columns referenced by the FK",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "prosrc — body of the FK function",
+          "correct": false
+        }
+      ],
+      "explanation": "For a foreign key, pg_constraint stores both sides of the relationship and the numbers of the corresponding columns.",
+      "source": {
+        "key": "pgcat1-pg-constraint-72c97552",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.13. pg_constraint",
+        "locator": "conrelid, confrelid, conkey, confkey",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-constraint"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-005",
+      "type": "single_choice",
+      "text": "Which catalog records dependencies between objects inside a database?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_depend",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_shdepend",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_description",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_rewrite",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_depend stores dependencies between database objects and lets DROP determine what to remove with CASCADE and when to reject removal under RESTRICT.",
+      "source": {
+        "key": "pgcat1-pg-depend-7bf9dd0f",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.18. pg_depend",
+        "locator": "Purpose of the dependency catalog",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-depend"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-006",
+      "type": "multiple_choice",
+      "text": "Which `pg_depend.deptype` values are valid dependency types?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`n` — NORMAL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`a` — AUTO",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`i` — INTERNAL",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`e` — EXTENSION",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`x` — AUTO_EXTENSION",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "`z` — ZOMBIE",
+          "correct": false
+        }
+      ],
+      "explanation": "`pg_depend.deptype` uses NORMAL, AUTO, INTERNAL, PARTITION_PRI/SEC, EXTENSION, and AUTO_EXTENSION; `z` is not used.",
+      "source": {
+        "key": "pgcat1-pg-depend-5023aba1",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.18. pg_depend",
+        "locator": "deptype field and dependency kinds",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-depend"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-007",
+      "type": "single_choice",
+      "text": "Which catalog is analogous to pg_depend but describes dependencies on cluster-wide shared objects such as roles?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_shdepend",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_shdescription",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_auth_members",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_default_acl",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_shdepend stores dependencies of database objects on shared objects such as roles and tablespaces.",
+      "source": {
+        "key": "pgcat1-pg-shdepend-18019fe7",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.48. pg_shdepend",
+        "locator": "Purpose of shared dependencies",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-shdepend"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-008",
+      "type": "multiple_choice",
+      "text": "Which catalog pairs are related to object comments?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_description — comments on database objects",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_shdescription — comments on global objects",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_description.description — comment text",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_shdescription stores only role passwords",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_description applies to objects in a database, while pg_shdescription applies to cluster-wide global objects.",
+      "source": {
+        "key": "pgcat1-pg-description-e672e7b9",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.19. pg_description",
+        "locator": "Purpose and description field",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-description"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-009",
+      "type": "single_choice",
+      "text": "Where are query rewrite rules for tables and views stored?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_rewrite",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_trigger",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_proc",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_policy",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_rewrite stores rewrite rules; ev_class identifies the relation and ev_action stores the action tree.",
+      "source": {
+        "key": "pgcat1-pg-rewrite-631f1a58",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.45. pg_rewrite",
+        "locator": "Purpose of the rewrite-rules catalog",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-rewrite"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-010",
+      "type": "multiple_choice",
+      "text": "Which statements about pg_trigger are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "tgrelid identifies the trigger table",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "tgname is the trigger name",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "tgfoid references the called function",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "tgenabled encodes session_replication_role modes",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "tgqual stores the WHEN condition, if present",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "tgtype stores the SQL text of the trigger function",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_trigger stores the trigger-to-table and trigger-to-function links, enablement mode, arguments, and WHEN condition.",
+      "source": {
+        "key": "pgcat1-pg-trigger-aa4ceabb",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.58. pg_trigger",
+        "locator": "Main fields tgrelid, tgname, tgfoid, tgenabled, tgqual",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-trigger"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-011",
+      "type": "single_choice",
+      "text": "Which catalog stores event triggers?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_event_trigger",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_trigger",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_rewrite",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_constraint",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_event_trigger is specifically intended for event triggers.",
+      "source": {
+        "key": "pgcat1-pg-event-trigger-70d8b748",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.21. pg_event_trigger",
+        "locator": "Purpose of the event-trigger catalog",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-event-trigger"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-012",
+      "type": "multiple_choice",
+      "text": "Which pg_event_trigger fields describe the event and the called function?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "evtevent — event",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "evtfoid — called function",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "evtenabled — firing modes",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "evttags — command-tag filter",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "confrelid — foreign-key table",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_event_trigger stores the event, function, enablement mode, and command-tag list.",
+      "source": {
+        "key": "pgcat1-pg-event-trigger-c4a85cf0",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.21. pg_event_trigger",
+        "locator": "evtevent, evtfoid, evtenabled, evttags",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-event-trigger"
+      }
+    },
+    {
+      "key": "pgcat1-constraints-dependencies-013",
+      "type": "multiple_choice",
+      "text": "Which statements about pg_shdescription are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The catalog stores comments on global objects",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It is shared by all databases in the cluster",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "objoid identifies the commented object",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "description contains the comment text",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "The catalog stores only comments on columns of a local table",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_shdescription is the shared counterpart of pg_description for cluster-wide global objects.",
+      "source": {
+        "key": "pgcat1-pg-shdescription-a3254b88",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.49. pg_shdescription",
+        "locator": "Purpose; objoid; description; shared catalog",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-shdescription"
+      }
+    }
+  ]
+}

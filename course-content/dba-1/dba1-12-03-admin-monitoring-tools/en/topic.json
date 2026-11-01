@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "dba-1",
+  "slug": "dba1-admin-monitoring-tools",
+  "notes_part": 12,
+  "topic_number": 14,
+  "title": "Monitoring Tools and Query Statistics",
+  "description": "External PostgreSQL monitoring systems, specialized performance-analysis tools, and pg_stat_statements for accumulating SQL query statistics",
+  "sort_order": 122
+}

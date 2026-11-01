@@ -1,0 +1,870 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-data-catalog",
+  "questions": [
+    {
+      "key": "dba1-data-catalog-001",
+      "type": "single_choice",
+      "text": "What is the PostgreSQL system catalog?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A set of tables and views containing metadata about DBMS objects",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A separate log of changes to user tables",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A set of server configuration files",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A catalog of database backups",
+          "correct": false
+        }
+      ],
+      "explanation": "The system catalog stores metadata: information about tables, columns, and other PostgreSQL objects.",
+      "source": {
+        "key": "dba1-09-system-catalog",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "System catalog",
+        "locator": "Slide 3, definition of the system catalog",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-catalog-002",
+      "type": "multiple_choice",
+      "text": "How can information be obtained from the system catalog? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Run ordinary SELECT queries against catalog tables and views",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Use special psql meta-commands",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Use client applications that read the system catalog",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Directly read PostgreSQL's internal data-directory files",
+          "correct": false
+        }
+      ],
+      "explanation": "The catalog is accessible through SQL. Clients, including psql and graphical tools, can read it and present the retrieved information in a more convenient form.",
+      "source": {
+        "key": "dba1-09-catalog-access",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "System catalog",
+        "locator": "Slide 3, SQL access and psql access",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-catalog-003",
+      "type": "single_choice",
+      "text": "Which schema contains the main PostgreSQL system catalog tables and views?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_catalog",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "public",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_temp",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "information_catalog",
+          "correct": false
+        }
+      ],
+      "explanation": "PostgreSQL's main system catalog is located in the pg_catalog schema.",
+      "source": {
+        "key": "dba1-09-pg-catalog",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "System catalog",
+        "locator": "Slide 3, main pg_catalog schema",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-catalog-004",
+      "type": "multiple_choice",
+      "text": "Which statements about information_schema are correct? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It provides an alternative representation of metadata",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It is defined by the SQL standard",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It is more portable across DBMSs than PostgreSQL-specific pg_catalog catalogs",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It reflects every PostgreSQL-specific feature more completely than pg_catalog",
+          "correct": false
+        }
+      ],
+      "explanation": "The material describes information_schema as a standardized and more portable representation that does not expose all PostgreSQL-specific details.",
+      "source": {
+        "key": "dba1-09-information-schema",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "System catalog",
+        "locator": "Slide 3, pg_catalog and information_schema",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-catalog-005",
+      "type": "single_choice",
+      "text": "How is the system catalog organized with respect to cluster databases?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Each database has its own catalog portion, but some catalogs are shared across the whole cluster",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The entire system catalog exists only in the postgres database",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "There is only one set of all pg_catalog tables for the whole cluster",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A separate system catalog is created for every user session",
+          "correct": false
+        }
+      ],
+      "explanation": "Most catalog data belongs to a particular database. At the same time, some catalog objects are shared across the whole cluster and are visible identically from different databases.",
+      "source": {
+        "key": "dba1-09-shared-catalogs",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Cluster-wide objects",
+        "locator": "Slide 4, local and shared catalog objects",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-catalog-006",
+      "type": "multiple_choice",
+      "text": "Which statements about shared system-catalog objects are correct? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Some catalog objects belong to the whole cluster",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The database list is an example of cluster-wide information",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Shared catalogs are visible identically when connected to different cluster databases",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Each database contains an independent copy of the database list that may differ from the others",
+          "correct": false
+        }
+      ],
+      "explanation": "The presentation uses the database list as an obvious example of metadata shared across the whole cluster.",
+      "source": {
+        "key": "dba1-09-shared-catalogs-006",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Cluster-wide objects",
+        "locator": "Slide 4, example of shared objects",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-catalog-007",
+      "type": "single_choice",
+      "text": "Which prefix is used in the names of PostgreSQL system catalog tables and views?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "sys_",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "cat_",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "sql_",
+          "correct": false
+        }
+      ],
+      "explanation": "Names of system catalog tables and views begin with pg_. For this reason, the material recommends not using that prefix for application objects.",
+      "source": {
+        "key": "dba1-09-naming",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Naming conventions",
+        "locator": "Slide 5, pg_ prefix",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-catalog-008",
+      "type": "multiple_choice",
+      "text": "Which statements about PostgreSQL system catalog object naming are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Catalog tables and views use the common pg_ prefix",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Column names often begin with a short prefix related to the table name",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "There is usually no underscore between the column prefix and the rest of the name",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every system catalog column must begin with pg_",
+          "correct": false
+        }
+      ],
+      "explanation": "Catalog columns commonly use a three-letter prefix, usually related to the catalog name. The material separately notes exceptions such as oid.",
+      "source": {
+        "key": "dba1-09-naming-008",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Naming conventions",
+        "locator": "Slide 5, object and column prefixes",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-catalog-009",
+      "type": "single_choice",
+      "text": "How should the column name datname in pg_database be interpreted using the system catalog naming convention?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "dat is the column prefix for pg_database, and name is the semantic part",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "dat is the schema name, and name is the table name",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "datname is a special PostgreSQL data type",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "datname is an alias for the system column oid",
+          "correct": false
+        }
+      ],
+      "explanation": "The presentation uses pg_database.datname as an example of the convention: the column prefix usually corresponds to the system catalog name.",
+      "source": {
+        "key": "dba1-09-naming-example",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Naming conventions",
+        "locator": "Slide 5, pg_database.datname example",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-catalog-010",
+      "type": "multiple_choice",
+      "text": "Which statements about the oid type are correct? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "PostgreSQL uses OIDs as object identifiers in various system tables",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The oid type is implemented as a four-byte unsigned integer",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "OID is often used as a primary key in system tables",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "OID is a text type that always stores an object name",
+          "correct": false
+        }
+      ],
+      "explanation": "An OID is a numeric object identifier. PostgreSQL 16 documentation describes oid as a four-byte unsigned integer used in system tables.",
+      "source": {
+        "key": "postgresql-16-oid",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Object identifiers",
+        "locator": "Section 8.19, oid type",
+        "url": "https://postgrespro.ru/docs/postgresql/16/datatype-oid"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-011",
+      "type": "single_choice",
+      "text": "Does the oid type guarantee uniqueness across an entire large database?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "No; the 32-bit OID range is not large enough for that guarantee",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Yes; OIDs are guaranteed unique across all PostgreSQL clusters",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Yes, but only when the database uses UTF-8",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Yes, because OID is 128 bits wide",
+          "correct": false
+        }
+      ],
+      "explanation": "The documentation warns that a four-byte oid is not large enough to guarantee uniqueness across an entire large database or even a very large individual table.",
+      "source": {
+        "key": "postgresql-16-oid-size",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Object identifiers",
+        "locator": "Section 8.19, oid size and uniqueness",
+        "url": "https://postgrespro.ru/docs/postgresql/16/datatype-oid"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-012",
+      "type": "multiple_choice",
+      "text": "Which special types are aliases of oid, and which objects do they correspond to? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "regclass — relations from pg_class",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "regtype — data types from pg_type",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "regnamespace — namespaces from pg_namespace",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "regdatabase — the standard oid alias for pg_database",
+          "correct": false
+        }
+      ],
+      "explanation": "PostgreSQL provides several reg* types that are oid aliases for particular categories of system objects. The listed standard types do not include regdatabase.",
+      "source": {
+        "key": "postgresql-16-reg-types",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Object identifiers",
+        "locator": "Section 8.19, table of oid alias types",
+        "url": "https://postgrespro.ru/docs/postgresql/16/datatype-oid"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-013",
+      "type": "single_choice",
+      "text": "Which type is convenient for converting a table name to its OID?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "regclass",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "regtype",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "regrole",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "regnamespace",
+          "correct": false
+        }
+      ],
+      "explanation": "regclass corresponds to pg_class and allows a symbolic relation name to be used instead of manually looking up its numeric OID.",
+      "source": {
+        "key": "postgresql-16-regclass",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Object identifiers",
+        "locator": "Section 8.19, regclass",
+        "url": "https://postgrespro.ru/docs/postgresql/16/datatype-oid"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-014",
+      "type": "multiple_choice",
+      "text": "What advantages do reg* types provide compared with using a raw numeric oid? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Objects can be supplied by symbolic name",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A symbolic name can be displayed instead of the numeric OID",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "For namespace-based objects, schema search-path rules can be taken into account",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "They convert an oid into a globally unique 128-bit identifier",
+          "correct": false
+        }
+      ],
+      "explanation": "The main purpose of reg* types is convenient conversion between numeric identifiers and symbolic names of system objects.",
+      "source": {
+        "key": "postgresql-16-reg-conversion",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Object identifiers",
+        "locator": "Section 8.19, reg* input and output",
+        "url": "https://postgrespro.ru/docs/postgresql/16/datatype-oid"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-015",
+      "type": "single_choice",
+      "text": "What does the psql meta-command \\d object_name show for a relation?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "An object description: columns, types, and related properties",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only the rows stored in the table",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only the total size of the whole database",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A list of active connections to the object",
+          "correct": false
+        }
+      ],
+      "explanation": "The \\d command family is intended for describing objects. For a relation, \\d shows columns, their types, and additional properties including related indexes and constraints.",
+      "source": {
+        "key": "postgresql-16-psql-describe",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "psql meta-commands",
+        "locator": "psql section, \\d meta-command",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql#APP-PSQL-META-COMMANDS"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-016",
+      "type": "multiple_choice",
+      "text": "What distinguishes \\d+ from ordinary \\d? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Additional information about the object is shown",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "For a view, its definition can be shown",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "For tables, additional service information such as the access method can be displayed",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The + sign turns the description command into DROP for the object",
+          "correct": false
+        }
+      ],
+      "explanation": "The + suffix is used by many psql meta-commands for extended output. For \\d+, the documentation lists additional information about tables and views.",
+      "source": {
+        "key": "postgresql-16-psql-describe-plus",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "psql meta-commands",
+        "locator": "psql section, \\d+",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql#APP-PSQL-META-COMMANDS"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-017",
+      "type": "single_choice",
+      "text": "How can system objects that may be hidden by default be included in output from the \\d command family?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Add the S modifier",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Add the X modifier",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Add the A modifier",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Run psql as the root user",
+          "correct": false
+        }
+      ],
+      "explanation": "For a number of \\d commands, the S modifier includes system objects in the output.",
+      "source": {
+        "key": "postgresql-16-psql-system-objects",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "psql meta-commands",
+        "locator": "psql section, S modifier",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql#APP-PSQL-META-COMMANDS"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-018",
+      "type": "multiple_choice",
+      "text": "Which statements about patterns in psql \\d-family meta-commands are correct? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "* matches any number of characters",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "? matches a single character",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The *.* pattern can show objects regardless of visibility through the current search_path",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "* in a pattern always means only system objects",
+          "correct": false
+        }
+      ],
+      "explanation": "psql uses its own object-search patterns. Without a pattern, visible objects are normally shown, while *.* can cover objects in all schemas of the current database.",
+      "source": {
+        "key": "postgresql-16-psql-patterns",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "psql search patterns",
+        "locator": "psql section, \\d command patterns",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql#APP-PSQL-META-COMMANDS"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-019",
+      "type": "single_choice",
+      "text": "Which psql meta-command lists schemas?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\dn",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\dt",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "\\dv",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "\\di",
+          "correct": false
+        }
+      ],
+      "explanation": "The \\dn meta-command lists schemas. It also supports a pattern, S, and the extended + variant.",
+      "source": {
+        "key": "postgresql-16-psql-dn",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "psql meta-commands",
+        "locator": "psql section, \\dn",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql#APP-PSQL-META-COMMANDS"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-020",
+      "type": "multiple_choice",
+      "text": "Which mappings between psql meta-commands and object types are correct? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\dt — tables",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\dv — views",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "\\di — indexes",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "\\dn — functions",
+          "correct": false
+        }
+      ],
+      "explanation": "The \\d family contains specialized forms for different object types. \\dn applies to schemas, not functions.",
+      "source": {
+        "key": "postgresql-16-psql-object-lists",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "psql meta-commands",
+        "locator": "psql section, specialized \\d commands",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql#APP-PSQL-META-COMMANDS"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-021",
+      "type": "single_choice",
+      "text": "How can you see the SQL query that psql runs internally for a meta-command such as \\d+ pg_views?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Enable ECHO_HIDDEN or run psql with -E",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Run VACUUM VERBOSE",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Add the S modifier to \\d",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Set search_path to pg_catalog",
+          "correct": false
+        }
+      ],
+      "explanation": "The -E option corresponds to enabling ECHO_HIDDEN. In that mode psql displays the queries generated by its meta-commands. This directly supports the practical exercise with \\d+ pg_views.",
+      "source": {
+        "key": "postgresql-16-psql-echo-hidden",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "psql meta-commands",
+        "locator": "Description of -E and ECHO_HIDDEN",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql#APP-PSQL-META-COMMANDS"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-022",
+      "type": "multiple_choice",
+      "text": "Which tasks can be performed with psql meta-commands? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Obtain a description of pg_class",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Obtain a detailed description of the pg_tables view",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Obtain the list of schemas including system schemas",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Change the physical format of system files without SQL commands",
+          "correct": false
+        }
+      ],
+      "explanation": "The practical exercise directly asks students to explore pg_class, pg_tables, and the full schema list using catalog-inspection tools.",
+      "source": {
+        "key": "dba1-09-practice",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice",
+        "locator": "Slide 10, tasks 1–4",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-data-catalog-023",
+      "type": "single_choice",
+      "text": "Should PostgreSQL system-catalog rows normally be modified directly?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "No; the intended SQL commands should normally be used",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Yes; that is the primary recommended way to create objects",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Yes, but only through information_schema",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Yes; direct modification is required before every DDL command",
+          "correct": false
+        }
+      ],
+      "explanation": "Although system catalogs are tables, the documentation explicitly warns that they normally should not be modified manually. SQL commands are intended for changing objects.",
+      "source": {
+        "key": "postgresql-16-catalog-modification",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "System catalogs",
+        "locator": "Chapter 53, system catalog overview",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalogs"
+      }
+    },
+    {
+      "key": "dba1-data-catalog-024",
+      "type": "multiple_choice",
+      "text": "Which statements describe the relationship between SQL commands and the system catalog? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "SELECT can be used to read metadata from the system catalog",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "CREATE, ALTER, and DROP change objects described by the catalog",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "For example, CREATE DATABASE causes a corresponding row to appear in pg_database",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "DDL commands operate independently of the system catalog and never modify it",
+          "correct": false
+        }
+      ],
+      "explanation": "The system catalog is an active working part of PostgreSQL, not merely a report. SQL commands that create and alter objects cause corresponding metadata changes in the catalog.",
+      "source": {
+        "key": "postgresql-16-catalog-sql",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "System catalogs",
+        "locator": "Chapter 53, overview and CREATE DATABASE example",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalogs"
+      }
+    }
+  ]
+}

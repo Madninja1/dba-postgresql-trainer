@@ -1,0 +1,741 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-admin-monitoring",
+  "questions": [
+    {
+      "key": "dba1-admin-monitoring-001",
+      "type": "single_choice",
+      "text": "Which operating-system tools can be used to inspect PostgreSQL processes?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "ps and pgrep",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "df and du",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "grep and awk",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "VACUUM and ANALYZE",
+          "correct": false
+        }
+      ],
+      "explanation": "The material lists the system commands ps and pgrep for observing PostgreSQL processes.",
+      "source": {
+        "key": "dba1-12-os-processes",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "OS Tools",
+        "locator": "Slide about PostgreSQL processes",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-002",
+      "type": "multiple_choice",
+      "text": "Which operating-system utilities can be used to observe system resource usage? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "iostat",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "vmstat",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "sar",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "top",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "pg_dump",
+          "correct": false
+        }
+      ],
+      "explanation": "iostat, vmstat, sar, and top are listed as tools for observing OS resource usage. `pg_dump` is for logical backup, not OS resource monitoring.",
+      "source": {
+        "key": "dba1-12-os-resources",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "OS Tools",
+        "locator": "Slide \"Resource Usage\"",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-003",
+      "type": "single_choice",
+      "text": "What is the purpose of the update_process_title parameter in PostgreSQL monitoring?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To update the displayed status of server processes",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To change the name of the current database",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To enable the query statistics collector",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To change the log file name",
+          "correct": false
+        }
+      ],
+      "explanation": "update_process_title controls process information visible through operating-system tools.",
+      "source": {
+        "key": "dba1-12-process-title",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "OS Tools",
+        "locator": "Process slide, update_process_title",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-004",
+      "type": "multiple_choice",
+      "text": "Which statements about monitoring disk space with OS tools are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "df can be used to evaluate filesystem usage",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "du can estimate space used by directories and files",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "quota is related to disk quota control",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_stat_activity alone is sufficient to monitor free disk space",
+          "correct": false
+        }
+      ],
+      "explanation": "The disk-space section lists df, du, and quota; PostgreSQL system views do not replace filesystem monitoring.",
+      "source": {
+        "key": "postgresql-16-diskusage",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Disk Space",
+        "locator": "Monitoring disk usage",
+        "url": "https://postgrespro.ru/docs/postgresql/16/diskusage"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-005",
+      "type": "single_choice",
+      "text": "Which view is the primary source of information about the current activity of PostgreSQL server processes?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_stat_activity",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_stat_progress_vacuum",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_tablespace",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_settings",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_stat_activity is part of dynamic statistics and shows server processes and their current activity.",
+      "source": {
+        "key": "postgresql-16-monitoring-stats",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "PostgreSQL Statistics",
+        "locator": "pg_stat_activity view",
+        "url": "https://postgrespro.ru/docs/postgresql/16/monitoring-stats"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-006",
+      "type": "multiple_choice",
+      "text": "Which information can be used when analyzing current sessions through pg_stat_activity? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Session state",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Current query",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Query or transaction start time",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Contents of every table page in the buffer cache",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_stat_activity is intended for analyzing processes and sessions, including their state and current work, not page contents.",
+      "source": {
+        "key": "postgresql-16-monitoring-stats-006",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "PostgreSQL Statistics",
+        "locator": "pg_stat_activity",
+        "url": "https://postgrespro.ru/docs/postgresql/16/monitoring-stats"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-007",
+      "type": "single_choice",
+      "text": "Where do PostgreSQL backend processes place cumulative statistics while the server is running,?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "In shared memory",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only in WAL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "In postgresql.conf",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "In user tables in public",
+          "correct": false
+        }
+      ],
+      "explanation": "The notes show cumulative statistics being transferred to shared memory; updates are not performed continuously after every event.",
+      "source": {
+        "key": "dba1-12-cumulative-stats",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Cumulative Statistics",
+        "locator": "Statistics subsystem diagram",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-008",
+      "type": "multiple_choice",
+      "text": "Which values does stats_fetch_consistency support? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "none",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "cache",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "snapshot",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "serializable",
+          "correct": false
+        }
+      ],
+      "explanation": "The statistics-subsystem diagram explicitly lists none, cache, and snapshot.",
+      "source": {
+        "key": "dba1-12-stats-consistency",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Cumulative Statistics",
+        "locator": "stats_fetch_consistency",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-009",
+      "type": "single_choice",
+      "text": "Which view should be used to monitor VACUUM progress?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_stat_progress_vacuum",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_stat_progress_analyze",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_stat_activity_vacuum",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_vacuum_status",
+          "correct": false
+        }
+      ],
+      "explanation": "For VACUUM, including autovacuum workers, the material specifies pg_stat_progress_vacuum.",
+      "source": {
+        "key": "postgresql-16-progress-reporting",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Command Execution",
+        "locator": "VACUUM — pg_stat_progress_vacuum",
+        "url": "https://postgrespro.ru/docs/postgresql/16/progress-reporting"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-010",
+      "type": "multiple_choice",
+      "text": "Which long-running operation to progress-view mappings are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "ANALYZE — pg_stat_progress_analyze",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "CREATE INDEX and REINDEX — pg_stat_progress_create_index",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "CLUSTER and VACUUM FULL — pg_stat_progress_cluster",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "ANALYZE — pg_stat_progress_copy",
+          "correct": false
+        }
+      ],
+      "explanation": "These mappings are shown directly in the table of views for tracking long-running commands.",
+      "source": {
+        "key": "postgresql-16-progress-reporting-010",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Command Execution",
+        "locator": "pg_stat_progress_* views table",
+        "url": "https://postgrespro.ru/docs/postgresql/16/progress-reporting"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-011",
+      "type": "single_choice",
+      "text": "Which view shows COPY progress?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_stat_progress_copy",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_stat_progress_cluster",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_stat_copy",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_copy_activity",
+          "correct": false
+        }
+      ],
+      "explanation": "The material specifies pg_stat_progress_copy for COPY.",
+      "source": {
+        "key": "postgresql-16-progress-reporting-011",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Command Execution",
+        "locator": "COPY — pg_stat_progress_copy",
+        "url": "https://postgrespro.ru/docs/postgresql/16/progress-reporting"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-012",
+      "type": "multiple_choice",
+      "text": "For which operations does PostgreSQL provide specialized progress views? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Creating a base backup",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "CREATE INDEX",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "VACUUM FULL",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Any ordinary SELECT regardless of complexity",
+          "correct": false
+        }
+      ],
+      "explanation": "The progress-view list covers only certain potentially long-running operations, not arbitrary SELECT queries.",
+      "source": {
+        "key": "dba1-12-progress-views",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Command Execution",
+        "locator": "Slide 10, progress views",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-013",
+      "type": "single_choice",
+      "text": "What does the cluster_name parameter do in the context of process monitoring?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Sets the cluster name that can be displayed in server process status",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Renames the PGDATA directory",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Creates a new database",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Selects the log directory",
+          "correct": false
+        }
+      ],
+      "explanation": "In the OS-tools section, cluster_name is shown together with update_process_title as a parameter that helps identify PostgreSQL processes.",
+      "source": {
+        "key": "dba1-12-cluster-name",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "OS Tools",
+        "locator": "cluster_name",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-014",
+      "type": "multiple_choice",
+      "text": "Why is it useful to combine internal PostgreSQL views with operating-system tools when diagnosing PostgreSQL? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "PostgreSQL runs under the OS and depends on resources available from it",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "OS tools show CPU, memory, and disk subsystem usage",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "PostgreSQL views expose the internal state of sessions and objects",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "PostgreSQL internal statistics completely replace OS monitoring",
+          "correct": false
+        }
+      ],
+      "explanation": "The material treats the two levels as complementary: the OS shows resources and processes, while PostgreSQL shows the server's internal state.",
+      "source": {
+        "key": "dba1-12-monitoring-levels",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "OS Tools",
+        "locator": "Relationship between PostgreSQL and OS monitoring",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-015",
+      "type": "single_choice",
+      "text": "Which view should be used to monitor the creation of a base backup?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_stat_progress_basebackup",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_stat_progress_backup",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_stat_backup_activity",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_stat_progress_copy",
+          "correct": false
+        }
+      ],
+      "explanation": "Base-backup creation corresponds to pg_stat_progress_basebackup.",
+      "source": {
+        "key": "postgresql-16-progress-reporting-015",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Command Execution",
+        "locator": "pg_stat_progress_basebackup",
+        "url": "https://postgrespro.ru/docs/postgresql/16/progress-reporting"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-016",
+      "type": "multiple_choice",
+      "text": "Which characteristics should be considered when reading PostgreSQL cumulative statistics? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Statistics are transferred to shared memory not after every individual event",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Different consistency modes can be used when statistics are read within a transaction",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "stats_fetch_consistency affects how the statistics snapshot is obtained",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "All statistics values are always updated synchronously after every SQL row",
+          "correct": false
+        }
+      ],
+      "explanation": "The notes specifically show delayed cumulative-statistics updates and the none, cache, and snapshot modes for reading them.",
+      "source": {
+        "key": "dba1-12-cumulative-stats-016",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Cumulative Statistics",
+        "locator": "Statistics collection diagram and stats_fetch_consistency",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-017",
+      "type": "multiple_choice",
+      "text": "Which mappings between PostgreSQL statistics-collection parameters and their purposes are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "track_activities — tracking current commands of server processes",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "track_counts — cumulative statistics for accesses to tables and indexes",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "track_functions — statistics for use of user-defined functions",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "track_io_timing — measuring block I/O time",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "track_counts — enabling file log rotation",
+          "correct": false
+        }
+      ],
+      "explanation": "The cumulative-statistics system is controlled by track_* parameters. track_activities covers current commands, track_counts table/index accesses, track_functions user functions, and track_io_timing block I/O timing.",
+      "source": {
+        "key": "dba1-12-statistics-config",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Statistics Collection",
+        "locator": "Slide 5 and PostgreSQL 16 section 28.2.1",
+        "url": "https://postgrespro.ru/docs/postgresql/16/monitoring-stats"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-018",
+      "type": "multiple_choice",
+      "text": "Which table statistics counters should be correlated with INSERT, DELETE, and VACUUM? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "n_tup_ins",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "n_tup_del",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "n_live_tup",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "n_dead_tup",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "wal_segment_size",
+          "correct": false
+        }
+      ],
+      "explanation": "The exercise asks you to perform inserts and deletes, inspect n_tup_ins, n_tup_del, n_live_tup, and n_dead_tup, then run VACUUM and compare the statistics again.",
+      "source": {
+        "key": "dba1-12-monitoring-practice",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice",
+        "locator": "Slide 20: table access statistics",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-019",
+      "type": "single_choice",
+      "text": "What is pg_stat_clear_snapshot() used for when working with cumulative statistics?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To clear the current statistics snapshot or cache so the next access obtains fresh values",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To delete all system catalog tables",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To stop statistics collection for the entire cluster",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To clear WAL up to the last checkpoint",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_stat_clear_snapshot() clears the current statistics snapshot or cached values in a transaction; the next access forms a new snapshot or cache according to stats_fetch_consistency.",
+      "source": {
+        "key": "dba1-12-statistics-snapshot",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Cumulative Statistics",
+        "locator": "pg_stat_clear_snapshot and stats_fetch_consistency",
+        "url": "https://postgrespro.ru/docs/postgresql/16/monitoring-stats"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-020",
+      "type": "multiple_choice",
+      "text": "Which mappings between PostgreSQL statistics extensions and their purposes are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_stat_statements — SQL query statistics",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pgstattuple — row-version statistics",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_buffercache — buffer cache state",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_repack — view of current backend wait events",
+          "correct": false
+        }
+      ],
+      "explanation": "The additional-statistics slide lists pg_stat_statements, pgstattuple, and pg_buffercache for SQL workload, row versions, and buffer cache respectively.",
+      "source": {
+        "key": "dba1-12-extra-statistics",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Additional Statistics",
+        "locator": "Slide 11: statistics extensions",
+        "url": null
+      }
+    }
+  ]
+}

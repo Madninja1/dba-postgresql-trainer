@@ -1,0 +1,659 @@
+{
+  "schema_version": 1,
+  "topic": "sql1-strong",
+  "questions": [
+    {
+      "type": "single_choice",
+      "text": "What is LATERAL used for on a subquery in FROM?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To let the subquery reference columns from preceding FROM items",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To automatically materialize a CTE",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To forbid correlation",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To create an index",
+          "correct": false
+        }
+      ],
+      "explanation": "Without LATERAL, a FROM subquery is evaluated independently of neighboring FROM items; LATERAL allows correlation with preceding items.",
+      "source": {
+        "key": "sql1-strong-lateral",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "7.2.1.5. LATERAL Subqueries",
+        "locator": "LATERAL",
+        "url": null
+      },
+      "key": "sql1-strong-001"
+    },
+    {
+      "type": "single_choice",
+      "text": "What does WITH ORDINALITY add to the result of a table function?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A bigint column numbering rows starting from 1",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A UUID for each row",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The table OID",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The current transaction ID",
+          "correct": false
+        }
+      ],
+      "explanation": "WITH ORDINALITY adds an ordinal column to the result of a table function.",
+      "source": {
+        "key": "sql1-strong-ordinality",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "7.2.1.4. Table Functions",
+        "locator": "WITH ORDINALITY",
+        "url": null
+      },
+      "key": "sql1-strong-002"
+    },
+    {
+      "type": "single_choice",
+      "text": "What do GROUPING SETS, CUBE, and ROLLUP do?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They allow multiple grouping variants to be computed in one query",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "They create physical table partitions",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "They change the isolation level",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "They enable parallel query",
+          "correct": false
+        }
+      ],
+      "explanation": "Section 7.2.4 describes more complex grouping operations using grouping sets.",
+      "source": {
+        "key": "sql1-strong-grouping-sets",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "7.2.4. GROUPING SETS, CUBE, and ROLLUP",
+        "locator": "Grouping sets",
+        "url": null
+      },
+      "key": "sql1-strong-003"
+    },
+    {
+      "type": "single_choice",
+      "text": "What does WITH RECURSIVE do?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It allows a CTE to refer to its own result through a recursive evaluation scheme",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It turns any SELECT into a trigger",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It forbids UNION",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It creates a permanent physical table",
+          "correct": false
+        }
+      ],
+      "explanation": "Section 7.8.2 is devoted to recursive WITH queries.",
+      "source": {
+        "key": "sql1-strong-recursive-cte",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "7.8.2. Recursive Queries",
+        "locator": "WITH RECURSIVE",
+        "url": null
+      },
+      "key": "sql1-strong-004"
+    },
+    {
+      "type": "single_choice",
+      "text": "Where are window function calls directly allowed?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "In the SELECT list and ORDER BY",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "In WHERE and GROUP BY",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only in HAVING",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only in FROM",
+          "correct": false
+        }
+      ],
+      "explanation": "Window functions are evaluated after WHERE/GROUP BY/HAVING, so they are directly allowed in SELECT and ORDER BY.",
+      "source": {
+        "key": "sql1-strong-window-placement",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "3.5. Window Functions",
+        "locator": "Placement of window functions",
+        "url": null
+      },
+      "key": "sql1-strong-005"
+    },
+    {
+      "type": "single_choice",
+      "text": "What does an expression index provide?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It indexes the result of an expression rather than only the original column value",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It automatically creates a materialized view",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It changes the column type",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It disables the planner",
+          "correct": false
+        }
+      ],
+      "explanation": "Chapter 11 separately covers indexes on expressions.",
+      "source": {
+        "key": "sql1-strong-expression-index",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "11.7. Indexes on Expressions",
+        "locator": "Expression index",
+        "url": null
+      },
+      "key": "sql1-strong-006"
+    },
+    {
+      "type": "single_choice",
+      "text": "What characterizes a partial index?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It contains entries only for rows that satisfy its predicate",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It indexes only half of the columns by position",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It exists only inside a transaction",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It forbids WHERE",
+          "correct": false
+        }
+      ],
+      "explanation": "Section 11.8 describes indexes that cover only a subset of rows.",
+      "source": {
+        "key": "sql1-strong-partial-index",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "11.8. Partial Indexes",
+        "locator": "Partial-index predicate",
+        "url": null
+      },
+      "key": "sql1-strong-007"
+    },
+    {
+      "type": "single_choice",
+      "text": "What does `EXPLAIN ANALYZE` do compared with plain EXPLAIN?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It actually executes the query and reports actual timing/row counts together with the plan",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It only parses SQL without planning",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It automatically creates an index",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It always rolls back DML",
+          "correct": false
+        }
+      ],
+      "explanation": "Section 14.1.2 describes executing the query to collect actual runtime characteristics.",
+      "source": {
+        "key": "sql1-strong-explain-analyze",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "14.1.2. EXPLAIN ANALYZE",
+        "locator": "Actual execution",
+        "url": null
+      },
+      "key": "sql1-strong-008"
+    },
+    {
+      "type": "single_choice",
+      "text": "Which isolation level does PostgreSQL use by default?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Read Committed",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Serializable",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Read Uncommitted",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Always Repeatable Read",
+          "correct": false
+        }
+      ],
+      "explanation": "Read Committed is PostgreSQL's default isolation level.",
+      "source": {
+        "key": "sql1-strong-read-committed",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "13.2.1. Read Committed Isolation Level",
+        "locator": "Default isolation level",
+        "url": null
+      },
+      "key": "sql1-strong-009"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about LATERAL are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A LATERAL subquery can reference preceding FROM items",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "For a table function, the LATERAL keyword is optional when its arguments already reference preceding items",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "LEFT JOIN LATERAL is useful when the source row must be preserved even if the right side returns no rows",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "LATERAL is forbidden inside a JOIN tree",
+          "correct": false
+        }
+      ],
+      "explanation": "Section 7.2.1.5 describes correlated FROM items and examples of LEFT JOIN LATERAL.",
+      "source": {
+        "key": "sql1-strong-lateral-rules",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "7.2.1.5. LATERAL Subqueries",
+        "locator": "LATERAL rules",
+        "url": null
+      },
+      "key": "sql1-strong-010"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about a window frame are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A frame can be smaller than the entire partition",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "With ORDER BY, the default frame runs from the start of the partition through the current row and its peers",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Without ORDER BY, the default frame includes all rows in the partition",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "PARTITION BY always makes the frame exactly one row",
+          "correct": false
+        }
+      ],
+      "explanation": "The window-function introduction separately explains the window frame and its defaults.",
+      "source": {
+        "key": "sql1-strong-window-frame",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "3.5. Window Functions",
+        "locator": "Default window frame",
+        "url": null
+      },
+      "key": "sql1-strong-011"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which of the following features relate to PostgreSQL indexes?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Multicolumn indexes",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Indexes on expressions",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Partial indexes",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Index-only scans / covering indexes",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "SAVEPOINT",
+          "correct": false
+        }
+      ],
+      "explanation": "PostgreSQL supports multicolumn indexes, indexes on expressions, partial indexes, and index-only scans with covering indexes.",
+      "source": {
+        "key": "sql1-strong-index-topics",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "11. Indexes",
+        "locator": "Multicolumn, expression, partial, and covering indexes",
+        "url": null
+      },
+      "key": "sql1-strong-012"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about EXPLAIN plans are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The planner can choose a Seq Scan, Index Scan, or Bitmap Scan depending on cost",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A condition not supported by the chosen index can be applied as a Filter",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "ORDER BY can sometimes be satisfied by index order without a separate Sort",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The presence of an index forces the planner to always use it",
+          "correct": false
+        }
+      ],
+      "explanation": "EXPLAIN examples show the choice among scan nodes, Filter conditions, and use of index ordering.",
+      "source": {
+        "key": "sql1-strong-explain-plans",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "14.1.1. EXPLAIN Basics",
+        "locator": "Scan, Filter, and ORDER BY",
+        "url": null
+      },
+      "key": "sql1-strong-013"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about isolation and locking are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Read Committed, Repeatable Read, and Serializable are treated as isolation levels",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "PostgreSQL supports explicit table and row locks",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Deadlocks are discussed separately",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Any lock automatically means a deadlock",
+          "correct": false
+        }
+      ],
+      "explanation": "Chapter 13 separates isolation levels, explicit locking, and deadlocks.",
+      "source": {
+        "key": "sql1-strong-concurrency",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "13. Concurrency Control",
+        "locator": "Isolation and explicit locking",
+        "url": null
+      },
+      "key": "sql1-strong-014"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about recursive CTEs in PostgreSQL are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They are written using WITH RECURSIVE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A recursive query can specify search order",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A recursive query can track cycles",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A recursive CTE must modify data",
+          "correct": false
+        }
+      ],
+      "explanation": "Recursive CTEs use WITH RECURSIVE; PostgreSQL also supports search-order control and cycle detection.",
+      "source": {
+        "key": "sql1-strong-recursive-details",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "7.8.2. Recursive Queries",
+        "locator": "Search order and cycle detection",
+        "url": null
+      },
+      "key": "sql1-strong-015"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about CTE materialization are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A CTE can be materialized separately from the outer query",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The materialization choice can affect whether the CTE and outer query can be optimized together",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Every CTE is always physically stored forever",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "WITH disables the optimizer",
+          "correct": false
+        }
+      ],
+      "explanation": "CTE materialization can separate its evaluation from the outer query and therefore affect joint optimization.",
+      "source": {
+        "key": "sql1-strong-cte-materialization",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "7.8.3. Common Table Expression Materialization",
+        "locator": "CTE materialization",
+        "url": null
+      },
+      "key": "sql1-strong-016"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which operations can use `ONLY` to restrict an inheritance operation to the parent table?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "SELECT",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "UPDATE",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "DELETE",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "COMMIT",
+          "correct": false
+        }
+      ],
+      "explanation": "SELECT, UPDATE, and DELETE support ONLY to restrict the operation to the specified parent table.",
+      "source": {
+        "key": "sql1-strong-only",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "3.6. Inheritance",
+        "locator": "ONLY",
+        "url": null
+      },
+      "key": "sql1-strong-017"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about EXPLAIN ANALYZE with data-modifying commands are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The command is actually executed",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "If changes must not be persisted, the safe pattern requires an explicit transaction followed by ROLLBACK",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "EXPLAIN ANALYZE automatically rolls back every command",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "EXPLAIN ANALYZE never executes triggers",
+          "correct": false
+        }
+      ],
+      "explanation": "Because ANALYZE actually executes the statement, data-modifying commands require care.",
+      "source": {
+        "key": "sql1-strong-explain-dml",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "14.1.2. EXPLAIN ANALYZE",
+        "locator": "Caution with data-modifying commands",
+        "url": null
+      },
+      "key": "sql1-strong-018"
+    }
+  ]
+}

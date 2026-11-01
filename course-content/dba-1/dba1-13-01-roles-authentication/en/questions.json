@@ -1,0 +1,762 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-access-roles-authentication",
+  "questions": [
+    {
+      "key": "dba1-access-roles-authentication-001",
+      "type": "single_choice",
+      "text": "What are the two main purposes of PostgreSQL roles?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To represent users connecting to the DBMS and to group roles when configuring access",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only to store passwords and network settings",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only to own tables",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To replace schemas and tablespaces",
+          "correct": false
+        }
+      ],
+      "explanation": "The notes treat a role both as a user that can connect to the DBMS and as part of a role hierarchy useful for access management.",
+      "source": {
+        "key": "dba1-13-role-purpose",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Roles and Attributes",
+        "locator": "Purpose of roles",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-002",
+      "type": "multiple_choice",
+      "text": "Which role-attribute to purpose mappings are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "LOGIN — ability to connect",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "SUPERUSER — superuser privileges",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "CREATEDB — ability to create databases",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "CREATEROLE — permission to create tablespaces",
+          "correct": false
+        }
+      ],
+      "explanation": "The slide lists LOGIN, SUPERUSER, CREATEDB, and CREATEROLE; CREATEROLE is related to role management, not tablespaces.",
+      "source": {
+        "key": "dba1-13-role-attributes",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Roles and Attributes",
+        "locator": "LOGIN, SUPERUSER, CREATEDB, CREATEROLE",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-003",
+      "type": "single_choice",
+      "text": "Which role attribute is required for a role to be used for an ordinary PostgreSQL connection?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "LOGIN",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "CREATEDB",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "SUPERUSER",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "CREATEROLE",
+          "correct": false
+        }
+      ],
+      "explanation": "LOGIN directly indicates that a role can log in to a PostgreSQL session.",
+      "source": {
+        "key": "postgresql-16-role-attributes",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Role Attributes",
+        "locator": "LOGIN",
+        "url": "https://postgrespro.ru/docs/postgresql/16/role-attributes"
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-004",
+      "type": "multiple_choice",
+      "text": "Which statements about creating roles are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A role can be created with CREATE ROLE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Role attributes can be specified when it is created",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Login capability is determined by the LOGIN attribute",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every new role automatically receives SUPERUSER",
+          "correct": false
+        }
+      ],
+      "explanation": "CREATE ROLE creates a role and lets you define its properties. SUPERUSER is not granted automatically.",
+      "source": {
+        "key": "postgresql-16-create-role",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Creating Roles",
+        "locator": "CREATE ROLE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-createrole"
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-005",
+      "type": "single_choice",
+      "text": "In which file does PostgreSQL define client-access rules and authentication methods?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_hba.conf",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_ident.sql",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_roles.conf",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "postgresql.auto.sql",
+          "correct": false
+        }
+      ],
+      "explanation": "The notes define pg_hba.conf as the host-based authentication file containing connection rules.",
+      "source": {
+        "key": "postgresql-16-client-authentication",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Connecting to the Server",
+        "locator": "pg_hba.conf",
+        "url": "https://postgrespro.ru/docs/postgresql/16/client-authentication"
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-006",
+      "type": "multiple_choice",
+      "text": "Which fields are considered when choosing a matching pg_hba.conf record in the structure shown? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Connection type",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Database",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "User",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Name of the SQL table accessed by the first query",
+          "correct": false
+        }
+      ],
+      "explanation": "A pg_hba.conf row is matched against connection parameters including type, database, user, and for network connections the address.",
+      "source": {
+        "key": "dba1-13-pg-hba-fields",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Connecting to the Server",
+        "locator": "TYPE, DATABASE, USER, ADDRESS, METHOD",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-007",
+      "type": "single_choice",
+      "text": "How does PostgreSQL choose a rule from pg_hba.conf?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It scans rows from top to bottom and uses the first matching one",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It collects all matching rows and combines them",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It always uses the last matching row",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It chooses a rule randomly",
+          "correct": false
+        }
+      ],
+      "explanation": "Record order is fundamental: the first row matching the connection parameters is selected.",
+      "source": {
+        "key": "dba1-13-pg-hba-order",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Connecting to the Server",
+        "locator": "Scanning pg_hba.conf from top to bottom",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-008",
+      "type": "multiple_choice",
+      "text": "What happens after the first matching pg_hba.conf row is found? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The authentication method specified by the row is applied",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The role's ability to log in is checked",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The CONNECT privilege on the database is checked",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "If authentication fails, the next matching row is automatically tried",
+          "correct": false
+        }
+      ],
+      "explanation": "The material emphasizes that after the first row is selected, the relevant checks are performed and later rows are not considered.",
+      "source": {
+        "key": "dba1-13-pg-hba-checks",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Connecting to the Server",
+        "locator": "Authentication, LOGIN, and CONNECT",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-009",
+      "type": "single_choice",
+      "text": "What does the local connection type mean in pg_hba.conf?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Connection through a local socket",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Any TCP/IP connection",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A superuser-only connection",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A connection only to the postgres database",
+          "correct": false
+        }
+      ],
+      "explanation": "In the pg_hba.conf diagram, local corresponds to a local socket and host to TCP/IP.",
+      "source": {
+        "key": "dba1-13-pg-hba-types",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Connecting to the Server",
+        "locator": "local and host",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-010",
+      "type": "multiple_choice",
+      "text": "Which mappings between PostgreSQL authentication methods and their purposes are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "trust — allow the connection without checking a password",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "reject — reject the connection",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "peer — obtain user information from the operating system",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "scram-sha-256 — always allow the connection without authentication",
+          "correct": false
+        }
+      ],
+      "explanation": "The slide directly maps trust to allowing access, reject to denial, peer to OS-based checking, and scram-sha-256 and md5 to password authentication.",
+      "source": {
+        "key": "postgresql-16-auth-methods",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Authentication Methods",
+        "locator": "trust, reject, peer, scram-sha-256",
+        "url": "https://postgrespro.ru/docs/postgresql/16/auth-methods"
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-011",
+      "type": "single_choice",
+      "text": "Which authentication method for local connections obtains the user name from the operating system?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "peer",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "reject",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "trust",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "scram-sha-256",
+          "correct": false
+        }
+      ],
+      "explanation": "The material describes peer as the method that obtains the user name from the operating system.",
+      "source": {
+        "key": "postgresql-16-auth-peer",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Authentication Methods",
+        "locator": "peer",
+        "url": "https://postgrespro.ru/docs/postgresql/16/auth-methods"
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-012",
+      "type": "multiple_choice",
+      "text": "Which methods are password-authentication methods? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "scram-sha-256",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "md5",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "peer",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "reject",
+          "correct": false
+        }
+      ],
+      "explanation": "The slide groups scram-sha-256 and md5 as methods in which the client is asked for a password.",
+      "source": {
+        "key": "dba1-13-password-auth",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Password Authentication",
+        "locator": "scram-sha-256 and md5",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-013",
+      "type": "single_choice",
+      "text": "What happens if no pg_hba.conf row matches a new connection?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The connection is rejected",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "trust is applied automatically",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "peer is applied automatically",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The server creates a matching rule",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_hba.conf rules form an explicit access list. If no record matches, the connection is not allowed.",
+      "source": {
+        "key": "postgresql-16-client-authentication-013",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Connecting to the Server",
+        "locator": "No matching rule",
+        "url": "https://postgrespro.ru/docs/postgresql/16/client-authentication"
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-014",
+      "type": "multiple_choice",
+      "text": "Which conditions must be satisfied for a successful connection in the model shown? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A matching pg_hba.conf record must be found",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Authentication specified by that record must succeed",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The role must have LOGIN and the required CONNECT access",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The role must always be SUPERUSER",
+          "correct": false
+        }
+      ],
+      "explanation": "A connection is determined by several checks: the pg_hba.conf rule, the authentication method, and the role's privileges.",
+      "source": {
+        "key": "dba1-13-connection-checks",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Connecting to the Server",
+        "locator": "Connection-check sequence",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-015",
+      "type": "single_choice",
+      "text": "The peer method is enabled for roles alice and bob. Why is changing pg_hba.conf alone not enough for a successful login?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The operating-system user must be mapped correctly to the PostgreSQL role",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "peer always requires SUPERUSER",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "peer works only over TCP/IP",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "peer requires CREATEDB",
+          "correct": false
+        }
+      ],
+      "explanation": "The exercise first asks you to verify that peer login is impossible without the required OS-user mapping.",
+      "source": {
+        "key": "dba1-13-practice-peer",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice+",
+        "locator": "alice, bob, and peer",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-016",
+      "type": "multiple_choice",
+      "text": "Which actions are needed to configure and verify authentication rules for the alice and bob roles? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Create the alice and bob roles",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Modify pg_hba.conf",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Test allowed and rejected connections under different settings",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Grant both roles SUPERUSER to test peer",
+          "correct": false
+        }
+      ],
+      "explanation": "The practical part is built around creating roles, modifying pg_hba.conf, and testing the behavior of different authentication rules.",
+      "source": {
+        "key": "dba1-13-practice-auth",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice+",
+        "locator": "alice and bob, pg_hba.conf tasks",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-017",
+      "type": "multiple_choice",
+      "text": "How can a PostgreSQL client provide a password? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Enter the password manually",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Pass the password through PGPASSWORD",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Use the ~/.pgpass file",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Store the password in pg_hba.conf",
+          "correct": false
+        }
+      ],
+      "explanation": "The password-authentication section lists manual entry, the PGPASSWORD variable, and the ~/.pgpass file. pg_hba.conf selects the authentication method but does not store the role password.",
+      "source": {
+        "key": "dba1-13-password-client",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Password Authentication",
+        "locator": "Slide 7: supplying a password on the client",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-018",
+      "type": "single_choice",
+      "text": "What permissions should the ~/.pgpass file have on Unix?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "0600 — only the owner can read and modify the file",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "0644 — the file must be readable by everyone",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "0777 — execute permission is required for everyone",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "PostgreSQL clients do not check the file permissions",
+          "correct": false
+        }
+      ],
+      "explanation": "The material states that ~/.pgpass must be accessible only to its owner; PostgreSQL ignores the file if its permissions are broader.",
+      "source": {
+        "key": "dba1-13-pgpass-permissions",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Password Authentication",
+        "locator": "Slide 7: ~/.pgpass and permissions 600",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-019",
+      "type": "multiple_choice",
+      "text": "Which statements about applying connection settings are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "After pg_hba.conf is changed, the server must reload the configuration",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_reload_conf() can be used to reload pg_hba.conf",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "listen_addresses determines the network interfaces on which PostgreSQL accepts TCP connections",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Changing pg_hba.conf automatically creates new roles with LOGIN",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_hba.conf takes effect after reload. listen_addresses controls network listening, while pg_hba.conf controls access and the authentication method for incoming connections.",
+      "source": {
+        "key": "dba1-13-hba-reload",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Connecting to the Server",
+        "locator": "Slide 5: pg_hba.conf, reload, and listen_addresses",
+        "url": "https://postgrespro.ru/docs/postgresql/16/client-authentication"
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-020",
+      "type": "single_choice",
+      "text": "In which system catalog does PostgreSQL store role password information that ordinary users cannot access?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_authid",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_stat_activity",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_tablespace",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_hba.conf",
+          "correct": false
+        }
+      ],
+      "explanation": "The password-authentication material identifies pg_authid as the system catalog that stores the role password verifier/hash.",
+      "source": {
+        "key": "dba1-13-password-storage",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Password Authentication",
+        "locator": "Slide 7: password stored in pg_authid",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-roles-authentication-021",
+      "type": "single_choice",
+      "text": "What is pg_ident.conf used for together with the peer method?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To map an operating-system user name to a PostgreSQL role",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To store the role password hash",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To configure tablespaces",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To select the WAL segment size",
+          "correct": false
+        }
+      ],
+      "explanation": "In the DBA1 exercise, pg_ident.conf defines a map that lets peer authentication map the OS user student to the PostgreSQL roles alice and bob.",
+      "source": {
+        "key": "dba1-13-peer-map",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice+",
+        "locator": "Slide 23: pg_ident.conf and the stmap map",
+        "url": null
+      }
+    }
+  ]
+}

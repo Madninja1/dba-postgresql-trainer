@@ -1,0 +1,607 @@
+{
+  "schema_version": 1,
+  "topic": "linuxdba1-filesystems-mounts",
+  "questions": [
+    {
+      "key": "linuxdba1-filesystems-mounts-001",
+      "type": "single_choice",
+      "text": "Which SQL parameter is used in the lab to find the actual PostgreSQL data directory?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "SHOW data_directory;",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "SHOW mount_point;",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "SHOW block_device;",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "SHOW filesystem;",
+          "correct": false
+        }
+      ],
+      "explanation": "`SHOW data_directory;` returns the current PGDATA path.",
+      "source": {
+        "key": "linuxdba1-26-pgdata",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "PGDATA",
+        "locator": "Lab 26 — finding data_directory",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-002",
+      "type": "multiple_choice",
+      "text": "What does the `-Atc` combination mean in `psql -Atc \"SHOW data_directory;\"`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`-A` — unaligned output",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`-t` — tuples only",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`-c` — execute a command",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`-A` — show all block devices",
+          "correct": false
+        }
+      ],
+      "explanation": "The combination is convenient in shell scripts: remove table formatting and headers/footer lines, and execute one SQL command.",
+      "source": {
+        "key": "linuxdba1-26-psql-atc",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "PGDATA",
+        "locator": "Lab 26 — `psql -Atc` explained",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-003",
+      "type": "single_choice",
+      "text": "What is the main difference between `df` and `du` according to the lab?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`df` shows filesystem usage, while `du` shows the size of specific files/directories",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`df` shows PIDs, while `du` shows UIDs",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`df` creates a filesystem, while `du` mounts it",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "There is no difference",
+          "correct": false
+        }
+      ],
+      "explanation": "`df` answers questions about the filesystem as a whole, while `du` reports the size of a file/directory tree.",
+      "source": {
+        "key": "linuxdba1-26-df-du",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Disk space",
+        "locator": "Lab 26 — difference between df and du",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-004",
+      "type": "multiple_choice",
+      "text": "Which information can `df -hT \"$PGDATA\"` and `findmnt -T \"$PGDATA\"` help obtain? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Filesystem type",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Mount point / target",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Source block device or mount source",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Used/free space through df",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "PID of the current backend",
+          "correct": false
+        }
+      ],
+      "explanation": "`df -hT` shows usage and filesystem type, while `findmnt -T` identifies the filesystem actually serving the specified path.",
+      "source": {
+        "key": "linuxdba1-26-findmnt-df",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Disk space",
+        "locator": "Lab 26 — mapping PGDATA to a filesystem",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-005",
+      "type": "single_choice",
+      "text": "What does `lsblk -f` show?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Block devices together with filesystem, UUID, and mount-point information",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only PostgreSQL processes",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only inode usage",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only the size of the current directory",
+          "correct": false
+        }
+      ],
+      "explanation": "`lsblk -f` extends the block-device list with filesystem and mount-point information.",
+      "source": {
+        "key": "linuxdba1-26-lsblk",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Block devices",
+        "locator": "Lab 26 — `lsblk -f`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-006",
+      "type": "multiple_choice",
+      "text": "What does `df -i \"$PGDATA\"` check? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Number of inodes",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Used inodes",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Free inodes",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "SIGINT signal number",
+          "correct": false
+        }
+      ],
+      "explanation": "`df -i` switches the report from blocks/bytes to inode usage.",
+      "source": {
+        "key": "linuxdba1-26-inodes",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Disk space",
+        "locator": "Lab 26 — inode usage",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-007",
+      "type": "single_choice",
+      "text": "What is a mount point in the lab's model?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A directory to which a filesystem is attached",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Always a separate physical disk",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The PID of the mount process",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A PostgreSQL configuration file",
+          "correct": false
+        }
+      ],
+      "explanation": "A mount point is an ordinary directory that becomes the access point to the mounted filesystem.",
+      "source": {
+        "key": "linuxdba1-26-mount-point",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Mounting",
+        "locator": "Lab 26 — definition of a mount point",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-008",
+      "type": "multiple_choice",
+      "text": "Why can the `/pgdata` directory exist even when the separate disk is not mounted? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A mount point is itself an ordinary directory",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "If the mount did not happen, writes can go to the parent/root filesystem",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`ls -ld /pgdata` can still work",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The existence of the directory guarantees that the required disk is mounted",
+          "correct": false
+        }
+      ],
+      "explanation": "The material emphasizes the risk: the directory continues to exist even if the expected filesystem is not attached.",
+      "source": {
+        "key": "linuxdba1-26-missing-mount",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Mounting",
+        "locator": "Lab 26 — risk of writing to a mount point without the mount",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-009",
+      "type": "single_choice",
+      "text": "Which sequence of layers matches the lab with a separate disk?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "disk → partition → filesystem → mount point",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "filesystem → PID → partition → user",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "mount point → signal → disk → SQL",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "partition → process → journal → filesystem",
+          "correct": false
+        }
+      ],
+      "explanation": "The practice explicitly distinguishes `/dev/sdb` as the disk, `/dev/sdb1` as the partition, ext4 as the filesystem, and `/mnt/pg-lab` as the mount point.",
+      "source": {
+        "key": "linuxdba1-26-storage-chain",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Block devices",
+        "locator": "Lab 26 — disk/partition/filesystem/mount model",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-010",
+      "type": "multiple_choice",
+      "text": "Which interactive `fdisk` commands are used in the lab? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`m` — help",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`p` — print partition table",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`n` — new partition",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`w` — write changes and exit",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`q` — quit without saving",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "`x` — always format ext4",
+          "correct": false
+        }
+      ],
+      "explanation": "The lab specifically establishes `m`, `p`, `n`, `w`, and `q` as the basic command set for working with `fdisk`.",
+      "source": {
+        "key": "linuxdba1-26-fdisk-commands",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Partitioning",
+        "locator": "Lab 26 — creating a partition with fdisk",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-011",
+      "type": "single_choice",
+      "text": "What does `fdisk -l /dev/sdb` do in the lab?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Shows the device partition table without making changes",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Creates a new ext4 filesystem",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Mounts `/dev/sdb`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Deletes all partitions",
+          "correct": false
+        }
+      ],
+      "explanation": "`-l` is used as a safe inspection operation for viewing the partition table.",
+      "source": {
+        "key": "linuxdba1-26-fdisk-list",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Partitioning",
+        "locator": "Lab 26 — preliminary disk check",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-012",
+      "type": "multiple_choice",
+      "text": "Which statements about `mkfs.ext4 /dev/sdb1` are correct according to the lab? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The command creates a new ext4 filesystem",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The target must be a verified block device/partition",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The operation is destructive to an existing filesystem/data on the selected device",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It is safe to run it on `/dev/sda2` containing the root filesystem without checking",
+          "correct": false
+        }
+      ],
+      "explanation": "`mkfs.ext4` creates a filesystem, so the selected device must be checked especially carefully before the command is run.",
+      "source": {
+        "key": "linuxdba1-26-mkfs",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Filesystem",
+        "locator": "Lab 26 — creating ext4 and destructive-operation warning",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-013",
+      "type": "single_choice",
+      "text": "What does a loop device do in the lab's model?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Presents an ordinary file as a virtual block device",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Converts a PID into a filesystem",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Creates a PostgreSQL backend",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Replaces `findmnt`",
+          "correct": false
+        }
+      ],
+      "explanation": "A loop device lets an ordinary file be treated almost like a block device on which a filesystem can be created and mounted.",
+      "source": {
+        "key": "linuxdba1-26-loop-device",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Loop device",
+        "locator": "Lab 26 — loop device",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-014",
+      "type": "multiple_choice",
+      "text": "What do the options in `losetup -fP` mean according to the material? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`-f` — find the first free loop device",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`-P` — ask the kernel to scan the partition table",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The command associates a file with a loop device",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`-P` — show the PostgreSQL PID",
+          "correct": false
+        }
+      ],
+      "explanation": "`losetup` associates a file with a loop device; `-f` selects a free `/dev/loopX`, while `-P` triggers partition-table scanning.",
+      "source": {
+        "key": "linuxdba1-26-losetup",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Loop device",
+        "locator": "Lab 26 — `losetup -fP`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-015",
+      "type": "single_choice",
+      "text": "Which additional check must be included for `No space left on device` even when there may still be free space in gigabytes?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`df -i` to check inodes",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`kill -l`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`whoami`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`pg_backend_pid()`",
+          "correct": false
+        }
+      ],
+      "explanation": "A no-space error can be caused not only by exhausted blocks but also by exhausted inodes.",
+      "source": {
+        "key": "linuxdba1-26-no-space-inodes",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "No space left incident",
+        "locator": "Lab 26 — diagnosing `No space left on device`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-filesystems-mounts-016",
+      "type": "multiple_choice",
+      "text": "Which checks are part of the lab's minimum diagnostic flow for `No space left on device`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`df -hT \"$PGDATA\"`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`df -i \"$PGDATA\"`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`findmnt -T \"$PGDATA\"`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`lsblk -f`",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Run `du` on PGDATA to find space-consuming directories",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "Immediately delete WAL without diagnostics",
+          "correct": false
+        }
+      ],
+      "explanation": "First identify the filesystem/device, check space and inodes, verify the mount, and determine what consumes the space.",
+      "source": {
+        "key": "linuxdba1-26-no-space-flow",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "No space left incident",
+        "locator": "Lab 26 — final DBA flow",
+        "url": null
+      }
+    }
+  ]
+}

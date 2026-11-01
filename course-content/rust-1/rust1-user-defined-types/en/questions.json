@@ -1,0 +1,1374 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-user-defined-types",
+  "questions": [
+    {
+      "key": "rust1-user-defined-types-001",
+      "type": "single_choice",
+      "text": "What is a struct in Rust?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A user-defined type that groups several related values into one logical unit",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A loop with named branches",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A synonym for a homogeneous array",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only a constructor function",
+          "correct": false
+        }
+      ],
+      "explanation": "A structure is described as a user-defined type for naming and grouping related values.",
+      "source": {
+        "key": "rust1-user-defined-types-struct-definition",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Using Structs to Structure Related Data",
+        "locator": "Chapter 5 — Using Structs to Structure Related Data, pp. 112",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-002",
+      "type": "single_choice",
+      "text": "How does a regular structure differ from a tuple in the way its data parts are described?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Structure fields have names",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A structure cannot store different types",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A tuple always has named fields",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A structure is not a type",
+          "correct": false
+        }
+      ],
+      "explanation": "In a structure, each piece of data is named, so you do not have to rely only on value order.",
+      "source": {
+        "key": "rust1-user-defined-types-struct-vs-tuple",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining and Instantiating Structs",
+        "locator": "Chapter 5 — Defining and Instantiating Structs, pp. 113",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-004",
+      "type": "single_choice",
+      "text": "When creating a structure instance, must fields appear in the same order as in the definition?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "No; values are associated with field names",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Yes; otherwise the code never compiles",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only for `String` fields",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only in release builds",
+          "correct": false
+        }
+      ],
+      "explanation": "The material states that field order does not have to match the definition when creating an instance.",
+      "source": {
+        "key": "rust1-user-defined-types-field-order",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining and Instantiating Structs",
+        "locator": "Chapter 5 — Defining and Instantiating Structs, pp. 113",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-007",
+      "type": "single_choice",
+      "text": "When can field-init shorthand be used?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "When the variable/parameter name matches the field name",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only when the field has type `bool`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only for the first field",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only in a tuple struct",
+          "correct": false
+        }
+      ],
+      "explanation": "When the names match, `email` can be written instead of `email: email`.",
+      "source": {
+        "key": "rust1-user-defined-types-field-init-shorthand",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining and Instantiating Structs",
+        "locator": "Chapter 5 — Defining and Instantiating Structs, pp. 115",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-008",
+      "type": "single_choice",
+      "text": "What does `..user1` mean in an expression that creates a new structure?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Take the remaining fields from `user1`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Delete all fields from `user1`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Make all fields public",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Create an empty range",
+          "correct": false
+        }
+      ],
+      "explanation": "Struct update syntax `..user1` fills unspecified fields with values from `user1`.",
+      "source": {
+        "key": "rust1-user-defined-types-struct-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining and Instantiating Structs",
+        "locator": "Chapter 5 — Defining and Instantiating Structs, pp. 116–117",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-010",
+      "type": "single_choice",
+      "text": "Why can the original `user1` become unavailable after creating `user2` with `..user1`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The `username: String` field was moved into `user2`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Any `..` syntax always deletes the entire source object",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The `active: bool` field does not implement Copy",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Structures can never be used twice",
+          "correct": false
+        }
+      ],
+      "explanation": "Struct update uses ordinary assignment rules; the `String` field `username` is moved.",
+      "source": {
+        "key": "rust1-user-defined-types-struct-update-move",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining and Instantiating Structs",
+        "locator": "Chapter 5 — Defining and Instantiating Structs, pp. 117",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-011",
+      "type": "single_choice",
+      "text": "What is a tuple struct?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A structure with a type name but without names for individual fields",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "An ordinary tuple without its own type",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A structure with only one field",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A structure whose fields are automatically public",
+          "correct": false
+        }
+      ],
+      "explanation": "A tuple struct has a type name and field types, but the fields themselves are unnamed.",
+      "source": {
+        "key": "rust1-user-defined-types-tuple-struct",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining and Instantiating Structs",
+        "locator": "Chapter 5 — Defining and Instantiating Structs, pp. 117–118",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-012",
+      "type": "single_choice",
+      "text": "Why are `Color(0,0,0)` and `Point(0,0,0)` considered different types?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Each declared structure defines its own type",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Because the contained values are different",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Because `Color` always contains strings",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "They are actually the same type",
+          "correct": false
+        }
+      ],
+      "explanation": "Even with identical field types, different tuple-struct declarations define different types.",
+      "source": {
+        "key": "rust1-user-defined-types-tuple-struct-types",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining and Instantiating Structs",
+        "locator": "Chapter 5 — Defining and Instantiating Structs, pp. 117",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-013",
+      "type": "single_choice",
+      "text": "How is the unit-like struct `AlwaysEqual` declared?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "struct AlwaysEqual;",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "struct AlwaysEqual {}",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "enum AlwaysEqual;",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "type AlwaysEqual = ();",
+          "correct": false
+        }
+      ],
+      "explanation": "A structure with no fields is shown as `struct AlwaysEqual;`.",
+      "source": {
+        "key": "rust1-user-defined-types-unit-struct",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining and Instantiating Structs",
+        "locator": "Chapter 5 — Defining and Instantiating Structs, pp. 118",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-014",
+      "type": "single_choice",
+      "text": "Why can `User` fields use owned `String` values instead of `&str` references?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "So the structure owns its data and the data lives as long as the structure",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Because structures cannot contain references at all",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Because `&str` is always mutable",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Because `String` implements Copy",
+          "correct": false
+        }
+      ],
+      "explanation": "The authors want `User` to own its data; references in structures require lifetime annotations.",
+      "source": {
+        "key": "rust1-user-defined-types-struct-ownership",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining and Instantiating Structs",
+        "locator": "Chapter 5 — Defining and Instantiating Structs, pp. 118–120",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-015",
+      "type": "single_choice",
+      "text": "What happens if `username: &str` and `email: &str` fields are defined without lifetimes?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The compiler requires a lifetime specifier",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The code automatically converts them into String",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The fields automatically receive a `static` lifetime",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The structure stops being a user-defined type",
+          "correct": false
+        }
+      ],
+      "explanation": "The example produces a `missing lifetime specifier` error and postpones the fix until Chapter 10.",
+      "source": {
+        "key": "rust1-user-defined-types-struct-references",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining and Instantiating Structs",
+        "locator": "Chapter 5 — Defining and Instantiating Structs, pp. 119–120",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-016",
+      "type": "single_choice",
+      "text": "Why does the struct version of the `area` function accept `&Rectangle`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To borrow the rectangle and leave ownership in `main`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Because structures can only be passed by reference",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To modify width and height",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To create a copy of Rectangle",
+          "correct": false
+        }
+      ],
+      "explanation": "The function only needs to read the fields; borrowing lets `rect1` continue to be used.",
+      "source": {
+        "key": "rust1-user-defined-types-rectangle-borrow",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "An Example Program Using Structs",
+        "locator": "Chapter 5 — An Example Program Using Structs, pp. 123",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-018",
+      "type": "single_choice",
+      "text": "What must be added to `Rectangle` to use the `{:?}` format?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "#[derive(Debug)]",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "#[derive(Display)]",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pub struct",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "impl Clone is required",
+          "correct": false
+        }
+      ],
+      "explanation": "The material adds `#[derive(Debug)]`, after which debug formatting works.",
+      "source": {
+        "key": "rust1-user-defined-types-derive-debug",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "An Example Program Using Structs",
+        "locator": "Chapter 5 — An Example Program Using Structs, pp. 125",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-020",
+      "type": "single_choice",
+      "text": "Where are structure methods defined?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "In an `impl` block for the corresponding type",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only inside `main`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "In `[dependencies]`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "In the instance's `let` declaration",
+          "correct": false
+        }
+      ],
+      "explanation": "Methods are placed inside an `impl Type` block.",
+      "source": {
+        "key": "rust1-user-defined-types-impl",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Method Syntax",
+        "locator": "Chapter 5 — Method Syntax, pp. 128–129",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-021",
+      "type": "single_choice",
+      "text": "What does the first method parameter `self` represent?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The instance on which the method is called",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The module name",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A random value",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only the static type without an instance",
+          "correct": false
+        }
+      ],
+      "explanation": "Methods have `self` as their first parameter, representing an instance of the corresponding type.",
+      "source": {
+        "key": "rust1-user-defined-types-self",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Method Syntax",
+        "locator": "Chapter 5 — Method Syntax, pp. 128–129",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-022",
+      "type": "single_choice",
+      "text": "What is `&self` equivalent to in the explanation?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "self: &Self",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "self: Self",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "self: &mut Self always",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Self::self()",
+          "correct": false
+        }
+      ],
+      "explanation": "Inside an `impl`, `&self` is shorthand for `self: &Self`.",
+      "source": {
+        "key": "rust1-user-defined-types-self-shorthand",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Method Syntax",
+        "locator": "Chapter 5 — Method Syntax, pp. 129",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-024",
+      "type": "single_choice",
+      "text": "Compared with a structure, what does an `enum` express?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A value can be one of the listed variants",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "All variants exist simultaneously",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only a set of fields with no variants",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only a numeric constant",
+          "correct": false
+        }
+      ],
+      "explanation": "An enumeration defines a type as one of several possible variants.",
+      "source": {
+        "key": "rust1-user-defined-types-enum-definition",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining an Enum",
+        "locator": "Chapter 6 — Defining an Enum, pp. 136",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-025",
+      "type": "single_choice",
+      "text": "Why can't `Option<T>` be used directly as `T`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`Option<T>` and `T` are different types, so the absence of a value must be handled",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Because `Option<T>` is always `None`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Because `Some` stores only strings",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Because `T` is forbidden in Rust",
+          "correct": false
+        }
+      ],
+      "explanation": "The type distinction forces explicit handling of `Some`/`None` before working with the inner `T`.",
+      "source": {
+        "key": "rust1-user-defined-types-option-types",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining an Enum",
+        "locator": "Chapter 6 — Defining an Enum, pp. 141–144",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-026",
+      "type": "multiple_choice",
+      "text": "Which statements about field-init shorthand are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It works when the variable name matches the field name",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It lets you write `email` instead of `email: email`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It reduces repeated names",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It automatically fills any field regardless of its name",
+          "correct": false
+        }
+      ],
+      "explanation": "The shorthand is based specifically on a field and variable having the same name.",
+      "source": {
+        "key": "rust1-user-defined-types-field-shorthand-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining and Instantiating Structs",
+        "locator": "Chapter 5 — Defining and Instantiating Structs, pp. 115",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-027",
+      "type": "multiple_choice",
+      "text": "Which statements about struct update syntax are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Changed fields can be specified explicitly",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Unspecified fields can be taken from another instance with `..`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`..user1` is placed last",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It always clones every unspecified value",
+          "correct": false
+        }
+      ],
+      "explanation": "Struct update follows ordinary assignment rules: some fields may be copied and others moved.",
+      "source": {
+        "key": "rust1-user-defined-types-struct-update-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining and Instantiating Structs",
+        "locator": "Chapter 5 — Defining and Instantiating Structs, pp. 116–117",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-028",
+      "type": "multiple_choice",
+      "text": "During struct update, which fields can be copied from the source value without moving them? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A `bool` field, because its type implements `Copy`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A `u64` field, because its type implements `Copy`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A `String` field, because all struct fields are copied implicitly",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "None: struct update always moves the entire source instance as one unit",
+          "correct": false
+        }
+      ],
+      "explanation": "Fields of `Copy` types such as `bool` and `u64` are copied. Owning fields such as `String` may be moved.",
+      "source": {
+        "key": "rust1-user-defined-types-update-copy-fields",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining and Instantiating Structs",
+        "locator": "Chapter 5 — Defining and Instantiating Structs, pp. 117",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-030",
+      "type": "multiple_choice",
+      "text": "Which statements about unit-like structs are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They have no fields",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "They resemble the unit type `()`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "They can be useful for implementing a trait without storing data",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Their declaration always requires curly braces",
+          "correct": false
+        }
+      ],
+      "explanation": "A unit-like struct is declared with no fields and no braces, for example `struct AlwaysEqual;`.",
+      "source": {
+        "key": "rust1-user-defined-types-unit-struct-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining and Instantiating Structs",
+        "locator": "Chapter 5 — Defining and Instantiating Structs, pp. 118",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-031",
+      "type": "multiple_choice",
+      "text": "Which statements about ownership of data in the `User` structure are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Using `String` lets the structure own the text data",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Stored references require lifetime considerations",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Lifetimes must ensure the referenced data remains valid for the structure",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Any structure with `String` automatically implements Copy",
+          "correct": false
+        }
+      ],
+      "explanation": "The material uses owned `String` values and explains that references in structures are related to lifetimes.",
+      "source": {
+        "key": "rust1-user-defined-types-struct-data-ownership",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining and Instantiating Structs",
+        "locator": "Chapter 5 — Defining and Instantiating Structs, pp. 118–120",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-032",
+      "type": "multiple_choice",
+      "text": "Which improvements does the `Rectangle` structure provide over a tuple of dimensions? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Fields receive meaningful names `width` and `height`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The `area` signature explicitly refers to `Rectangle`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "You no longer need to remember that width is index 0 and height is index 1",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The structure changes width and height into `String` types",
+          "correct": false
+        }
+      ],
+      "explanation": "The refactoring emphasizes clarity and relationships between values through named fields.",
+      "source": {
+        "key": "rust1-user-defined-types-rectangle-meaning",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "An Example Program Using Structs",
+        "locator": "Chapter 5 — An Example Program Using Structs, pp. 122–123",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-034",
+      "type": "multiple_choice",
+      "text": "Which properties of `dbg!` are described? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It prints the file and line of the call",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It prints the resulting value of the expression",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It returns ownership of the expression's value",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It always prints only to stdout",
+          "correct": false
+        }
+      ],
+      "explanation": "`dbg!` writes to stderr, shows the call location and value, and returns the value.",
+      "source": {
+        "key": "rust1-user-defined-types-dbg-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "An Example Program Using Structs",
+        "locator": "Chapter 5 — An Example Program Using Structs, pp. 126–127",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-035",
+      "type": "multiple_choice",
+      "text": "Which forms of method receiver does Rust support? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`&self` — immutable borrow",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`&mut self` — mutable borrow",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`self` — take ownership of the instance",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`clone self` — required receiver form",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter explicitly lists three ways a method can relate to its instance.",
+      "source": {
+        "key": "rust1-user-defined-types-method-receivers",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Method Syntax",
+        "locator": "Chapter 5 — Method Syntax, pp. 129",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-036",
+      "type": "multiple_choice",
+      "text": "Which benefits of organizing code through methods are noted? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Behavior is placed next to the type",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A type's available functionality is grouped in `impl`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "You do not have to write the full `self` type in every signature",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Methods eliminate ownership rules",
+          "correct": false
+        }
+      ],
+      "explanation": "Methods improve organization but still follow ownership and borrowing rules.",
+      "source": {
+        "key": "rust1-user-defined-types-method-organization",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Method Syntax",
+        "locator": "Chapter 5 — Method Syntax, pp. 129",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-037",
+      "type": "multiple_choice",
+      "text": "What is true about a method and a field both named `width`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`rect1.width` refers to the field",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`rect1.width()` calls the method",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Parentheses distinguish the method from the field",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Rust forbids a method from having the same name as a field",
+          "correct": false
+        }
+      ],
+      "explanation": "The material shows that the same name is allowed and that parentheses distinguish the method call.",
+      "source": {
+        "key": "rust1-user-defined-types-getter",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Method Syntax",
+        "locator": "Chapter 5 — Method Syntax, pp. 129–130",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-038",
+      "type": "multiple_choice",
+      "text": "Which statements about automatic borrowing when calling methods are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Rust can automatically add `&`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Rust can automatically add `&mut`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Rust can automatically dereference with `*` to match the receiver",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A method call always requires writing `(&value).method()` manually",
+          "correct": false
+        }
+      ],
+      "explanation": "When calling methods, Rust automatically references/dereferences the receiver as needed to match the signature.",
+      "source": {
+        "key": "rust1-user-defined-types-auto-ref-deref",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Method Syntax",
+        "locator": "Chapter 5 — Method Syntax, pp. 130–131",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-039",
+      "type": "multiple_choice",
+      "text": "Which statements about associated functions are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "All functions inside an `impl` are associated with the type",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "An associated function without `self` is not a method",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Such functions are often used as constructors",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The name `new` is a special mandatory Rust keyword",
+          "correct": false
+        }
+      ],
+      "explanation": "`new` is common but not special; associated functions are called through the type's namespace.",
+      "source": {
+        "key": "rust1-user-defined-types-associated-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Method Syntax",
+        "locator": "Chapter 5 — Method Syntax, pp. 132–133",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-040",
+      "type": "multiple_choice",
+      "text": "Which statements about `impl` blocks are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "One type can have multiple `impl` blocks",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Methods can be distributed across multiple `impl` blocks",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "In the shown simple case, several `impl` blocks are equivalent to one block containing the methods",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Rust permits exactly one `impl` per structure",
+          "correct": false
+        }
+      ],
+      "explanation": "Listing 5-16 shows several valid `impl` blocks for `Rectangle`.",
+      "source": {
+        "key": "rust1-user-defined-types-multiple-impl",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Method Syntax",
+        "locator": "Chapter 5 — Method Syntax, pp. 133–134",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-043",
+      "type": "multiple_choice",
+      "text": "Which statements about `Option<T>` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It has `Some(T)` and `None` variants",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It is included in the prelude",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`Some` and `None` can be used without the `Option::` prefix",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`Option<T>` is the same type as `T`",
+          "correct": false
+        }
+      ],
+      "explanation": "`Option<T>` is a separate enum, and its variants are in the prelude.",
+      "source": {
+        "key": "rust1-user-defined-types-option-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining an Enum",
+        "locator": "Chapter 6 — Defining an Enum, pp. 141–143",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-044",
+      "type": "multiple_choice",
+      "text": "Which statements about the distinction between `Option<T>` and `T` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The compiler does not let you use `Option<T>` as an ordinary `T` without handling it",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The `None` case must be considered explicitly",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "This helps prevent incorrectly assuming that a value exists",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`None` automatically converts to a zero value of `T`",
+          "correct": false
+        }
+      ],
+      "explanation": "The type system forces absence to be handled before the inner `T` can be used.",
+      "source": {
+        "key": "rust1-user-defined-types-option-safety",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Defining an Enum",
+        "locator": "Chapter 6 — Defining an Enum, pp. 142–144",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-045",
+      "type": "multiple_choice",
+      "text": "Which properties of Rust `match` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It compares a value against patterns",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It executes the code for the first matching pattern",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The compiler checks that all possible cases are handled",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The expression after `match` must have type `bool`",
+          "correct": false
+        }
+      ],
+      "explanation": "Unlike `if`, the matched value can have any suitable type; `match` uses patterns and exhaustiveness checking.",
+      "source": {
+        "key": "rust1-user-defined-types-match-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The `match` Control Flow Construct",
+        "locator": "Chapter 6 — The `match` Control Flow Construct, pp. 145–146",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-046",
+      "type": "multiple_choice",
+      "text": "What capabilities does the `Coin::Quarter(state)` pattern provide? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Match a specific enum variant",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Bind the inner value to the variable `state`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Use `state` in the branch code",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Automatically change `Quarter` into `Penny`",
+          "correct": false
+        }
+      ],
+      "explanation": "The pattern both checks the variant and extracts its associated data.",
+      "source": {
+        "key": "rust1-user-defined-types-match-binding",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The `match` Control Flow Construct",
+        "locator": "Chapter 6 — The `match` Control Flow Construct, pp. 146–147",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-048",
+      "type": "multiple_choice",
+      "text": "Which statements about exhaustive `match` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "All possible variants must be covered",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Omitting `None` for an `Option` causes a compilation error",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A catch-all pattern can cover the remaining values",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "For `Option`, you can always leave only a `Some` branch without an error",
+          "correct": false
+        }
+      ],
+      "explanation": "Exhaustiveness checking forces all cases to be handled explicitly or through a suitable catch-all pattern.",
+      "source": {
+        "key": "rust1-user-defined-types-match-exhaustive",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The `match` Control Flow Construct",
+        "locator": "Chapter 6 — The `match` Control Flow Construct, pp. 149–151",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-049",
+      "type": "multiple_choice",
+      "text": "Which catch-all patterns can be used in `match`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A variable such as `other` that binds the remaining value",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`_`, which matches any value without binding it",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Both should appear after more specific branches so those branches remain reachable",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`_` matches only zero",
+          "correct": false
+        }
+      ],
+      "explanation": "`other` binds the value, while `_` ignores it; catch-all branches are normally placed last.",
+      "source": {
+        "key": "rust1-user-defined-types-wildcard",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "The `match` Control Flow Construct",
+        "locator": "Chapter 6 — The `match` Control Flow Construct, pp. 150–152",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-user-defined-types-050",
+      "type": "multiple_choice",
+      "text": "Which statements about `if let` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It is convenient for handling one pattern of interest",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It can ignore other variants without an explicit `_ => ()` branch",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It is shorter than the equivalent `match` in such cases",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It retains the same mandatory exhaustiveness checking as `match`",
+          "correct": false
+        }
+      ],
+      "explanation": "`if let` reduces boilerplate but gives up `match`'s exhaustiveness checking.",
+      "source": {
+        "key": "rust1-user-defined-types-if-let",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Concise Control Flow with `if let`",
+        "locator": "Chapter 6 — Concise Control Flow with `if let`, pp. 153–154",
+        "url": null
+      }
+    }
+  ]
+}

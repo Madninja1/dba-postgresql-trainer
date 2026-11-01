@@ -2,4 +2,13 @@
 <resources>
 
     <style name="Theme.DBATrainer" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.DBATrainer.Godot" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
 </resources>

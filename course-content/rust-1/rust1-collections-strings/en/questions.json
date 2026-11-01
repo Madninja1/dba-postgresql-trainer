@@ -1,0 +1,1374 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-collections-strings",
+  "questions": [
+    {
+      "key": "rust1-collections-strings-001",
+      "type": "single_choice",
+      "text": "What distinguishes Rust collections from many other data types?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They store multiple values and can change size at runtime",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "They always have a fixed size known at compile time",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "They store only values of different types",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "They exist only on the stack",
+          "correct": false
+        }
+      ],
+      "explanation": "Collections store sets of values, place data on the heap, and can have a size that is unknown at compile time and changes while the program runs.",
+      "source": {
+        "key": "rust1-collections-strings-overview",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Common Collections",
+        "locator": "Chapter 8 — Common Collections, pp. 186",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-002",
+      "type": "multiple_choice",
+      "text": "Which of the following are common Rust collections? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Vec<T>",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "String",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "HashMap<K, V>",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "BTreeSet<T> as a main chapter topic",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter introduction highlights vectors, strings, and hash maps as the three collections being studied.",
+      "source": {
+        "key": "rust1-collections-strings-overview",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Common Collections",
+        "locator": "Chapter 8 — Common Collections, pp. 186",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-003",
+      "type": "single_choice",
+      "text": "Which property is characteristic of `Vec<T>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Its elements are stored contiguously in memory and all have the same type T",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Every element must have a different type",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A vector cannot change length",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A vector stores only strings",
+          "correct": false
+        }
+      ],
+      "explanation": "`Vec<T>` stores a sequence of values of one type laid out next to one another in memory.",
+      "source": {
+        "key": "rust1-collections-strings-vec-create",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Storing Lists of Values with Vectors",
+        "locator": "Chapter 8 — Storing Lists of Values with Vectors, pp. 187–188",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-004",
+      "type": "multiple_choice",
+      "text": "Which ways can be used to create a `Vec<i32>`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`let v: Vec<i32> = Vec::new();`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`let v = vec![1, 2, 3];`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Create a mutable Vec and add elements with push",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Manually allocate memory with malloc",
+          "correct": false
+        }
+      ],
+      "explanation": "The book shows `Vec::new`, the `vec!` macro, and filling a mutable vector with `push`.",
+      "source": {
+        "key": "rust1-collections-strings-vec-create",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Storing Lists of Values with Vectors",
+        "locator": "Chapter 8 — Storing Lists of Values with Vectors, pp. 187–188",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-005",
+      "type": "single_choice",
+      "text": "Why is an explicit `Vec<i32>` annotation usually unnecessary in `let v = vec![1, 2, 3];`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Rust infers the element type from the initial values",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`vec!` always creates only `Vec<i32>`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The vector type is determined by the variable name",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Type annotations are forbidden with `vec!`",
+          "correct": false
+        }
+      ],
+      "explanation": "From the values 1, 2, and 3, the compiler infers the concrete element type and therefore the Vec type.",
+      "source": {
+        "key": "rust1-collections-strings-vec-create",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Storing Lists of Values with Vectors",
+        "locator": "Chapter 8 — Storing Lists of Values with Vectors, pp. 187–188",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-006",
+      "type": "multiple_choice",
+      "text": "What is required to add elements with `push`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The vector itself must be mutable",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The `push` method is used",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Added elements must match the vector's element type",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "After the first push, the vector length becomes fixed",
+          "correct": false
+        }
+      ],
+      "explanation": "To modify a vector, its variable is declared `mut`; `push` adds values of the same type T.",
+      "source": {
+        "key": "rust1-collections-strings-vec-create",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Storing Lists of Values with Vectors",
+        "locator": "Chapter 8 — Storing Lists of Values with Vectors, pp. 187–188",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-008",
+      "type": "multiple_choice",
+      "text": "Which differences between `&v[index]` and `v.get(index)` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Indexing returns a reference to the element",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "get returns Option<&T>",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Out-of-bounds indexing causes a panic",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "An out-of-bounds get necessarily causes a panic",
+          "correct": false
+        }
+      ],
+      "explanation": "The important difference appears for an invalid index: `[]` panics, while `get` returns `None`.",
+      "source": {
+        "key": "rust1-collections-strings-vec-access",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Reading Elements of Vectors",
+        "locator": "Chapter 8 — Reading Elements of Vectors, pp. 188–190",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-010",
+      "type": "multiple_choice",
+      "text": "What does the borrow checker ensure for references to vector contents? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It enforces ownership and borrowing rules",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It prevents a reference from being used after it could have become invalid",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It prevents simultaneous violations of mutable/immutable reference restrictions",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It guarantees that every index exists",
+          "correct": false
+        }
+      ],
+      "explanation": "Borrow checking is responsible for reference validity; whether an index exists depends on the access method and index value.",
+      "source": {
+        "key": "rust1-collections-strings-vec-access",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Reading Elements of Vectors",
+        "locator": "Chapter 8 — Reading Elements of Vectors, pp. 188–190",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-012",
+      "type": "multiple_choice",
+      "text": "Which statements about `Vec<T>` memory reallocation are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Vector values are stored contiguously",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "When space runs out, adding an element may require a new memory region",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Old elements may be copied/moved into the new region",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The address of the first element is guaranteed never to change",
+          "correct": false
+        }
+      ],
+      "explanation": "The possibility of reallocation explains why the vector cannot be structurally modified while a reference to one of its elements is in use.",
+      "source": {
+        "key": "rust1-collections-strings-vec-access",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Reading Elements of Vectors",
+        "locator": "Chapter 8 — Reading Elements of Vectors, pp. 188–190",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-013",
+      "type": "single_choice",
+      "text": "How do you obtain immutable references to every element of `v` in a loop?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`for i in &v { ... }`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`for i in &mut v { ... }`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`for i in v.get_all() { ... }`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`for i in *v { ... }`",
+          "correct": false
+        }
+      ],
+      "explanation": "The book uses `for i in &v` to iterate over immutable references to the elements.",
+      "source": {
+        "key": "rust1-collections-strings-vec-iter",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Iterating over Values in a Vector",
+        "locator": "Chapter 8 — Iterating over Values in a Vector, pp. 190–193",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-014",
+      "type": "multiple_choice",
+      "text": "Which statements are true for `for i in &mut v { *i += 50; }`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Iteration uses mutable references to the elements",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The value behind the reference is changed through dereferencing with `*i`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The vector itself must be mutable",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`i += 50` without accounting for the reference is equivalent to the shown code",
+          "correct": false
+        }
+      ],
+      "explanation": "`&mut v` yields mutable references, and `*i` accesses the referenced value before `+=`.",
+      "source": {
+        "key": "rust1-collections-strings-vec-iter",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Iterating over Values in a Vector",
+        "locator": "Chapter 8 — Iterating over Values in a Vector, pp. 190–193",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-015",
+      "type": "single_choice",
+      "text": "Why can't elements be freely added to or removed from a vector inside a loop that already borrows the vector?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The loop's borrow of the vector prevents simultaneous structural modification",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Rust `for` loops work only with arrays",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`push` is allowed only outside functions",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Vec elements cannot be modified at all",
+          "correct": false
+        }
+      ],
+      "explanation": "The reference to the vector used by the loop would conflict with an operation that could change the collection's internal allocation.",
+      "source": {
+        "key": "rust1-collections-strings-vec-iter",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Iterating over Values in a Vector",
+        "locator": "Chapter 8 — Iterating over Values in a Vector, pp. 190–193",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-016",
+      "type": "multiple_choice",
+      "text": "How can an enum allow data of different forms to be stored in one Vec? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Each enum variant can contain data of its own type",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "All variants still share the enum's overall type",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The Vec stores one type — that enum",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The Vec stops being typed",
+          "correct": false
+        }
+      ],
+      "explanation": "In the `SpreadsheetCell` example, different inner data is packaged into variants of one enum, so Vec still contains one type.",
+      "source": {
+        "key": "rust1-collections-strings-vec-iter",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Iterating over Values in a Vector",
+        "locator": "Chapter 8 — Iterating over Values in a Vector, pp. 190–193",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-017",
+      "type": "single_choice",
+      "text": "What happens to the elements when a vector goes out of scope?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The vector and its contents are dropped",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only the Vec wrapper is dropped and its elements always leak",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The elements become static",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Rust keeps them until the process exits",
+          "correct": false
+        }
+      ],
+      "explanation": "The material states that when a Vec is dropped, the values it contains are dropped as well.",
+      "source": {
+        "key": "rust1-collections-strings-vec-iter",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Iterating over Values in a Vector",
+        "locator": "Chapter 8 — Iterating over Values in a Vector, pp. 190–193",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-019",
+      "type": "single_choice",
+      "text": "Which string type is part of Rust’s language core?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`str`, usually used as `&str`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "String",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "CString",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Vec<char>",
+          "correct": false
+        }
+      ],
+      "explanation": "The book states that the string type in the language core is `str`, normally encountered in the borrowed form `&str`.",
+      "source": {
+        "key": "rust1-collections-strings-string-type",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Storing UTF-8 Encoded Text with Strings",
+        "locator": "Chapter 8 — Storing UTF-8 Encoded Text with Strings, pp. 194–196",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-020",
+      "type": "multiple_choice",
+      "text": "Which properties are characteristic of Rust `String`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It is an owned string type",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It is mutable and can grow",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It stores text as UTF-8",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It is built into the language core as the only string type",
+          "correct": false
+        }
+      ],
+      "explanation": "`String` is provided by the standard library and is described as a growable, mutable, owned UTF-8 string.",
+      "source": {
+        "key": "rust1-collections-strings-string-type",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Storing UTF-8 Encoded Text with Strings",
+        "locator": "Chapter 8 — Storing UTF-8 Encoded Text with Strings, pp. 194–196",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-022",
+      "type": "multiple_choice",
+      "text": "Which ways can create a `String` from a string literal? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`\"initial contents\".to_string()`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`String::from(\"initial contents\")`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`data.to_string()` for an `&str` variable",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Index the literal and assign the result to String without conversion",
+          "correct": false
+        }
+      ],
+      "explanation": "The book shows `to_string` and `String::from` as equivalent ways to obtain a String from string data.",
+      "source": {
+        "key": "rust1-collections-strings-string-type",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Storing UTF-8 Encoded Text with Strings",
+        "locator": "Chapter 8 — Storing UTF-8 Encoded Text with Strings, pp. 194–196",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-023",
+      "type": "single_choice",
+      "text": "Why does `push_str` accept a string slice instead of requiring an owned String?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "So appending content does not require taking ownership of the supplied string",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Because String cannot be passed to functions",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Because push_str appends only one char",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Because &str is always mutable",
+          "correct": false
+        }
+      ],
+      "explanation": "In the example, `s2` remains available after `s1.push_str(s2)` because the method accepts a string slice and does not take its ownership.",
+      "source": {
+        "key": "rust1-collections-strings-string-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Updating a String",
+        "locator": "Chapter 8 — Updating a String, pp. 196–198",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-024",
+      "type": "multiple_choice",
+      "text": "Which String mutation methods differ by the kind of value they accept? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "push_str appends a string slice",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "push appends one char",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Both can increase the String",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "push removes the last character",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter contrasts `push_str` for a string slice with `push` for one `char`.",
+      "source": {
+        "key": "rust1-collections-strings-string-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Updating a String",
+        "locator": "Chapter 8 — Updating a String, pp. 196–198",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-026",
+      "type": "multiple_choice",
+      "text": "Which statements about `s1 + &s2` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "s1 is moved",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "s2 is not moved because a reference is used",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The compiler can coerce &String to &str",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The `+` operator requires ownership of both Strings",
+          "correct": false
+        }
+      ],
+      "explanation": "The material explains deref coercion from `&String` to `&str` for the second argument and passing the first argument by value.",
+      "source": {
+        "key": "rust1-collections-strings-string-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Updating a String",
+        "locator": "Chapter 8 — Updating a String, pp. 196–198",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-027",
+      "type": "single_choice",
+      "text": "Which approach is generally more readable for combining several strings?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The `format!` macro",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A deeply nested chain of indexing operations",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only push for each byte",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Manual conversion to Vec<u8>",
+          "correct": false
+        }
+      ],
+      "explanation": "For more complex string composition, the book shows `format!` as a more readable alternative to a long `+` chain.",
+      "source": {
+        "key": "rust1-collections-strings-string-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Updating a String",
+        "locator": "Chapter 8 — Updating a String, pp. 196–198",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-029",
+      "type": "single_choice",
+      "text": "What happens when trying `let h = s1[0];` on a `String`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The code does not compile because String does not support integer indexing this way",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It returns the first Unicode character",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It returns the first byte as u8",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It always returns a char",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter explicitly demonstrates that indexing a String with an integer is an error.",
+      "source": {
+        "key": "rust1-collections-strings-string-index",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Indexing into Strings",
+        "locator": "Chapter 8 — Indexing into Strings, pp. 199–203",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-030",
+      "type": "multiple_choice",
+      "text": "Which UTF-8-related reasons make String indexing difficult? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Different Unicode scalar values can occupy different numbers of bytes",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The notion of a 'character' can mean a byte, Unicode scalar value, or grapheme cluster",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Getting the Nth character does not necessarily correspond to direct O(1) byte access",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every letter in every language is encoded by one byte",
+          "correct": false
+        }
+      ],
+      "explanation": "The material explains the lack of `s[0]` through variable-length UTF-8, different levels of text interpretation, and the expectation of constant-time indexing.",
+      "source": {
+        "key": "rust1-collections-strings-string-index",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Indexing into Strings",
+        "locator": "Chapter 8 — Indexing into Strings, pp. 199–203",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-034",
+      "type": "multiple_choice",
+      "text": "What can happen when creating a string slice from a range? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A valid range must fall on UTF-8 character boundaries",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A range such as 0..1 inside a multibyte character can cause a runtime panic",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "String slicing requires care",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Any two byte indices always form a valid &str",
+          "correct": false
+        }
+      ],
+      "explanation": "The material demonstrates a runtime panic when a range boundary cuts through a UTF-8 character encoding.",
+      "source": {
+        "key": "rust1-collections-strings-string-index",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Indexing into Strings",
+        "locator": "Chapter 8 — Indexing into Strings, pp. 199–203",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-035",
+      "type": "single_choice",
+      "text": "Which standard `str` method is used to iterate over Unicode scalar values?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`chars()`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`bytes()`, because each byte corresponds to one Unicode scalar value",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`as_bytes()`, because it decodes UTF-8 into `char` values",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`graphemes()`, which is available in the standard library with no extra crate",
+          "correct": false
+        }
+      ],
+      "explanation": "`chars()` decodes UTF-8 and iterates over Unicode scalar values. Grapheme clusters require separate logic or an external library.",
+      "source": {
+        "key": "rust1-collections-strings-string-index",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Indexing into Strings",
+        "locator": "Chapter 8 — Indexing into Strings, pp. 199–203",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-036",
+      "type": "multiple_choice",
+      "text": "Which statements about `chars()` and `bytes()` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "chars() iterates Unicode scalar values of type char",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "bytes() iterates bytes",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "One char can be represented by several UTF-8 bytes",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "bytes() always yields the same number of elements as chars()",
+          "correct": false
+        }
+      ],
+      "explanation": "The difference is demonstrated with a Cyrillic string: two chars are represented by four bytes.",
+      "source": {
+        "key": "rust1-collections-strings-string-index",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Indexing into Strings",
+        "locator": "Chapter 8 — Indexing into Strings, pp. 199–203",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-038",
+      "type": "multiple_choice",
+      "text": "At which levels can a Unicode string representation be viewed? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Bytes",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Unicode scalar values",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Grapheme clusters",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Only ASCII codes",
+          "correct": false
+        }
+      ],
+      "explanation": "The material shows that one string can be viewed as a byte sequence, char values, or user-perceived letters — grapheme clusters.",
+      "source": {
+        "key": "rust1-collections-strings-string-index",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Indexing into Strings",
+        "locator": "Chapter 8 — Indexing into Strings, pp. 199–203",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-039",
+      "type": "single_choice",
+      "text": "Why does `HashMap` require `use std::collections::HashMap;`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "HashMap is not in the prelude, so its name must be explicitly brought into scope",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "HashMap is in an external crate unrelated to std",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "HashMap is available only after `cargo add hashmap`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Without use, HashMap does not exist in the standard library",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter notes that HashMap is used less often and is not brought in by the prelude, so it is imported from `std::collections`.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-basic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Storing Keys with Associated Values in Hash Maps",
+        "locator": "Chapter 8 — Storing Keys with Associated Values in Hash Maps, pp. 203–205",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-040",
+      "type": "multiple_choice",
+      "text": "Which properties of a concrete `HashMap<K, V>` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "All keys have one type K",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "All values have one type V",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The data is stored on the heap",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Each pair can have arbitrary unrelated key and value types",
+          "correct": false
+        }
+      ],
+      "explanation": "A HashMap is homogeneous in its key and value types and, like Vec, stores its data on the heap.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-basic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Storing Keys with Associated Values in Hash Maps",
+        "locator": "Chapter 8 — Storing Keys with Associated Values in Hash Maps, pp. 203–205",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-042",
+      "type": "multiple_choice",
+      "text": "Which steps are used by `scores.get(&team_name).copied().unwrap_or(0)`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "get returns Option<&i32>",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "copied converts it to Option<i32>",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "unwrap_or(0) gives 0 when the key is absent",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "unwrap_or removes the key from the HashMap",
+          "correct": false
+        }
+      ],
+      "explanation": "The chain first obtains a reference, then copies the i32 out of the Option, then supplies a default value for None.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-basic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Storing Keys with Associated Values in Hash Maps",
+        "locator": "Chapter 8 — Storing Keys with Associated Values in Hash Maps, pp. 203–205",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-043",
+      "type": "single_choice",
+      "text": "Does `HashMap` guarantee a defined order of key-value pairs during iteration?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Arbitrary; the book does not promise insertion order",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Always insertion order",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Always sorted by key",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Always reverse insertion order",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter explicitly says that HashMap pairs print in an arbitrary order during iteration.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-basic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Storing Keys with Associated Values in Hash Maps",
+        "locator": "Chapter 8 — Storing Keys with Associated Values in Hash Maps, pp. 203–205",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-044",
+      "type": "multiple_choice",
+      "text": "What happens when values with different ownership behavior are inserted into a HashMap? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Copy values such as i32 are copied",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Owned values such as String are moved into the HashMap",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "After the move, the original String variables can no longer be used as owners of those values",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "insert always clones String automatically",
+          "correct": false
+        }
+      ],
+      "explanation": "The HashMap becomes the owner of inserted String values, while Copy types are copied.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-ownership",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Hash Maps and Ownership",
+        "locator": "Chapter 8 — Hash Maps and Ownership, pp. 205–206",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-045",
+      "type": "single_choice",
+      "text": "What changes if references are inserted into a HashMap instead of owned Strings?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The values themselves do not move into the HashMap, but they must remain valid long enough",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The HashMap automatically extends the source values to a static lifetime",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The references turn into String",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Lifetime rules stop applying",
+          "correct": false
+        }
+      ],
+      "explanation": "When references are stored, the original data keeps its owners and the references must remain valid for the HashMap's use.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-ownership",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Hash Maps and Ownership",
+        "locator": "Chapter 8 — Hash Maps and Ownership, pp. 205–206",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-046",
+      "type": "multiple_choice",
+      "text": "Which strategies can be used to update an existing `HashMap` key? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Replace the old value with a new one",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Keep the old value and ignore the new one",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Update a value based on the old value",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Store an unlimited number of values under the same key without changing the type",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter discusses overwriting, inserting only when absent, and computing a new value from the previous value.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Updating a Hash Map",
+        "locator": "Chapter 8 — Updating a Hash Map, pp. 206–208",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-047",
+      "type": "single_choice",
+      "text": "What remains after inserting the key `\"Blue\"` twice with values 10 and 25?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The value 25 remains under Blue",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Both Blue:10 and Blue:25 remain",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "insert ignores the second value",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "HashMap panics because the key is repeated",
+          "correct": false
+        }
+      ],
+      "explanation": "Inserting the same key again replaces the old associated value.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Updating a Hash Map",
+        "locator": "Chapter 8 — Updating a Hash Map, pp. 206–208",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-048",
+      "type": "multiple_choice",
+      "text": "What does the `entry(...).or_insert(50)` API do? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Checks whether a value exists for the key",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "If the key is absent, inserts the supplied value",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Returns a mutable reference to the existing or inserted value",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "If the key exists, always replaces it with 50",
+          "correct": false
+        }
+      ],
+      "explanation": "`or_insert` preserves an existing value and inserts the default only when the key is absent; the result is `&mut V`.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Updating a Hash Map",
+        "locator": "Chapter 8 — Updating a Hash Map, pp. 206–208",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-049",
+      "type": "single_choice",
+      "text": "Why is `*count += 1` used when counting words with a `HashMap`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`count` is a mutable reference to the value, so it must be dereferenced to change the number",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`count` is a HashMap index",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The `*` operator creates a new key",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Without `*`, the entire HashMap is changed",
+          "correct": false
+        }
+      ],
+      "explanation": "`or_insert` returns `&mut V`; `*count` accesses the counter itself through that reference.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Updating a Hash Map",
+        "locator": "Chapter 8 — Updating a Hash Map, pp. 206–208",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-collections-strings-050",
+      "type": "multiple_choice",
+      "text": "Which statements about counting words with a `HashMap` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "split_whitespace yields word items for iteration",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "entry(word).or_insert(0) creates an initial 0 for the first occurrence",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The counter is incremented through a mutable reference",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The output order is guaranteed to match the order of words in the source text",
+          "correct": false
+        }
+      ],
+      "explanation": "The example creates or finds a counter for each word and increments it, while HashMap iteration order remains arbitrary.",
+      "source": {
+        "key": "rust1-collections-strings-hashmap-update",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Updating a Hash Map",
+        "locator": "Chapter 8 — Updating a Hash Map, pp. 206–208",
+        "url": null
+      }
+    }
+  ]
+}

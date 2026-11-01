@@ -1,0 +1,1132 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-closures-iterators",
+  "questions": [
+    {
+      "key": "rust1-closures-iterators-001",
+      "type": "single_choice",
+      "text": "How do you write a simple closure that increments its argument `x` by 1?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`|x| x + 1`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`fn(x) => x + 1`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`{x} -> x + 1`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`closure x { x + 1 }`",
+          "correct": false
+        }
+      ],
+      "explanation": "Closure parameters are written between vertical bars, followed by the body: `|x| x + 1`.",
+      "source": {
+        "key": "rust1-closures-iterators-closure-syntax",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 352–356",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-002",
+      "type": "single_choice",
+      "text": "What happens if `let identity = |x| x;` is first called with a `String` and then with an `i32`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The second call does not fit: the closure parameter and return types were already inferred from the first use",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The closure automatically becomes generic and accepts both types",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Both calls always return a `String`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The compiler chooses the type only at runtime",
+          "correct": false
+        }
+      ],
+      "explanation": "Closure types may be inferred, but after inference they are fixed for that closure. A closure is not automatically a generic function.",
+      "source": {
+        "key": "rust1-closures-iterators-closure-types",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 354–356",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-003",
+      "type": "multiple_choice",
+      "text": "How can a closure capture values from its environment? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "By immutable reference",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "By mutable reference",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "By taking ownership",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Only through global variables",
+          "correct": false
+        }
+      ],
+      "explanation": "The book relates environment capture to familiar access forms: `&T`, `&mut T`, and ownership transfer of `T`.",
+      "source": {
+        "key": "rust1-closures-iterators-capture",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 356–361",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-005",
+      "type": "multiple_choice",
+      "text": "Which statements about the `move` keyword before a closure are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It forces the closure to take ownership of captured values",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It is especially useful when sending a closure to another thread",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The presence of `move` alone does not mean the body will move a value out of the closure when called",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It disables ownership rules inside the closure",
+          "correct": false
+        }
+      ],
+      "explanation": "`move` determines capture mode by transferring values into the closure. The implemented `Fn` traits still depend on what the body does with them.",
+      "source": {
+        "key": "rust1-closures-iterators-move",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 358–361",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-006",
+      "type": "single_choice",
+      "text": "Which trait does every closure implement at minimum?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`FnOnce`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`Iterator`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`Drop`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`Deref`",
+          "correct": false
+        }
+      ],
+      "explanation": "Every closure implements `FnOnce` because every closure can be viewed as callable at least once.",
+      "source": {
+        "key": "rust1-closures-iterators-fn-traits",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 360–364",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-008",
+      "type": "multiple_choice",
+      "text": "Which statements about `Fn`, `FnMut`, and `FnOnce` are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`FnOnce` allows closures that may move a captured value out of themselves",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`FnMut` allows mutation of captured state",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`Fn` fits closures that neither mutate nor move captured state",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`Fn` means the closure must be called exactly once",
+          "correct": false
+        }
+      ],
+      "explanation": "The three traits describe repeatability and how the closure treats captured state. `Fn` is the most restrictive about mutation, not a one-call requirement.",
+      "source": {
+        "key": "rust1-closures-iterators-fn-traits-q008",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 360–364",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-010",
+      "type": "single_choice",
+      "text": "What happens immediately after `let iter = v.iter();` if the iterator is never used further?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "No elements are processed yet: iterators are lazy",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The vector is immediately dropped",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "All elements are automatically cloned",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`iter()` immediately calls `collect()`",
+          "correct": false
+        }
+      ],
+      "explanation": "Creating an iterator alone does not process elements; work happens when the iterator is consumed.",
+      "source": {
+        "key": "rust1-closures-iterators-iterator-lazy",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 365–371",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-011",
+      "type": "multiple_choice",
+      "text": "Which statements about `Iterator::next` are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It returns `Some(item)` while elements remain",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It returns `None` when the elements are exhausted",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Calling it changes iterator state, so it takes `&mut self`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It always returns `&T` regardless of iterator type",
+          "correct": false
+        }
+      ],
+      "explanation": "The core method is `next(&mut self) -> Option<Self::Item>`; the concrete item type depends on the iterator.",
+      "source": {
+        "key": "rust1-closures-iterators-iterator-next",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 365–369",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-012",
+      "type": "multiple_choice",
+      "text": "How do `iter()`, `iter_mut()`, and `into_iter()` differ? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`iter()` iterates over borrowed `&T` values",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`iter_mut()` yields mutable `&mut T` values",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`into_iter()` gives the collection to the iterator and yields owned elements",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "All three always leave the original collection fully usable without restrictions",
+          "correct": false
+        }
+      ],
+      "explanation": "The iterator-construction method determines the ownership relationship: shared borrow, mutable borrow, or ownership transfer.",
+      "source": {
+        "key": "rust1-closures-iterators-iterator-ownership",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 366–369",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-013",
+      "type": "single_choice",
+      "text": "What does `sum()` do when called on an iterator?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It consumes the iterator and computes the final sum",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It returns a new lazy iterator without computing",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It changes every source element to the sum",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It always returns `Option`",
+          "correct": false
+        }
+      ],
+      "explanation": "`sum` is a consuming operation that walks the sequence and produces a final result.",
+      "source": {
+        "key": "rust1-closures-iterators-consumers",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 368–370",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-014",
+      "type": "single_choice",
+      "text": "Why does `v.iter().map(|x| x + 1);` by itself not transform all elements?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`map` creates a new lazy iterator that must be consumed",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`map` works only with `String`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The closure must be `FnOnce`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`iter()` is always empty",
+          "correct": false
+        }
+      ],
+      "explanation": "`map` is an iterator adapter: it describes a transformation, and evaluation happens when the new iterator is consumed.",
+      "source": {
+        "key": "rust1-closures-iterators-map",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 370–371",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-016",
+      "type": "multiple_choice",
+      "text": "Which statements about `filter` are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It accepts a closure returning `bool`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It keeps elements for which the closure returns `true`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It can use variables captured from the environment",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It always consumes the original collection regardless of how the iterator was created",
+          "correct": false
+        }
+      ],
+      "explanation": "`filter` creates a new iterator and uses a predicate closure. Ownership depends on whether the chain starts with `iter`, `iter_mut`, or `into_iter`.",
+      "source": {
+        "key": "rust1-closures-iterators-filter",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 372–373",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-018",
+      "type": "multiple_choice",
+      "text": "Which statements correctly classify the listed iterator operations? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`map` creates a new iterator",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`filter` creates a new iterator",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`collect` consumes an iterator",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`sum` consumes an iterator",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`map` immediately consumes the entire iterator and returns a ready `Vec`",
+          "correct": false
+        }
+      ],
+      "explanation": "`map` and `filter` are lazy adapters, while `collect` and `sum` consume the iterator to produce a result.",
+      "source": {
+        "key": "rust1-closures-iterators-adapters-consumers",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 369–373",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-020",
+      "type": "multiple_choice",
+      "text": "Which statements about the performance of Rust iterators are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Iterator style can compile to efficient low-level code",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Iterators are presented as an example of zero-cost abstractions",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A high-level iterator chain does not imply mandatory extra runtime overhead for the abstraction",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every `map` is always exactly twice as slow as a manual loop",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter relates iterator style to zero-cost abstractions: high-level expression does not require mandatory extra runtime cost.",
+      "source": {
+        "key": "rust1-closures-iterators-performance",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 378–382",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-021",
+      "type": "single_choice",
+      "text": "Why can `unwrap_or_else(|| expensive_fallback())` be preferable to `unwrap_or(expensive_fallback())` for an `Option<T>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The fallback closure is evaluated only when the `Option` is `None`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`unwrap_or_else` always evaluates the fallback before inspecting the `Option`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`unwrap_or_else` converts `Option<T>` into `Result<T, E>`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`unwrap_or_else` makes the fallback asynchronous",
+          "correct": false
+        }
+      ],
+      "explanation": "`unwrap_or_else` accepts a closure and invokes it lazily only for `None`; the argument to `unwrap_or` is evaluated eagerly.",
+      "source": {
+        "key": "rust1-closures-iterators-lazy-closure",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 352–354",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-022",
+      "type": "multiple_choice",
+      "text": "How can Rust closure syntax differ from ordinary function syntax? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Parameters are written between `| |`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Parameter and result types can often be omitted",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Braces can be omitted for a one-expression body",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A closure must have a name after `fn`",
+          "correct": false
+        }
+      ],
+      "explanation": "The book demonstrates concise closure syntax and compiler type inference.",
+      "source": {
+        "key": "rust1-closures-iterators-closure-syntax-q022",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 354–356",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-023",
+      "type": "single_choice",
+      "text": "What happens if a closure immutably borrows `list` and, after the closure's last use, the code prints `list` again?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "This is allowed: the closure's borrow is no longer used",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It is forbidden until the end of the function",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`list` is automatically moved into the closure",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`move` must be added",
+          "correct": false
+        }
+      ],
+      "explanation": "The example shows that a borrow created by capture can end after the closure's last use.",
+      "source": {
+        "key": "rust1-closures-iterators-capture-scope",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 356–358",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-024",
+      "type": "multiple_choice",
+      "text": "Which statements are true when a closure captures `list` through a mutable reference? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The closure can modify `list`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Other access to `list` is restricted by borrowing rules while the borrow is active",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The borrow can end after the closure's last use",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`move` is required for every mutating closure",
+          "correct": false
+        }
+      ],
+      "explanation": "Environment capture follows ordinary `&mut` rules; `move` controls ownership rather than whether mutation occurs.",
+      "source": {
+        "key": "rust1-closures-iterators-mutable-capture",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 357–359",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-025",
+      "type": "single_choice",
+      "text": "Why might the compiler require `move` for a closure passed to a new thread?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The thread may outlive the current function, so a reference to a local value could become invalid",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`move` makes the thread synchronous",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Closures cannot be called without `move`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`move` automatically clones all values",
+          "correct": false
+        }
+      ],
+      "explanation": "`move` transfers the environment into the closure, which is useful when the closure may execute after the current scope ends.",
+      "source": {
+        "key": "rust1-closures-iterators-move-thread",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 358–360",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-026",
+      "type": "multiple_choice",
+      "text": "How does the closure body affect which `Fn` traits it implements? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Moving a captured value out limits the closure to `FnOnce`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Mutating a captured value requires at least `FnMut`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Only reading the environment is compatible with `Fn`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The `move` keyword by itself always means only `FnOnce`, regardless of the body",
+          "correct": false
+        }
+      ],
+      "explanation": "The implemented traits are determined by what the body does with captured values; `move` only changes capture mode.",
+      "source": {
+        "key": "rust1-closures-iterators-fn-traits-q026",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 360–364",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-029",
+      "type": "single_choice",
+      "text": "Why is an iterator variable declared `mut` when calling `next()` explicitly?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`next()` changes iterator state by advancing it",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Because the elements themselves must be mutable",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To make the vector mutable",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only because of `assert_eq!`",
+          "correct": false
+        }
+      ],
+      "explanation": "`Iterator::next` takes `&mut self` because it tracks and advances its position.",
+      "source": {
+        "key": "rust1-closures-iterators-next-mut",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 365–368",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-030",
+      "type": "multiple_choice",
+      "text": "What do successive `next()` calls return for `vec![1,2,3].iter()`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "First `Some(&1)`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Then `Some(&2)` and `Some(&3)`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "After exhaustion, `None`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "After `None`, the iterator automatically starts over",
+          "correct": false
+        }
+      ],
+      "explanation": "The example yields successive `Some` values and then `None` after exhaustion.",
+      "source": {
+        "key": "rust1-closures-iterators-next-sequence",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 366–368",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-031",
+      "type": "single_choice",
+      "text": "What happens to an iterator after calling the consuming method `sum()`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The method takes ownership of the iterator, so it cannot be used again",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It automatically rewinds to the beginning",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`sum` only immutably borrows the iterator",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The iterator becomes a `Vec`",
+          "correct": false
+        }
+      ],
+      "explanation": "Consuming methods take `self` and produce a final value.",
+      "source": {
+        "key": "rust1-closures-iterators-consumer-ownership",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 368–370",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-032",
+      "type": "multiple_choice",
+      "text": "Which statements about lazy iterator adapters are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`map` by itself does not process all elements",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "An adapter chain must eventually be consumed",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`collect` can trigger computation of the chain",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Lazy adapters never execute even when consumed",
+          "correct": false
+        }
+      ],
+      "explanation": "`map` creates a lazy iterator; the work happens once the chain is consumed.",
+      "source": {
+        "key": "rust1-closures-iterators-lazy-adapters",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 370–371",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-034",
+      "type": "multiple_choice",
+      "text": "For `Iterator::filter`, if the iterator's item type is `T`, what does the predicate closure receive?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A reference `&T` to each item being considered",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Ownership of the entire source `Vec<T>` on every call",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Only the item index without the value",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A `Result<T, E>` regardless of the iterator type",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "A mutable reference `&mut T` in every case",
+          "correct": false
+        }
+      ],
+      "explanation": "`filter` passes the predicate a reference to the item (`&Self::Item`) so checking the predicate does not itself consume the item; matching items remain the items produced by the iterator pipeline.",
+      "source": {
+        "key": "rust1-closures-iterators-shoes",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 372–373",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-038",
+      "type": "multiple_choice",
+      "text": "How is a missing next argument represented in the iterator-based version? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`next()` returns `Option<String>`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`None` means there is no argument",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A `match` can return a clear `Err`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Indexing `args[1]` remains mandatory",
+          "correct": false
+        }
+      ],
+      "explanation": "The iterator version handles the `Option` returned by `next()` instead of indexing.",
+      "source": {
+        "key": "rust1-closures-iterators-config-iterator-q038",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 375–377",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-040",
+      "type": "multiple_choice",
+      "text": "Which advantages can an iterator-based implementation of `search` provide? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The code focuses on the high-level filtering goal",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "There is no need to manually create and fill a result vector",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Loop boilerplate is hidden behind adapters",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Iterators are guaranteed to be faster in every task",
+          "correct": false
+        }
+      ],
+      "explanation": "The book emphasizes readability and high-level intent, not unconditional speed superiority.",
+      "source": {
+        "key": "rust1-closures-iterators-iterator-style",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 378–379",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-042",
+      "type": "multiple_choice",
+      "text": "What does zero-cost abstraction mean for iterators? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The abstraction should not impose mandatory runtime overhead",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The compiler can produce code comparable to a manual low-level implementation",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "You do not pay at runtime for an unused capability",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The machine code must always be shorter",
+          "correct": false
+        }
+      ],
+      "explanation": "Iterators are presented as an abstraction without mandatory additional execution cost.",
+      "source": {
+        "key": "rust1-closures-iterators-zero-cost",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 379–381",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-047",
+      "type": "single_choice",
+      "text": "What is the `Item` type of `v.iter()` for `Vec<i32>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A reference to an element, such as `&i32`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Always an owned `i32`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The `Vec<i32>` itself",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`Option<Vec<i32>>`",
+          "correct": false
+        }
+      ],
+      "explanation": "`iter()` iterates over immutable references.",
+      "source": {
+        "key": "rust1-closures-iterators-iter-item",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 365–369",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-048",
+      "type": "multiple_choice",
+      "text": "Which iterator-construction method matches each ownership requirement? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Read only — `iter()`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Mutate through references — `iter_mut()`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Take ownership of elements — `into_iter()`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`Item` must be identical in all cases",
+          "correct": false
+        }
+      ],
+      "explanation": "The material maps the three methods to different forms of access to elements.",
+      "source": {
+        "key": "rust1-closures-iterators-iterator-ownership-q048",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 368–369",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-closures-iterators-050",
+      "type": "multiple_choice",
+      "text": "Which properties of Rust closures and iterators are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They are inspired by functional languages",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "They express high-level ideas",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "They can preserve low-level performance",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "They require a runtime interpreter",
+          "correct": false
+        }
+      ],
+      "explanation": "The summary connects closures and iterators with expressiveness and the zero-cost approach.",
+      "source": {
+        "key": "rust1-closures-iterators-summary",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Closures and Iterators",
+        "locator": "Chapter 13 — Closures and Iterators, pp. 381–383",
+        "url": null
+      }
+    }
+  ]
+}

@@ -272,12 +272,14 @@ impl UiStrings {
 
     pub fn progress_rank(&self, rank: ProgressRank) -> &'static str {
         match rank {
-            ProgressRank::Init => "Init",
+            ProgressRank::Init => "DBA Recruit",
             ProgressRank::PsqlTrainee => "PSQL Trainee",
             ProgressRank::QueryAdept => "Query Adept",
             ProgressRank::SchemaKeeper => "Schema Keeper",
+            ProgressRank::CatalogAnalyst => "Catalog Analyst",
             ProgressRank::PlanReader => "Plan Reader",
             ProgressRank::WalOperator => "WAL Operator",
+            ProgressRank::ReplicationEngineer => "Replication Engineer",
             ProgressRank::PostgresGuardian => "Postgres Guardian",
             ProgressRank::MadNinjaDba => "MadNinja DBA",
         }
@@ -287,46 +289,64 @@ impl UiStrings {
         let english = self.main_menu == "Main menu";
         match (english, rank) {
             (true, ProgressRank::Init) => {
-                "The journey starts here. Build the first reliable habits."
+                "Your DBA training starts here: learn the tools and build reliable habits."
             }
-            (true, ProgressRank::PsqlTrainee) => "Basic SQL and quiz practice is becoming routine.",
+            (true, ProgressRank::PsqlTrainee) => {
+                "The PostgreSQL terminal and basic SQL workflow are becoming familiar."
+            }
             (true, ProgressRank::QueryAdept) => {
-                "Queries are no longer random commands; you can reason about results."
+                "You can reason about queries instead of treating SQL as a set of commands."
             }
             (true, ProgressRank::SchemaKeeper) => {
-                "You are building a stable picture of schemas, objects and data flow."
+                "Schemas, objects, constraints and data relationships form a coherent picture."
+            }
+            (true, ProgressRank::CatalogAnalyst) => {
+                "System catalogs are becoming a practical way to inspect PostgreSQL state."
             }
             (true, ProgressRank::PlanReader) => {
-                "You are ready to reason about execution plans and query behavior."
+                "Execution plans and query behavior can now be analyzed deliberately."
             }
             (true, ProgressRank::WalOperator) => {
-                "Operational PostgreSQL concepts are becoming part of your toolkit."
+                "WAL, backup and recovery mechanics are becoming operational tools."
+            }
+            (true, ProgressRank::ReplicationEngineer) => {
+                "Replication and availability concepts are becoming part of your DBA toolkit."
             }
             (true, ProgressRank::PostgresGuardian) => {
-                "A broad part of the DBA path is under control."
+                "You can connect the major PostgreSQL administration disciplines into one system."
             }
             (true, ProgressRank::MadNinjaDba) => {
-                "Top rank: persistent practice across the whole trainer."
+                "Top rank: sustained mastery across the full DBA Trainer path."
             }
-            (false, ProgressRank::Init) => "Старт обучения: формируем первые устойчивые привычки.",
+            (false, ProgressRank::Init) => {
+                "Старт DBA-пути: осваиваем инструменты и формируем устойчивые рабочие привычки."
+            }
             (false, ProgressRank::PsqlTrainee) => {
-                "Базовые тесты и SQL-практика уже становятся рутиной."
+                "Терминал PostgreSQL и базовый SQL-процесс уже становятся привычными."
             }
             (false, ProgressRank::QueryAdept) => {
-                "Запросы уже не набор команд: ты понимаешь, почему получается результат."
+                "Запросы уже не набор команд: ты понимаешь их логику и результат."
             }
             (false, ProgressRank::SchemaKeeper) => {
-                "Формируется целостное понимание схем, объектов и движения данных."
+                "Схемы, объекты, ограничения и связи данных складываются в единую картину."
+            }
+            (false, ProgressRank::CatalogAnalyst) => {
+                "Системные каталоги становятся рабочим инструментом анализа состояния PostgreSQL."
             }
             (false, ProgressRank::PlanReader) => {
-                "Можно переходить к осмысленному чтению планов и поведению запросов."
+                "Планы выполнения и поведение запросов уже можно разбирать осознанно."
             }
             (false, ProgressRank::WalOperator) => {
-                "Операционные механизмы PostgreSQL становятся рабочим инструментом."
+                "WAL, резервное копирование и восстановление становятся рабочими инструментами."
             }
-            (false, ProgressRank::PostgresGuardian) => "Большая часть DBA-пути уже под контролем.",
+            (false, ProgressRank::ReplicationEngineer) => {
+                "Репликация и доступность становятся частью твоего DBA-инструментария."
+            }
+            (false, ProgressRank::PostgresGuardian) => {
+                "Основные дисциплины администрирования PostgreSQL уже связаны в единую систему."
+            }
             (false, ProgressRank::MadNinjaDba) => {
-                "Верхний ранг: системная практика по всему тренажёру."
+                "Верхний ранг: системное владение всем учебным DBA-путём."
             }
         }
     }
@@ -334,20 +354,44 @@ impl UiStrings {
     pub fn achievement_title(&self, kind: AchievementKind) -> &'static str {
         let english = self.main_menu == "Main menu";
         match (english, kind) {
-            (true, AchievementKind::FirstAnswer) => "First Blood",
-            (false, AchievementKind::FirstAnswer) => "Первый ответ",
-            (_, AchievementKind::HundredAnswers) => "100 Questions",
-            (_, AchievementKind::PerfectTwenty) => "20/20",
-            (true, AchievementKind::QuizVeteran) => "Quiz Veteran",
-            (false, AchievementKind::QuizVeteran) => "Ветеран тестов",
-            (_, AchievementKind::FirstSql) => "SQL Initiate",
-            (_, AchievementKind::OneShot) => "One Shot",
-            (_, AchievementKind::QueryNinja) => "Query Ninja",
-            (_, AchievementKind::SevenDayStreak) => "Seven Days",
-            (_, AchievementKind::ThirtyDayStreak) => "WAL Never Sleeps",
-            (true, AchievementKind::CourseMaster) => "Course Master",
-            (false, AchievementKind::CourseMaster) => "Мастер курса",
-            (_, AchievementKind::MadNinja) => "MadNinja",
+            (true, AchievementKind::FirstStep) => "First Step",
+            (false, AchievementKind::FirstStep) => "Первый шаг",
+            (true, AchievementKind::PerfectQuiz) => "Flawless",
+            (false, AchievementKind::PerfectQuiz) => "Без единой ошибки",
+            (true, AchievementKind::ConfidentKnowledge) => "Confident Knowledge",
+            (false, AchievementKind::ConfidentKnowledge) => "Уверенное знание",
+            (true, AchievementKind::FirstTopicMastery) => "Topic Mastered",
+            (false, AchievementKind::FirstTopicMastery) => "Тема освоена",
+            (true, AchievementKind::CourseCompleted) => "Course Completed",
+            (false, AchievementKind::CourseCompleted) => "Курс завершён",
+            (true, AchievementKind::Perfectionist) => "Perfectionist",
+            (false, AchievementKind::Perfectionist) => "Перфекционист",
+            (true, AchievementKind::SqlMaster) => "SQL Master",
+            (false, AchievementKind::SqlMaster) => "Мастер SQL",
+            (true, AchievementKind::RustMaster) => "Rust Master",
+            (false, AchievementKind::RustMaster) => "Мастер Rust",
+            (true, AchievementKind::PostgresDba) => "PostgreSQL DBA",
+            (false, AchievementKind::PostgresDba) => "PostgreSQL DBA",
+            (true, AchievementKind::PlPgSqlDeveloper) => "PL/pgSQL Developer",
+            (false, AchievementKind::PlPgSqlDeveloper) => "Разработчик PL/pgSQL",
+            (true, AchievementKind::Wave) => "On a Roll",
+            (false, AchievementKind::Wave) => "На волне",
+            (true, AchievementKind::FlawlessStreak) => "Flawless Streak",
+            (false, AchievementKind::FlawlessStreak) => "Безошибочная серия",
+            (true, AchievementKind::IronFocus) => "Iron Focus",
+            (false, AchievementKind::IronFocus) => "Железная концентрация",
+            (true, AchievementKind::LearnFromMistakes) => "Learn from Mistakes",
+            (false, AchievementKind::LearnFromMistakes) => "Работа над ошибками",
+            (true, AchievementKind::FixedTen) => "Fixed",
+            (false, AchievementKind::FixedTen) => "Исправлено",
+            (true, AchievementKind::ClosedGaps) => "Closed the Gaps",
+            (false, AchievementKind::ClosedGaps) => "Закрыл пробелы",
+            (true, AchievementKind::Explorer) => "Explorer",
+            (false, AchievementKind::Explorer) => "Исследователь",
+            (true, AchievementKind::Universal) => "Universal",
+            (false, AchievementKind::Universal) => "Универсал",
+            (true, AchievementKind::FullDbaStack) => "Full DBA Stack",
+            (false, AchievementKind::FullDbaStack) => "Полный стек DBA",
         }
     }
 

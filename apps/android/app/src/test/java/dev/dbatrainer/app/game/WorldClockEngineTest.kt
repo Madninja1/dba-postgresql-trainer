@@ -32,7 +32,7 @@ class WorldClockEngineTest {
     fun calendarYearAdvancesAfterFullYear() {
         val clock = WorldClock(day = 366, minuteOfDay = 0)
 
-        assertEquals(2027, clock.date.year)
+        assertEquals(2046, clock.date.year)
         assertEquals(1, clock.date.month)
         assertEquals(1, clock.date.dayOfMonth)
     }

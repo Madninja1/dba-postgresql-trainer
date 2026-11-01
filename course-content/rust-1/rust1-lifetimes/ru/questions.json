@@ -5,7 +5,7 @@
     {
       "key": "rust1-lifetimes-001",
       "type": "single_choice",
-      "text": "Что такое lifetime в контексте ссылок согласно материалу?",
+      "text": "Что такое lifetime в контексте ссылок Rust?",
       "answers": [
         {
           "key": "a",
@@ -111,78 +111,6 @@
       }
     },
     {
-      "key": "rust1-lifetimes-004",
-      "type": "multiple_choice",
-      "text": "Что сравнивает анализатор заимствований в примере с `r` и `x`? Выберите все правильные варианты.",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Область, где r используется",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Область, где x действителен",
-          "correct": true
-        },
-        {
-          "key": "c",
-          "text": "Пересекаются ли эти области так, чтобы ссылка была валидна",
-          "correct": true
-        },
-        {
-          "key": "d",
-          "text": "Только числовые значения r и x",
-          "correct": false
-        }
-      ],
-      "explanation": "Компилятор анализирует области видимости, а не содержимое чисел.",
-      "source": {
-        "key": "rust1-lifetimes-borrow-checker",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Анализатор заимствований",
-        "locator": "Глава 10 — анализатор заимствований и области видимости, стр. 262–263",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-lifetimes-005",
-      "type": "single_choice",
-      "text": "Когда аналогичный пример с `r = &x` становится корректным?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Когда x живёт как минимум столько же, сколько требуется для использования r",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Когда r объявлен mut независимо от области x",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "Когда x равен нулю",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "Когда ссылка помечена static без изменения данных",
-          "correct": false
-        }
-      ],
-      "explanation": "Ссылка корректна, если данные переживают весь период её использования.",
-      "source": {
-        "key": "rust1-lifetimes-borrow-checker",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Анализатор заимствований",
-        "locator": "Глава 10 — анализатор заимствований и области видимости, стр. 262–263",
-        "url": null
-      }
-    },
-    {
       "key": "rust1-lifetimes-006",
       "type": "multiple_choice",
       "text": "Какие утверждения о проверке borrow checker верны? Выберите все правильные варианты.",
@@ -255,81 +183,9 @@
       }
     },
     {
-      "key": "rust1-lifetimes-008",
-      "type": "multiple_choice",
-      "text": "Что должна сообщить lifetime-аннотация для функции вроде `longest`? Выберите все правильные варианты.",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Как связаны lifetimes входных ссылок",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Как lifetime результата зависит от входных ссылок",
-          "correct": true
-        },
-        {
-          "key": "c",
-          "text": "Какой набор отношений должен проверить компилятор",
-          "correct": true
-        },
-        {
-          "key": "d",
-          "text": "Как физически переместить строки в кучу",
-          "correct": false
-        }
-      ],
-      "explanation": "Аннотации описывают отношения ссылок и не управляют размещением данных.",
-      "source": {
-        "key": "rust1-lifetimes-functions",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Обобщённые времена жизни в функциях",
-        "locator": "Глава 10 — lifetimes в сигнатурах функций, стр. 263–269",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-lifetimes-009",
-      "type": "single_choice",
-      "text": "Как записывается именованный lifetime-параметр?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "С апострофом перед коротким именем, например `'a`",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Как `@a`",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "Как `#a`",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "Как `lifetime(a)`",
-          "correct": false
-        }
-      ],
-      "explanation": "Синтаксис использует апостроф и обычно короткое строчное имя.",
-      "source": {
-        "key": "rust1-lifetimes-syntax",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Синтаксис аннотаций времени жизни",
-        "locator": "Глава 10 — синтаксис параметров времени жизни, стр. 264–266",
-        "url": null
-      }
-    },
-    {
       "key": "rust1-lifetimes-010",
       "type": "multiple_choice",
-      "text": "Какие записи ссылок корректно иллюстрируют lifetime-синтаксис из материала? Выберите все правильные варианты.",
+      "text": "Какие записи ссылок корректно используют синтаксис lifetime? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -353,42 +209,6 @@
         }
       ],
       "explanation": "Lifetime записывается после `&`, перед `mut` и типом ссылки.",
-      "source": {
-        "key": "rust1-lifetimes-syntax",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Синтаксис аннотаций времени жизни",
-        "locator": "Глава 10 — синтаксис параметров времени жизни, стр. 264–266",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-lifetimes-011",
-      "type": "single_choice",
-      "text": "Где объявляют generic lifetime `'a` функции?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "В угловых скобках после имени функции, например `fn longest<'a>(...)`",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "После возвращаемого типа",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "В Cargo.toml",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "В отдельном mod-блоке",
-          "correct": false
-        }
-      ],
-      "explanation": "Lifetime-параметры объявляются подобно generic-параметрам типов.",
       "source": {
         "key": "rust1-lifetimes-syntax",
         "kind": "course_material",
@@ -615,42 +435,6 @@
       }
     },
     {
-      "key": "rust1-lifetimes-018",
-      "type": "multiple_choice",
-      "text": "Какие утверждения о параметрах lifetime функции верны в варианте, где результат зависит только от `x`? Выберите все правильные варианты.",
-      "answers": [
-        {
-          "key": "a",
-          "text": "x может иметь именованный lifetime, связанный с результатом",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "y может иметь независимый lifetime",
-          "correct": true
-        },
-        {
-          "key": "c",
-          "text": "Результат не обязан зависеть от lifetime y, если реализация его не возвращает",
-          "correct": true
-        },
-        {
-          "key": "d",
-          "text": "Все входные ссылки всегда должны иметь один и тот же именованный lifetime",
-          "correct": false
-        }
-      ],
-      "explanation": "Аннотации описывают зависимости результата, а не требуют искусственно связывать все параметры.",
-      "source": {
-        "key": "rust1-lifetimes-longest",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Аннотации времени жизни в сигнатурах функций",
-        "locator": "Глава 10 — функция longest и отношения времён жизни, стр. 266–269",
-        "url": null
-      }
-    },
-    {
       "key": "rust1-lifetimes-019",
       "type": "single_choice",
       "text": "Почему нельзя вернуть `result.as_str()` из функции, где `result` — локальный `String`?",
@@ -687,45 +471,9 @@
       }
     },
     {
-      "key": "rust1-lifetimes-020",
-      "type": "multiple_choice",
-      "text": "Можно ли исправить возврат ссылки на локальный String одной lifetime-аннотацией? Выберите все правильные варианты.",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Нет, аннотация не продлевает жизнь локального String",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Нельзя описать lifetime так, чтобы уничтоженные данные стали действительными",
-          "correct": true
-        },
-        {
-          "key": "c",
-          "text": "Нужно изменить владение/возвращаемый тип, например вернуть String",
-          "correct": true
-        },
-        {
-          "key": "d",
-          "text": "Достаточно написать 'static и оставить всё остальное без изменений",
-          "correct": false
-        }
-      ],
-      "explanation": "Lifetimes проверяют отношения, но не создают данные и не меняют момент их уничтожения.",
-      "source": {
-        "key": "rust1-lifetimes-longest",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Аннотации времени жизни в сигнатурах функций",
-        "locator": "Глава 10 — функция longest и отношения времён жизни, стр. 266–269",
-        "url": null
-      }
-    },
-    {
       "key": "rust1-lifetimes-021",
       "type": "single_choice",
-      "text": "Какое решение предлагает материал для функции, которая создаёт локальный String и хочет вернуть его содержимое?",
+      "text": "Как корректно спроектировать функцию, которая создаёт локальный `String`, но должна вернуть созданное строковое содержимое вызывающему коду?",
       "answers": [
         {
           "key": "a",
@@ -831,104 +579,32 @@
       }
     },
     {
-      "key": "rust1-lifetimes-024",
-      "type": "multiple_choice",
-      "text": "Что верно для `struct ImportantExcerpt<'a> { part: &'a str }`? Выберите все правильные варианты.",
-      "answers": [
-        {
-          "key": "a",
-          "text": "part хранит заимствованный &str",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Lifetime 'a объявлен как параметр структуры",
-          "correct": true
-        },
-        {
-          "key": "c",
-          "text": "Экземпляр не может безопасно пережить данные, на которые ссылается part",
-          "correct": true
-        },
-        {
-          "key": "d",
-          "text": "part владеет отдельной копией String",
-          "correct": false
-        }
-      ],
-      "explanation": "ImportantExcerpt хранит ссылку, поэтому его lifetime зависит от источника заимствованных данных.",
-      "source": {
-        "key": "rust1-lifetimes-struct",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Определение времён жизни при объявлении структур",
-        "locator": "Глава 10 — структура ImportantExcerpt, стр. 269–270",
-        "url": null
-      }
-    },
-    {
       "key": "rust1-lifetimes-025",
       "type": "single_choice",
-      "text": "Почему пример `ImportantExcerpt` с первым предложением из `novel` корректен?",
+      "text": "Структура хранит поле `part: &'a str`, которое ссылается на часть внешнего `String`. Какое условие необходимо для безопасного использования экземпляра структуры?",
       "answers": [
         {
           "key": "a",
-          "text": "novel остаётся в области видимости дольше экземпляра, содержащего ссылку на его часть",
+          "text": "Исходный `String` должен оставаться действительным всё время, пока используется ссылка `part`",
           "correct": true
         },
         {
           "key": "b",
-          "text": "Потому что split превращает данные в static",
+          "text": "Получение `&str` автоматически делает данные `'static`",
           "correct": false
         },
         {
           "key": "c",
-          "text": "Потому что unwrap отключает borrow checker",
+          "text": "Хранение ссылки в структуре отключает borrow checker",
           "correct": false
         },
         {
           "key": "d",
-          "text": "Потому что структура копирует весь novel",
+          "text": "Структура обязана неявно скопировать весь исходный `String`",
           "correct": false
         }
       ],
-      "explanation": "Источник ссылки живёт достаточно долго для использования структуры.",
-      "source": {
-        "key": "rust1-lifetimes-struct",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Определение времён жизни при объявлении структур",
-        "locator": "Глава 10 — структура ImportantExcerpt, стр. 269–270",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-lifetimes-026",
-      "type": "multiple_choice",
-      "text": "Какие элементы синтаксиса структуры с lifetime аналогичны generics типов? Выберите все правильные варианты.",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Параметр объявляется в угловых скобках после имени структуры",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Имя параметра затем используется в типе поля-ссылки",
-          "correct": true
-        },
-        {
-          "key": "c",
-          "text": "Параметр становится частью типа структуры",
-          "correct": true
-        },
-        {
-          "key": "d",
-          "text": "Lifetime объявляется только внутри main",
-          "correct": false
-        }
-      ],
-      "explanation": "Lifetimes — разновидность generic-параметров и синтаксически объявляются возле имени типа.",
+      "explanation": "Lifetime-параметр структуры связывает время жизни ссылки в поле со временем жизни данных, на которые она указывает.",
       "source": {
         "key": "rust1-lifetimes-struct",
         "kind": "course_material",
@@ -1011,78 +687,6 @@
       }
     },
     {
-      "key": "rust1-lifetimes-029",
-      "type": "single_choice",
-      "text": "Что называют input lifetime?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Lifetime параметра функции или метода, который является ссылкой",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Lifetime только возвращаемого значения",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "Lifetime статической переменной",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "Время запуска программы",
-          "correct": false
-        }
-      ],
-      "explanation": "Материал называет lifetimes входных ссылок input lifetimes, а возвращаемых — output lifetimes.",
-      "source": {
-        "key": "rust1-lifetimes-elision",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Правила неявного выведения времени жизни",
-        "locator": "Глава 10 — lifetime elision, стр. 270–273",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-lifetimes-030",
-      "type": "multiple_choice",
-      "text": "Как распределяются три правила elision по входу и выходу? Выберите все правильные варианты.",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Первое правило относится к input lifetimes",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Второе правило помогает определить output lifetime",
-          "correct": true
-        },
-        {
-          "key": "c",
-          "text": "Третье правило также относится к output lifetime методов",
-          "correct": true
-        },
-        {
-          "key": "d",
-          "text": "Все три правила применяются только к struct, но не к fn",
-          "correct": false
-        }
-      ],
-      "explanation": "Правила применяются к fn и impl; первое назначает входы, последующие связывают выход.",
-      "source": {
-        "key": "rust1-lifetimes-elision",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Правила неявного выведения времени жизни",
-        "locator": "Глава 10 — lifetime elision, стр. 270–273",
-        "url": null
-      }
-    },
-    {
       "key": "rust1-lifetimes-031",
       "type": "single_choice",
       "text": "Как формулируется первое правило lifetime elision?",
@@ -1109,42 +713,6 @@
         }
       ],
       "explanation": "Для двух входных ссылок первое правило даёт два независимых input lifetimes.",
-      "source": {
-        "key": "rust1-lifetimes-elision",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Правила неявного выведения времени жизни",
-        "locator": "Глава 10 — lifetime elision, стр. 270–273",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-lifetimes-032",
-      "type": "multiple_choice",
-      "text": "Какие примеры соответствуют первому правилу? Выберите все правильные варианты.",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Одна ссылка `x: &i32` получает условный lifetime 'a",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Две ссылки `x` и `y` получают отдельные 'a и 'b",
-          "correct": true
-        },
-        {
-          "key": "c",
-          "text": "Правило назначает lifetime каждому входному ссылочному параметру",
-          "correct": true
-        },
-        {
-          "key": "d",
-          "text": "Две входные ссылки автоматически объединяются в один lifetime независимо от контекста",
-          "correct": false
-        }
-      ],
-      "explanation": "Первое правило не связывает входы между собой — каждому назначается собственный параметр.",
       "source": {
         "key": "rust1-lifetimes-elision",
         "kind": "course_material",
@@ -1263,42 +831,6 @@
       }
     },
     {
-      "key": "rust1-lifetimes-036",
-      "type": "multiple_choice",
-      "text": "Что верно о третьем правиле lifetime elision? Выберите все правильные варианты.",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Оно применяется к методам",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Требует среди входов &self или &mut self при нескольких input lifetimes",
-          "correct": true
-        },
-        {
-          "key": "c",
-          "text": "Назначает lifetime self выходным ссылкам",
-          "correct": true
-        },
-        {
-          "key": "d",
-          "text": "Всегда применяется к свободным функциям без self",
-          "correct": false
-        }
-      ],
-      "explanation": "Третье правило делает сигнатуры методов короче, связывая возвращаемые ссылки с self.",
-      "source": {
-        "key": "rust1-lifetimes-elision",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Правила неявного выведения времени жизни",
-        "locator": "Глава 10 — lifetime elision, стр. 270–273",
-        "url": null
-      }
-    },
-    {
       "key": "rust1-lifetimes-037",
       "type": "single_choice",
       "text": "Почему методы часто не требуют явных lifetime-аннотаций для возвращаемой ссылки на данные self?",
@@ -1325,42 +857,6 @@
         }
       ],
       "explanation": "Наличие &self позволяет компилятору вывести типичную зависимость результата от объекта.",
-      "source": {
-        "key": "rust1-lifetimes-methods",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Аннотация времён жизни в определении методов",
-        "locator": "Глава 10 — lifetimes в impl и методах, стр. 273–274",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-lifetimes-038",
-      "type": "multiple_choice",
-      "text": "Что верно о lifetimes в `impl<'a> ImportantExcerpt<'a>`? Выберите все правильные варианты.",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Lifetime структуры объявляется после impl",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Тот же lifetime используется после имени ImportantExcerpt",
-          "correct": true
-        },
-        {
-          "key": "c",
-          "text": "Lifetime ссылки &self часто можно не писать явно благодаря elision",
-          "correct": true
-        },
-        {
-          "key": "d",
-          "text": "Параметр 'a делает все методы static",
-          "correct": false
-        }
-      ],
-      "explanation": "При impl структуры с lifetime параметр типа нужно объявить, а обычные ссылки метода могут дополнительно выводиться правилами elision.",
       "source": {
         "key": "rust1-lifetimes-methods",
         "kind": "course_material",
@@ -1553,7 +1049,7 @@
     {
       "key": "rust1-lifetimes-044",
       "type": "multiple_choice",
-      "text": "Что может одновременно присутствовать в сигнатуре функции из финального примера главы? Выберите все правильные варианты.",
+      "text": "Какие элементы могут одновременно присутствовать в сигнатуре функции с lifetime-параметрами? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -1587,45 +1083,9 @@
       }
     },
     {
-      "key": "rust1-lifetimes-045",
-      "type": "single_choice",
-      "text": "Почему для дополнительного параметра `ann` в финальном примере требуется `Display`?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Потому что `ann` печатается через `{}`",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Потому что любой generic T обязан реализовывать Display",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "Потому что lifetime a требует Display",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "Потому что возвращаемый &str является Display",
-          "correct": false
-        }
-      ],
-      "explanation": "Bound связан с фактической операцией форматирования параметра ann.",
-      "source": {
-        "key": "rust1-lifetimes-combined",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Обобщённые типы параметров, ограничения типажей и времена жизни вместе",
-        "locator": "Глава 10 — совместная запись generics, trait bounds и lifetimes, стр. 274",
-        "url": null
-      }
-    },
-    {
       "key": "rust1-lifetimes-046",
       "type": "multiple_choice",
-      "text": "Какие общие выводы о lifetimes следуют из итогов главы 10? Выберите все правильные варианты.",
+      "text": "Какие общие утверждения о lifetimes в Rust верны? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -1732,42 +1192,6 @@
         "module": "Rust",
         "section": "Синтаксис аннотаций времени жизни",
         "locator": "Глава 10 — синтаксис параметров времени жизни, стр. 264–266",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-lifetimes-049",
-      "type": "single_choice",
-      "text": "Какой вариант лучше описывает связь `ImportantExcerpt` и `novel`?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "ImportantExcerpt заимствует часть novel и должен перестать использоваться до уничтожения novel",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "ImportantExcerpt становится владельцем всего novel",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "novel заимствует данные из ImportantExcerpt",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "Оба значения получают static lifetime",
-          "correct": false
-        }
-      ],
-      "explanation": "Поле part — ссылка на данные внутри novel, поэтому структура зависит от владельца этой строки.",
-      "source": {
-        "key": "rust1-lifetimes-struct",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Определение времён жизни при объявлении структур",
-        "locator": "Глава 10 — структура ImportantExcerpt, стр. 269–270",
         "url": null
       }
     },

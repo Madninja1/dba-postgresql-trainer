@@ -1,167 +1,296 @@
 # Статистика планировщика и полнотекстовый поиск
 
-## 1. Тема
+## Ментальная модель
 
-Тема посвящена системным каталогам PostgreSQL и связям между ними: где сервер хранит метаданные объектов и какие поля позволяют восстановить структуру и состояние базы.
+Эта тема состоит из двух независимых подсистем.
+
+### Статистика planner
 
 ```text
-основной материал темы
-        ↓
-понимание механизма
-        ↓
-важные ограничения и связи
-        ↓
-факты, которые проверяются тестами
+ANALYZE
+  ├─ pg_statistic              → базовая статистика столбцов
+  └─ pg_statistic_ext_data     → вычисленные данные extended statistics
+       ▲
+       │ definition
+  pg_statistic_ext
 ```
 
-## 2. Механизм
+### Full-text search configuration
 
-Тема состоит из двух независимых частей: статистики, которую использует planner, и каталогов Full Text Search.
+```text
+text
+ ↓
+parser          → pg_ts_parser
+ ↓ token type
+configuration   → pg_ts_config
+ ↓ mapping
+pg_ts_config_map
+ ↓
+dictionary     → pg_ts_dict
+ ↓
+template       → pg_ts_template
+```
 
-### pg_statistic
+Не смешивайте эти две части: первая помогает planner оценивать запросы, вторая описывает лингвистический pipeline text search.
 
-`ANALYZE` собирает статистику содержимого таблиц, а планировщик использует её для оценки селективности и выбора плана.
+---
 
-Базовые поля:
+## `pg_statistic`: базовая статистика planner
 
-- `starelid` — таблица/индекс;
-- `staattnum` — номер столбца;
-- `stanullfrac` — доля `NULL`;
-- `stawidth` — средний размер non-NULL значения;
-- `stadistinct` — оценка числа различных non-NULL значений.
+`pg_statistic` содержит статистику о содержимом базы. Записи создаёт `ANALYZE`, после чего planner использует их для оценки cardinality и стоимости планов.
 
-Также каталог содержит слоты статистики (`stakind*`, `staop*`, `stanumbers*`, `stavalues*`).
+Эти данные **по природе являются оценочными**, даже когда свежие.
 
-Прямое чтение ограничено, потому что статистические значения могут раскрывать конфиденциальные данные. Для обычных пользователей предназначено представление `pg_stats`, которое показывает данные только для доступных объектов.
+### Что именно идентифицирует строка
 
-### Расширенная статистика
+- `starelid` — table или index;
+- `staattnum` — номер описываемого column;
+- `stainherit` — учитываются ли child tables/inheritance tree.
 
-#### pg_statistic_ext
+Обычно для column есть строка с `stainherit = false`. Для table с descendants может существовать дополнительная строка с `stainherit = true`.
 
-Определение объектов `CREATE STATISTICS`.
+Статистика для index expressions также хранится в `pg_statistic`; в таком случае `starelid` ссылается на index.
 
-`stxkind` включает:
+---
+
+## Базовые численные показатели
+
+- `stanullfrac` — доля rows, где value `NULL`;
+- `stawidth` — средний storage size non-NULL value;
+- `stadistinct` — оценка количества distinct non-NULL values.
+
+### Как читать `stadistinct`
+
+```text
+> 0  → оценённое абсолютное число distinct values
+< 0  → модуль — коэффициент относительно числа rows
+= 0  → число distinct неизвестно
+```
+
+Например, `stadistinct = -0.4` означает, что planner оценивает число distinct values примерно как `0.4 * number_of_rows`.
+
+Отрицательное значение — не ошибка и не «минус сорок процентов уникальных значений». Это специальное компактное представление масштабируемой оценки.
+
+---
+
+## Statistics slots
+
+Разные data types требуют разных видов статистики, поэтому `pg_statistic` использует несколько slot groups:
+
+- `stakindN` — вид статистики в слоте;
+- `staopN` — связанный operator;
+- `stacollN` — collation;
+- `stanumbersN` — числовые значения;
+- `stavaluesN` — значения data type.
+
+Смысл конкретного slot определяется его `stakindN`.
+
+Это объясняет, почему `pg_statistic` не имеет отдельной фиксированной колонки для каждого возможного вида histogram/MCV/type-specific statistics.
+
+---
+
+## Почему `pg_statistic` закрыт от всех пользователей
+
+Статистика может раскрывать содержимое данных. Даже без прямого `SELECT` из пользовательской таблицы можно узнать, например, распространённые, минимальные или максимальные значения чувствительного столбца.
+
+Поэтому `pg_statistic` не открыт всем для чтения.
+
+Для обычного использования существует `pg_stats` — public view поверх `pg_statistic`, которое показывает статистику только для tables, доступных текущему пользователю.
+
+Модель:
+
+```text
+pg_statistic → raw/sensitive catalog
+pg_stats     → safer user-facing view
+```
+
+---
+
+## Extended statistics: definition и data разделены
+
+### `pg_statistic_ext`
+
+Хранит **определение** объекта extended statistics, созданного `CREATE STATISTICS`.
+
+Основные поля:
+
+- `stxrelid` — table;
+- `stxname` — имя;
+- `stxnamespace` — schema;
+- `stxowner` — владелец;
+- `stxstattarget` — statistics target;
+- `stxkeys` — номера columns;
+- `stxkind` — включённые виды statistics;
+- `stxexprs` — expression trees для expression entries.
+
+Коды `stxkind`:
 
 ```text
 d  n-distinct
-e  statistics по выражениям
+e  expression statistics
 f  functional dependencies
-m  most-common-values list
+m  most-common-value lists (MCV)
 ```
 
-#### pg_statistic_ext_data
+`CREATE STATISTICS` создаёт definition, но не вычисляет сами values.
 
-Вычисленные `ANALYZE` значения расширенной статистики:
+### `pg_statistic_ext_data`
 
-- `stxdndistinct`;
-- `stxddependencies`;
-- `stxdmcv`;
-- `stxdexpr`.
+Данные появляются после последующего `ANALYZE`.
 
-Разделение важно: `pg_statistic_ext` — **определение**, `pg_statistic_ext_data` — **собранные данные**.
+- `stxoid` → definition в `pg_statistic_ext`;
+- `stxdinherit` — inheritance-aware variant;
+- `stxdndistinct` — n-distinct data;
+- `stxddependencies` — functional dependencies;
+- `stxdmcv` — MCV list;
+- `stxdexpr` — expression statistics.
 
-### Полнотекстовый поиск: общая схема
+Как и `pg_statistic`, этот каталог может содержать чувствительную информацию и не предназначен для свободного чтения всеми. User-facing view — `pg_stats_ext`.
 
-Конфигурация FTS связывает parser с наборами словарей для разных типов токенов.
-
-Цепочка каталогов:
+Ключевое различие:
 
 ```text
-pg_ts_config
-    -> pg_ts_parser
-    -> pg_ts_config_map
-        -> pg_ts_dict
-            -> pg_ts_template
+pg_statistic_ext      → что собирать
+pg_statistic_ext_data → что ANALYZE реально собрал
 ```
 
-### pg_ts_config
+---
 
-Описывает конфигурацию текстового поиска. `cfgparser` ссылается на parser.
+# Full-text search catalogs
 
-### pg_ts_config_map
+## Pipeline
 
-Для каждой конфигурации и типа токена задаёт порядок словарей:
+Full-text search configuration отвечает на вопрос: **как из исходного текста получить нормализованные лексемы для поиска**.
+
+Упрощённо:
+
+```text
+input text
+   ↓
+parser
+   ↓  tokens + token types
+configuration
+   ↓
+config map chooses dictionaries
+   ↓
+dictionaries normalize/reject tokens
+```
+
+---
+
+## `pg_ts_parser`: разбор текста на tokens
+
+Parser делит input text на lexemes/tokens и присваивает каждому token type.
+
+Поля:
+
+- `prsname` — имя parser;
+- `prsnamespace` — schema;
+- `prsstart` — start function;
+- `prstoken` — функция выдачи следующего token;
+- `prsend` — end function;
+- `prsheadline` — headline function или `0`;
+- `prslextype` — функция описания lexical token types.
+
+Новый parser должен быть реализован C-level functions, поэтому создавать parsers могут только superusers.
+
+---
+
+## `pg_ts_config`: text search configuration
+
+Configuration выбирает parser и определяет, какие dictionaries применять к token types.
+
+В самой строке `pg_ts_config` находятся:
+
+- `cfgname` — имя;
+- `cfgnamespace` — schema;
+- `cfgowner` — владелец;
+- `cfgparser` → `pg_ts_parser`.
+
+Mapping token types к dictionaries вынесен в отдельный каталог.
+
+---
+
+## `pg_ts_config_map`: token type → dictionaries
+
+Поля:
 
 - `mapcfg` → `pg_ts_config`;
-- `maptokentype` — тип токена;
-- `mapseqno` — порядок;
+- `maptokentype` — token type parser;
+- `mapseqno` — порядок проверки dictionaries;
 - `mapdict` → `pg_ts_dict`.
 
-### pg_ts_parser
+Для одного token type может быть несколько dictionary entries. Они рассматриваются в порядке увеличения `mapseqno`.
 
-Описывает parser, разбивающий документ на токены и назначающий им типы. Каталог хранит ссылки на функции parser-а.
+Поэтому configuration — это не просто ссылка «parser → dictionary». Между ними есть ordered mapping layer.
 
-### pg_ts_dict
+---
 
-Словари текстового поиска:
+## `pg_ts_dict`: словари
 
-- `dictname`;
-- `dictnamespace`;
-- `dictowner`;
+Dictionary определяет конкретную конфигурацию normalization logic на базе template.
+
+Поля:
+
+- `dictname` — имя;
+- `dictnamespace` — schema;
+- `dictowner` — владелец;
 - `dicttemplate` → `pg_ts_template`;
-- `dictinitoption` — строка параметров инициализации.
+- `dictinitoption` — initialization options.
 
-### pg_ts_template
-
-Шаблон — реализация класса словарей, задающая init/lexize functions. Создание новых templates требует суперпользовательских прав, поскольку они привязаны к функциям низкого уровня.
+Template предоставляет implementation functions, а dictionary — конкретные parameter values для этой implementation.
 
 ---
 
-## 3. Важные детали и покрытие тестов
+## `pg_ts_template`: заготовка класса dictionaries
 
-Ниже собраны детали, которые проверяются вопросами этой темы. Они сгруппированы по разделам исходной документации, чтобы их можно было связывать с механизмом, а не запоминать как отдельный список ответов.
+Template содержит implementation hooks:
 
-### 53.51. pg_statistic
+- `tmplname` — имя;
+- `tmplnamespace` — schema;
+- `tmplinit` — init function или `0`;
+- `tmpllexize` — lexize function.
 
-- **Назначение pg_statistic.** pg_statistic хранит базовую статистику столбцов и выражений, которую создаёт ANALYZE и использует planner.
-- **starelid, staattnum, stanullfrac, stawidth, stadistinct.** stanullfrac — доля NULL. Эти поля описывают отношение/столбец и ключевые общие статистики.
-- **Ограничение доступа и представление pg_stats.** Даже статистика может раскрывать конфиденциальные сведения о значениях данных. Документация приводит пример, что даже min/max или другие статистики могут раскрывать чувствительные данные.
-- **Представление pg_stats.** Представление pg_stats. pg_stats — безопаснее доступное view поверх pg_statistic с фильтрацией по правам текущего пользователя.
-
-### 53.52. pg_statistic_ext
-
-- **Назначение и связь с CREATE STATISTICS/ANALYZE.** pg_statistic_ext содержит definition объекта extended statistics; сами вычисленные данные появляются в pg_statistic_ext_data после ANALYZE.
-- **Столбец stxkind.** `d` — n-distinct. stxkind перечисляет виды extended statistics: d/e/f/m.
-
-### 53.53. pg_statistic_ext_data
-
-- **Назначение pg_statistic_ext_data.** pg_statistic_ext_data хранит actual data для объектов, определённых в pg_statistic_ext.
-- **stxdndistinct, stxddependencies, stxdmcv, stxdexpr.** stxdndistinct — n-distinct. Расширенная статистика сериализуется по отдельным полям для distinct, dependencies, MCV и expressions.
-
-### 53.59. pg_ts_config
-
-- **Назначение pg_ts_config.** Конфигурации текстового поиска, связывающие parser и набор словарей по типам фрагментов. Text search configuration определяет parser, а mapping tokens→dictionaries хранится в pg_ts_config_map.
-
-### 53.60. pg_ts_config_map
-
-- **Связи mapcfg и mapdict в цепочке text search.** pg_ts_config.cfgparser ссылается на pg_ts_parser. Конфигурация использует parser и mapping; mapping указывает dictionaries, а dictionary основан на template.
-
-### 53.62. pg_ts_parser
-
-- **Назначение pg_ts_parser.** pg_ts_parser хранит функции parser lifecycle: start, token, end и дополнительные callbacks.
-
-### 53.63. pg_ts_template
-
-- **Назначение pg_ts_template и ограничение на создание.** pg_ts_dict определяет словари и их параметры. Dictionary настраивает template, а template предоставляет реализационные функции; новые templates требуют superuser.
-
-### 53.61. pg_ts_dict
-
-- **Назначение; dictname; dicttemplate; dictinitoption.** Каталог содержит словари текстового поиска. pg_ts_dict описывает text search dictionaries, их namespace/owner, template и initialization options.
+Как и parser, template реализуется C-level functions. Создание новых templates требует superuser privileges.
 
 ---
 
-# Что запомнить
+## Связи full-text search одним взглядом
 
-- **Назначение pg_statistic** → pg_statistic
-- **starelid, staattnum, stanullfrac, stawidth, stadistinct** → stanullfrac — доля NULL
-- **Ограничение доступа и представление pg_stats** → Даже статистика может раскрывать конфиденциальные сведения о значениях данных
-- Представление pg_stats
-- **Назначение и связь с CREATE STATISTICS/ANALYZE** → pg_statistic_ext
-- **Столбец stxkind** → `d` — n-distinct
-- **Назначение pg_statistic_ext_data** → pg_statistic_ext_data
-- **stxdndistinct, stxddependencies, stxdmcv, stxdexpr** → stxdndistinct — n-distinct
-- **Назначение pg_ts_config** → Конфигурации текстового поиска, связывающие parser и набор словарей по типам фрагментов
-- **Связи mapcfg и mapdict в цепочке text search** → pg_ts_config.cfgparser ссылается на pg_ts_parser
-- **Назначение pg_ts_parser** → pg_ts_parser
-- **Назначение pg_ts_template и ограничение на создание** → pg_ts_dict определяет словари и их параметры
-- **Назначение; dictname; dicttemplate; dictinitoption** → Каталог содержит словари текстового поиска
+```text
+pg_ts_config.cfgparser
+        ↓
+pg_ts_parser
+
+pg_ts_config.oid
+        ↓
+pg_ts_config_map.mapcfg
+        │
+        └── mapdict → pg_ts_dict
+                         │
+                         └── dicttemplate → pg_ts_template
+```
+
+Если text search configuration ведёт себя неожиданно, диагностировать её нужно именно по этой цепочке: parser → token type → ordered dictionary mapping → dictionary → template.
+
+---
+
+## Что запомнить
+
+```text
+planner statistics:
+pg_statistic          → базовая column statistics
+pg_stats              → user-facing view
+pg_statistic_ext      → extended statistics definition
+pg_statistic_ext_data → collected extended statistics data
+pg_stats_ext          → user-facing extended stats view
+
+text search:
+pg_ts_parser     → tokenization
+pg_ts_config     → parser + configuration
+pg_ts_config_map → token type → ordered dictionaries
+pg_ts_dict       → configured dictionary
+pg_ts_template   → dictionary implementation template
+```
+
+В статистике главное различать **definition** и **collected data**. В full-text search главное понимать **pipeline**, а не запоминать каталоги как несвязанный список.

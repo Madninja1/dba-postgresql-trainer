@@ -3,42 +3,6 @@
   "topic": "linuxdba1-users-groups-permissions",
   "questions": [
     {
-      "key": "linuxdba1-users-groups-permissions-001",
-      "type": "single_choice",
-      "text": "Что показывает команда `whoami`?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Пользователя, от имени которого работает текущий shell",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Только primary GID",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "Текущий mount point",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "PID postmaster",
-          "correct": false
-        }
-      ],
-      "explanation": "`whoami` показывает имя пользователя, от которого выполняется текущий shell.",
-      "source": {
-        "key": "linuxdba1-25-whoami",
-        "kind": "course_material",
-        "module": "Linux DBA",
-        "section": "Пользователи Linux",
-        "locator": "Лабораторная №25 — начало работы с пользователями",
-        "url": null
-      }
-    },
-    {
       "key": "linuxdba1-users-groups-permissions-002",
       "type": "multiple_choice",
       "text": "Какие данные показывает `id` по лабораторной? Выберите все правильные варианты.",

@@ -1,6 +1,12 @@
 package dev.dbatrainer.app.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,14 +46,23 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import dev.dbatrainer.app.AppLaunchMode
 import dev.dbatrainer.app.AppScreen
 import dev.dbatrainer.app.CourseStatisticsRow
 import dev.dbatrainer.app.ModeStatisticsRow
@@ -58,8 +73,9 @@ import dev.dbatrainer.app.TrainerController
 import dev.dbatrainer.app.UiLanguage
 import dev.dbatrainer.app.UiStrings
 import dev.dbatrainer.app.uiStrings
-import dev.dbatrainer.app.game.ui.DbaWorldRootScreen
+import dev.dbatrainer.app.game3d.rememberDbaWorldLauncher
 import dev.dbatrainer.ffi.MobileActivityStats
+import dev.dbatrainer.ffi.MobileAchievementProgress
 import dev.dbatrainer.ffi.MobileAnswerResult
 import dev.dbatrainer.ffi.MobileLab
 import dev.dbatrainer.ffi.MobileQuestion
@@ -73,6 +89,8 @@ import dev.dbatrainer.ffi.MobileSource
 import dev.dbatrainer.ffi.MobileTopic
 import dev.dbatrainer.ffi.MobileTrainingStats
 import dev.dbatrainer.ffi.coreVersion
+import kotlin.math.cos
+import kotlin.math.sin
 
 private val LocalUiStrings = staticCompositionLocalOf {
     uiStrings(UiLanguage.English)
@@ -101,7 +119,9 @@ fun TrainerApp(controller: TrainerController) {
                 .safeDrawingPadding(),
         ) {
             when (controller.screen) {
+                AppScreen.ModeSelection -> ModeSelectionScreen(controller)
                 AppScreen.Home -> HomeScreen(controller)
+                AppScreen.Settings -> SettingsScreen(controller)
                 AppScreen.UnfinishedQuizzes -> UnfinishedQuizzesScreen(controller)
                 AppScreen.TopicCourses -> TopicCoursesScreen(controller)
                 AppScreen.Topics -> TopicsScreen(controller)
@@ -120,15 +140,16 @@ fun TrainerApp(controller: TrainerController) {
                 AppScreen.Feedback -> FeedbackScreen(controller)
                 AppScreen.Results -> ResultsScreen(controller)
                 AppScreen.Statistics -> StatisticsScreen(controller)
-                AppScreen.DbaWorld -> DbaWorldRootScreen(
-                    controller = controller.dbaWorld,
-                    language = controller.language,
-                    onOpenKnowledgeNote = controller::openDbaWorldKnowledgeNote,
-                    onOpenKnowledgeQuiz = controller::openDbaWorldKnowledgeQuiz,
-                    onOpenKnowledgeLab = controller::openDbaWorldKnowledgeLab,
-                )
+                AppScreen.DbaWorld -> DbaWorld3DLauncherScreen(controller)
             }
         }
+    }
+
+    if (controller.newlyUnlockedAchievements.isNotEmpty()) {
+        AchievementCelebrationOverlay(
+            achievements = controller.newlyUnlockedAchievements,
+            onDismiss = controller::dismissAchievementCelebration,
+        )
     }
 
     if (controller.showCancelDialog) {
@@ -253,8 +274,52 @@ fun TrainerApp(controller: TrainerController) {
 }
 
 @Composable
-private fun HomeScreen(controller: TrainerController) {
-    val strings = LocalUiStrings.current
+private fun DbaWorld3DLauncherScreen(controller: TrainerController) {
+    val launcher = rememberDbaWorldLauncher(
+        onReturned = controller::openModeSelection,
+    )
+
+    LaunchedEffect(Unit) {
+        launcher.launch()
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = "DBA World 3D",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+        Text(
+            text = if (controller.language == UiLanguage.Russian) {
+                "Запускается 3D-прототип на Godot. После выхода вы вернётесь к выбору режима."
+            } else {
+                "Launching the Godot 3D prototype. Leaving the game returns to mode selection."
+            },
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        Button(
+            onClick = launcher::launch,
+            enabled = !launcher.isRunning,
+        ) {
+            Text(if (controller.language == UiLanguage.Russian) "Запустить 3D мир" else "Launch 3D world")
+        }
+        TextButton(onClick = controller::openModeSelection) {
+            Text(if (controller.language == UiLanguage.Russian) "Назад к выбору режима" else "Back to mode selection")
+        }
+    }
+}
+
+@Composable
+private fun ModeSelectionScreen(controller: TrainerController) {
+    val russian = controller.language == UiLanguage.Russian
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -270,28 +335,230 @@ private fun HomeScreen(controller: TrainerController) {
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
             )
+            Text(
+                text = if (russian) {
+                    "Выберите режим. Прогресс обучения и DBA World используют общие данные."
+                } else {
+                    "Choose a mode. Learning progress and DBA World share data."
+                },
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
+        item {
+            ModeChoiceCard(
+                title = if (russian) "Обучение" else "Learning",
+                subtitle = if (russian) {
+                    "Курсы, конспекты, тесты, лабораторные и статистика."
+                } else {
+                    "Courses, notes, quizzes, labs, and statistics."
+                },
+                action = if (russian) "Перейти к обучению" else "Open Learning",
+                onClick = controller::selectLearningMode,
+            )
+        }
+
+        item {
+            ModeChoiceCard(
+                title = "DBA World",
+                subtitle = if (russian) {
+                    "3D-режим: работа инженера, инциденты, инфраструктура и карьера."
+                } else {
+                    "3D game mode: engineering work, incidents, infrastructure, and career."
+                },
+                action = if (russian) "Запустить DBA World 3D" else "Launch DBA World 3D",
+                onClick = controller::selectDbaWorldMode,
+            )
+        }
+
+        item {
+            OutlinedButton(
+                onClick = controller::openSettings,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(if (russian) "Настройки" else "Settings")
+            }
+        }
+    }
+}
+
+@Composable
+private fun ModeChoiceCard(
+    title: String,
+    subtitle: String,
+    action: String,
+    onClick: () -> Unit,
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+    ) {
+        Column(
+            modifier = Modifier.padding(LayoutSpacing.card),
+            verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                text = subtitle,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Button(
+                onClick = onClick,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(action)
+            }
+        }
+    }
+}
+
+@Composable
+private fun SettingsScreen(controller: TrainerController) {
+    val russian = controller.language == UiLanguage.Russian
+
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(
+            horizontal = LayoutSpacing.screenHorizontal,
+            vertical = LayoutSpacing.screenVertical,
+        ),
+        verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
+    ) {
+        item {
+            Text(
+                text = if (russian) "Настройки" else "Settings",
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                text = if (russian) {
+                    "Режим запуска можно изменить в любой момент. Это не меняет прогресс обучения или состояние DBA World."
+                } else {
+                    "You can change the startup mode at any time. This does not reset learning progress or DBA World state."
+                },
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
 
         item {
             Text(
-                text = strings.appSubtitle,
-                style = MaterialTheme.typography.bodyLarge,
+                text = if (russian) "При запуске приложения" else "On app launch",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
+        }
+
+        item {
+            StartupModeRow(
+                title = if (russian) "Спрашивать каждый раз" else "Ask every time",
+                subtitle = if (russian) "Показывать выбор Обучение / DBA World." else "Show the Learning / DBA World chooser.",
+                selected = controller.startupMode == AppLaunchMode.ASK,
+                onClick = { controller.changeStartupMode(AppLaunchMode.ASK) },
+            )
+            StartupModeRow(
+                title = if (russian) "Обучение" else "Learning",
+                subtitle = if (russian) "Сразу открывать учебный режим." else "Open Learning immediately.",
+                selected = controller.startupMode == AppLaunchMode.LEARNING,
+                onClick = { controller.changeStartupMode(AppLaunchMode.LEARNING) },
+            )
+            StartupModeRow(
+                title = "DBA World",
+                subtitle = if (russian) "Сразу открывать игровой режим." else "Open the game mode immediately.",
+                selected = controller.startupMode == AppLaunchMode.DBA_WORLD,
+                onClick = { controller.changeStartupMode(AppLaunchMode.DBA_WORLD) },
+            )
+        }
+
+        item {
+            Text(
+                text = controller.strings.language,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                LanguageButton(
+                    text = "EN",
+                    selected = controller.language == UiLanguage.English,
+                    onClick = { controller.changeLanguage(UiLanguage.English) },
+                )
+                LanguageButton(
+                    text = "RU",
+                    selected = controller.language == UiLanguage.Russian,
+                    onClick = { controller.changeLanguage(UiLanguage.Russian) },
+                )
+            }
+        }
+
+        item {
+            OutlinedButton(
+                onClick = controller::openModeSelection,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(if (russian) "← К выбору режима" else "← Back to mode selection")
+            }
+        }
+    }
+}
+
+@Composable
+private fun StartupModeRow(
+    title: String,
+    subtitle: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        RadioButton(
+            selected = selected,
+            onClick = onClick,
+        )
+        Column(modifier = Modifier.weight(1f)) {
+            Text(title, fontWeight = FontWeight.SemiBold)
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@Composable
+private fun HomeScreen(controller: TrainerController) {
+    val strings = LocalUiStrings.current
+
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(
+            horizontal = LayoutSpacing.screenHorizontal,
+            vertical = LayoutSpacing.screenVertical,
+        ),
+        verticalArrangement = Arrangement.spacedBy(LayoutSpacing.section),
+    ) {
+        item {
+            Text(
+                text = if (controller.language == UiLanguage.Russian) "Обучение" else "Learning",
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold,
             )
         }
 
         controller.activityStats?.let { activity ->
             item {
                 RankSummaryCard(activity)
-            }
-        }
-
-        item {
-            Button(
-                onClick = controller::openDbaWorld,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text("DBA World")
             }
         }
 
@@ -361,28 +628,11 @@ private fun HomeScreen(controller: TrainerController) {
         }
 
         item {
-            Spacer(Modifier.height(8.dp))
-            Text(
-                text = strings.language,
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-
-        item {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            OutlinedButton(
+                onClick = controller::openSettings,
+                modifier = Modifier.fillMaxWidth(),
             ) {
-                LanguageButton(
-                    text = "EN",
-                    selected = controller.language == UiLanguage.English,
-                    onClick = { controller.changeLanguage(UiLanguage.English) },
-                )
-                LanguageButton(
-                    text = "RU",
-                    selected = controller.language == UiLanguage.Russian,
-                    onClick = { controller.changeLanguage(UiLanguage.Russian) },
-                )
+                Text(if (controller.language == UiLanguage.Russian) "Настройки" else "Settings")
             }
         }
 
@@ -1515,6 +1765,146 @@ private fun InfoCard(
 }
 
 @Composable
+private fun AchievementCelebrationOverlay(
+    achievements: List<MobileAchievementProgress>,
+    onDismiss: () -> Unit,
+) {
+    if (achievements.isEmpty()) {
+        return
+    }
+
+    val strings = LocalUiStrings.current
+    var index by remember(achievements) { mutableStateOf(0) }
+    val achievement = achievements[index.coerceIn(0, achievements.lastIndex)]
+    val transition = rememberInfiniteTransition(label = "achievement-fireworks")
+    val phase by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1_500),
+            repeatMode = RepeatMode.Restart,
+        ),
+        label = "achievement-fireworks-phase",
+    )
+    val primary = MaterialTheme.colorScheme.primary
+    val secondary = MaterialTheme.colorScheme.secondary
+    val tertiary = MaterialTheme.colorScheme.tertiary
+
+    Dialog(
+        onDismissRequest = {},
+        properties = DialogProperties(
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false,
+            usePlatformDefaultWidth = false,
+        ),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                val centers = listOf(
+                    Offset(size.width * 0.5f, size.height * 0.5f),
+                    Offset(size.width * 0.24f, size.height * 0.38f),
+                    Offset(size.width * 0.76f, size.height * 0.38f),
+                )
+                val colors = listOf(primary, secondary, tertiary)
+                centers.forEachIndexed { burstIndex, center ->
+                    val burstPhase = (phase + burstIndex * 0.22f) % 1f
+                    val radius = 28f + burstPhase * 150f
+                    val alpha = (1f - burstPhase).coerceIn(0f, 1f)
+                    repeat(18) { particle ->
+                        val angle = (particle / 18f) * (Math.PI * 2.0)
+                        val point = Offset(
+                            x = center.x + cos(angle).toFloat() * radius,
+                            y = center.y + sin(angle).toFloat() * radius,
+                        )
+                        drawCircle(
+                            color = colors[burstIndex].copy(alpha = alpha),
+                            radius = 5f,
+                            center = point,
+                        )
+                    }
+                }
+            }
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp),
+            ) {
+                Column(
+                    modifier = Modifier.padding(LayoutSpacing.card),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Text(
+                        text = strings.achievementUnlockedTitle(achievements.size),
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        text = "🏆",
+                        style = MaterialTheme.typography.displayMedium,
+                    )
+                    Text(
+                        text = strings.achievementTitle(achievement.kind),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        text = strings.achievementDescription(achievement.kind),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    Text(
+                        text = strings.achievementReward(achievement.rewardXp),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold,
+                    )
+
+                    if (achievements.size > 1) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            TextButton(
+                                onClick = {
+                                    index = if (index == 0) achievements.lastIndex else index - 1
+                                },
+                            ) {
+                                Text("‹")
+                            }
+                            Text(
+                                text = "${index + 1}/${achievements.size}",
+                                style = MaterialTheme.typography.labelLarge,
+                            )
+                            TextButton(
+                                onClick = {
+                                    index = if (index == achievements.lastIndex) 0 else index + 1
+                                },
+                            ) {
+                                Text("›")
+                            }
+                        }
+                    }
+
+                    Button(
+                        onClick = onDismiss,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(strings.closeAchievement)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 private fun ResultsScreen(controller: TrainerController) {
     val strings = LocalUiStrings.current
     val accuracy = if (controller.answeredQuestions == 0) {
@@ -2397,6 +2787,12 @@ private fun StatisticsActivityScreen(controller: TrainerController) {
                                     text = strings.achievementDescription(achievement.kind),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                                Text(
+                                    text = strings.achievementReward(achievement.rewardXp),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontWeight = FontWeight.SemiBold,
                                 )
                                 if (!achievement.unlocked) {
                                     Text(

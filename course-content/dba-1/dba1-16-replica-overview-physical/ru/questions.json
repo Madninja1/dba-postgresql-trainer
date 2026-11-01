@@ -5,7 +5,7 @@
     {
       "key": "dba1-replica-logical-001",
       "type": "single_choice",
-      "text": "Что передаёт логическая репликация PostgreSQL согласно материалу занятия?",
+      "text": "Что передаёт логическая репликация PostgreSQL?",
       "answers": [
         {
           "key": "a",
@@ -41,7 +41,7 @@
     {
       "key": "dba1-replica-logical-002",
       "type": "multiple_choice",
-      "text": "Какие свойства логической репликации отличают её от физической в изложении занятия? Выберите все правильные варианты.",
+      "text": "Какие свойства логической репликации отличают её от физической? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -113,7 +113,7 @@
     {
       "key": "dba1-replica-logical-004",
       "type": "multiple_choice",
-      "text": "Что может задавать публикация в PostgreSQL 16 согласно материалу? Выберите все правильные варианты.",
+      "text": "Что может задавать публикация в PostgreSQL 16? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -329,7 +329,7 @@
     {
       "key": "dba1-replica-logical-010",
       "type": "multiple_choice",
-      "text": "Какие способы идентификации строки для логической репликации рассматриваются в занятии? Выберите все правильные варианты.",
+      "text": "Какие способы идентификации строки поддерживает логическая репликация PostgreSQL? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -401,7 +401,7 @@
     {
       "key": "dba1-replica-logical-012",
       "type": "multiple_choice",
-      "text": "Что не реплицируется встроенной логической репликацией согласно занятию? Выберите все правильные варианты.",
+      "text": "Что не реплицируется встроенной логической репликацией? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -437,7 +437,7 @@
     {
       "key": "dba1-replica-logical-013",
       "type": "single_choice",
-      "text": "Какие отношения могут непосредственно участвовать во встроенной логической репликации согласно материалу?",
+      "text": "Какие отношения могут непосредственно участвовать во встроенной логической репликации?",
       "answers": [
         {
           "key": "a",
@@ -545,7 +545,7 @@
     {
       "key": "dba1-replica-logical-016",
       "type": "multiple_choice",
-      "text": "Какие утверждения о конфликтах логической репликации соответствуют материалу? Выберите все правильные варианты.",
+      "text": "Какие утверждения о конфликтах логической репликации верны? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -617,7 +617,7 @@
     {
       "key": "dba1-replica-logical-018",
       "type": "multiple_choice",
-      "text": "Какие задачи логической репликации рассматриваются в занятии? Выберите все правильные варианты.",
+      "text": "Какие задачи может решать логическая репликация PostgreSQL? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -720,6 +720,186 @@
         "section": "Разнонаправленная репликация",
         "locator": "Практика и ограничения",
         "url": "https://postgrespro.ru/docs/postgresql/16/logical-replication-restrictions"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-021",
+      "type": "single_choice",
+      "text": "Какое значение wal_level требуется на публикующем сервере для встроенной логической репликации?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "logical",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "minimal",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "replica без дополнительной информации логического декодирования",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "off",
+          "correct": false
+        }
+      ],
+      "explanation": "Логическое декодирование требует wal_level = logical, который добавляет сведения, необходимые для интерпретации изменений строк.",
+      "source": {
+        "key": "dba1-16-wal-level-logical",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Уровни журнала",
+        "locator": "wal_level для логического декодирования",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-logical-022",
+      "type": "multiple_choice",
+      "text": "Какие последствия может иметь долго неактивный слот логической репликации? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Publisher вынужден удерживать WAL, ещё нужный подписчику",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Может удерживаться горизонт очистки",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Потребление дискового пространства на publisher может расти",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Неактивный слот автоматически переводит подписчика на физическую репликацию",
+          "correct": false
+        }
+      ],
+      "explanation": "Слот сохраняет необходимые данные для отставшего подписчика; длительная неактивность требует контроля за WAL и очисткой.",
+      "source": {
+        "key": "dba1-16-inactive-slot",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Особенности",
+        "locator": "Неактивный слот и удержание ресурсов",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-replica-logical-023",
+      "type": "single_choice",
+      "text": "Что важно при репликации TRUNCATE для таблиц, связанных внешними ключами?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "В подписке должны присутствовать необходимые связанные таблицы, иначе применение TRUNCATE может завершиться ошибкой",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "TRUNCATE всегда игнорирует внешние ключи на subscriber",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "TRUNCATE автоматически превращается в DELETE для каждой строки",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Для TRUNCATE достаточно включить только sequence, связанную с таблицей",
+          "correct": false
+        }
+      ],
+      "explanation": "Ограничения логической репликации требуют учитывать внешние ключи: применение TRUNCATE должно быть допустимо на стороне подписчика.",
+      "source": {
+        "key": "postgresql-16-logical-restrictions-truncate",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Ограничения",
+        "locator": "TRUNCATE и внешние ключи",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logical-replication-restrictions"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-024",
+      "type": "multiple_choice",
+      "text": "Как корректно создать логическую подписку на публикацию в том же кластере, чтобы избежать блокировки при создании слота? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Создать логический replication slot отдельно",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "При CREATE SUBSCRIPTION указать create_slot = false",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Избежать попытки той же команды ждать создания слота через собственное подключение",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Обязательно использовать физический слот вместо логического",
+          "correct": false
+        }
+      ],
+      "explanation": "В PostgreSQL 16 CREATE SUBSCRIPTION внутри того же кластера может зависнуть, если пытается одновременно создать слот; документация рекомендует создать логический слот отдельно и использовать create_slot = false.",
+      "source": {
+        "key": "postgresql-16-create-subscription-same-cluster",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Практика",
+        "locator": "Подписка внутри одного кластера",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-createsubscription"
+      }
+    },
+    {
+      "key": "dba1-replica-logical-025",
+      "type": "multiple_choice",
+      "text": "Какие параметры подписки помогают настроить двунаправленную логическую репликацию без повторного копирования данных и обратной пересылки уже полученных изменений? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "copy_data = false — не выполнять повторное начальное копирование существующих строк",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "origin = none — запрашивать изменения без replication origin и уменьшать риск отправки обратно уже полученных изменений",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Оба параметра задаются при создании подписок на двух серверах в упражнении",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "origin = any гарантирует автоматическое разрешение конфликтов master-master",
+          "correct": false
+        }
+      ],
+      "explanation": "В практической двунаправленной схеме занятия явно используются copy_data = false и origin = none; конфликты при этом всё равно должны предотвращаться проектированием.",
+      "source": {
+        "key": "postgresql-16-bidirectional-subscription-params",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Разнонаправленная репликация",
+        "locator": "copy_data = false и origin = none",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-createsubscription"
       }
     }
   ]

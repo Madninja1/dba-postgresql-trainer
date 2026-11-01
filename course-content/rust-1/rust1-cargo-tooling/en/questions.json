@@ -1,0 +1,1060 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-cargo-tooling",
+  "questions": [
+    {
+      "key": "rust1-cargo-tooling-001",
+      "type": "single_choice",
+      "text": "Which main Cargo profile is used by the ordinary `cargo build` command?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`dev`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`release`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`test-only`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`publish`",
+          "correct": false
+        }
+      ],
+      "explanation": "An ordinary build uses the `dev` profile; `cargo build --release` switches to the `release` profile.",
+      "source": {
+        "key": "rust1-cargo-tooling-profiles",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 384–386",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-002",
+      "type": "multiple_choice",
+      "text": "Which statements about the `dev` and `release` profiles are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`dev` is aimed at faster repeated builds",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`release` uses more optimization",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`cargo build --release` creates a release build",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Profiles cannot be configured in `Cargo.toml`",
+          "correct": false
+        }
+      ],
+      "explanation": "Cargo separates development and release profiles, and their settings can be overridden in `Cargo.toml`.",
+      "source": {
+        "key": "rust1-cargo-tooling-profiles-q002",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 384–386",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-003",
+      "type": "single_choice",
+      "text": "Which Cargo profile setting controls the compiler optimization level?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`opt-level`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`edition`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`resolver`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`license`",
+          "correct": false
+        }
+      ],
+      "explanation": "`opt-level` sets the profile optimization level; the book shows different defaults for `dev` and `release`.",
+      "source": {
+        "key": "rust1-cargo-tooling-profiles-q003",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 384–386",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-004",
+      "type": "multiple_choice",
+      "text": "Which statements about Rust documentation comments are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`///` documents the following item",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`//!` documents the current container, such as a crate or module",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Documentation supports Markdown",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Documentation comments are always ignored by `cargo doc`",
+          "correct": false
+        }
+      ],
+      "explanation": "`///` applies to the next item, while `//!` applies to the containing module or crate. Cargo uses these comments when generating documentation.",
+      "source": {
+        "key": "rust1-cargo-tooling-docs",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 387–391",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-006",
+      "type": "multiple_choice",
+      "text": "Which statements about code examples in documentation are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They can be written in documentation comments",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`cargo test` checks them as doc tests",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "They help detect examples that became outdated after an API change",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "They run only after `cargo publish`",
+          "correct": false
+        }
+      ],
+      "explanation": "Documentation examples participate in testing, so an API change can reveal a broken example before publication.",
+      "source": {
+        "key": "rust1-cargo-tooling-doc-tests",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 389–391",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-007",
+      "type": "single_choice",
+      "text": "What is `pub use` used for when designing a library API?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To re-export items through a more convenient public path",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To enable the release profile",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To create a dependency automatically",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To run unit tests invisibly",
+          "correct": false
+        }
+      ],
+      "explanation": "`pub use` separates internal module structure from the public path presented to library users.",
+      "source": {
+        "key": "rust1-cargo-tooling-pub-use",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 392–394",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-008",
+      "type": "multiple_choice",
+      "text": "Which statements about publishing a version to crates.io are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Publishing is done with `cargo publish`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A published version cannot simply be overwritten with new contents",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "For a new version, change `version` and publish again",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Published source for a version can be completely deleted with a normal `cargo yank`",
+          "correct": false
+        }
+      ],
+      "explanation": "The book emphasizes that a published version is permanent. Changes are released as a new version, while `yank` does not remove existing code.",
+      "source": {
+        "key": "rust1-cargo-tooling-publish",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 395–398",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-010",
+      "type": "multiple_choice",
+      "text": "What does `cargo yank` do to a published version? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Prevents new dependency resolution from selecting that version",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Does not break existing projects that already locked the version in `Cargo.lock`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Does not remove the published source code",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Can be undone with `--undo`",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Deletes the published version archive from crates.io",
+          "correct": false
+        }
+      ],
+      "explanation": "`yank` removes a version from new dependency resolution while preserving existing builds and the version archive; it can also be undone.",
+      "source": {
+        "key": "rust1-cargo-tooling-yank",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 396–398",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-011",
+      "type": "single_choice",
+      "text": "What is a Cargo workspace?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A group of related packages developed together",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only the `target/release` directory",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A separate registry for private crates",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A way to replace all `Cargo.toml` files with one file and no packages",
+          "correct": false
+        }
+      ],
+      "explanation": "A workspace groups multiple Cargo packages developed together while retaining separate package manifests.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 399–405",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-012",
+      "type": "multiple_choice",
+      "text": "What is normally shared by packages in one workspace? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "One `Cargo.lock`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A shared `target/` directory",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Each package still has its own `Cargo.toml`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "All packages automatically receive every dependency of neighboring packages",
+          "correct": false
+        }
+      ],
+      "explanation": "A workspace shares its lock file and build directory, but each package keeps its own manifest and dependency list.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace-q012",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 399–405",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-013",
+      "type": "single_choice",
+      "text": "Packages `adder` and `add_one` are in the same workspace. What is required for `adder` to use `add_one`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Explicitly declare `add_one` as a dependency, for example with a path dependency",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Nothing: workspace membership automatically imports the crate",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only run `cargo install add_one`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Add `pub use` to the root `Cargo.toml`",
+          "correct": false
+        }
+      ],
+      "explanation": "Workspace membership does not create dependencies automatically; a package must list another package in `[dependencies]`.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace-deps",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 400–403",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-014",
+      "type": "multiple_choice",
+      "text": "Which statements about external dependencies inside a workspace are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The shared `Cargo.lock` records consistent selected versions",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A package must declare an external dependency itself to use it",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A dependency in a neighboring package does not make it automatically available",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Adding the dependency only to the root `[workspace]` always makes it available to every package without declaration",
+          "correct": false
+        }
+      ],
+      "explanation": "A shared lock file does not replace each package's `[dependencies]`; crate availability is defined by the package manifest.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace-deps-q014",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 402–404",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-015",
+      "type": "multiple_choice",
+      "text": "Which Cargo commands let you work with a specific workspace package? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`cargo run -p adder`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`cargo test -p add_one`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`cargo test` for the entire workspace",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`cargo use -p adder`",
+          "correct": false
+        }
+      ],
+      "explanation": "The `-p` flag selects a package for a Cargo command, while `cargo test` from the root can test the whole workspace.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace-commands",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 403–405",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-016",
+      "type": "single_choice",
+      "text": "What is the `cargo install` command used for?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Installing executable Rust programs from crates.io",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Adding a library dependency to the current project's `[dependencies]`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Creating a workspace",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Generating documentation",
+          "correct": false
+        }
+      ],
+      "explanation": "`cargo install` installs packages with binary targets—ready-to-run command-line programs.",
+      "source": {
+        "key": "rust1-cargo-tooling-cargo-install",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 406",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-018",
+      "type": "multiple_choice",
+      "text": "What is required for a custom Cargo subcommand? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The executable must be available through `$PATH`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Its filename must match the `cargo-something` pattern",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It can then be invoked as `cargo something`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Cargo itself must be recompiled",
+          "correct": false
+        }
+      ],
+      "explanation": "Cargo discovers external `cargo-*` executables in `$PATH` and exposes them as subcommands without modifying Cargo itself.",
+      "source": {
+        "key": "rust1-cargo-tooling-cargo-subcommands",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 406–407",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-020",
+      "type": "multiple_choice",
+      "text": "Which tasks can Cargo perform in a typical Rust project? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Choosing and configuring compilation profiles",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Generating and testing documentation",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Organizing multiple packages through workspaces",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Publishing and installing crates/CLI tools",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Managing operating-system packages outside the Rust ecosystem",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter treats Cargo as a project-lifecycle tool covering profiles, documentation, crates.io, workspaces, program installation, and extensions.",
+      "source": {
+        "key": "rust1-cargo-tooling-overview",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 383–407",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-022",
+      "type": "multiple_choice",
+      "text": "Why do optimization settings differ between `dev` and `release`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Fast repeated compilation matters during development",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Execution speed matters more for the final program",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "More optimization can increase compilation time",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`release` must compile faster than `dev` at any cost",
+          "correct": false
+        }
+      ],
+      "explanation": "The material explains the trade-off between compilation time during development and execution speed of the finished program.",
+      "source": {
+        "key": "rust1-cargo-tooling-profiles-q002",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 384–386",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-023",
+      "type": "single_choice",
+      "text": "Where is the development profile configured in `Cargo.toml`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "In the `[profile.dev]` section",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "In `[dependencies]`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "In `[workspace]`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "In `[features.release]`",
+          "correct": false
+        }
+      ],
+      "explanation": "The book shows development-profile overrides in `[profile.dev]`.",
+      "source": {
+        "key": "rust1-cargo-tooling-profile-config",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 384–386",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-028",
+      "type": "multiple_choice",
+      "text": "Which benefits does `pub use` provide when designing a crate's public API? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Users get shorter public paths",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Internal structure can differ from the public API",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Important types and functions can be re-exported upward",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`pub use` physically moves source files",
+          "correct": false
+        }
+      ],
+      "explanation": "`pub use` separates internal module organization from the user-facing API.",
+      "source": {
+        "key": "rust1-cargo-tooling-pub-use-q028",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 392–394",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-035",
+      "type": "single_choice",
+      "text": "How do you release a fixed version of an already-published library?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Change `version` according to SemVer and run `cargo publish` again",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Overwrite the old version with `--force`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Delete the old version",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Change only `Cargo.lock`",
+          "correct": false
+        }
+      ],
+      "explanation": "Changes are published as a new version rather than overwriting the old one.",
+      "source": {
+        "key": "rust1-cargo-tooling-new-version",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 397",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-037",
+      "type": "single_choice",
+      "text": "How does the root `Cargo.toml` of a workspace that is not itself a package begin?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "With a `[workspace]` section",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "With `[package]`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "With `[profile.workspace]`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "With `[dependencies]`",
+          "correct": false
+        }
+      ],
+      "explanation": "The example root manifest contains `[workspace]`.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace-root",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 399–401",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-039",
+      "type": "single_choice",
+      "text": "Why does a workspace use a shared `target` directory?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "So packages can reuse artifacts and avoid unnecessary recompilation",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "So all packages share one source file",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "So no lock file is needed",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "So all crates are published automatically",
+          "correct": false
+        }
+      ],
+      "explanation": "The shared target directory lets packages reuse build results.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace-target",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 400–402",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-040",
+      "type": "multiple_choice",
+      "text": "What must be done when adding the `add_one` crate to a workspace? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Create the `add_one` package",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Add its path to `members`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "If `adder` uses it, add a path dependency",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Delete `add_one`'s `Cargo.toml`",
+          "correct": false
+        }
+      ],
+      "explanation": "Workspace membership and dependencies among packages are configured separately.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace-member",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 401–404",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-042",
+      "type": "multiple_choice",
+      "text": "How does a shared `Cargo.lock` help with a common external dependency such as `rand`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It records the selected version for the workspace",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It helps members use a consistent selected version",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It does not remove the need to declare the dependency in the package manifest",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It automatically makes `rand` available to all packages without `[dependencies]`",
+          "correct": false
+        }
+      ],
+      "explanation": "The lock file is shared, but every dependency still has to be declared by the package that uses it.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace-lock",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 403–404",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-043",
+      "type": "single_choice",
+      "text": "What does `cargo test` from the workspace root do?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Runs tests for all workspace packages",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Tests only the first member",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Publishes the packages",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Runs only root doc tests",
+          "correct": false
+        }
+      ],
+      "explanation": "The example runs tests for multiple workspace members with one command.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace-test",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 404–405",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-045",
+      "type": "single_choice",
+      "text": "How are crates from one workspace published?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Each crate is published separately",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Always with one atomic command",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only the root workspace is published",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Workspace crates cannot be published",
+          "correct": false
+        }
+      ],
+      "explanation": "The book notes that each crate is published separately.",
+      "source": {
+        "key": "rust1-cargo-tooling-workspace-publish",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 405",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-046",
+      "type": "multiple_choice",
+      "text": "Which packages can be installed with `cargo install`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Packages with binary targets",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "CLI tools from crates.io",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "For example, `ripgrep`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Any library solely to add its API to `[dependencies]`",
+          "correct": false
+        }
+      ],
+      "explanation": "`cargo install` is intended for executable programs.",
+      "source": {
+        "key": "rust1-cargo-tooling-install",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 405–406",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-049",
+      "type": "single_choice",
+      "text": "How does Cargo use an external executable named `cargo-something`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It can be invoked as `cargo something`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only by its full path",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "As `cargo run something`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Cargo always renames it",
+          "correct": false
+        }
+      ],
+      "explanation": "Cargo recognizes `cargo-`-prefixed binaries in PATH as subcommands.",
+      "source": {
+        "key": "rust1-cargo-tooling-subcommands",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 406–407",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-cargo-tooling-050",
+      "type": "multiple_choice",
+      "text": "Which properties allow Cargo to be extended with external subcommands? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A subcommand can be added without modifying Cargo",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "An extension can be installed with `cargo install`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Custom commands appear in `cargo --list`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Extensions must be part of the standard library",
+          "correct": false
+        }
+      ],
+      "explanation": "Cargo is designed to be extended with external subcommands.",
+      "source": {
+        "key": "rust1-cargo-tooling-subcommands-q050",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Cargo as a Working Tool",
+        "locator": "Chapter 14 — Cargo as a Working Tool, pp. 406–407",
+        "url": null
+      }
+    }
+  ]
+}

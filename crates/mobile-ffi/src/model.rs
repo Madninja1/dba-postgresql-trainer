@@ -200,8 +200,10 @@ pub enum MobileProgressRank {
     PsqlTrainee,
     QueryAdept,
     SchemaKeeper,
+    CatalogAnalyst,
     PlanReader,
     WalOperator,
+    ReplicationEngineer,
     PostgresGuardian,
     MadNinjaDba,
 }
@@ -216,17 +218,25 @@ pub enum MobileAchievementRarity {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, uniffi::Enum)]
 pub enum MobileAchievementKind {
-    FirstAnswer,
-    HundredAnswers,
-    PerfectTwenty,
-    QuizVeteran,
-    FirstSql,
-    OneShot,
-    QueryNinja,
-    SevenDayStreak,
-    ThirtyDayStreak,
-    CourseMaster,
-    MadNinja,
+    FirstStep,
+    PerfectQuiz,
+    ConfidentKnowledge,
+    FirstTopicMastery,
+    CourseCompleted,
+    Perfectionist,
+    SqlMaster,
+    RustMaster,
+    PostgresDba,
+    PlPgSqlDeveloper,
+    Wave,
+    FlawlessStreak,
+    IronFocus,
+    LearnFromMistakes,
+    FixedTen,
+    ClosedGaps,
+    Explorer,
+    Universal,
+    FullDbaStack,
 }
 
 #[derive(Debug, Clone, uniffi::Record)]
@@ -236,6 +246,7 @@ pub struct MobileAchievementProgress {
     pub unlocked: bool,
     pub current: u64,
     pub target: u64,
+    pub reward_xp: u64,
 }
 
 #[derive(Debug, Clone, uniffi::Record)]
@@ -805,8 +816,10 @@ impl From<ProgressRank> for MobileProgressRank {
             ProgressRank::PsqlTrainee => Self::PsqlTrainee,
             ProgressRank::QueryAdept => Self::QueryAdept,
             ProgressRank::SchemaKeeper => Self::SchemaKeeper,
+            ProgressRank::CatalogAnalyst => Self::CatalogAnalyst,
             ProgressRank::PlanReader => Self::PlanReader,
             ProgressRank::WalOperator => Self::WalOperator,
+            ProgressRank::ReplicationEngineer => Self::ReplicationEngineer,
             ProgressRank::PostgresGuardian => Self::PostgresGuardian,
             ProgressRank::MadNinjaDba => Self::MadNinjaDba,
         }
@@ -827,17 +840,25 @@ impl From<AchievementRarity> for MobileAchievementRarity {
 impl From<AchievementKind> for MobileAchievementKind {
     fn from(value: AchievementKind) -> Self {
         match value {
-            AchievementKind::FirstAnswer => Self::FirstAnswer,
-            AchievementKind::HundredAnswers => Self::HundredAnswers,
-            AchievementKind::PerfectTwenty => Self::PerfectTwenty,
-            AchievementKind::QuizVeteran => Self::QuizVeteran,
-            AchievementKind::FirstSql => Self::FirstSql,
-            AchievementKind::OneShot => Self::OneShot,
-            AchievementKind::QueryNinja => Self::QueryNinja,
-            AchievementKind::SevenDayStreak => Self::SevenDayStreak,
-            AchievementKind::ThirtyDayStreak => Self::ThirtyDayStreak,
-            AchievementKind::CourseMaster => Self::CourseMaster,
-            AchievementKind::MadNinja => Self::MadNinja,
+            AchievementKind::FirstStep => Self::FirstStep,
+            AchievementKind::PerfectQuiz => Self::PerfectQuiz,
+            AchievementKind::ConfidentKnowledge => Self::ConfidentKnowledge,
+            AchievementKind::FirstTopicMastery => Self::FirstTopicMastery,
+            AchievementKind::CourseCompleted => Self::CourseCompleted,
+            AchievementKind::Perfectionist => Self::Perfectionist,
+            AchievementKind::SqlMaster => Self::SqlMaster,
+            AchievementKind::RustMaster => Self::RustMaster,
+            AchievementKind::PostgresDba => Self::PostgresDba,
+            AchievementKind::PlPgSqlDeveloper => Self::PlPgSqlDeveloper,
+            AchievementKind::Wave => Self::Wave,
+            AchievementKind::FlawlessStreak => Self::FlawlessStreak,
+            AchievementKind::IronFocus => Self::IronFocus,
+            AchievementKind::LearnFromMistakes => Self::LearnFromMistakes,
+            AchievementKind::FixedTen => Self::FixedTen,
+            AchievementKind::ClosedGaps => Self::ClosedGaps,
+            AchievementKind::Explorer => Self::Explorer,
+            AchievementKind::Universal => Self::Universal,
+            AchievementKind::FullDbaStack => Self::FullDbaStack,
         }
     }
 }
@@ -850,6 +871,7 @@ impl From<AchievementProgress> for MobileAchievementProgress {
             unlocked: value.unlocked,
             current: value.current as u64,
             target: value.target as u64,
+            reward_xp: value.reward_xp as u64,
         }
     }
 }

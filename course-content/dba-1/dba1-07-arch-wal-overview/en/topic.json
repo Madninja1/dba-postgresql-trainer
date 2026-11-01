@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "dba-1",
+  "slug": "dba1-arch-wal-overview",
+  "notes_part": 7,
+  "topic_number": 7,
+  "title": "Buffer Cache and WAL",
+  "description": "Buffer cache architecture, page eviction, write-ahead logging, crash recovery, checkpoints, and PostgreSQL maintenance processes",
+  "sort_order": 70
+}

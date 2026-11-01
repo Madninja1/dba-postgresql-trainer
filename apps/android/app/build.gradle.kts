@@ -13,8 +13,16 @@ android {
         applicationId = "dev.dbatrainer.app"
         minSdk = 26
         targetSdk = 37
-        versionCode = 6
-        versionName = "0.6.0"
+        versionCode = 7
+        versionName = "0.7.0"
+
+        // Direct-download release APKs target modern physical Android devices.
+        // Without an ABI filter the Godot AAR contributes arm64-v8a,
+        // armeabi-v7a, x86 and x86_64 copies of libgodot_android.so, inflating
+        // a ~70 MB ARM64 game runtime into a ~300 MB universal APK.
+        ndk {
+            abiFilters += "arm64-v8a"
+        }
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -33,9 +41,22 @@ android {
     buildFeatures {
         compose = true
     }
+
+    sourceSets {
+        getByName("main").assets.srcDir("../../dba-world")
+    }
+
+    androidResources {
+        // Godot projects may contain hidden metadata directories. Keep the
+        // official Godot-compatible asset ignore pattern instead of Android's
+        // default pattern that drops hidden project data.
+        ignoreAssetsPattern = "!.svn:!.git:!.gitignore:!.ds_store:!*.scc:<dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"
+    }
 }
 
 dependencies {
+    implementation("org.godotengine:godot:4.7.2.stable")
+    implementation("androidx.fragment:fragment:1.8.6")
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)

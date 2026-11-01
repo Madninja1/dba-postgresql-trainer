@@ -344,7 +344,7 @@
     {
       "key": "pgcat1-logical-replication-010",
       "type": "multiple_choice",
-      "text": "Какие коды pg_subscription_rel.srsubstate указаны в материале?",
+      "text": "Какие значения `pg_subscription_rel.srsubstate` обозначают состояния синхронизации таблицы подписки?",
       "answers": [
         {
           "key": "a",

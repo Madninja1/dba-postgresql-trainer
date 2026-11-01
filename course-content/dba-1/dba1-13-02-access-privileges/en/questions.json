@@ -1,0 +1,772 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-access-privileges",
+  "questions": [
+    {
+      "key": "dba1-access-privileges-001",
+      "type": "single_choice",
+      "text": "What do PostgreSQL object privileges determine?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Which actions a role may perform on a specific object",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only how the role password is stored",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only the client network address",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The physical path to table files",
+          "correct": false
+        }
+      ],
+      "explanation": "The lecture describes privileges as the relationship between a subject — a role — and an object, defining the actions available to that role.",
+      "source": {
+        "key": "dba1-13-privilege-model",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Privileges",
+        "locator": "Roles, objects, and actions",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-privileges-002",
+      "type": "multiple_choice",
+      "text": "Which of the listed privileges apply to PostgreSQL tables? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "SELECT",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "INSERT",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "UPDATE",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "LOGIN",
+          "correct": false
+        }
+      ],
+      "explanation": "SELECT, INSERT, and UPDATE are table object privileges. LOGIN is a role attribute.",
+      "source": {
+        "key": "postgresql-16-ddl-privileges",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Privileges",
+        "locator": "Table privileges",
+        "url": "https://postgrespro.ru/docs/postgresql/16/ddl-priv"
+      }
+    },
+    {
+      "key": "dba1-access-privileges-003",
+      "type": "single_choice",
+      "text": "Which privilege allows reading data from a table or view?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "SELECT",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "REFERENCES",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "TRIGGER",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "TRUNCATE",
+          "correct": false
+        }
+      ],
+      "explanation": "The slide directly maps SELECT to reading data.",
+      "source": {
+        "key": "dba1-13-table-privileges",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Privileges",
+        "locator": "SELECT — reading data",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-privileges-004",
+      "type": "multiple_choice",
+      "text": "Which mappings between table privileges and actions are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "DELETE — delete rows",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "TRUNCATE — empty a table",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "TRIGGER — create triggers",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "REFERENCES — change the owner password",
+          "correct": false
+        }
+      ],
+      "explanation": "The notes list DELETE, TRUNCATE, TRIGGER, and REFERENCES among table privileges.",
+      "source": {
+        "key": "dba1-13-table-privileges-004",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Privileges",
+        "locator": "DELETE, TRUNCATE, TRIGGER, REFERENCES",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-privileges-005",
+      "type": "single_choice",
+      "text": "Which command grants a privilege to a role?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "GRANT",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "REVOKE",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "VACUUM",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "ANALYZE",
+          "correct": false
+        }
+      ],
+      "explanation": "GRANT is used to provide object privileges and role membership.",
+      "source": {
+        "key": "postgresql-16-grant",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Privilege Management",
+        "locator": "GRANT",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-grant"
+      }
+    },
+    {
+      "key": "dba1-access-privileges-006",
+      "type": "multiple_choice",
+      "text": "What can GRANT and REVOKE do? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Grant privileges on objects",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Revoke previously granted privileges",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Manage role membership",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Change the physical storage format of a table",
+          "correct": false
+        }
+      ],
+      "explanation": "In PostgreSQL, GRANT and REVOKE apply both to object privileges and to role membership.",
+      "source": {
+        "key": "postgresql-16-grant-revoke",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Privilege Management",
+        "locator": "GRANT and REVOKE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-revoke"
+      }
+    },
+    {
+      "key": "dba1-access-privileges-007",
+      "type": "single_choice",
+      "text": "Which role category model bypasses normal access-control checks?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Roles with the SUPERUSER attribute",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "All roles with LOGIN",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "All roles with CREATEDB",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "All members of the public role",
+          "correct": false
+        }
+      ],
+      "explanation": "The lecture treats superusers as a separate category: normal access-control checks are not performed for them.",
+      "source": {
+        "key": "dba1-13-role-categories",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Role Categories",
+        "locator": "Superusers",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-privileges-008",
+      "type": "multiple_choice",
+      "text": "Which statements about an object owner are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The owner initially receives all privileges for its object",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The owner can grant and revoke privileges on its object",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Some owner actions are not represented by ordinary object privileges",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The owner always automatically becomes a superuser",
+          "correct": false
+        }
+      ],
+      "explanation": "The material emphasizes the owner's special position, including the ability to drop the object and manage its privileges.",
+      "source": {
+        "key": "dba1-13-object-owner",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Role Categories",
+        "locator": "Object owners",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-privileges-009",
+      "type": "single_choice",
+      "text": "What determines access for an ordinary role that is neither a superuser nor the object owner?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Privileges granted to the role",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only the presence of the LOGIN attribute",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only the order of rows in pg_hba.conf",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The physical location of the object",
+          "correct": false
+        }
+      ],
+      "explanation": "The third category in the lecture is other roles, whose access to an object is limited by granted privileges.",
+      "source": {
+        "key": "dba1-13-role-categories-009",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Role Categories",
+        "locator": "Other roles",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-privileges-010",
+      "type": "multiple_choice",
+      "text": "Which statements about group roles are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They are used to group privilege sets",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Such roles are usually created with NOLOGIN",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "An ordinary role can be made a member of a group role",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A group role must have SUPERUSER",
+          "correct": false
+        }
+      ],
+      "explanation": "The notes define a group role as a convenient named set of privileges that can be assigned to users through membership.",
+      "source": {
+        "key": "postgresql-16-role-membership",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Group Roles",
+        "locator": "Role membership",
+        "url": "https://postgrespro.ru/docs/postgresql/16/role-membership"
+      }
+    },
+    {
+      "key": "dba1-access-privileges-011",
+      "type": "single_choice",
+      "text": "What is the PUBLIC pseudo-role?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "An implicit group that includes all roles",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The name of the mandatory superuser",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A role only for database owners",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A system role for running autovacuum",
+          "correct": false
+        }
+      ],
+      "explanation": "If a privilege is granted to PUBLIC, it effectively becomes available to all roles because PUBLIC implicitly includes them.",
+      "source": {
+        "key": "dba1-13-public-role",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Group Roles",
+        "locator": "PUBLIC pseudo-role",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-privileges-012",
+      "type": "multiple_choice",
+      "text": "Which statements about role membership and attributes are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Roles can be made members of other roles",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Such membership is useful for privilege management",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Attributes of a containing role are not inherited in the same way as object privileges",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Membership automatically makes every role a superuser",
+          "correct": false
+        }
+      ],
+      "explanation": "The lecture explicitly notes that role attributes are not inherited like ordinary privileges; when necessary, a session can switch to the containing role.",
+      "source": {
+        "key": "dba1-13-role-membership",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Group Roles",
+        "locator": "Inheritance and role switching",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-privileges-013",
+      "type": "single_choice",
+      "text": "How do you list roles in psql, including predefined system roles?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\duS",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\dtS",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "\\dnS",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "\\dbS",
+          "correct": false
+        }
+      ],
+      "explanation": "The notes show \\duS for displaying the complete role list, including predefined roles.",
+      "source": {
+        "key": "postgresql-16-predefined-roles",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Predefined Roles",
+        "locator": "\\duS",
+        "url": "https://postgrespro.ru/docs/postgresql/16/predefined-roles"
+      }
+    },
+    {
+      "key": "dba1-access-privileges-014",
+      "type": "multiple_choice",
+      "text": "What can the default-privileges mechanism do? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Automatically grant privileges when new objects are created",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Automatically revoke specified privileges for new objects",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Configure future privileges for objects created by a particular role",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Retroactively change privileges on all existing objects automatically",
+          "correct": false
+        }
+      ],
+      "explanation": "ALTER DEFAULT PRIVILEGES affects privileges on objects that will be created in the future; it is not a bulk replacement of privileges on existing objects.",
+      "source": {
+        "key": "postgresql-16-default-privileges",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Default Privileges",
+        "locator": "ALTER DEFAULT PRIVILEGES",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-alterdefaultprivileges"
+      }
+    },
+    {
+      "key": "dba1-access-privileges-015",
+      "type": "single_choice",
+      "text": "Which object privilege applies to PostgreSQL functions and procedures?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "EXECUTE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "SELECT",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "TRIGGER",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "CONNECT",
+          "correct": false
+        }
+      ],
+      "explanation": "For functions and procedures, the material identifies a single object privilege: EXECUTE.",
+      "source": {
+        "key": "dba1-13-routine-execute",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Routines",
+        "locator": "EXECUTE",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-privileges-016",
+      "type": "multiple_choice",
+      "text": "Which statements about SECURITY INVOKER and SECURITY DEFINER are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "SECURITY INVOKER runs the routine with the privileges of the calling role",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "SECURITY DEFINER runs the routine with the privileges of its owner",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "SECURITY INVOKER is the default in the shown material",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "SECURITY DEFINER automatically turns the calling role into a superuser",
+          "correct": false
+        }
+      ],
+      "explanation": "The distinction is the privilege context in which the code runs: the calling user or the routine owner.",
+      "source": {
+        "key": "dba1-13-routine-security",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Routines",
+        "locator": "SECURITY INVOKER and SECURITY DEFINER",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-access-privileges-017",
+      "type": "multiple_choice",
+      "text": "Which mappings between PostgreSQL object types and privileges are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Tablespace — CREATE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Database — CONNECT, CREATE, and TEMPORARY",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Schema — USAGE and CREATE",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Sequence — SELECT, UPDATE, and USAGE",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Function — TRUNCATE",
+          "correct": false
+        }
+      ],
+      "explanation": "The privilege set depends on object type: a tablespace has CREATE; a database has CONNECT/CREATE/TEMPORARY; a schema has USAGE/CREATE; and a sequence has SELECT/UPDATE/USAGE.",
+      "source": {
+        "key": "dba1-13-object-privileges",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Privileges",
+        "locator": "Slide 10 and PostgreSQL 16 privilege table",
+        "url": "https://postgrespro.ru/docs/postgresql/16/ddl-priv"
+      }
+    },
+    {
+      "key": "dba1-access-privileges-018",
+      "type": "multiple_choice",
+      "text": "Which privileges does PostgreSQL 16 grant to PUBLIC by default for newly created objects of the corresponding types? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "CONNECT and TEMPORARY for databases",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "EXECUTE for functions and procedures",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "USAGE for languages and data types",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "SELECT for all newly created user tables",
+          "correct": false
+        }
+      ],
+      "explanation": "In PostgreSQL 16, PUBLIC automatically receives some privileges: CONNECT/TEMPORARY on databases, EXECUTE on functions and procedures, and USAGE on languages and types. PUBLIC does not receive SELECT on user tables by default.",
+      "source": {
+        "key": "dba1-13-public-defaults",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Default Privileges",
+        "locator": "Default privileges for PUBLIC",
+        "url": "https://postgrespro.ru/docs/postgresql/16/ddl-priv"
+      }
+    },
+    {
+      "key": "dba1-access-privileges-019",
+      "type": "single_choice",
+      "text": "What are PostgreSQL has_*_privilege functions intended for?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Check whether a role has a specified privilege on an object",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Change the authentication method in pg_hba.conf",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Rebuild tables without locks",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Create a role password automatically",
+          "correct": false
+        }
+      ],
+      "explanation": "After discussing role categories, the material points to the has_*_privilege family as a way to programmatically test for a specific privilege on an object.",
+      "source": {
+        "key": "dba1-13-privilege-check",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Role Categories",
+        "locator": "has_*_privilege functions",
+        "url": "https://postgrespro.ru/docs/postgresql/16/functions-info"
+      }
+    },
+    {
+      "key": "dba1-access-privileges-020",
+      "type": "multiple_choice",
+      "text": "Which measures belong to safe use of a SECURITY DEFINER function? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Remove schemas writable by untrusted users from search_path",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Place pg_temp at the end of a safe search_path",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Restrict EXECUTE if the function should not be available to everyone through PUBLIC",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Always grant SUPERUSER to calling roles",
+          "correct": false
+        }
+      ],
+      "explanation": "SECURITY DEFINER runs with the owner's privileges, so the linked documentation requires a protected search_path; for sensitive functions, the automatically granted PUBLIC EXECUTE privilege should also be controlled.",
+      "source": {
+        "key": "dba1-13-security-definer",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Routines",
+        "locator": "Writing SECURITY DEFINER functions safely",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-createfunction"
+      }
+    },
+    {
+      "key": "dba1-access-privileges-021",
+      "type": "multiple_choice",
+      "text": "Which mappings between predefined PostgreSQL roles and their purposes are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_read_all_settings — read all server settings",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_read_all_stats — extended access to statistics",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_read_all_data — read data from all tables, views, and sequences with the necessary schema USAGE privileges",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_write_all_data — write data without automatically getting BYPASSRLS",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "pg_monitor — automatically obtain SUPERUSER",
+          "correct": false
+        }
+      ],
+      "explanation": "Predefined roles allow administrative capabilities to be delegated without SUPERUSER. pg_monitor and related monitoring roles provide limited access to system information, while pg_read_all_data/pg_write_all_data provide data access without automatically bypassing RLS.",
+      "source": {
+        "key": "dba1-13-predefined-roles",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Predefined Roles",
+        "locator": "Slide 15 and PostgreSQL 16 section 22.5",
+        "url": "https://postgrespro.ru/docs/postgresql/16/predefined-roles"
+      }
+    }
+  ]
+}

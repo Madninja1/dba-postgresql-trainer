@@ -1,0 +1,870 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-tools-psql",
+  "questions": [
+    {
+      "key": "dba1-tools-psql-001",
+      "type": "multiple_choice",
+      "text": "Which capabilities does psql provide? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Interactive execution of SQL queries",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Executing commands from files",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Using psql's own meta-commands",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Automatically initializing a new PostgreSQL cluster on every startup",
+          "correct": false
+        }
+      ],
+      "explanation": "psql is PostgreSQL's terminal client. It can execute queries interactively, read commands from files or command-line arguments, and provides its own meta-commands.",
+      "source": {
+        "key": "dba1-tools-psql-purpose",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "psql",
+        "locator": "PostgreSQL 16 documentation — psql, “Description” section",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-002",
+      "type": "single_choice",
+      "text": "Which psql invocation specifies database appdb, user dba, server db01, and port 5433?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "psql -d appdb -U dba -h db01 -p 5433",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "psql -U appdb -d dba -p db01 -h 5433",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "psql -h appdb -p dba -d db01 -U 5433",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "psql -p appdb -h dba -U db01 -d 5433",
+          "correct": false
+        }
+      ],
+      "explanation": "In psql, -d specifies the database, -U the user, -h the host, and -p the server port.",
+      "source": {
+        "key": "dba1-tools-psql-connection",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Connection",
+        "locator": "Slide 4 “Connection”, starting psql",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-psql-003",
+      "type": "multiple_choice",
+      "text": "Which values does psql use by default if the corresponding connection parameters are not specified explicitly? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The database user name matches the operating-system user name",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The default database name matches the resolved database user name",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The database name is always postgres regardless of the user",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The database user is always postgres",
+          "correct": false
+        }
+      ],
+      "explanation": "If no user is specified, psql uses the operating-system user name by default. After the user has been determined, that name is also used as the default database name.",
+      "source": {
+        "key": "dba1-tools-psql-connection-defaults",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Connection",
+        "locator": "PostgreSQL 16 documentation — psql, “Connecting to a Database” section",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-004",
+      "type": "single_choice",
+      "text": "You are already inside psql. Which command shows information about the current connection?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\connect",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "\\conninfo",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "\\help",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "\\list",
+          "correct": false
+        }
+      ],
+      "explanation": "The \\conninfo command displays information about the current connection. The \\connect command establishes a new connection.",
+      "source": {
+        "key": "dba1-tools-psql-connection-004",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Connection",
+        "locator": "Slide 4 “Connection”, “Current connection information” block",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-psql-005",
+      "type": "multiple_choice",
+      "text": "Which mappings between help commands and their purposes are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\? — list and short description of psql commands",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\? variables — help for psql variables",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "\\h — help for SQL commands",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "\\q — display the syntax of an SQL command",
+          "correct": false
+        }
+      ],
+      "explanation": "In psql, \\? shows help for meta-commands, \\? variables shows help for psql variables, and \\h or \\help shows help for SQL commands. \\q exits psql.",
+      "source": {
+        "key": "dba1-tools-psql-help",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Getting Help",
+        "locator": "Slide 5 “Getting Help”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-psql-006",
+      "type": "single_choice",
+      "text": "What does the psql -c option do?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Passes the specified command to psql for execution",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Specifies the PostgreSQL configuration directory",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Always opens a new interactive connection after executing the command",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Enables only expanded display mode for results",
+          "correct": false
+        }
+      ],
+      "explanation": "The -c, or --command, option passes a command to psql for execution. When -c or -f is used, psql exits after processing the specified commands instead of reading commands from standard input.",
+      "source": {
+        "key": "dba1-tools-psql-command-line",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "psql",
+        "locator": "PostgreSQL 16 documentation — psql, -c/--command option",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-007",
+      "type": "multiple_choice",
+      "text": "Which statements about the psql -f option are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It reads commands from the specified file",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It can be combined with the -c option",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Its purpose is largely equivalent to the \\i meta-command",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "After processing the file, psql always continues reading commands from standard input",
+          "correct": false
+        }
+      ],
+      "explanation": "The -f option reads commands from a file, can be repeated and combined with -c, and is essentially similar to the \\i meta-command. When -c or -f is present, psql exits after processing those options.",
+      "source": {
+        "key": "dba1-tools-psql-command-line-007",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "psql",
+        "locator": "PostgreSQL 16 documentation — psql, -f/--file option",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-008",
+      "type": "single_choice",
+      "text": "How does psql distinguish its own meta-command from an ordinary SQL command?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A meta-command starts with a backslash",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A meta-command always starts with two hyphens",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A meta-command must end with a colon",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A meta-command is enclosed in square brackets",
+          "correct": false
+        }
+      ],
+      "explanation": "Psql's own commands begin with a backslash. They are processed by psql itself rather than sent to the server as SQL.",
+      "source": {
+        "key": "dba1-tools-psql-metacommands",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Getting Help",
+        "locator": "Slide 5 “Getting Help”; PostgreSQL 16 documentation — psql, “Meta-Commands” section",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-009",
+      "type": "multiple_choice",
+      "text": "Which statements about entering SQL in interactive psql are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A semicolon normally terminates an SQL command and sends it to the server",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A normal newline does not by itself have to terminate an SQL command",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "An SQL command can be entered across multiple lines",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Any command beginning with a backslash is sent to the server as SQL",
+          "correct": false
+        }
+      ],
+      "explanation": "In normal mode, psql sends an SQL command to the server after the terminating semicolon. A newline does not necessarily terminate a statement, so SQL can be entered on multiple lines. Backslash meta-commands are processed by psql itself.",
+      "source": {
+        "key": "dba1-tools-psql-sql-input",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "psql",
+        "locator": "PostgreSQL 16 documentation — psql, “Entering SQL Commands” and “Meta-Commands” sections",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-010",
+      "type": "multiple_choice",
+      "text": "Which mappings between libpq environment variables and connection parameters are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "PGHOST — host",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "PGDATABASE — dbname",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "PGPORT — user",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "PGUSER — port",
+          "correct": false
+        }
+      ],
+      "explanation": "PGHOST corresponds to host, PGDATABASE to dbname, PGPORT to port, and PGUSER to user. These variables can supply default connection parameters.",
+      "source": {
+        "key": "dba1-tools-psql-libpq-envars",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Environment Variables",
+        "locator": "PostgreSQL 16 documentation — Section 34.15 “Environment Variables”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/libpq-envars"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-011",
+      "type": "single_choice",
+      "text": "Which password storage method is safer to use instead of the PGPASSWORD environment variable?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The .pgpass password file",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The PGPORT variable",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The PROMPT1 variable",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The postgresql.conf file",
+          "correct": false
+        }
+      ],
+      "explanation": "Using PGPASSWORD is not recommended for security reasons because on some systems process environment variables may be visible to other users. The documentation recommends using a password file instead.",
+      "source": {
+        "key": "dba1-tools-psql-libpq-envars-011",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Environment Variables",
+        "locator": "PostgreSQL 16 documentation — Section 34.15 “Environment Variables”, PGPASSWORD",
+        "url": "https://postgrespro.ru/docs/postgresql/16/libpq-envars"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-012",
+      "type": "single_choice",
+      "text": "Which format corresponds to an entry in the.pgpass file?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "host_name:port:database:user_name:password",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "user_name:password:host_name:database",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "database=user_name=password=port",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "host_name;database;password",
+          "correct": false
+        }
+      ],
+      "explanation": "A password-file line has five fields in this order: host name, port, database, user name, and password.",
+      "source": {
+        "key": "dba1-tools-psql-pgpass",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Password File",
+        "locator": "PostgreSQL 16 documentation — Section 34.16 “The Password File”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/libpq-pgpass"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-013",
+      "type": "multiple_choice",
+      "text": "Which rules for processing.pgpass entries are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The first four fields can use * to match any value",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The password from the first matching line is used",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The characters : and \\ inside a value are escaped with a backslash when necessary",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "If several lines match, the last one is always selected",
+          "correct": false
+        }
+      ],
+      "explanation": "The first four fields in .pgpass can contain the * wildcard, and lookup stops at the first matching entry. More specific entries should therefore be placed earlier when wildcards are used. Colons and backslashes are escaped.",
+      "source": {
+        "key": "dba1-tools-psql-pgpass-013",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Password File",
+        "locator": "PostgreSQL 16 documentation — Section 34.16 “The Password File”, format and entry selection",
+        "url": "https://postgrespro.ru/docs/postgresql/16/libpq-pgpass"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-014",
+      "type": "single_choice",
+      "text": "What happens on Unix if ~/.pgpass is accessible to group or other users?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The file is ignored",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "psql automatically fixes the permissions",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The file is used only for local connections",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "psql removes passwords from the file",
+          "correct": false
+        }
+      ],
+      "explanation": "On Unix, the password file must deny access to group and other users. The documentation gives mode 0600 as an appropriate setting. With less restrictive permissions, the file is ignored.",
+      "source": {
+        "key": "dba1-tools-psql-pgpass-014",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Password File",
+        "locator": "PostgreSQL 16 documentation — Section 34.16 “The Password File”, permissions",
+        "url": "https://postgrespro.ru/docs/postgresql/16/libpq-pgpass"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-015",
+      "type": "multiple_choice",
+      "text": "Which statements about pg_service.conf are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The file maps a set of connection parameters to a service name",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The service name can be specified through PGSERVICE",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The file uses an INI-like format in which the section name is the service name",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Changing service parameters requires recompiling the client application",
+          "correct": false
+        }
+      ],
+      "explanation": "The connection service file maps a service name to connection parameters. A service can be selected through PGSERVICE, and the file uses INI format. One purpose is to allow connection parameters to be changed without recompiling the application.",
+      "source": {
+        "key": "dba1-tools-psql-pgservice",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Connection Service File",
+        "locator": "PostgreSQL 16 documentation — Section 34.17 “The Connection Service File”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/libpq-pgservice"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-016",
+      "type": "single_choice",
+      "text": "The same connection parameter is set in an environment variable, pg_service.conf, and directly in the connection string. Which value has the highest priority?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The value specified directly in the connection string",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The value from the environment variable",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The value from pg_service.conf always has absolute priority",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "One of the three values is selected randomly",
+          "correct": false
+        }
+      ],
+      "explanation": "A parameter from a service file overrides the corresponding environment variable, but can itself be overridden by a value specified directly in the connection string.",
+      "source": {
+        "key": "dba1-tools-psql-pgservice-016",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Connection Service File",
+        "locator": "PostgreSQL 16 documentation — Section 34.17 “The Connection Service File”, parameter merging",
+        "url": "https://postgrespro.ru/docs/postgresql/16/libpq-pgservice"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-017",
+      "type": "multiple_choice",
+      "text": "Which statements about psql prompt variables are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "PROMPT1 defines the normal prompt when waiting for a new command",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "PROMPT2 is used when psql is waiting for continuation of an unfinished command",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "PROMPT1 sets the user's connection password",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "PROMPT2 selects the pager program",
+          "correct": false
+        }
+      ],
+      "explanation": "PROMPT1 controls the primary psql prompt. PROMPT2 is displayed for continuation input, for example when a command has not yet been terminated with a semicolon or quotes remain open.",
+      "source": {
+        "key": "dba1-tools-psql-prompt",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Prompt Configuration",
+        "locator": "PostgreSQL 16 documentation — psql, “Prompting” section",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql#APP-PSQL-PROMPTING"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-018",
+      "type": "single_choice",
+      "text": "Which psql command enables display of the execution time of each SQL statement?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\timing on",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\time start",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "\\profile on",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "\\duration enable",
+          "correct": false
+        }
+      ],
+      "explanation": "The \\timing on meta-command enables display of the execution time of each SQL statement. Calling \\timing without an argument toggles the current state.",
+      "source": {
+        "key": "dba1-tools-psql-timing",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "psql Configuration",
+        "locator": "PostgreSQL 16 documentation — psql, \\timing meta-command",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-019",
+      "type": "multiple_choice",
+      "text": "Which statements about paging psql output are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The pager program can be set through PSQL_PAGER",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Pager behavior can be controlled through \\pset",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "If both PSQL_PAGER and PAGER are set, PSQL_PAGER is considered first",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "psql always uses a pager even if it is explicitly disabled",
+          "correct": false
+        }
+      ],
+      "explanation": "psql supports the PSQL_PAGER and PAGER variables and the \\pset pager setting. PSQL_PAGER has priority over PAGER. The pager can be disabled.",
+      "source": {
+        "key": "dba1-tools-psql-pager",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Output Configuration",
+        "locator": "PostgreSQL 16 documentation — psql, PSQL_PAGER/PAGER and \\pset pager",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-020",
+      "type": "single_choice",
+      "text": "Which psql command displays a detailed list of databases?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "\\l+",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\conninfo+",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "\\h+",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "\\q+",
+          "correct": false
+        }
+      ],
+      "explanation": "In the practical part of the material, \\l+ is suggested for displaying a detailed list of databases.",
+      "source": {
+        "key": "dba1-tools-psql-practice",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice",
+        "locator": "Slide 8 “Practice”, task 2",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-tools-psql-021",
+      "type": "multiple_choice",
+      "text": "Which statements about the .psqlrc file and psql settings are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": ".psqlrc can contain settings that should be applied on subsequent psql startups",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "\\setenv in .psqlrc can set PSQL_PAGER only for psql sessions",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The -X option starts psql without reading psqlrc startup files",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": ".psqlrc is a server configuration file read by the postgres process",
+          "correct": false
+        }
+      ],
+      "explanation": "In the practical part, .psqlrc is used for persistent user-level psql settings, including through \\setenv. The -X, or --no-psqlrc, option prevents reading the system and user psql startup files.",
+      "source": {
+        "key": "dba1-tools-psql-psqlrc",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice",
+        "locator": "Slide 8 “Practice” and PostgreSQL 16 documentation — psql, -X/--no-psqlrc option",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-022",
+      "type": "multiple_choice",
+      "text": "What does ON_ERROR_ROLLBACK=on do inside a transaction block? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "psql implicitly creates a SAVEPOINT before each command",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "On error, psql rolls back to the created savepoint",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "After an error, the transaction can continue",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every successful command automatically ends the transaction with COMMIT",
+          "correct": false
+        }
+      ],
+      "explanation": "With ON_ERROR_ROLLBACK=on, psql establishes an implicit savepoint before every command in a transaction block. If a command fails, psql rolls back to that savepoint, allowing the transaction to continue.",
+      "source": {
+        "key": "dba1-tools-psql-on-error-rollback",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice+",
+        "locator": "Slide 9 “Practice+”; PostgreSQL 16 documentation — psql, ON_ERROR_ROLLBACK variable",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-023",
+      "type": "single_choice",
+      "text": "How does ON_ERROR_ROLLBACK=interactive differ from ON_ERROR_ROLLBACK=on?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Rollback after an error applies only in interactive sessions, not while reading scripts",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Rollback applies only while executing scripts",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Any error immediately terminates psql",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The interactive value completely disables savepoints",
+          "correct": false
+        }
+      ],
+      "explanation": "The interactive value enables the described behavior only for interactive psql sessions. It does not apply when commands are being executed from scripts.",
+      "source": {
+        "key": "dba1-tools-psql-on-error-rollback-023",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "psql Variables",
+        "locator": "PostgreSQL 16 documentation — psql, ON_ERROR_ROLLBACK variable",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    },
+    {
+      "key": "dba1-tools-psql-024",
+      "type": "multiple_choice",
+      "text": "Which statements about the psql -1/--single-transaction option are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It is used together with one or more -c and/or -f options",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "psql executes BEGIN before the first processed command and COMMIT after the last",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "With an error and ON_ERROR_STOP, ROLLBACK is executed instead of COMMIT",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It is intended only to change the appearance of the psql prompt",
+          "correct": false
+        }
+      ],
+      "explanation": "The --single-transaction option wraps commands supplied through -c and -f in one transaction. With ON_ERROR_STOP enabled, an error causes a ROLLBACK instead of the final COMMIT.",
+      "source": {
+        "key": "dba1-tools-psql-single-transaction",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "psql",
+        "locator": "PostgreSQL 16 documentation — psql, -1/--single-transaction option",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-psql"
+      }
+    }
+  ]
+}

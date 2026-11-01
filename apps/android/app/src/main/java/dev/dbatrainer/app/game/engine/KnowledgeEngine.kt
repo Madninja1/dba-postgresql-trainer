@@ -5,8 +5,6 @@ import dev.dbatrainer.app.game.domain.IncidentKnowledgeAccess
 import dev.dbatrainer.app.game.domain.KnowledgeRequirement
 import dev.dbatrainer.app.game.domain.KnowledgeRequirementAccess
 import dev.dbatrainer.app.game.domain.KnowledgeSnapshot
-import dev.dbatrainer.app.game.domain.LearningProductType
-import dev.dbatrainer.app.game.domain.WorldState
 
 object KnowledgeEngine {
     private val requirements = mapOf(
@@ -56,31 +54,18 @@ object KnowledgeEngine {
     fun accessFor(
         kind: IncidentKind,
         snapshot: KnowledgeSnapshot,
-        world: WorldState? = null,
     ): IncidentKnowledgeAccess {
         val incidentRequirements = requirements[kind].orEmpty()
         return IncidentKnowledgeAccess(
             incidentKind = kind,
             requirements = incidentRequirements.map { requirement ->
                 val progress = snapshot.progressFor(requirement)
-                val purchased = progress != null && world != null &&
-                    LearningEconomyEngine.hasPurchasedAccess(world, progress)
                 KnowledgeRequirementAccess(
                     requirement = requirement,
                     progress = progress,
-                    purchased = purchased,
-                    notesAccessible = progress != null && world != null &&
-                        LearningEconomyEngine.canAccessProduct(
-                            world,
-                            progress,
-                            LearningProductType.NOTES,
-                        ),
-                    testAccessible = progress != null && world != null &&
-                        LearningEconomyEngine.canAccessProduct(
-                            world,
-                            progress,
-                            LearningProductType.TEST,
-                        ),
+                    purchased = false,
+                    notesAccessible = progress != null,
+                    testAccessible = progress != null,
                 )
             },
         )

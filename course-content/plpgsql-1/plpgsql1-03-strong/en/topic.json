@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "plpgsql-1",
+  "slug": "plpgsql1-strong",
+  "notes_part": 3,
+  "topic_number": 3,
+  "title": "Strong — advanced PL/pgSQL",
+  "description": "Advanced PostgreSQL 16 PL/pgSQL: dynamic SQL safety, diagnostics, triggers, transaction control, name resolution, and plan caching.",
+  "sort_order": 30
+}

@@ -81,7 +81,7 @@ class DbaWorldController(context: Context) {
         get() {
             val currentWorld = world ?: return null
             val kind = currentWorld.incident?.kind ?: return null
-            return KnowledgeEngine.accessFor(kind, knowledgeSnapshot, currentWorld)
+            return KnowledgeEngine.accessFor(kind, knowledgeSnapshot)
         }
 
     val terminalSuggestions: List<String>

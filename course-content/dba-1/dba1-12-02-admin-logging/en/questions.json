@@ -1,0 +1,705 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-admin-logging",
+  "questions": [
+    {
+      "key": "dba1-admin-logging-001",
+      "type": "single_choice",
+      "text": "Which parameter defines one or more destinations for PostgreSQL server messages?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "log_destination",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "log_directory",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "log_filename",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "cluster_name",
+          "correct": false
+        }
+      ],
+      "explanation": "log_destination specifies the list of destinations to which PostgreSQL sends server messages.",
+      "source": {
+        "key": "postgresql-16-logging-where",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Server Log",
+        "locator": "log_destination",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config-logging#RUNTIME-CONFIG-LOGGING-WHERE"
+      }
+    },
+    {
+      "key": "dba1-admin-logging-002",
+      "type": "multiple_choice",
+      "text": "Which values does log_destination support? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "stderr",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "csvlog",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "jsonlog",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "syslog",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "filelog",
+          "correct": false
+        }
+      ],
+      "explanation": "The notes list stderr, csvlog, jsonlog, syslog, and eventlog for Windows. `filelog` is not one of the `log_destination` values listed in the material.",
+      "source": {
+        "key": "dba1-12-log-destination",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Server Log",
+        "locator": "Slide with log_destination",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-logging-003",
+      "type": "single_choice",
+      "text": "Which parameter enables PostgreSQL's built-in logging collector?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "logging_collector",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "log_statement",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "log_rotation_age",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "stats_fetch_consistency",
+          "correct": false
+        }
+      ],
+      "explanation": "The logging collector is enabled by the logging_collector parameter.",
+      "source": {
+        "key": "dba1-12-logging-collector",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Server Log",
+        "locator": "logging_collector",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-logging-004",
+      "type": "multiple_choice",
+      "text": "Which statements about logging_collector are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It collects messages from PostgreSQL processes",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It allows stderr to be written to log files",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It is required for the csvlog and jsonlog file formats",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Its operation is guaranteed to have no performance impact under any load",
+          "correct": false
+        }
+      ],
+      "explanation": "The material emphasizes that the collector should not lose messages, so under heavy load it can potentially become a bottleneck.",
+      "source": {
+        "key": "dba1-12-logging-collector-004",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Server Log",
+        "locator": "logging_collector properties",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-logging-005",
+      "type": "single_choice",
+      "text": "Which parameter defines the log-file directory when the logging collector is used?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "log_directory",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "data_directory",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "log_destination",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "log_rotation_size",
+          "correct": false
+        }
+      ],
+      "explanation": "log_directory defines the directory, while log_filename defines the file name or file-name pattern.",
+      "source": {
+        "key": "postgresql-16-logging-where-005",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Server Log",
+        "locator": "log_directory",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config-logging#RUNTIME-CONFIG-LOGGING-WHERE"
+      }
+    },
+    {
+      "key": "dba1-admin-logging-006",
+      "type": "multiple_choice",
+      "text": "Which parameters participate in built-in log-file rotation? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "log_filename",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "log_rotation_age",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "log_rotation_size",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "log_truncate_on_rotation",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "shared_buffers",
+          "correct": false
+        }
+      ],
+      "explanation": "These parameters are presented in the lesson as the main built-in log-rotation settings. `shared_buffers` is not a built-in log-file rotation parameter.",
+      "source": {
+        "key": "postgresql-16-logfile-maintenance",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Log Rotation",
+        "locator": "Rotation parameters",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logfile-maintenance"
+      }
+    },
+    {
+      "key": "dba1-admin-logging-007",
+      "type": "single_choice",
+      "text": "What does log_rotation_age limit?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The time until the next log-file rotation",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The number of lines in the log",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The number of active connections",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The WAL segment size",
+          "correct": false
+        }
+      ],
+      "explanation": "log_rotation_age sets the time interval for rotation.",
+      "source": {
+        "key": "dba1-12-log-rotation",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Log Rotation",
+        "locator": "log_rotation_age",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-logging-008",
+      "type": "multiple_choice",
+      "text": "What does the combination log_filename = 'postgresql-%H.log' with hourly rotation provide? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The file name depends on the hour",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "24 different file names are used during a day",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The files can be reused cyclically on subsequent days",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every log line is written to a separate file",
+          "correct": false
+        }
+      ],
+      "explanation": "The notes give this as an example of a scheme with 24 file names per day.",
+      "source": {
+        "key": "dba1-12-log-rotation-008",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Log Rotation",
+        "locator": "Example postgresql-%H.log, 1h",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-logging-009",
+      "type": "single_choice",
+      "text": "Which external system tool is shown as an alternative to PostgreSQL built-in rotation?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "logrotate",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_repack",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_ctl",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "iostat",
+          "correct": false
+        }
+      ],
+      "explanation": "The notes show logrotate as an external log-rotation option; for Ubuntu the postgresql-common configuration file is mentioned.",
+      "source": {
+        "key": "postgresql-16-logfile-maintenance-009",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Log Rotation",
+        "locator": "External rotation",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logfile-maintenance"
+      }
+    },
+    {
+      "key": "dba1-admin-logging-010",
+      "type": "multiple_choice",
+      "text": "Which tools can be used to analyze PostgreSQL logs? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "grep",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "awk",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pgBadger",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "initdb",
+          "correct": false
+        }
+      ],
+      "explanation": "Logs can be analyzed with ordinary OS tools or with the specialized pgBadger analyzer.",
+      "source": {
+        "key": "dba1-12-log-analysis",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Log Analysis",
+        "locator": "grep, awk, and pgBadger",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-logging-011",
+      "type": "single_choice",
+      "text": "Which specialized PostgreSQL log analyzer is used to build detailed reports from log files?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pgBadger",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_repack",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pgbench",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_checksums",
+          "correct": false
+        }
+      ],
+      "explanation": "The material specifically highlights pgBadger as a specialized log-analysis tool.",
+      "source": {
+        "key": "pgbadger",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Log Analysis",
+        "locator": "pgBadger",
+        "url": "https://github.com/darold/pgbadger"
+      }
+    },
+    {
+      "key": "dba1-admin-logging-012",
+      "type": "multiple_choice",
+      "text": "What should be considered before using pgBadger? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The tool has requirements for log contents and configuration",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The log must contain information that pgBadger can parse correctly",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The notes separately mention a requirement for the language of messages",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pgBadger analyzes the server without any log at all",
+          "correct": false
+        }
+      ],
+      "explanation": "The lecture emphasizes that pgBadger requires a particular log configuration; among other things, the material separately specifies the message language.",
+      "source": {
+        "key": "dba1-12-pgbadger",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Log Analysis",
+        "locator": "pgBadger limitations",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-logging-013",
+      "type": "single_choice",
+      "text": "What does the log_filename parameter define?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The log file name or file-name pattern",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The minimum isolation level",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The WAL directory",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The list of active processes",
+          "correct": false
+        }
+      ],
+      "explanation": "log_filename supports patterns with date and time components, allowing rotation schemes to be built.",
+      "source": {
+        "key": "postgresql-16-logfile-maintenance-013",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Log Rotation",
+        "locator": "log_filename",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logfile-maintenance"
+      }
+    },
+    {
+      "key": "dba1-admin-logging-014",
+      "type": "multiple_choice",
+      "text": "Which file-log formats require logging_collector to be enabled? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "csvlog",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "jsonlog",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "stderr when the collector writes it to a file",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "syslog always requires logging_collector",
+          "correct": false
+        }
+      ],
+      "explanation": "The collector writes stderr, csvlog, and jsonlog to files in log_directory/log_filename, while syslog is a separate destination.",
+      "source": {
+        "key": "dba1-12-log-destination-014",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Server Log",
+        "locator": "Destinations and logging_collector",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-logging-015",
+      "type": "single_choice",
+      "text": "Why is log rotation normally used?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "So that one file does not grow without bound and remains manageable for storage and analysis",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "So PostgreSQL can start without WAL",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To rebuild indexes automatically",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To reduce shared_buffers",
+          "correct": false
+        }
+      ],
+      "explanation": "The material explains rotation as a practical solution to the problem of a single continuously growing log file.",
+      "source": {
+        "key": "dba1-12-log-rotation-015",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Log Rotation",
+        "locator": "Reason for rotation",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-logging-016",
+      "type": "multiple_choice",
+      "text": "An administrator wants a machine-readable log in a file. Which options directly fit this task? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Enable logging_collector",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Add csvlog to log_destination",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Or add jsonlog to log_destination",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Disable all server messages",
+          "correct": false
+        }
+      ],
+      "explanation": "CSV and JSON are structured log formats, and writing them to files is handled through the logging collector.",
+      "source": {
+        "key": "postgresql-16-logging-where-016",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Server Log",
+        "locator": "csvlog and jsonlog",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config-logging#RUNTIME-CONFIG-LOGGING-WHERE"
+      }
+    },
+    {
+      "key": "dba1-admin-logging-017",
+      "type": "multiple_choice",
+      "text": "Which mappings between logging parameters and events are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "log_min_duration_statement — log statements that ran for at least the specified time",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "log_checkpoints — record checkpoint information",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "log_lock_waits — record long lock waits",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "log_temp_files — record temporary-file usage",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "log_statement — set the size of shared_buffers",
+          "correct": false
+        }
+      ],
+      "explanation": "DBA1 presents these parameters as examples of configuring log contents: long-running queries, checkpoints, lock waits, and temporary files.",
+      "source": {
+        "key": "dba1-12-logging-content",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Information in the Log",
+        "locator": "Slide 14 and PostgreSQL 16 section 20.8",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config-logging#RUNTIME-CONFIG-LOGGING-WHERE"
+      }
+    },
+    {
+      "key": "dba1-admin-logging-018",
+      "type": "multiple_choice",
+      "text": "Which log requirements are important for pgBadger to parse stderr logs? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Messages must be in supported English",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "log_line_prefix must make the message time identifiable",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "log_line_prefix must contain a process or session identifier",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "SQL and duration logging must be completely disabled",
+          "correct": false
+        }
+      ],
+      "explanation": "The DBA1 material separately requires English messages. The pgBadger documentation for stderr also requires a recognizable prefix with at least time and a process/session identifier.",
+      "source": {
+        "key": "dba1-12-pgbadger-config",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Log Analysis",
+        "locator": "PostgreSQL configuration / log_line_prefix",
+        "url": "https://github.com/darold/pgbadger"
+      }
+    },
+    {
+      "key": "dba1-admin-logging-019",
+      "type": "single_choice",
+      "text": "Why should PostgreSQL server log files be protected from unnecessary access?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The log can contain SQL, parameters, and other confidential information",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Without open access PostgreSQL cannot run VACUUM",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Log-file permissions determine the WAL segment size",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The log always contains only PID numbers and never query data",
+          "correct": false
+        }
+      ],
+      "explanation": "The linked log-maintenance documentation warns that the server log can contain sensitive data, including SQL and values, so log storage requires access control.",
+      "source": {
+        "key": "dba1-12-log-security",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Log Rotation and Storage",
+        "locator": "Note about confidential information in the log",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logfile-maintenance"
+      }
+    }
+  ]
+}

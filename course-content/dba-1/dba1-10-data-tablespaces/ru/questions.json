@@ -257,7 +257,7 @@
     {
       "key": "dba1-data-tablespaces-008",
       "type": "multiple_choice",
-      "text": "Какие требования предъявляются к каталогу, указанному в CREATE TABLESPACE ... LOCATION? Выберите все правильные варианты.",
+      "text": "Какие требования предъявляются к каталогу, указанному в CREATE TABLESPACE... LOCATION? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -581,7 +581,7 @@
     {
       "key": "dba1-data-tablespaces-017",
       "type": "single_choice",
-      "text": "Какая команда соответствует практическому заданию установить random_page_cost = 1.1 для pg_default?",
+      "text": "Какая команда устанавливает random_page_cost = 1.1 для табличного пространства pg_default?",
       "answers": [
         {
           "key": "a",
@@ -617,7 +617,7 @@
     {
       "key": "dba1-data-tablespaces-018",
       "type": "multiple_choice",
-      "text": "Какие параметры табличного пространства поддерживает ALTER TABLESPACE ... SET в PostgreSQL 16 согласно приведённой документации? Выберите все правильные варианты.",
+      "text": "Какие параметры табличного пространства поддерживает ALTER TABLESPACE... SET в PostgreSQL 16? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -638,9 +638,14 @@
           "key": "d",
           "text": "shared_buffers",
           "correct": false
+        },
+        {
+          "key": "e",
+          "text": "maintenance_io_concurrency",
+          "correct": true
         }
       ],
-      "explanation": "В документации PostgreSQL 16 для ALTER TABLESPACE перечислены seq_page_cost, random_page_cost и effective_io_concurrency.",
+      "explanation": "В документации PostgreSQL 16 для ALTER TABLESPACE перечислены seq_page_cost, random_page_cost, effective_io_concurrency и maintenance_io_concurrency.",
       "source": {
         "key": "postgresql-16-tablespace-parameters",
         "kind": "course_material",
@@ -653,7 +658,7 @@
     {
       "key": "dba1-data-tablespaces-019",
       "type": "single_choice",
-      "text": "Что означает уменьшение random_page_cost относительно seq_page_cost с точки зрения приведённого в занятии примера?",
+      "text": "Что означает уменьшение random_page_cost относительно seq_page_cost для выбора плана выполнения?",
       "answers": [
         {
           "key": "a",
@@ -689,7 +694,7 @@
     {
       "key": "dba1-data-tablespaces-020",
       "type": "multiple_choice",
-      "text": "Какие действия входят в практическое упражнение по табличным пространствам? Выберите все правильные варианты.",
+      "text": "Какие действия позволяют создать пользовательское табличное пространство, назначить его по умолчанию для новой базы и проверить его размещение? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",

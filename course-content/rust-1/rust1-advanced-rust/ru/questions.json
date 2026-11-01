@@ -5,7 +5,7 @@
     {
       "key": "rust1-advanced-rust-001",
       "type": "single_choice",
-      "text": "Какое ключевое отличие между `T: Draw` и `dyn Draw` подчёркивает материал?",
+      "text": "Каково ключевое отличие между `T: Draw` и `dyn Draw`?",
       "answers": [
         {
           "key": "a",
@@ -147,42 +147,6 @@
       }
     },
     {
-      "key": "rust1-advanced-rust-005",
-      "type": "single_choice",
-      "text": "Как `Post` хранит текущее состояние в варианте state pattern с trait objects?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "В закрытом поле вида `Option<Box<dyn State>>`",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "В `Vec<Thread>`",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "Через `Rc<RefCell<String>>`",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "Только через целое число без типов состояний",
-          "correct": false
-        }
-      ],
-      "explanation": "В state pattern разные состояния реализуют приватный trait `State`, а `Post` хранит текущий объект состояния в `Box<dyn State>` внутри `Option`.",
-      "source": {
-        "key": "rust1-advanced-rust-state-pattern",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
-        "locator": "Глава 17 — шаблон состояния для `Post`, PDF стр. 499–505",
-        "url": null
-      }
-    },
-    {
       "key": "rust1-advanced-rust-006",
       "type": "multiple_choice",
       "text": "Какие преимущества даёт альтернативное кодирование состояний отдельными типами (`DraftPost -> PendingReviewPost -> Post`)? Выберите все правильные варианты.",
@@ -215,83 +179,6 @@
         "module": "Rust",
         "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
         "locator": "Глава 17 — кодирование состояний и поведения как типов, PDF стр. 507–511",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-advanced-rust-007",
-      "type": "multiple_choice",
-      "text": "Где в Rust используются patterns по материалу главы 18? Выберите все правильные варианты.",
-      "answers": [
-        {
-          "key": "a",
-          "text": "В `match` и `if let`",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "В `while let`",
-          "correct": true
-        },
-        {
-          "key": "c",
-          "text": "В `for` и `let`",
-          "correct": true
-        },
-        {
-          "key": "d",
-          "text": "В параметрах функций и замыканий",
-          "correct": true
-        },
-        {
-          "key": "e",
-          "text": "В имени модуля после ключевого слова `mod`",
-          "correct": false
-        }
-      ],
-      "explanation": "Глава 18 показывает, что patterns встроены не только в `match`: они встречаются в условных конструкциях, циклах, `let` и списках параметров.",
-      "source": {
-        "key": "rust1-advanced-rust-patterns-places",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
-        "locator": "Глава 18 — все места использования шаблонов, PDF стр. 512–517",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-advanced-rust-008",
-      "type": "single_choice",
-      "text": "Какой pattern является опровержимым (refutable)?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "`Some(x)` при сопоставлении с `Option<T>`",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Простое имя `x` в `let x = 5`",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "Кортеж `(x, y)` при присваивании кортежа из двух элементов",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "Имя параметра обычной функции",
-          "correct": false
-        }
-      ],
-      "explanation": "`Some(x)` может не совпасть, если значение равно `None`. Простая привязка имени соответствует любому значению и является irrefutable.",
-      "source": {
-        "key": "rust1-advanced-rust-refutability",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
-        "locator": "Глава 18 — refutable и irrefutable patterns, PDF стр. 517–519",
         "url": null
       }
     },
@@ -332,45 +219,9 @@
       }
     },
     {
-      "key": "rust1-advanced-rust-010",
-      "type": "single_choice",
-      "text": "Когда остановится цикл `while let Some(x) = stack.pop() { ... }`?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Когда `pop()` вернёт `None`",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "После первого элемента независимо от результата",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "Только при `panic!`",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "Когда `x` станет равен нулю",
-          "correct": false
-        }
-      ],
-      "explanation": "`while let` повторяет блок, пока pattern совпадает. Для `stack.pop()` совпадение прекращается при `None`.",
-      "source": {
-        "key": "rust1-advanced-rust-while-let",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
-        "locator": "Глава 18 — условные циклы `while let`, PDF стр. 513–514",
-        "url": null
-      }
-    },
-    {
       "key": "rust1-advanced-rust-011",
       "type": "multiple_choice",
-      "text": "Какие возможности деструктуризации patterns показаны в материале? Выберите все правильные варианты.",
+      "text": "Какие возможности деструктуризации поддерживают patterns в Rust? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -596,7 +447,7 @@
     {
       "key": "rust1-advanced-rust-017",
       "type": "multiple_choice",
-      "text": "Что характеризует хороший подход к `unsafe` в материале? Выберите все правильные варианты.",
+      "text": "Что характеризует хороший подход к использованию `unsafe` в Rust? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -626,47 +477,6 @@
         "module": "Rust",
         "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
         "locator": "Глава 19 — создание безопасной абстракции вокруг unsafe-кода, PDF стр. 539–542",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-advanced-rust-018",
-      "type": "multiple_choice",
-      "text": "Какие утверждения о продвинутых типах и traits верны? Выберите все правильные варианты.",
-      "answers": [
-        {
-          "key": "a",
-          "text": "`Iterator::Item` является associated type",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Newtype создаёт новый локальный тип и может помочь реализовать внешний trait для обёрнутого внешнего типа",
-          "correct": true
-        },
-        {
-          "key": "c",
-          "text": "`type Alias = ExistingType` создаёт только псевдоним, а не новый отдельный тип",
-          "correct": true
-        },
-        {
-          "key": "d",
-          "text": "`T: ?Sized` ослабляет неявное ограничение `T: Sized`",
-          "correct": true
-        },
-        {
-          "key": "e",
-          "text": "`type Alias = ExistingType` создаёт новый отдельный номинальный тип",
-          "correct": false
-        }
-      ],
-      "explanation": "Глава 19 связывает associated types, newtype, type aliases и `?Sized` как разные инструменты: они решают разные задачи и не являются взаимозаменяемыми.",
-      "source": {
-        "key": "rust1-advanced-rust-advanced-types",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
-        "locator": "Глава 19 — продвинутые traits и типы, PDF стр. 545–565",
         "url": null
       }
     },
@@ -714,7 +524,7 @@
     {
       "key": "rust1-advanced-rust-020",
       "type": "multiple_choice",
-      "text": "Какие виды procedural macros перечислены в материале? Выберите все правильные варианты.",
+      "text": "Какие виды procedural macros существуют в Rust? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -744,299 +554,6 @@
         "module": "Rust",
         "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
         "locator": "Глава 19 — процедурные макросы, PDF стр. 569–576",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-advanced-rust-021",
-      "type": "single_choice",
-      "text": "Какой признак ООП демонстрирует `AveragedCollection`, скрывая `list` и `average` за методами?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Инкапсуляцию деталей реализации",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Множественное наследование классов",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "Сборку мусора",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "Pattern matching",
-          "correct": false
-        }
-      ],
-      "explanation": "Приватные поля и методы, поддерживающие инварианты, иллюстрируют инкапсуляцию.",
-      "source": {
-        "key": "rust1-advanced-rust-encapsulation",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
-        "locator": "Глава 17 — инкапсуляция, PDF стр. 488–491",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-advanced-rust-022",
-      "type": "multiple_choice",
-      "text": "Какие характеристики ООП обсуждаются применительно к Rust? Выберите все правильные варианты.",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Объекты содержат данные и поведение",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Инкапсуляция скрывает детали",
-          "correct": true
-        },
-        {
-          "key": "c",
-          "text": "Traits дают общее поведение",
-          "correct": true
-        },
-        {
-          "key": "d",
-          "text": "Rust обязан иметь классическое наследование классов",
-          "correct": false
-        }
-      ],
-      "explanation": "Глава рассматривает данные+поведение, инкапсуляцию и переиспользование поведения через traits.",
-      "source": {
-        "key": "rust1-advanced-rust-oop-characteristics",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
-        "locator": "Глава 17 — характеристики ООП, PDF стр. 487–493",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-advanced-rust-023",
-      "type": "single_choice",
-      "text": "Почему `Screen<T: Draw>` менее гибок для неоднородного списка, чем `Vec<Box<dyn Draw>>`?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Один `T` фиксируется для экземпляра, а trait objects допускают разные типы с `Draw`",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Generics не могут вызывать методы trait",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "Trait objects работают только с одним типом",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "Generic всегда хранит строки",
-          "correct": false
-        }
-      ],
-      "explanation": "Generic-параметр мономорфизируется одним concrete type, а trait object скрывает разные concrete types.",
-      "source": {
-        "key": "rust1-advanced-rust-generic-vs-dyn",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
-        "locator": "Глава 17 — generic bounds и trait objects, PDF стр. 493–496",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-advanced-rust-024",
-      "type": "multiple_choice",
-      "text": "Что произойдёт при помещении `String` в `Vec<Box<dyn Draw>>`, если `String` не реализует `Draw`? Выберите все правильные варианты.",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Компилятор отклонит код",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Проблема обнаружится до runtime",
-          "correct": true
-        },
-        {
-          "key": "c",
-          "text": "Нужно реализовать требуемый trait или использовать другой тип",
-          "correct": true
-        },
-        {
-          "key": "d",
-          "text": "Программа обязательно упадёт только при вызове draw",
-          "correct": false
-        }
-      ],
-      "explanation": "Rust проверяет наличие реализации trait на этапе компиляции.",
-      "source": {
-        "key": "rust1-advanced-rust-trait-object-check",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
-        "locator": "Глава 17 — `String` без Draw, PDF стр. 496–497",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-advanced-rust-025",
-      "type": "single_choice",
-      "text": "Какой начальный state получает новый `Post` в state pattern?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "`Draft`",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "`Published`",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "`PendingReview`",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "Нет состояния",
-          "correct": false
-        }
-      ],
-      "explanation": "`Post::new` создаёт состояние Draft.",
-      "source": {
-        "key": "rust1-advanced-rust-post-draft",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
-        "locator": "Глава 17 — создание Post в Draft, PDF стр. 499–501",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-advanced-rust-026",
-      "type": "multiple_choice",
-      "text": "Как меняются состояния `Post`? Выберите все правильные варианты.",
-      "answers": [
-        {
-          "key": "a",
-          "text": "`request_review`: Draft → PendingReview",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "`approve`: PendingReview → Published",
-          "correct": true
-        },
-        {
-          "key": "c",
-          "text": "`approve` у Draft не публикует запись",
-          "correct": true
-        },
-        {
-          "key": "d",
-          "text": "`request_review` у Published оставляет Published",
-          "correct": true
-        },
-        {
-          "key": "e",
-          "text": "`approve` переводит `Draft` напрямую в `Published`",
-          "correct": false
-        }
-      ],
-      "explanation": "Каждый объект состояния определяет допустимый переход или возвращает себя.",
-      "source": {
-        "key": "rust1-advanced-rust-state-transitions",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
-        "locator": "Глава 17 — переходы состояния, PDF стр. 502–505",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-advanced-rust-027",
-      "type": "single_choice",
-      "text": "Почему `state` хранится как `Option<Box<dyn State>>`?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Чтобы через `take()` забрать текущее состояние по владению и заменить новым",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Потому что Box нельзя хранить напрямую",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "Чтобы иметь несколько состояний сразу",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "Для сериализации",
-          "correct": false
-        }
-      ],
-      "explanation": "`Option::take` позволяет временно извлечь owning Box для метода перехода.",
-      "source": {
-        "key": "rust1-advanced-rust-state-option",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
-        "locator": "Глава 17 — реализация переходов, PDF стр. 501–504",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-advanced-rust-028",
-      "type": "multiple_choice",
-      "text": "Какие компромиссы state pattern на trait objects обсуждаются? Выберите все правильные варианты.",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Логика переходов распределена по state-типам",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Часть ограничений проверяется логикой runtime, а не типами",
-          "correct": true
-        },
-        {
-          "key": "c",
-          "text": "Новое состояние можно выразить новым типом и impl",
-          "correct": true
-        },
-        {
-          "key": "d",
-          "text": "Компилятор запрещает вызов `approve` у Draft на уровне публичного типа `Post`",
-          "correct": false
-        }
-      ],
-      "explanation": "Один публичный Post имеет одинаковый API в разных состояниях; type-state альтернатива переносит ограничения в типы.",
-      "source": {
-        "key": "rust1-advanced-rust-state-tradeoffs",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
-        "locator": "Глава 17 — компромиссы State, PDF стр. 505–511",
         "url": null
       }
     },
@@ -1113,78 +630,6 @@
       }
     },
     {
-      "key": "rust1-advanced-rust-031",
-      "type": "single_choice",
-      "text": "Что произойдёт при `let (x, y) = (1, 2, 3);`?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Ошибка компиляции из-за несовпадающей формы pattern",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Третий элемент неявно игнорируется",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "y получает `(2,3)`",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "Работает только release",
-          "correct": false
-        }
-      ],
-      "explanation": "Tuple-pattern должен совпасть по количеству элементов либо явно игнорировать часть.",
-      "source": {
-        "key": "rust1-advanced-rust-let-pattern",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
-        "locator": "Глава 18 — деструктуризация tuple, PDF стр. 515–516",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-advanced-rust-032",
-      "type": "multiple_choice",
-      "text": "Какие конструкции требуют irrefutable patterns? Выберите все правильные варианты.",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Параметры функций",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Инструкции `let`",
-          "correct": true
-        },
-        {
-          "key": "c",
-          "text": "Циклы `for`",
-          "correct": true
-        },
-        {
-          "key": "d",
-          "text": "Каждый `if let` требует irrefutable pattern",
-          "correct": false
-        }
-      ],
-      "explanation": "Функции, let и for требуют patterns, которые не могут не совпасть.",
-      "source": {
-        "key": "rust1-advanced-rust-irrefutable",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
-        "locator": "Глава 18 — refutable и irrefutable patterns, PDF стр. 517–519",
-        "url": null
-      }
-    },
-    {
       "key": "rust1-advanced-rust-033",
       "type": "single_choice",
       "text": "Что означает pattern `1 | 2`?",
@@ -1223,7 +668,7 @@
     {
       "key": "rust1-advanced-rust-034",
       "type": "single_choice",
-      "text": "Для каких типов значений материал разрешает range-pattern с `..=`?",
+      "text": "Для каких типов значений в patterns можно использовать диапазон `..=`?",
       "answers": [
         {
           "key": "a",
@@ -1401,42 +846,6 @@
       }
     },
     {
-      "key": "rust1-advanced-rust-039",
-      "type": "single_choice",
-      "text": "Для чего полезен match guard?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Для дополнительного логического условия после совпадения pattern",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Чтобы отключить shadowing во всём языке",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "Чтобы любой pattern стал irrefutable",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "Он выполняется до pattern",
-          "correct": false
-        }
-      ],
-      "explanation": "Guard позволяет добавить условие, которое нельзя выразить одним pattern.",
-      "source": {
-        "key": "rust1-advanced-rust-match-guard",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
-        "locator": "Глава 18 — match guards, PDF стр. 530–532",
-        "url": null
-      }
-    },
-    {
       "key": "rust1-advanced-rust-040",
       "type": "multiple_choice",
       "text": "Что разрешает `unsafe { ... }` и чего он не делает? Выберите все правильные варианты.",
@@ -1514,42 +923,6 @@
       }
     },
     {
-      "key": "rust1-advanced-rust-042",
-      "type": "single_choice",
-      "text": "Какое утверждение наиболее полно описывает raw pointers по материалу?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Они могут нарушать обычные правила заимствования, быть недействительными или null и не обеспечивают автоматическую очистку памяти",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Они имеют те же гарантии валидности и aliasing, что `&T` и `&mut T`",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "Они могут существовать только внутри `unsafe`-блока",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "Они автоматически освобождают память, на которую указывают",
-          "correct": false
-        }
-      ],
-      "explanation": "В материале raw pointers противопоставляются обычным ссылкам: они дают меньше гарантий, могут быть недействительными или null и не реализуют автоматическую очистку памяти.",
-      "source": {
-        "key": "rust1-advanced-rust-raw-properties",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
-        "locator": "Глава 19 — свойства raw pointers, PDF стр. 536–538",
-        "url": null
-      }
-    },
-    {
       "key": "rust1-advanced-rust-043",
       "type": "single_choice",
       "text": "Почему safe `split_at_mut` может использовать unsafe внутри?",
@@ -1601,11 +974,6 @@
           "correct": true
         },
         {
-          "key": "c",
-          "text": "Можно экспортировать Rust-функцию с C ABI",
-          "correct": true
-        },
-        {
           "key": "d",
           "text": "ABI задаёт соглашение вызовов",
           "correct": true
@@ -1616,49 +984,13 @@
           "correct": false
         }
       ],
-      "explanation": "Раздел FFI показывает вызов C и экспорт Rust для C.",
+      "explanation": "`extern \"C\"` задаёт C ABI, а вызов внешней функции требует `unsafe`, поскольку Rust не может проверить гарантии внешнего кода.",
       "source": {
         "key": "rust1-advanced-rust-ffi",
         "kind": "course_material",
         "module": "Rust",
         "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
         "locator": "Глава 19 — extern и FFI, PDF стр. 541–543",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-advanced-rust-045",
-      "type": "single_choice",
-      "text": "Почему доступ к `static mut` считается unsafe?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Глобальное изменяемое состояние может привести к data race",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "static всегда находится в heap",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "mut запрещён в Rust",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "static mut всегда raw pointer",
-          "correct": false
-        }
-      ],
-      "explanation": "Компилятор не может гарантировать безопасный конкурентный доступ к mutable static.",
-      "source": {
-        "key": "rust1-advanced-rust-static-mut",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
-        "locator": "Глава 19 — mutable static, PDF стр. 542–544",
         "url": null
       }
     },
@@ -1699,110 +1031,38 @@
       }
     },
     {
-      "key": "rust1-advanced-rust-047",
-      "type": "single_choice",
-      "text": "Что означает `Rhs = Self` в `trait Add<Rhs = Self>`?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "RHS по умолчанию равен Self, если impl не укажет другой тип",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "+ всегда складывает только одинаковые типы",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "Rhs — associated const",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "Self — возвращаемый тип add",
-          "correct": false
-        }
-      ],
-      "explanation": "Это параметр типа по умолчанию; impl может выбрать другой RHS.",
-      "source": {
-        "key": "rust1-advanced-rust-default-type-param",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
-        "locator": "Глава 19 — default type parameters, PDF стр. 548–550",
-        "url": null
-      }
-    },
-    {
       "key": "rust1-advanced-rust-048",
       "type": "multiple_choice",
-      "text": "Когда нужен `<Dog as Animal>::baby_name()`? Выберите все правильные варианты.",
+      "text": "Когда для associated function trait требуется fully qualified syntax вида `<Type as Trait>::function()`? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
-          "text": "При неоднозначных одноимённых associated functions",
+          "text": "Когда несколько реализаций предоставляют одноимённые associated functions и вызов неоднозначен",
           "correct": true
         },
         {
           "key": "b",
-          "text": "Когда нет `self`, по которому можно выбрать impl",
+          "text": "Когда нет значения `self`, по которому компилятор мог бы выбрать нужную реализацию",
           "correct": true
         },
         {
           "key": "c",
-          "text": "Чтобы явно указать trait",
+          "text": "Когда нужно явно указать, реализацию какого trait следует вызвать",
           "correct": true
         },
         {
           "key": "d",
-          "text": "Только для macro_rules",
+          "text": "Только внутри декларативных макросов `macro_rules!`",
           "correct": false
         }
       ],
-      "explanation": "Fully qualified syntax устраняет неоднозначность между реализациями.",
+      "explanation": "Fully qualified syntax явно задаёт и тип, и trait, устраняя неоднозначность при выборе associated function.",
       "source": {
         "key": "rust1-advanced-rust-fully-qualified",
         "kind": "course_material",
         "module": "Rust",
         "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
         "locator": "Глава 19 — fully qualified syntax, PDF стр. 550–554",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-advanced-rust-049",
-      "type": "single_choice",
-      "text": "Что означает `trait OutlinePrint: Display`?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Display — supertrait; реализация OutlinePrint требует Display",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "OutlinePrint наследует поля Display",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "Display становится generic-параметром",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "OutlinePrint только для String",
-          "correct": false
-        }
-      ],
-      "explanation": "Supertrait выражает зависимость одного поведения от другого.",
-      "source": {
-        "key": "rust1-advanced-rust-supertrait",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Полная модель языка: trait objects, patterns, unsafe, macros",
-        "locator": "Глава 19 — supertraits, PDF стр. 553–555",
         "url": null
       }
     },

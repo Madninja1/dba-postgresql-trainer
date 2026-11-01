@@ -1,0 +1,798 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-backup-physical",
+  "questions": [
+    {
+      "key": "dba1-backup-physical-001",
+      "type": "single_choice",
+      "text": "What is the subject of PostgreSQL physical backup?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Database cluster files",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only SQL CREATE commands",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only the contents of one table",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only role definitions",
+          "correct": false
+        }
+      ],
+      "explanation": "Physical backup works with cluster files rather than with a logical description of individual SQL objects.",
+      "source": {
+        "key": "dba1-14-physical-overview",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Physical backup",
+        "locator": "What physical backup is",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-physical-002",
+      "type": "multiple_choice",
+      "text": "Which statements about cold physical backup are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The backup is performed while the server is stopped",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Cluster files can be copied with ordinary file-system tools",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Consistency is ensured because the server does not modify files while they are being copied",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "This method requires a continuously running wal sender",
+          "correct": false
+        }
+      ],
+      "explanation": "The point of a cold backup is to copy a stopped cluster, so its files are not changing during the copy.",
+      "source": {
+        "key": "dba1-14-cold-backup",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Physical backup",
+        "locator": "Cold backup",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-physical-003",
+      "type": "single_choice",
+      "text": "Which utility creates a hot base backup of a running PostgreSQL cluster?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_basebackup",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_dumpall",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_restore",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_checksums",
+          "correct": false
+        }
+      ],
+      "explanation": "The notes use pg_basebackup for hot physical backup.",
+      "source": {
+        "key": "postgresql-16-pg-basebackup",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Hot backup",
+        "locator": "pg_basebackup",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgbasebackup"
+      }
+    },
+    {
+      "key": "dba1-backup-physical-004",
+      "type": "multiple_choice",
+      "text": "Which actions does pg_basebackup perform in the scheme described? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Connects to the server using the replication protocol",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Copies cluster files to the specified directory",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Ensures that the WAL required for the backup is obtained",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Converts each table into SQL INSERT statements",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_basebackup creates a physical copy and uses the replication protocol infrastructure rather than logically exporting rows.",
+      "source": {
+        "key": "postgresql-16-pg-basebackup-004",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Hot backup",
+        "locator": "How pg_basebackup works",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgbasebackup"
+      }
+    },
+    {
+      "key": "dba1-backup-physical-005",
+      "type": "single_choice",
+      "text": "Which protocol does pg_basebackup use to communicate with the server?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The PostgreSQL replication protocol",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The COPY protocol for tables only",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "HTTP",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The pg_dump file protocol",
+          "correct": false
+        }
+      ],
+      "explanation": "Physical tools such as pg_basebackup and pg_receivewal use the special replication protocol mode.",
+      "source": {
+        "key": "postgresql-16-replication-protocol",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Replication protocol",
+        "locator": "Connecting backup utilities",
+        "url": "https://postgrespro.ru/docs/postgresql/16/protocol-replication"
+      }
+    },
+    {
+      "key": "dba1-backup-physical-006",
+      "type": "multiple_choice",
+      "text": "Why are WAL records required for a hot physical backup? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Cluster files can change while they are being copied",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "WAL makes it possible to bring the copied data to a consistent state",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A set of WAL records covering the backup interval is required",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "WAL is used to convert a physical backup into an SQL dump",
+          "correct": false
+        }
+      ],
+      "explanation": "A hot backup is created while the server is running, so WAL records covering the copy interval are required to make the backup consistent.",
+      "source": {
+        "key": "dba1-14-hot-backup-wal",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Hot backup",
+        "locator": "WAL during the backup interval",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-physical-007",
+      "type": "single_choice",
+      "text": "What is a base backup in a continuous archiving scheme?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A physical copy of cluster files that serves as the starting point for recovery",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only one WAL segment",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "An SQL dump of one table",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A copy of postgresql.conf only",
+          "correct": false
+        }
+      ],
+      "explanation": "With WAL archiving, recovery starts by restoring a physical base backup and then applying WAL records to it.",
+      "source": {
+        "key": "dba1-14-base-backup",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Continuous archiving",
+        "locator": "Base backup and WAL archive",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-physical-008",
+      "type": "multiple_choice",
+      "text": "Which elements make up the continuous archiving scheme shown? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A base backup",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "An archive of WAL segments",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "archive_command for copying completed segments",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A mandatory pg_dumpall SQL dump for every WAL segment",
+          "correct": false
+        }
+      ],
+      "explanation": "Continuous archiving combines a base backup with sequentially saved WAL segments.",
+      "source": {
+        "key": "postgresql-16-continuous-archiving",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Continuous archiving",
+        "locator": "Base backup, WAL, and archive_command",
+        "url": "https://postgrespro.ru/docs/postgresql/16/continuous-archiving"
+      }
+    },
+    {
+      "key": "dba1-backup-physical-009",
+      "type": "single_choice",
+      "text": "What is archive_command used for in the scheme discussed?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To copy completed WAL segments to the archive",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To restore objects from pg_dump",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To create roles",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To run CHECKPOINT for every SELECT",
+          "correct": false
+        }
+      ],
+      "explanation": "In the notes, completed WAL segments are sent to a separate archive by the command configured in archive_command.",
+      "source": {
+        "key": "postgresql-16-continuous-archiving-009",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Continuous archiving",
+        "locator": "archive_command",
+        "url": "https://postgrespro.ru/docs/postgresql/16/continuous-archiving"
+      }
+    },
+    {
+      "key": "dba1-backup-physical-010",
+      "type": "multiple_choice",
+      "text": "What is required for controlled recovery from a base backup and a WAL archive? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Restore the base backup",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Create recovery.signal",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Configure restore_command",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Create a new SQL dump with pg_dump",
+          "correct": false
+        }
+      ],
+      "explanation": "The material describes restoring the base backup, creating recovery.signal, and setting recovery parameters as the basis for starting recovery.",
+      "source": {
+        "key": "dba1-14-recovery-setup",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Recovery",
+        "locator": "Base backup, recovery.signal, and restore_command",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-physical-011",
+      "type": "single_choice",
+      "text": "What is the role of restore_command during recovery?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Copy the required WAL segments from the archive so the server can apply them",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Create a logical database dump",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Stop the server after each segment",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Create archive tables",
+          "correct": false
+        }
+      ],
+      "explanation": "The notes describe restore_command as the conceptual reverse of archive_command: it delivers the required WAL from the archive to the recovering server.",
+      "source": {
+        "key": "postgresql-16-continuous-archiving-011",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Recovery",
+        "locator": "restore_command",
+        "url": "https://postgrespro.ru/docs/postgresql/16/continuous-archiving"
+      }
+    },
+    {
+      "key": "dba1-backup-physical-012",
+      "type": "multiple_choice",
+      "text": "Which statements about recovery from a WAL archive are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The server applies available WAL records on top of the base backup",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Segments are first looked for among WAL available to the server",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "If a required segment is missing, the archive can be used through restore_command",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "During recovery, WAL is converted into pg_restore commands",
+          "correct": false
+        }
+      ],
+      "explanation": "Recovering a physical cluster consists of replaying WAL records on top of the original base backup.",
+      "source": {
+        "key": "dba1-14-wal-replay",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Recovery",
+        "locator": "Applying available WAL records",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-physical-013",
+      "type": "single_choice",
+      "text": "What is a drawback of archiving only completed WAL segments?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A crash can lose some changes from the current segment if it has not yet completed and reached the archive",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A base backup cannot be created",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "restore_command cannot be used",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Every completed segment is lost immediately after archiving",
+          "correct": false
+        }
+      ],
+      "explanation": "With ordinary archive_command behavior, only completed segments reach the archive, so the current incomplete segment may still be absent from it.",
+      "source": {
+        "key": "dba1-14-archive-loss-window",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Recovery",
+        "locator": "Incomplete WAL segment",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-physical-014",
+      "type": "multiple_choice",
+      "text": "Which statements about pg_receivewal are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The utility connects to the server using the replication protocol",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The connection is served by a wal sender process",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Data is written as a stream without waiting for a complete segment",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The utility creates SQL dumps of individual tables",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_receivewal avoids waiting for a segment to complete by receiving the WAL stream through a replication connection.",
+      "source": {
+        "key": "postgresql-16-pg-receivewal",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Streaming WAL archive",
+        "locator": "pg_receivewal and wal sender",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgreceivewal"
+      }
+    },
+    {
+      "key": "dba1-backup-physical-015",
+      "type": "single_choice",
+      "text": "Why must max_wal_senders be considered when using pg_receivewal?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A pg_receivewal connection is served by a separate wal sender process",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The parameter sets the number of pg_dump files",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The parameter determines the size of each WAL segment",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Without it, a backup role cannot be created",
+          "correct": false
+        }
+      ],
+      "explanation": "Each corresponding replication connection occupies a wal sender, so the configured process limit must account for such connections.",
+      "source": {
+        "key": "dba1-14-max-wal-senders",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Streaming WAL archive",
+        "locator": "wal sender and max_wal_senders",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-physical-016",
+      "type": "multiple_choice",
+      "text": "Which actions are typically involved in PostgreSQL physical backup and recovery? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Create a base backup of the main cluster with pg_basebackup",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Create new objects in the primary cluster after the backup",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Recover the replica cluster from the base backup using the archive",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Recover replica exclusively by restoring a pg_dumpall SQL dump",
+          "correct": false
+        }
+      ],
+      "explanation": "The exercise tests the combination of a physical base backup and subsequent WAL replay: objects created after the backup should appear after recovery.",
+      "source": {
+        "key": "dba1-14-physical-practice",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice",
+        "locator": "pg_basebackup, WAL archive, and replica cluster",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-physical-017",
+      "type": "multiple_choice",
+      "text": "Which statements about physical backup are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The whole cluster is restored, not one selected database",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Recovery requires a compatible PostgreSQL major version and architecture",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "With a continuous WAL archive, recovery to a selected point in time is possible",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A physical backup is portable across any PostgreSQL major versions like an SQL dump",
+          "correct": false
+        }
+      ],
+      "explanation": "A physical backup is fast and supports PITR together with WAL, but it covers the whole cluster and depends on binary compatibility.",
+      "source": {
+        "key": "dba1-14-physical-properties",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Physical backup",
+        "locator": "Advantages and limitations of physical backup",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-physical-018",
+      "type": "multiple_choice",
+      "text": "What is required for pg_basebackup or another physical client to connect using the replication protocol? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A role with the REPLICATION attribute or a superuser",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Permission for a replication connection in pg_hba.conf",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A sufficient max_wal_senders value",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "wal_level no higher than minimal while physical replication is running",
+          "correct": false
+        }
+      ],
+      "explanation": "A physical replication connection requires appropriate privileges, pg_hba.conf access, and a free wal sender; physical backup and replication use wal_level = replica or higher.",
+      "source": {
+        "key": "postgresql-16-pgbasebackup-connection",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Replication protocol",
+        "locator": "Requirements for a replication connection",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgbasebackup"
+      }
+    },
+    {
+      "key": "dba1-backup-physical-019",
+      "type": "single_choice",
+      "text": "Why is a replication slot used for backup and streaming WAL reception?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "So the server does not remove WAL that the client has not yet received",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To automatically convert a physical backup into an SQL dump",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To disable wal sender processes",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To allow recovery of only one table",
+          "correct": false
+        }
+      ],
+      "explanation": "A slot stores the consumer position and retains the required WAL segments until their receipt is confirmed.",
+      "source": {
+        "key": "dba1-14-replication-slot",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Replication protocol",
+        "locator": "Purpose of a replication slot",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-physical-020",
+      "type": "multiple_choice",
+      "text": "How does PostgreSQL handle the result of archive_command? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Exit code 0 means that the segment was archived successfully",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "On failure, the segment is retained and the archiving attempt is retried",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A prolonged archiving failure can cause WAL to accumulate",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "On any error, PostgreSQL immediately deletes the segment to free space",
+          "correct": false
+        }
+      ],
+      "explanation": "The archiver removes or reuses WAL only after confirmed successful archiving; failures cause retries and segment accumulation.",
+      "source": {
+        "key": "dba1-14-archive-command-status",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "WAL archive",
+        "locator": "archive_command result",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-backup-physical-021",
+      "type": "multiple_choice",
+      "text": "Which statements about streaming WAL archiving with pg_receivewal are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "WAL is received using the streaming replication protocol",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A replication slot can be used to protect against WAL loss",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The current incomplete segment is stored with the .partial suffix",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The utility always waits for the current segment to complete before it starts writing it",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_receivewal receives WAL in real time; the current incomplete segment is represented by a .partial file, and a slot helps prevent required records from being lost.",
+      "source": {
+        "key": "postgresql-16-pgreceivewal-stream",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Streaming WAL archive",
+        "locator": "Slot and incomplete segment",
+        "url": "https://postgrespro.ru/docs/postgresql/16/app-pgreceivewal"
+      }
+    },
+    {
+      "key": "dba1-backup-physical-022",
+      "type": "multiple_choice",
+      "text": "What does continuous WAL archiving together with a base backup make possible? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Advance the base backup to a later consistent state",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Stop WAL replay at a selected recovery target",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Perform point-in-time recovery (PITR)",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Restore one individual table directly from the physical backup",
+          "correct": false
+        }
+      ],
+      "explanation": "The physical base backup provides the starting point, while the WAL archive allows changes to be replayed up to a selected recovery target.",
+      "source": {
+        "key": "postgresql-16-continuous-archiving-pitr",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Recovery",
+        "locator": "Base backup, WAL, and PITR",
+        "url": "https://postgrespro.ru/docs/postgresql/16/continuous-archiving"
+      }
+    }
+  ]
+}

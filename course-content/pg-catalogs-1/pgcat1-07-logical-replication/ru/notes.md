@@ -1,147 +1,224 @@
 # Каталоги логической репликации
 
-## 1. Тема
+## Ментальная модель
 
-Тема посвящена системным каталогам PostgreSQL и связям между ними: где сервер хранит метаданные объектов и какие поля позволяют восстановить структуру и состояние базы.
+Логическая репликация разделяется на publisher-side и subscriber-side metadata:
 
 ```text
-основной материал темы
-        ↓
-понимание механизма
-        ↓
-важные ограничения и связи
-        ↓
-факты, которые проверяются тестами
+publisher database
+  ├─ pg_publication
+  ├─ pg_publication_namespace
+  └─ pg_publication_rel
+
+subscriber cluster
+  ├─ pg_subscription
+  ├─ pg_subscription_rel
+  └─ pg_replication_origin
 ```
 
-## 2. Механизм
+Publication описывает **что публиковать**. Subscription описывает **откуда получать и как применять**. `pg_subscription_rel` отслеживает состояние синхронизации отдельных relations.
 
-Логическая репликация PostgreSQL построена вокруг публикаций, подписок и состояния синхронизации отдельных отношений.
+---
 
-### pg_publication
+## `pg_publication`: публикация текущей базы
 
-Публикации текущей базы.
+`pg_publication` содержит publications, созданные в текущей базе данных.
 
-Флаги операций:
+Основные поля:
 
-- `pubinsert`;
-- `pubupdate`;
-- `pubdelete`;
-- `pubtruncate`.
+- `pubname` — имя;
+- `pubowner` — владелец;
+- `puballtables` — publication автоматически включает все tables базы;
+- `pubinsert` — публиковать `INSERT`;
+- `pubupdate` — `UPDATE`;
+- `pubdelete` — `DELETE`;
+- `pubtruncate` — `TRUNCATE`;
+- `pubviaroot` — публиковать изменения partition через top-most published ancestor.
 
-`puballtables=true` означает публикацию всех таблиц, включая подходящие таблицы, созданные позже.
+Если `puballtables = true`, publication включает не только существующие, но и будущие tables базы автоматически.
 
-### pg_publication_namespace
+Флаги операций независимы: publication может, например, публиковать insert/update, но не delete.
 
-Связь многие-ко-многим между схемами и публикациями. Используется, когда публикация охватывает таблицы схемы.
+---
 
-### pg_publication_rel
+## `pg_publication_namespace`: schema → publication
 
-Связь многие-ко-многим между отношениями и публикациями.
+Этот каталог реализует many-to-many mapping между schemas и publications.
 
-Дополнительно может хранить:
+- `pnpubid` → publication;
+- `pnnspid` → namespace.
 
-- `prqual` — row filter;
-- `prattrs` — ограничение набора публикуемых столбцов.
+Одна publication может включать несколько schemas, а одна schema может участвовать в нескольких publications.
 
-### pg_subscription
+---
 
-Содержит подписки и является shared catalog, потому что subscription worker должен находить подписки всего кластера.
+## `pg_publication_rel`: relation → publication
 
-Полезные поля:
+`pg_publication_rel` — many-to-many mapping между relations и publications.
 
-- `subenabled` — подписка включена;
-- `subconninfo` — строка подключения к publisher;
-- `subslotname` — replication slot;
-- `subpublications` — массив имён публикаций;
-- `substream` — режим streaming больших транзакций.
+Поля:
 
-Доступ к `subconninfo` ограничен, потому что строка подключения может содержать пароль в открытом виде.
+- `prpubid` → publication;
+- `prrelid` → relation;
+- `prqual` — internal expression row filter или `NULL`;
+- `prattrs` — номера публикуемых columns или `NULL` для всех columns.
 
-#### substream
-
-Режимы включают:
+Таким образом, publication metadata может ограничивать не только список tables, но и:
 
 ```text
-f  не stream-ить изменения выполняющейся транзакции
-t  сохранять stream на диск и применять после commit publisher
-p  применять через parallel apply worker, если доступен
+строки   → prqual
+столбцы  → prattrs
 ```
 
-### pg_subscription_rel
+`prattrs` использует номера `pg_attribute.attnum`.
 
-Хранит состояние каждого отношения в каждой подписке.
+---
 
-`srsubstate` проходит стадии:
+## `pg_subscription`: subscriptions кластера
+
+`pg_subscription` содержит существующие subscriptions и является shared catalog: одна копия используется всеми базами кластера.
+
+Основные поля:
+
+- `subdbid` — база, в которой существует subscription;
+- `subname` — имя;
+- `subowner` — владелец;
+- `subenabled` — subscription включена;
+- `subconninfo` — connection string publisher;
+- `subslotname` — replication slot на publisher;
+- `subpublications` — массив publication names;
+- `subsynccommit` — `synchronous_commit` apply workers;
+- `suborigin` — filtering по replication origin.
+
+### Почему `subconninfo` чувствителен
+
+Connection string может содержать пароль в открытом виде. Поэтому обычным пользователям доступ к этому полю ограничен.
+
+При разработке диагностического инструмента нельзя относиться к `subconninfo` как к безобидной metadata-строке.
+
+---
+
+## Дополнительные режимы subscription
+
+### Binary transfer
+
+`subbinary = true` означает запрос данных от publisher в binary representation.
+
+### Streaming in-progress transactions: `substream`
 
 ```text
-i  initialize
-d  copying data
+f  streaming in-progress transactions disabled
+
+t  изменения stream-ятся/складываются на диск subscriber,
+   затем применяются после получения commit publisher
+
+p  пытаться применять напрямую parallel apply worker;
+   если worker недоступен, поведение как t
+```
+
+### Two-phase
+
+`subtwophasestate`:
+
+```text
+d  disabled
+p  pending enable
+e  enabled
+```
+
+### Ошибки и security context
+
+- `subdisableonerr` — отключать subscription при ошибке worker;
+- `subpasswordrequired` — требовать password authentication;
+- `subrunasowner` — применять изменения с правами владельца subscription.
+
+---
+
+## `pg_subscription_rel`: состояние каждой relation
+
+Этот каталог связывает subscription и relation и хранит progress/state её начальной синхронизации.
+
+- `srsubid` → subscription;
+- `srrelid` → relation;
+- `srsubstate` — состояние;
+- `srsublsn` — remote LSN для координации состояний `s`/`r`.
+
+Коды:
+
+```text
+i  initialization
+d  data copy
 f  table copy finished
 s  synchronized
 r  ready / normal replication
 ```
 
-### pg_replication_origin
+`pg_subscription_rel` содержит только tables, которые известны subscription после `CREATE SUBSCRIPTION` или `ALTER SUBSCRIPTION ... REFRESH PUBLICATION`.
 
-Содержит зарегистрированные replication origins и является shared catalog.
+Поэтому отсутствие relation здесь может означать не «репликация сломана», а то, что subscriber ещё не обновил список publication relations.
+
+---
+
+## `pg_replication_origin`: происхождение replicated changes
+
+`pg_replication_origin` содержит зарегистрированные replication origins и тоже является shared catalog.
+
+Поля:
 
 - `roident` — внутренний идентификатор, уникальный в кластере;
-- `roname` — внешнее пользовательское имя.
+- `roname` — внешнее имя origin, задаваемое пользователем.
 
-`roident` — внутренний ID, не предназначенный как стабильный внешний идентификатор между системами.
+`roident` — внутренний ID, который не должен использоваться как переносимый внешний идентификатор между системами.
 
----
-
-## 3. Важные детали и покрытие тестов
-
-Ниже собраны детали, которые проверяются вопросами этой темы. Они сгруппированы по разделам исходной документации, чтобы их можно было связывать с механизмом, а не запоминать как отдельный список ответов.
-
-### 53.40. pg_publication
-
-- **Назначение pg_publication.** pg_publication хранит публикации логической репликации.
-- **pubinsert, pubupdate, pubdelete, pubtruncate.** pubinsert/pubupdate/pubdelete/pubtruncate отвечают за типы DML; puballtables отдельно означает автоматическое включение всех таблиц.
-- **Столбец puballtables.** Публикация автоматически включает все таблицы базы, включая созданные в будущем. puballtables=true включает все таблицы базы и будущие таблицы.
-
-### 53.42. pg_publication_rel
-
-- **Назначение; prqual; prattrs.** pg_publication_namespace — many-to-many связь схем и публикаций. Эти каталоги связывают публикации со схемами и отношениями; pg_publication_rel также хранит row/column filters.
-
-### 53.54. pg_subscription
-
-- **Назначение pg_subscription.** pg_subscription хранит subscriptions и является shared catalog.
-- **Shared catalog; subenabled; subslotname; subpublications; subconninfo.** Каталог разделяется всеми базами кластера. pg_subscription shared между базами. subconninfo может содержать пароль, поэтому обычным пользователям доступ к нему ограничен.
-- **Ограничение доступа к subconninfo.** Строка подключения может содержать пароль в открытом виде. Документация прямо предупреждает, что subconninfo может содержать открытый пароль.
-- **Столбец substream.** `f` — не stream-ить выполняющиеся транзакции. substream управляет streaming in-progress transactions с кодами f/t/p.
-
-### 53.55. pg_subscription_rel
-
-- **Назначение pg_subscription_rel.** Состояние каждого реплицируемого отношения в каждой подписке. pg_subscription_rel — many-to-many связь subscription/relations с состоянием синхронизации.
-- **Столбец srsubstate.** `i` — initialization. srsubstate кодирует стадии подготовки relation к обычной logical replication.
-
-### 53.44. pg_replication_origin
-
-- **Назначение pg_replication_origin.** pg_replication_origin содержит зарегистрированные replication origins и разделяется всеми базами кластера.
-- **roident и roname.** roident — уникальный в кластере внутренний идентификатор. roident уникален внутри кластера и, по документации, не должен покидать пределы системы; roname — внешнее имя.
-
-### 53.41. pg_publication_namespace
-
-- **Назначение; pnpubid; pnnspid.** Сопоставление схем с публикациями вида многие-ко-многим. pg_publication_namespace связывает публикации и схемы через pnpubid и pnnspid.
+Replication origin нужен PostgreSQL для отслеживания происхождения изменений и координации replication state.
 
 ---
 
-# Что запомнить
+## Как читать publication как набор
 
-- **Назначение pg_publication** → pg_publication
-- **pubinsert, pubupdate, pubdelete, pubtruncate** → pubinsert
-- **Столбец puballtables** → Публикация автоматически включает все таблицы базы, включая созданные в будущем
-- **Назначение; prqual; prattrs** → pg_publication_namespace — many-to-many связь схем и публикаций
-- **Назначение pg_subscription** → pg_subscription
-- **Shared catalog; subenabled; subslotname; subpublications; subconninfo** → Каталог разделяется всеми базами кластера
-- **Ограничение доступа к subconninfo** → Строка подключения может содержать пароль в открытом виде
-- **Столбец substream** → `f` — не stream-ить выполняющиеся транзакции
-- **Назначение pg_subscription_rel** → Состояние каждого реплицируемого отношения в каждой подписке
-- **Столбец srsubstate** → `i` — initialization
-- **Назначение pg_replication_origin** → pg_replication_origin
-- **roident и roname** → roident — уникальный в кластере внутренний идентификатор
-- **Назначение; pnpubid; pnnspid** → Сопоставление схем с публикациями вида многие-ко-многим
+Publication может собираться несколькими механизмами:
+
+```text
+puballtables = true            → все tables базы
+pg_publication_namespace       → schemas
+pg_publication_rel             → конкретные relations
+                                 + row/column filters
+```
+
+Поэтому один только `pg_publication.puballtables` не описывает весь состав publication, если значение `false`.
+
+---
+
+## Практический запрос: relations subscription
+
+```sql
+SELECT
+    s.subname,
+    r.srrelid::regclass AS relation_name,
+    r.srsubstate,
+    r.srsublsn
+FROM pg_subscription AS s
+JOIN pg_subscription_rel AS r
+  ON r.srsubid = s.oid
+ORDER BY s.subname, relation_name;
+```
+
+Это даёт subscriber-side картину: какие relations известны каждой subscription и в каком состоянии они находятся.
+
+---
+
+## Что запомнить
+
+```text
+publisher:
+pg_publication           → publication и operation flags
+pg_publication_namespace → schemas in publication
+pg_publication_rel       → relations + row/column filters
+
+subscriber:
+pg_subscription          → subscription connection/apply settings
+pg_subscription_rel      → per-relation sync state
+pg_replication_origin    → replication origins
+```
+
+Главное различие: publication определяет **набор публикуемых изменений**, subscription — **канал получения**, а `pg_subscription_rel` — **состояние конкретных relations внутри этого канала**.

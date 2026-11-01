@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "rust-1",
+  "slug": "rust1-program-organization",
+  "notes_part": 6,
+  "topic_number": 6,
+  "title": "Program Organization",
+  "description": "Packages, crates, modules, paths, privacy, use/pub use, and placing modules in files.",
+  "sort_order": 60
+}

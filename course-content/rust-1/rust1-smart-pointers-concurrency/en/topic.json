@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "rust-1",
+  "slug": "rust1-smart-pointers-concurrency",
+  "notes_part": 14,
+  "topic_number": 14,
+  "title": "Smart Pointers and Concurrency",
+  "description": "Box, Deref and Drop, Rc, RefCell and Weak, reference cycles, threads, channels, Mutex, Arc, and the Send and Sync marker traits.",
+  "sort_order": 140
+}

@@ -1,0 +1,1266 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-error-handling",
+  "questions": [
+    {
+      "key": "rust1-error-handling-002",
+      "type": "multiple_choice",
+      "text": "Which mappings between errors and Rust mechanisms are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Recoverable errors use `Result<T, E>`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Unrecoverable errors use `panic!`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Rust does not rely on an exception mechanism in this chapter",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every recoverable error must terminate the program immediately",
+          "correct": false
+        }
+      ],
+      "explanation": "Rust distinguishes recoverable and unrecoverable situations: `Result` allows an error to be handled, while `panic!` terminates execution.",
+      "source": {
+        "key": "rust1-error-handling-intro",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Error Handling",
+        "locator": "Chapter 9 — Error Handling, pp. 210",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-004",
+      "type": "multiple_choice",
+      "text": "In which ways can a `panic!` occur? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "By explicitly calling the `panic!` macro",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "By performing an operation that itself panics",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "For example, by using an invalid index",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Only through `Result::Err`",
+          "correct": false
+        }
+      ],
+      "explanation": "A panic can be triggered explicitly or arise in library/language code because of an invalid operation.",
+      "source": {
+        "key": "rust1-error-handling-panic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Unrecoverable Errors with `panic!`",
+        "locator": "Chapter 9 — Unrecoverable Errors with `panic!`, pp. 210–215",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-005",
+      "type": "single_choice",
+      "text": "What does a program do by default on `panic!`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Prints a message, unwinds the stack, cleans up data, and terminates",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Ignores the error and continues",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Automatically converts the panic into a Result",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Restarts the function",
+          "correct": false
+        }
+      ],
+      "explanation": "The default behavior includes an error message, stack unwinding, cleanup, and process termination.",
+      "source": {
+        "key": "rust1-error-handling-panic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Unrecoverable Errors with `panic!`",
+        "locator": "Chapter 9 — Unrecoverable Errors with `panic!`, pp. 210–215",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-006",
+      "type": "multiple_choice",
+      "text": "What does stack unwinding during a panic mean? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Rust walks back through the call stack",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Data belonging to encountered functions is cleaned up",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It can add extra work",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It is the same as an immediate abort without cleanup",
+          "correct": false
+        }
+      ],
+      "explanation": "Unwinding walks the stack and performs cleanup, unlike an immediate abort.",
+      "source": {
+        "key": "rust1-error-handling-panic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Unrecoverable Errors with `panic!`",
+        "locator": "Chapter 9 — Unrecoverable Errors with `panic!`, pp. 210–215",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-007",
+      "type": "single_choice",
+      "text": "What does `panic = \"abort\"` change in a Cargo profile?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "On panic, the program terminates without unwinding and cleaning up the stack",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "panic becomes a warning",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Result is automatically replaced by Option",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Cargo forbids the use of panic!",
+          "correct": false
+        }
+      ],
+      "explanation": "Abort mode stops the program immediately; the operating system is left to reclaim the process memory.",
+      "source": {
+        "key": "rust1-error-handling-panic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Unrecoverable Errors with `panic!`",
+        "locator": "Chapter 9 — Unrecoverable Errors with `panic!`, pp. 210–215",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-009",
+      "type": "single_choice",
+      "text": "What is the `RUST_BACKTRACE` environment variable used for?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To print the backtrace of calls that led to a panic",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To suppress panic",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To enable release optimizations",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To convert an error into Result",
+          "correct": false
+        }
+      ],
+      "explanation": "A backtrace helps reveal the call chain and find the location in your code that led to the panic.",
+      "source": {
+        "key": "rust1-error-handling-panic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Unrecoverable Errors with `panic!`",
+        "locator": "Chapter 9 — Unrecoverable Errors with `panic!`, pp. 210–215",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-010",
+      "type": "multiple_choice",
+      "text": "Which conditions are mentioned for a useful backtrace? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Backtrace output must be enabled with RUST_BACKTRACE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Detailed information requires debug symbols",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Debug symbols are included by default for cargo build/run without --release",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The backtrace is guaranteed to be identical on every OS and Rust version",
+          "correct": false
+        }
+      ],
+      "explanation": "The material warns that output can vary and notes the role of debug symbols.",
+      "source": {
+        "key": "rust1-error-handling-panic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Unrecoverable Errors with `panic!`",
+        "locator": "Chapter 9 — Unrecoverable Errors with `panic!`, pp. 210–215",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-011",
+      "type": "single_choice",
+      "text": "Where should you start when looking for the cause of a panic in a backtrace?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "At the first trace line that points to a file in your project",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "At the very last standard-library line regardless of context",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "At Cargo.toml",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "At the declaration of Vec<T>",
+          "correct": false
+        }
+      ],
+      "explanation": "The example recommends finding the first line mentioning your own source file and investigating the operation that caused the problem.",
+      "source": {
+        "key": "rust1-error-handling-panic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Unrecoverable Errors with `panic!`",
+        "locator": "Chapter 9 — Unrecoverable Errors with `panic!`, pp. 210–215",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-012",
+      "type": "multiple_choice",
+      "text": "What happens when accessing `v[99]` if the vector has only three elements? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It panics because the index is out of bounds",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Using `[]` assumes the element exists",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A backtrace can show the path to the call site",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The operation returns None without a panic",
+          "correct": false
+        }
+      ],
+      "explanation": "Indexing with `[]` requires a valid index; `None` is returned by `get`, not by the indexing operator.",
+      "source": {
+        "key": "rust1-error-handling-panic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Unrecoverable Errors with `panic!`",
+        "locator": "Chapter 9 — Unrecoverable Errors with `panic!`, pp. 210–215",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-014",
+      "type": "multiple_choice",
+      "text": "What roles do type parameters `T` and `E` have in `Result<T, E>`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "T is the type of the success value inside Ok",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "E is the type of the error value inside Err",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "They make Result usable with many kinds of success values and errors",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "T and E must always be the same type",
+          "correct": false
+        }
+      ],
+      "explanation": "The generic parameters allow Result to represent many different operations.",
+      "source": {
+        "key": "rust1-error-handling-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Recoverable Errors with `Result`",
+        "locator": "Chapter 9 — Recoverable Errors with `Result`, pp. 215–220",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-016",
+      "type": "multiple_choice",
+      "text": "What can be done when handling `File::open` with `match`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Extract the File from Ok",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Take a specific action for a particular Err such as NotFound",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Choose another handling path for other errors",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`match` automatically guarantees that the file exists",
+          "correct": false
+        }
+      ],
+      "explanation": "`match` lets code branch on `Ok` and different kinds of `Err` rather than reducing every failure to one response.",
+      "source": {
+        "key": "rust1-error-handling-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Recoverable Errors with `Result`",
+        "locator": "Chapter 9 — Recoverable Errors with `Result`, pp. 215–220",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-018",
+      "type": "multiple_choice",
+      "text": "Which advantages does an explicit `match` provide when handling `Result`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Different error kinds can be distinguished",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Different actions can be chosen for different Err values",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The successful value can be extracted from Ok",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`match` is always shorter than unwrap",
+          "correct": false
+        }
+      ],
+      "explanation": "A full `match` gives flexible control, although it can be more verbose than helper methods.",
+      "source": {
+        "key": "rust1-error-handling-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Recoverable Errors with `Result`",
+        "locator": "Chapter 9 — Recoverable Errors with `Result`, pp. 215–220",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-020",
+      "type": "multiple_choice",
+      "text": "Which statements about `unwrap()` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "For Ok, it returns the inner value",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "For Err, it panics",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It is a shorter alternative to some match expressions",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "For Err, it always returns a default value",
+          "correct": false
+        }
+      ],
+      "explanation": "The material describes `unwrap` as concise access to a Result with a standard panic response to Err.",
+      "source": {
+        "key": "rust1-error-handling-unwrap-expect",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Shortcuts for Panic on Error: `unwrap` and `expect`",
+        "locator": "Chapter 9 — Shortcuts for Panic on Error: `unwrap` and `expect`, pp. 220",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-021",
+      "type": "single_choice",
+      "text": "What useful difference does `expect(\"...\")` have compared with `unwrap()`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It lets you provide a custom panic message for Err",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It never panics",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It works only with Ok and cannot receive Err",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It converts Result into Option",
+          "correct": false
+        }
+      ],
+      "explanation": "`expect` has the same basic behavior but adds a meaningful message explaining why success was expected.",
+      "source": {
+        "key": "rust1-error-handling-unwrap-expect",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Shortcuts for Panic on Error: `unwrap` and `expect`",
+        "locator": "Chapter 9 — Shortcuts for Panic on Error: `unwrap` and `expect`, pp. 220",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-023",
+      "type": "single_choice",
+      "text": "What does “propagating an error” mean?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A function returns the error to its caller instead of fully handling it locally",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A function ignores Err and continues",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A function always panics",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The error is only logged and then lost",
+          "correct": false
+        }
+      ],
+      "explanation": "Propagation delegates the decision to the caller, which may have more context for choosing a response.",
+      "source": {
+        "key": "rust1-error-handling-propagation",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Propagating Errors",
+        "locator": "Chapter 9 — Propagating Errors, pp. 220–225",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-026",
+      "type": "multiple_choice",
+      "text": "What does `?` do on `Err` for Result? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Returns the error early from the current function",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Passes the error to the calling code",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Can convert the error type through `From`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Continues to the next line as if no error occurred",
+          "correct": false
+        }
+      ],
+      "explanation": "An Err followed by `?` causes an early return; if necessary, `From` converts the error into the type declared by the function's returned Result.",
+      "source": {
+        "key": "rust1-error-handling-question-mark",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "A Shortcut for Propagating Errors: the `?` Operator",
+        "locator": "Chapter 9 — A Shortcut for Propagating Errors: the `?` Operator, pp. 222–227",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-027",
+      "type": "single_choice",
+      "text": "How does `?` differ from a manually written `match` when propagating an error?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Besides being shorter, an error propagated by `?` goes through `From` conversion",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`?` cannot be used with Result",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`match` always panics while `?` never does",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`?` automatically logs the error",
+          "correct": false
+        }
+      ],
+      "explanation": "The material specifically notes the error conversion through `From` when `?` is used.",
+      "source": {
+        "key": "rust1-error-handling-question-mark",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "A Shortcut for Propagating Errors: the `?` Operator",
+        "locator": "Chapter 9 — A Shortcut for Propagating Errors: the `?` Operator, pp. 222–227",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-028",
+      "type": "multiple_choice",
+      "text": "Which approaches can shorten file-reading code while propagating errors? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Using `?` instead of match for each Result",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Chaining calls with multiple `?` operators",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Using `fs::read_to_string` as an even shorter version",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Manually reading every byte is required",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter progressively shortens the code: manual match, `?`, a chain of `?`, and then a ready-made standard-library function.",
+      "source": {
+        "key": "rust1-error-handling-question-mark",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "A Shortcut for Propagating Errors: the `?` Operator",
+        "locator": "Chapter 9 — A Shortcut for Propagating Errors: the `?` Operator, pp. 222–227",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-029",
+      "type": "single_choice",
+      "text": "Why can't `?` after `File::open` be used in `fn main() { ... }` that returns `()`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Because the function's return type is incompatible with an early return of a Result error",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Because main cannot access files",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Because `?` works only inside libraries",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Because File::open returns Option",
+          "correct": false
+        }
+      ],
+      "explanation": "The `?` operator requires a compatible return type so it can return an error early.",
+      "source": {
+        "key": "rust1-error-handling-main-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Using `?` in `main`",
+        "locator": "Chapter 9 — Using `?` in `main`, pp. 225–228",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-030",
+      "type": "multiple_choice",
+      "text": "Which approaches can fix a function that uses `?` with Result but has an incompatible return type? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Change the return type to a compatible Result when appropriate",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Handle the Result with match",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Use a suitable Result method instead of `?`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Simply delete the error type from File::open without handling it",
+          "correct": false
+        }
+      ],
+      "explanation": "The material suggests changing the signature or handling the Result explicitly/with a method.",
+      "source": {
+        "key": "rust1-error-handling-main-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Using `?` in `main`",
+        "locator": "Chapter 9 — Using `?` in `main`, pp. 225–228",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-032",
+      "type": "multiple_choice",
+      "text": "Which statements about `?` with Option are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "For Some, the inner value becomes the expression result",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "For None, the function returns None early",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Using `?` on Option requires a compatible Option return type",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`?` itself converts Option into Result",
+          "correct": false
+        }
+      ],
+      "explanation": "Option and Result share a similar `?` pattern but are not automatically converted into one another.",
+      "source": {
+        "key": "rust1-error-handling-question-mark",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "A Shortcut for Propagating Errors: the `?` Operator",
+        "locator": "Chapter 9 — A Shortcut for Propagating Errors: the `?` Operator, pp. 222–227",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-033",
+      "type": "single_choice",
+      "text": "What should be done when `Result` and `Option` need to be explicitly converted into one another?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Use appropriate methods such as `ok` or `ok_or`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Rely on automatic conversion by `?`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Use only panic!",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Add `mut` to the variable",
+          "correct": false
+        }
+      ],
+      "explanation": "The material explicitly notes that `?` does not mix Result and Option; conversion is performed explicitly.",
+      "source": {
+        "key": "rust1-error-handling-question-mark",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "A Shortcut for Propagating Errors: the `?` Operator",
+        "locator": "Chapter 9 — A Shortcut for Propagating Errors: the `?` Operator, pp. 222–227",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-035",
+      "type": "single_choice",
+      "text": "Which `main` signature permits using `?` on the result of `File::open`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`fn main() -> Result<(), Box<dyn Error>>`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`fn main() -> ()` only",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`fn main() -> i32` without Result",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`fn main() -> String` is required",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter shows a main function returning `Result<(), Box<dyn Error>>` and ending with `Ok(())`.",
+      "source": {
+        "key": "rust1-error-handling-main-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Using `?` in `main`",
+        "locator": "Chapter 9 — Using `?` in `main`, pp. 225–228",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-036",
+      "type": "multiple_choice",
+      "text": "Which statements about `Box<dyn Error>` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "For the chapter's purposes, it can be read as 'any kind of error'",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It lets the main signature be compatible with different errors",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It is used with `Result<(), ...>`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It means the program cannot have errors",
+          "correct": false
+        }
+      ],
+      "explanation": "The material simplifies `Box<dyn Error>` as a way to allow different error kinds in `Err`.",
+      "source": {
+        "key": "rust1-error-handling-main-result",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Using `?` in `main`",
+        "locator": "Chapter 9 — Using `?` in `main`, pp. 225–228",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-039",
+      "type": "single_choice",
+      "text": "Why is returning `Result` described as a good default choice for a function that can fail?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It leaves the caller to decide how to respond to the error",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It guarantees that the function never fails",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It prevents the caller from using panic!",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It automatically retries the operation",
+          "correct": false
+        }
+      ],
+      "explanation": "Result delegates the decision to the caller instead of declaring the situation unrecoverable inside the function.",
+      "source": {
+        "key": "rust1-error-handling-choice",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "To `panic!` or Not to `panic!`",
+        "locator": "Chapter 9 — To `panic!` or Not to `panic!`, pp. 228–231",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-040",
+      "type": "multiple_choice",
+      "text": "Which consequences of choosing `panic!` instead of Result are noted? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The code cannot recover execution after the panic",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The function itself decides that the situation is unrecoverable",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The caller does not receive an ordinary Result from which to choose a strategy",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "panic gives the caller more control than Result",
+          "correct": false
+        }
+      ],
+      "explanation": "Panic removes the caller's ordinary opportunity to recover, while Result preserves it.",
+      "source": {
+        "key": "rust1-error-handling-choice",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "To `panic!` or Not to `panic!`",
+        "locator": "Chapter 9 — To `panic!` or Not to `panic!`, pp. 228–231",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-041",
+      "type": "single_choice",
+      "text": "In which situations can `panic!` or `unwrap` be more appropriate than detailed `Result` handling?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Examples, prototypes, and tests",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Every library API without exception",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only network requests",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only release builds",
+          "correct": false
+        }
+      ],
+      "explanation": "For teaching examples, prototypes, and tests, detailed error handling can obscure the main purpose, so a panic-based approach can be justified.",
+      "source": {
+        "key": "rust1-error-handling-choice",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "To `panic!` or Not to `panic!`",
+        "locator": "Chapter 9 — To `panic!` or Not to `panic!`, pp. 228–231",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-042",
+      "type": "multiple_choice",
+      "text": "Why can `unwrap` or `expect` be acceptable in tests and prototypes? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A panic clearly shows that an assumption of the test/prototype was violated",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The code is shorter when demonstrating the main idea",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "In those contexts, terminating on an unexpected error can be desirable",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Because unwrap cannot panic in tests",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter permits concise panic methods when the goal is to reveal a violated assumption quickly rather than build user-facing recovery.",
+      "source": {
+        "key": "rust1-error-handling-choice",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "To `panic!` or Not to `panic!`",
+        "locator": "Chapter 9 — To `panic!` or Not to `panic!`, pp. 228–231",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-044",
+      "type": "multiple_choice",
+      "text": "Which recommendations are given for invalid input supplied by calling code? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "If continuing could be unsafe or meaningless, panic can be justified",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A public contract should document conditions whose violation causes panic",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "When possible, valid states should be encoded in types",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every invalid value should always be silently corrected",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter connects panic with contract violations and recommends using types to prevent invalid states when possible.",
+      "source": {
+        "key": "rust1-error-handling-choice",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "To `panic!` or Not to `panic!`",
+        "locator": "Chapter 9 — To `panic!` or Not to `panic!`, pp. 228–231",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-045",
+      "type": "single_choice",
+      "text": "Why make the inner field of a type representing a validated value private?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "So external code cannot bypass the invariant by writing an unchecked value directly",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "So methods of the type itself cannot read the field after construction",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "So primitive values occupy less memory",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "So instances of the type automatically implement `Copy`",
+          "correct": false
+        }
+      ],
+      "explanation": "A private field forces external code through a controlled construction and mutation API that can preserve the type invariant.",
+      "source": {
+        "key": "rust1-error-handling-custom-type",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Creating Custom Types for Validation",
+        "locator": "Chapter 9 — Creating Custom Types for Validation, pp. 231–234",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-046",
+      "type": "multiple_choice",
+      "text": "What should a constructor provide for a type that encapsulates a validated range of values? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Validate the input before producing a valid instance",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Prevent normally constructed instances from violating the invariant",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Let the rest of the program rely on the type invariant",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Leave an external path for directly writing an unchecked value into the private field",
+          "correct": false
+        }
+      ],
+      "explanation": "The purpose of such a type is to centralize validation at construction and then use the type itself as an invariant guarantee.",
+      "source": {
+        "key": "rust1-error-handling-custom-type",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Creating Custom Types for Validation",
+        "locator": "Chapter 9 — Creating Custom Types for Validation, pp. 231–234",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-047",
+      "type": "single_choice",
+      "text": "What advantage does a specialized parameter type with a guaranteed invariant have over a plain `i32`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The function can rely on the type guarantee instead of repeating the same range validation",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The function automatically becomes generic",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The compiler forbids reading the inner value even through the type's methods",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Every function taking such a parameter automatically returns `Result`",
+          "correct": false
+        }
+      ],
+      "explanation": "If a valid instance can only be constructed after validation, functions accepting that type receive the guarantee through the type itself.",
+      "source": {
+        "key": "rust1-error-handling-custom-type",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Creating Custom Types for Validation",
+        "locator": "Chapter 9 — Creating Custom Types for Validation, pp. 231–234",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-048",
+      "type": "multiple_choice",
+      "text": "Which ideas does the custom validation type demonstrate? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Hide the inner value in a private field",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Check constraints during construction",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Express valid states through types",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Duplicate the same validation in every function that accepts the value",
+          "correct": false
+        }
+      ],
+      "explanation": "The example shows how a type can centralize an invariant instead of repeating runtime checks everywhere.",
+      "source": {
+        "key": "rust1-error-handling-custom-type",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Creating Custom Types for Validation",
+        "locator": "Chapter 9 — Creating Custom Types for Validation, pp. 231–234",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-049",
+      "type": "single_choice",
+      "text": "What role does `Result` play in handling recoverable errors?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It uses the type system to explicitly communicate possible failure and give code a chance to recover",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It hides possible failure from the caller",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It always means an unrecoverable error",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It replaces the type system for fallible functions",
+          "correct": false
+        }
+      ],
+      "explanation": "The summary emphasizes that Result makes possible success/failure part of the type and lets calling code respond.",
+      "source": {
+        "key": "rust1-error-handling-intro",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Error Handling",
+        "locator": "Chapter 9 — Error Handling, pp. 210",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-error-handling-050",
+      "type": "multiple_choice",
+      "text": "Which statements about using `panic!` and `Result` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`panic!` signals a state the program cannot handle",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Result tells the caller about potential success or failure",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Choosing between them appropriately helps produce more reliable code",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`panic!` and Result are always interchangeable without changing API meaning",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter summary contrasts unhandleable states with recoverable errors and connects a deliberate choice to program reliability.",
+      "source": {
+        "key": "rust1-error-handling-intro",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Error Handling",
+        "locator": "Chapter 9 — Error Handling, pp. 210",
+        "url": null
+      }
+    }
+  ]
+}

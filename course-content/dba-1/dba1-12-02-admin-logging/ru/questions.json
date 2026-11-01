@@ -41,7 +41,7 @@
     {
       "key": "dba1-admin-logging-002",
       "type": "multiple_choice",
-      "text": "Какие значения log_destination перечислены в материале? Выберите все правильные варианты.",
+      "text": "Какие значения поддерживает параметр log_destination? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -118,7 +118,7 @@
     {
       "key": "dba1-admin-logging-004",
       "type": "multiple_choice",
-      "text": "Какие утверждения о logging_collector соответствуют конспекту? Выберите все правильные варианты.",
+      "text": "Какие утверждения о logging_collector верны? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -339,7 +339,7 @@
     {
       "key": "dba1-admin-logging-010",
       "type": "multiple_choice",
-      "text": "Какие средства анализа журнала упомянуты в конспекте? Выберите все правильные варианты.",
+      "text": "Какие инструменты можно использовать для анализа журналов PostgreSQL? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -375,7 +375,7 @@
     {
       "key": "dba1-admin-logging-011",
       "type": "single_choice",
-      "text": "Какой специализированный анализатор журналов PostgreSQL назван в материале фактическим стандартом анализа?",
+      "text": "Какой специализированный анализатор журналов PostgreSQL используется для построения подробных отчётов по журналам?",
       "answers": [
         {
           "key": "a",
@@ -411,7 +411,7 @@
     {
       "key": "dba1-admin-logging-012",
       "type": "multiple_choice",
-      "text": "Что следует учитывать перед использованием pgBadger согласно учебному материалу? Выберите все правильные варианты.",
+      "text": "Что следует учитывать перед использованием pgBadger? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -483,7 +483,7 @@
     {
       "key": "dba1-admin-logging-014",
       "type": "multiple_choice",
-      "text": "Какие форматы файлового журнала требуют включённого logging_collector согласно материалу? Выберите все правильные варианты.",
+      "text": "Какие форматы файлового журнала требуют включённого logging_collector? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -555,7 +555,7 @@
     {
       "key": "dba1-admin-logging-016",
       "type": "multiple_choice",
-      "text": "Администратор хочет получать машинно-разбираемый журнал в файле. Какие варианты из материала непосредственно подходят для этой задачи? Выберите все правильные варианты.",
+      "text": "Администратор хочет получать машинно-разбираемый журнал в файле. Какие варианты непосредственно подходят для этой задачи? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -586,6 +586,119 @@
         "section": "Журнал сообщений",
         "locator": "csvlog и jsonlog",
         "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config-logging#RUNTIME-CONFIG-LOGGING-WHERE"
+      }
+    },
+    {
+      "key": "dba1-admin-logging-017",
+      "type": "multiple_choice",
+      "text": "Какие соответствия параметров журналирования и событий верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "log_min_duration_statement — фиксировать команды, выполнявшиеся не меньше заданного времени",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "log_checkpoints — записывать информацию о контрольных точках",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "log_lock_waits — фиксировать длительные ожидания блокировок",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "log_temp_files — фиксировать использование временных файлов",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "log_statement — задавать размер shared_buffers",
+          "correct": false
+        }
+      ],
+      "explanation": "В DBA1 эти параметры приведены как примеры настройки состава серверного журнала: длительные запросы, контрольные точки, ожидания блокировок и временные файлы.",
+      "source": {
+        "key": "dba1-12-logging-content",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Информация в журнале",
+        "locator": "Слайд 14 и раздел 20.8 PostgreSQL 16",
+        "url": "https://postgrespro.ru/docs/postgresql/16/runtime-config-logging#RUNTIME-CONFIG-LOGGING-WHERE"
+      }
+    },
+    {
+      "key": "dba1-admin-logging-018",
+      "type": "multiple_choice",
+      "text": "Какие требования к журналу важны для разбора stderr-журналов программой pgBadger? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Сообщения должны быть на поддерживаемом английском языке",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "log_line_prefix должен позволять определить время сообщения",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "log_line_prefix должен содержать идентификатор процесса или сеанса",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Обязательно полностью отключить журналирование SQL и длительностей",
+          "correct": false
+        }
+      ],
+      "explanation": "Материал DBA1 отдельно требует английские сообщения. Документация pgBadger для stderr также требует распознаваемый префикс как минимум со временем и идентификатором процесса/сеанса.",
+      "source": {
+        "key": "dba1-12-pgbadger-config",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Анализ журнала",
+        "locator": "PostgreSQL configuration / log_line_prefix",
+        "url": "https://github.com/darold/pgbadger"
+      }
+    },
+    {
+      "key": "dba1-admin-logging-019",
+      "type": "single_choice",
+      "text": "Почему файлы серверного журнала PostgreSQL должны быть защищены от лишнего доступа?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Журнал может содержать SQL, параметры и другую конфиденциальную информацию",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Без открытого доступа PostgreSQL не может выполнять VACUUM",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Права на журнал определяют размер WAL-сегмента",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Журнал всегда содержит только номера PID и не содержит данных запросов",
+          "correct": false
+        }
+      ],
+      "explanation": "Связанная документация по обслуживанию журнала предупреждает, что серверный журнал может содержать чувствительные данные, включая SQL и значения, поэтому хранение журнала требует контроля доступа.",
+      "source": {
+        "key": "dba1-12-log-security",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Ротация и хранение журнала",
+        "locator": "Примечание о конфиденциальной информации в журнале",
+        "url": "https://postgrespro.ru/docs/postgresql/16/logfile-maintenance"
       }
     }
   ]

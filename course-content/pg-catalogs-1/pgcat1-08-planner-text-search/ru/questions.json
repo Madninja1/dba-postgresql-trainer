@@ -195,7 +195,7 @@
     {
       "key": "pgcat1-planner-text-search-006",
       "type": "multiple_choice",
-      "text": "Какие коды pg_statistic_ext.stxkind указаны в материале?",
+      "text": "Какие значения `pg_statistic_ext.stxkind` обозначают виды расширенной статистики?",
       "answers": [
         {
           "key": "a",

@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "sql-1",
+  "slug": "sql1-strong",
+  "notes_part": 3,
+  "topic_number": 3,
+  "title": "Strong — advanced SQL",
+  "description": "Advanced PostgreSQL 16 SQL: LATERAL, recursive CTEs, grouping sets, window frames, indexes, isolation, and EXPLAIN.",
+  "sort_order": 30
+}

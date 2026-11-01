@@ -1,0 +1,1122 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-ownership",
+  "questions": [
+    {
+      "key": "rust1-ownership-001",
+      "type": "single_choice",
+      "text": "What does Rust's ownership system describe?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Rules that determine who owns values and when their resources are released",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A garbage-collection algorithm that periodically scans the heap",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only the rules for choosing stack versus heap storage for local variables",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Reference counting that is automatically applied to every value",
+          "correct": false
+        }
+      ],
+      "explanation": "Ownership is a set of compiler-checked rules about value owners, moves, and when values are dropped.",
+      "source": {
+        "key": "rust1-ownership-definition",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 80",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-002",
+      "type": "single_choice",
+      "text": "When are the rules of the ownership system checked?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Only after the program starts",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "By the compiler at compile time",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "By a garbage collector once per minute",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only by the `cargo test` command",
+          "correct": false
+        }
+      ],
+      "explanation": "Ownership rules are checked by the compiler; if they are violated, the program does not compile.",
+      "source": {
+        "key": "rust1-ownership-compile-check",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 80",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-009",
+      "type": "single_choice",
+      "text": "From what point is a variable `s` valid within its scope?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "From the point of declaration",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "From the start of the file",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only after the first `println!`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only after leaving the block",
+          "correct": false
+        }
+      ],
+      "explanation": "A variable becomes valid when it is declared and remains valid until the end of its scope.",
+      "source": {
+        "key": "rust1-ownership-scope",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 82",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-010",
+      "type": "single_choice",
+      "text": "Which property of `String` makes it a useful type for understanding ownership?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A `String` owns a heap buffer that must be released exactly once",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A `String` always stores all of its characters directly on the stack",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A `String` does not participate in moves because it implements `Copy`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A `String` uses garbage collection instead of `Drop`",
+          "correct": false
+        }
+      ],
+      "explanation": "A `String` has an owning handle and a heap buffer; ownership rules prevent double frees and use-after-move.",
+      "source": {
+        "key": "rust1-ownership-string",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 83",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-012",
+      "type": "single_choice",
+      "text": "Why does a mutable, growable `String` need heap memory?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Its content size may be unknown at compile time and may change at runtime",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Because only strings can use the heap",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Because the stack cannot store pointers",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Because `String` always has zero size",
+          "correct": false
+        }
+      ],
+      "explanation": "Memory for text whose size is unknown or can change is requested from the heap at runtime.",
+      "source": {
+        "key": "rust1-ownership-string-allocation",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 84",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-013",
+      "type": "single_choice",
+      "text": "When does Rust automatically return a `String`'s memory to the allocator?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "When the owning variable goes out of scope",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Immediately after `String::from`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only after a manual `free`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "After every read of the string",
+          "correct": false
+        }
+      ],
+      "explanation": "The memory is released when its owner goes out of scope.",
+      "source": {
+        "key": "rust1-ownership-drop",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 84–85",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-015",
+      "type": "single_choice",
+      "text": "What happens after `let x = 5; let y = x;`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Both `x` and `y` remain available and equal 5",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`x` always becomes invalid",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A double free occurs",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The code requires `clone()`",
+          "correct": false
+        }
+      ],
+      "explanation": "Integers have a fixed size and are trivially copied, so both variables remain valid.",
+      "source": {
+        "key": "rust1-ownership-copy-int",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 85",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-016",
+      "type": "single_choice",
+      "text": "What happens after `let s1 = String::from(\"hello\"); let s2 = s1;`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Ownership moves to `s2`, and `s1` can no longer be used",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The heap data is automatically deeply copied",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`s2` becomes `&String`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Both variables receive independent data without any extra operation",
+          "correct": false
+        }
+      ],
+      "explanation": "For `String`, this is a move: `s1` becomes invalid and `s2` remains valid.",
+      "source": {
+        "key": "rust1-ownership-move",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 85–89",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-020",
+      "type": "single_choice",
+      "text": "How do you explicitly create a deep copy of a `String`'s data?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Call `clone()`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Use ordinary assignment",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Add `mut`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Call `drop()`",
+          "correct": false
+        }
+      ],
+      "explanation": "`clone()` is used for an explicit deep copy of heap data.",
+      "source": {
+        "key": "rust1-ownership-clone",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 90",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-021",
+      "type": "single_choice",
+      "text": "What does implementing the `Copy` trait mean for assignment?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The value is trivially copied and the original variable remains valid",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The value is always moved",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`clone()` is always called",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The data must be allocated on the heap",
+          "correct": false
+        }
+      ],
+      "explanation": "For `Copy` types, assignment does not invalidate the original variable.",
+      "source": {
+        "key": "rust1-ownership-copy",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 90–91",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-022",
+      "type": "single_choice",
+      "text": "Which restriction relates `Copy` and `Drop`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Rust does not allow `Copy` if the type or one of its parts implements `Drop`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Every `Drop` implementation automatically implies `Copy`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`Copy` is allowed only for `String`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "There is no restriction between them",
+          "correct": false
+        }
+      ],
+      "explanation": "The material explicitly states that a type with `Drop` cannot also be annotated as `Copy`.",
+      "source": {
+        "key": "rust1-ownership-copy-drop",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 91",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-025",
+      "type": "single_choice",
+      "text": "How can a function's return value affect ownership?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It can transfer ownership to the calling code",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It never affects ownership",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It always returns only a reference",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It is automatically cloned regardless of type",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter shows that return values can also transfer ownership.",
+      "source": {
+        "key": "rust1-ownership-return-ownership",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 92–94",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-026",
+      "type": "multiple_choice",
+      "text": "Which statements are Rust ownership rules? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Every value has an owner",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "At any moment, a value has only one owner",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "When the owner goes out of scope, the value is dropped",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every value must have two owners",
+          "correct": false
+        }
+      ],
+      "explanation": "These are the three basic ownership rules stated at the start of Chapter 4.",
+      "source": {
+        "key": "rust1-ownership-rules-all",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 82",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-027",
+      "type": "multiple_choice",
+      "text": "Which statements about the stack are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It follows LIFO order",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Stored data must have a known fixed size",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Pushing and popping happen at the top of the stack",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The stack requires the operating system to search for an arbitrary free region",
+          "correct": false
+        }
+      ],
+      "explanation": "The stack is sequential, follows LIFO order, and does not require a search for free space like the heap does.",
+      "source": {
+        "key": "rust1-ownership-stack-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 80–81",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-030",
+      "type": "multiple_choice",
+      "text": "What is typically placed on the stack when a function is called? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Values passed to the function",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The function's local variables",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Possible pointers to heap data",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The entire operating system",
+          "correct": false
+        }
+      ],
+      "explanation": "When a function is called, its passed values and local variables are placed on the stack; they are removed when the function finishes.",
+      "source": {
+        "key": "rust1-ownership-function-stack",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 81",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-032",
+      "type": "multiple_choice",
+      "text": "Which statements about the scope of variable `s` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Before declaration, `s` is invalid",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "After declaration, `s` is valid",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "After the scope closes, `s` is invalid",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`s` is always available throughout the file regardless of blocks",
+          "correct": false
+        }
+      ],
+      "explanation": "Listing 4-1 shows the period during which a variable is valid inside its scope.",
+      "source": {
+        "key": "rust1-ownership-scope-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 82",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-034",
+      "type": "multiple_choice",
+      "text": "Which operations are valid for a mutable `String`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Create it with `String::from`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Append text with `push_str`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Declare the variable with `mut` so it can be changed",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Modify a string literal directly without `String`",
+          "correct": false
+        }
+      ],
+      "explanation": "The example uses `let mut s = String::from(...)` and `s.push_str(...)`.",
+      "source": {
+        "key": "rust1-ownership-mutable-string",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 83",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-035",
+      "type": "multiple_choice",
+      "text": "Which requirements for managing `String` memory are described? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Request memory at runtime",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Return the memory when the `String` is no longer needed",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Correctly pair allocation and deallocation",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A garbage collector must be used",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter explains the need to allocate and return memory and how Rust automates the latter through ownership.",
+      "source": {
+        "key": "rust1-ownership-string-memory",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 84",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-037",
+      "type": "multiple_choice",
+      "text": "Which statements about `drop` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Rust calls it automatically when the owner goes out of scope",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A type's implementation can use it to release memory",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "In the example it is associated with the closing brace of the scope",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The user must manually write `drop` for every `String` at the end of each block",
+          "correct": false
+        }
+      ],
+      "explanation": "`drop` is invoked automatically; a manual call at every use site is not required.",
+      "source": {
+        "key": "rust1-ownership-drop-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 85",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-038",
+      "type": "multiple_choice",
+      "text": "Which parts of a `String` value are stored on the stack? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Pointer",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Length",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Capacity",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The bytes of the contents `hello`",
+          "correct": false
+        }
+      ],
+      "explanation": "The string bytes are on the heap, while the pointer, length, and capacity form the stack representation.",
+      "source": {
+        "key": "rust1-ownership-string-layout-all",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 86",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-039",
+      "type": "multiple_choice",
+      "text": "Which statements about `String` length and capacity are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Length is the amount of memory in bytes currently used by the contents",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Capacity is the total amount of memory obtained from the allocator",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Both values are part of the `String` stack representation",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Capacity is always zero for a nonempty string",
+          "correct": false
+        }
+      ],
+      "explanation": "The figure and text define `len` and `capacity` in exactly this way.",
+      "source": {
+        "key": "rust1-ownership-len-capacity",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 86",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-040",
+      "type": "multiple_choice",
+      "text": "Which actions occur for `let s2 = s1;` with a `String`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The pointer is copied",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The length is copied",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The capacity is copied",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The heap data is automatically deeply copied",
+          "correct": false
+        }
+      ],
+      "explanation": "The stack fields are copied, while the heap data is not duplicated automatically.",
+      "source": {
+        "key": "rust1-ownership-move-details",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 86–89",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-041",
+      "type": "multiple_choice",
+      "text": "Why does Rust make `s1` invalid after a move? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To avoid two owners of the same heap memory",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To prevent double free",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "To preserve memory safety",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "To force every `String` to live only on the stack",
+          "correct": false
+        }
+      ],
+      "explanation": "Invalidating the old variable prevents double free and preserves the single-owner rule.",
+      "source": {
+        "key": "rust1-ownership-move-safety",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 88–89",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-042",
+      "type": "multiple_choice",
+      "text": "Which statements about `clone()` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It creates a deep copy of a `String`'s heap data",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It explicitly signals a potentially expensive operation",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "After cloning, both strings can be used",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It is identical to an ordinary move with no heap copy",
+          "correct": false
+        }
+      ],
+      "explanation": "`clone` is an explicit deep copy and a visible, potentially expensive operation in the code.",
+      "source": {
+        "key": "rust1-ownership-clone-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 90",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-043",
+      "type": "multiple_choice",
+      "text": "Which types commonly implement `Copy`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Integer types",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`bool`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Floating-point types",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`String`",
+          "correct": false
+        }
+      ],
+      "explanation": "The list also includes `char` and tuples made only of `Copy` types; `String` is not included.",
+      "source": {
+        "key": "rust1-ownership-copy-types",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 91",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-044",
+      "type": "multiple_choice",
+      "text": "Which of these tuples can implement `Copy`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`(i32, i32)`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A tuple containing only `Copy` types",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`(bool, char)`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`(i32, String)`",
+          "correct": false
+        }
+      ],
+      "explanation": "A tuple implements `Copy` only if all of its elements implement `Copy`; `String` does not satisfy that condition.",
+      "source": {
+        "key": "rust1-ownership-copy-tuples",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 91",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-045",
+      "type": "multiple_choice",
+      "text": "Which statements about passing values to functions are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The mechanics are analogous to assignment",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A `String` can be moved into a parameter",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "An `i32` can be copied when passed",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Passing to a function always creates a deep clone for every type",
+          "correct": false
+        }
+      ],
+      "explanation": "Function calls follow the same move/copy rules as assignment.",
+      "source": {
+        "key": "rust1-ownership-function-transfer",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 91–92",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-046",
+      "type": "multiple_choice",
+      "text": "Suppose a function takes a parameter `s: String`. What happens when `consume(s)` is called? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Unless `s` was cloned beforehand, ownership of the `String` moves into the function parameter",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "After the call, the original variable `s` can no longer be used as the owner of that value",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "If the function neither moves the value onward nor returns it, the `String` is dropped when the parameter leaves scope",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The compiler automatically performs a deep `clone()` before every such call",
+          "correct": false
+        }
+      ],
+      "explanation": "Passing a `String` by value moves ownership. The owner inside the function is responsible for dropping it unless ownership is moved again.",
+      "source": {
+        "key": "rust1-ownership-takes-ownership",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 92",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-047",
+      "type": "multiple_choice",
+      "text": "What consequences does `Copy` have when an `i32` value is passed to a function by value? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The function receives a separate copy of the value",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The original variable remains usable after the call",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "No explicit call to `clone()` is required for this copy",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The original variable becomes invalid just like a `String` after a move",
+          "correct": false
+        }
+      ],
+      "explanation": "`i32` implements `Copy`: copying is implicit, so passing the argument does not invalidate the original variable.",
+      "source": {
+        "key": "rust1-ownership-makes-copy",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 92",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-049",
+      "type": "multiple_choice",
+      "text": "Which statements about cleaning up heap data when leaving scope are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The current valid owner performs the cleanup",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "If data was moved, the old variable has nothing to free",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`drop` is called for the owner when it leaves scope",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "After a move, both variables must free the same memory",
+          "correct": false
+        }
+      ],
+      "explanation": "After a move, the new owner is the only valid owner and is responsible for releasing the data.",
+      "source": {
+        "key": "rust1-ownership-scope-drop",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 89",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-ownership-050",
+      "type": "multiple_choice",
+      "text": "Why is passing a `String` by value merely to read its length usually less convenient than borrowing it? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The function takes ownership even though it only needs read access",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "For the caller to keep owning the same string, ownership would have to be returned or otherwise transferred back",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A reference lets the function compute the length without taking ownership",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Borrowing requires a deep copy of the string buffer",
+          "correct": false
+        }
+      ],
+      "explanation": "Borrowing lets a function read a `String` without a move and without returning ownership to the caller.",
+      "source": {
+        "key": "rust1-ownership-tuple-workaround",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "What Is Ownership?",
+        "locator": "Chapter 4 — What Is Ownership?, pp. 93–94",
+        "url": null
+      }
+    }
+  ]
+}

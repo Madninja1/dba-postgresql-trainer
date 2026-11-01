@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "dba-1",
+  "slug": "dba1-data-databases",
+  "notes_part": 8,
+  "topic_number": 8,
+  "title": "Databases and Schemas",
+  "description": "PostgreSQL databases and templates, organizing objects into schemas, search_path, system and temporary schemas, temporary tables, and database-level settings",
+  "sort_order": 80
+}

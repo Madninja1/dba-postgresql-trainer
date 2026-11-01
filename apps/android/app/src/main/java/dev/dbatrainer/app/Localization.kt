@@ -241,12 +241,14 @@ data class UiStrings(
 
     fun progressRank(rank: MobileProgressRank): String =
         when (rank) {
-            MobileProgressRank.INIT -> "Init"
+            MobileProgressRank.INIT -> "DBA Recruit"
             MobileProgressRank.PSQL_TRAINEE -> "PSQL Trainee"
             MobileProgressRank.QUERY_ADEPT -> "Query Adept"
             MobileProgressRank.SCHEMA_KEEPER -> "Schema Keeper"
+            MobileProgressRank.CATALOG_ANALYST -> "Catalog Analyst"
             MobileProgressRank.PLAN_READER -> "Plan Reader"
             MobileProgressRank.WAL_OPERATOR -> "WAL Operator"
+            MobileProgressRank.REPLICATION_ENGINEER -> "Replication Engineer"
             MobileProgressRank.POSTGRES_GUARDIAN -> "Postgres Guardian"
             MobileProgressRank.MAD_NINJA_DBA -> "MadNinja DBA"
         }
@@ -254,73 +256,137 @@ data class UiStrings(
     fun rankDescription(rank: MobileProgressRank): String =
         if (this === ENGLISH_STRINGS) {
             when (rank) {
-                MobileProgressRank.INIT -> "The journey starts here. Build the first reliable habits."
-                MobileProgressRank.PSQL_TRAINEE -> "Basic SQL and quiz practice is becoming routine."
-                MobileProgressRank.QUERY_ADEPT -> "Queries are no longer random commands; you can reason about results."
-                MobileProgressRank.SCHEMA_KEEPER -> "You are building a stable picture of schemas, objects and data flow."
-                MobileProgressRank.PLAN_READER -> "You are ready to reason about execution plans and query behavior."
-                MobileProgressRank.WAL_OPERATOR -> "Operational PostgreSQL concepts are becoming part of your toolkit."
-                MobileProgressRank.POSTGRES_GUARDIAN -> "A broad part of the DBA path is under control."
-                MobileProgressRank.MAD_NINJA_DBA -> "Top rank: persistent practice across the whole trainer."
+                MobileProgressRank.INIT -> "Your DBA training starts here: learn the tools and build reliable habits."
+                MobileProgressRank.PSQL_TRAINEE -> "The PostgreSQL terminal and basic SQL workflow are becoming familiar."
+                MobileProgressRank.QUERY_ADEPT -> "You can reason about queries instead of treating SQL as a set of commands."
+                MobileProgressRank.SCHEMA_KEEPER -> "Schemas, objects, constraints and data relationships form a coherent picture."
+                MobileProgressRank.CATALOG_ANALYST -> "System catalogs are becoming a practical way to inspect PostgreSQL state."
+                MobileProgressRank.PLAN_READER -> "Execution plans and query behavior can now be analyzed deliberately."
+                MobileProgressRank.WAL_OPERATOR -> "WAL, backup and recovery mechanics are becoming operational tools."
+                MobileProgressRank.REPLICATION_ENGINEER -> "Replication and availability concepts are becoming part of your DBA toolkit."
+                MobileProgressRank.POSTGRES_GUARDIAN -> "You can connect the major PostgreSQL administration disciplines into one system."
+                MobileProgressRank.MAD_NINJA_DBA -> "Top rank: sustained mastery across the full DBA Trainer path."
             }
         } else {
             when (rank) {
-                MobileProgressRank.INIT -> "Старт обучения: формируем первые устойчивые привычки."
-                MobileProgressRank.PSQL_TRAINEE -> "Базовые тесты и SQL-практика уже становятся рутиной."
-                MobileProgressRank.QUERY_ADEPT -> "Запросы уже не набор команд: ты понимаешь, почему получается результат."
-                MobileProgressRank.SCHEMA_KEEPER -> "Формируется целостное понимание схем, объектов и движения данных."
-                MobileProgressRank.PLAN_READER -> "Можно переходить к осмысленному чтению планов и поведению запросов."
-                MobileProgressRank.WAL_OPERATOR -> "Операционные механизмы PostgreSQL становятся рабочим инструментом."
-                MobileProgressRank.POSTGRES_GUARDIAN -> "Большая часть DBA-пути уже под контролем."
-                MobileProgressRank.MAD_NINJA_DBA -> "Верхний ранг: системная практика по всему тренажёру."
+                MobileProgressRank.INIT -> "Старт DBA-пути: осваиваем инструменты и формируем устойчивые рабочие привычки."
+                MobileProgressRank.PSQL_TRAINEE -> "Терминал PostgreSQL и базовый SQL-процесс уже становятся привычными."
+                MobileProgressRank.QUERY_ADEPT -> "Запросы уже не набор команд: ты понимаешь их логику и результат."
+                MobileProgressRank.SCHEMA_KEEPER -> "Схемы, объекты, ограничения и связи данных складываются в единую картину."
+                MobileProgressRank.CATALOG_ANALYST -> "Системные каталоги становятся рабочим инструментом анализа состояния PostgreSQL."
+                MobileProgressRank.PLAN_READER -> "Планы выполнения и поведение запросов уже можно разбирать осознанно."
+                MobileProgressRank.WAL_OPERATOR -> "WAL, резервное копирование и восстановление становятся рабочими инструментами."
+                MobileProgressRank.REPLICATION_ENGINEER -> "Репликация и доступность становятся частью твоего DBA-инструментария."
+                MobileProgressRank.POSTGRES_GUARDIAN -> "Основные дисциплины администрирования PostgreSQL уже связаны в единую систему."
+                MobileProgressRank.MAD_NINJA_DBA -> "Верхний ранг: системное владение всем учебным DBA-путём."
             }
         }
 
     fun achievementTitle(kind: MobileAchievementKind): String =
-        when (kind) {
-            MobileAchievementKind.FIRST_ANSWER -> if (this === ENGLISH_STRINGS) "First Blood" else "Первый ответ"
-            MobileAchievementKind.HUNDRED_ANSWERS -> "100 Questions"
-            MobileAchievementKind.PERFECT_TWENTY -> "20/20"
-            MobileAchievementKind.QUIZ_VETERAN -> if (this === ENGLISH_STRINGS) "Quiz Veteran" else "Ветеран тестов"
-            MobileAchievementKind.FIRST_SQL -> "SQL Initiate"
-            MobileAchievementKind.ONE_SHOT -> "One Shot"
-            MobileAchievementKind.QUERY_NINJA -> "Query Ninja"
-            MobileAchievementKind.SEVEN_DAY_STREAK -> "Seven Days"
-            MobileAchievementKind.THIRTY_DAY_STREAK -> "WAL Never Sleeps"
-            MobileAchievementKind.COURSE_MASTER -> if (this === ENGLISH_STRINGS) "Course Master" else "Мастер курса"
-            MobileAchievementKind.MAD_NINJA -> "MadNinja"
+        if (this === ENGLISH_STRINGS) {
+            when (kind) {
+                MobileAchievementKind.FIRST_STEP -> "First Step"
+                MobileAchievementKind.PERFECT_QUIZ -> "Flawless"
+                MobileAchievementKind.CONFIDENT_KNOWLEDGE -> "Confident Knowledge"
+                MobileAchievementKind.FIRST_TOPIC_MASTERY -> "Topic Mastered"
+                MobileAchievementKind.COURSE_COMPLETED -> "Course Completed"
+                MobileAchievementKind.PERFECTIONIST -> "Perfectionist"
+                MobileAchievementKind.SQL_MASTER -> "SQL Master"
+                MobileAchievementKind.RUST_MASTER -> "Rust Master"
+                MobileAchievementKind.POSTGRES_DBA -> "PostgreSQL DBA"
+                MobileAchievementKind.PL_PG_SQL_DEVELOPER -> "PL/pgSQL Developer"
+                MobileAchievementKind.WAVE -> "On a Roll"
+                MobileAchievementKind.FLAWLESS_STREAK -> "Flawless Streak"
+                MobileAchievementKind.IRON_FOCUS -> "Iron Focus"
+                MobileAchievementKind.LEARN_FROM_MISTAKES -> "Learn from Mistakes"
+                MobileAchievementKind.FIXED_TEN -> "Fixed"
+                MobileAchievementKind.CLOSED_GAPS -> "Closed the Gaps"
+                MobileAchievementKind.EXPLORER -> "Explorer"
+                MobileAchievementKind.UNIVERSAL -> "Universal"
+                MobileAchievementKind.FULL_DBA_STACK -> "Full DBA Stack"
+            }
+        } else {
+            when (kind) {
+                MobileAchievementKind.FIRST_STEP -> "Первый шаг"
+                MobileAchievementKind.PERFECT_QUIZ -> "Без единой ошибки"
+                MobileAchievementKind.CONFIDENT_KNOWLEDGE -> "Уверенное знание"
+                MobileAchievementKind.FIRST_TOPIC_MASTERY -> "Тема освоена"
+                MobileAchievementKind.COURSE_COMPLETED -> "Курс завершён"
+                MobileAchievementKind.PERFECTIONIST -> "Перфекционист"
+                MobileAchievementKind.SQL_MASTER -> "Мастер SQL"
+                MobileAchievementKind.RUST_MASTER -> "Мастер Rust"
+                MobileAchievementKind.POSTGRES_DBA -> "PostgreSQL DBA"
+                MobileAchievementKind.PL_PG_SQL_DEVELOPER -> "PL/pgSQL Developer"
+                MobileAchievementKind.WAVE -> "На волне"
+                MobileAchievementKind.FLAWLESS_STREAK -> "Безошибочная серия"
+                MobileAchievementKind.IRON_FOCUS -> "Железная концентрация"
+                MobileAchievementKind.LEARN_FROM_MISTAKES -> "Работа над ошибками"
+                MobileAchievementKind.FIXED_TEN -> "Исправлено"
+                MobileAchievementKind.CLOSED_GAPS -> "Закрыл пробелы"
+                MobileAchievementKind.EXPLORER -> "Исследователь"
+                MobileAchievementKind.UNIVERSAL -> "Универсал"
+                MobileAchievementKind.FULL_DBA_STACK -> "Полный стек DBA"
+            }
         }
 
     fun achievementDescription(kind: MobileAchievementKind): String =
         if (this === ENGLISH_STRINGS) {
             when (kind) {
-                MobileAchievementKind.FIRST_ANSWER -> "Answer the first quiz question."
-                MobileAchievementKind.HUNDRED_ANSWERS -> "Answer 100 quiz questions."
-                MobileAchievementKind.PERFECT_TWENTY -> "Finish a 20-question quiz with 20 correct answers."
-                MobileAchievementKind.QUIZ_VETERAN -> "Complete 10 quizzes."
-                MobileAchievementKind.FIRST_SQL -> "Solve the first SQL practice task."
-                MobileAchievementKind.ONE_SHOT -> "Solve an SQL practice task on the first check."
-                MobileAchievementKind.QUERY_NINJA -> "Solve 25 SQL practice tasks."
-                MobileAchievementKind.SEVEN_DAY_STREAK -> "Reach a 7-day study streak."
-                MobileAchievementKind.THIRTY_DAY_STREAK -> "Reach a 30-day study streak."
-                MobileAchievementKind.COURSE_MASTER -> "Master every topic in one course."
-                MobileAchievementKind.MAD_NINJA -> "Reach the MadNinja DBA rank."
+                MobileAchievementKind.FIRST_STEP -> "Complete your first quiz."
+                MobileAchievementKind.PERFECT_QUIZ -> "Complete a quiz of at least 20 questions without a mistake."
+                MobileAchievementKind.CONFIDENT_KNOWLEDGE -> "Score at least 90% in a quiz of at least 20 questions."
+                MobileAchievementKind.FIRST_TOPIC_MASTERY -> "Master your first topic."
+                MobileAchievementKind.COURSE_COMPLETED -> "Master every topic in one course."
+                MobileAchievementKind.PERFECTIONIST -> "Answer every active question in one course correctly at least once."
+                MobileAchievementKind.SQL_MASTER -> "Complete the SQL-1 course."
+                MobileAchievementKind.RUST_MASTER -> "Complete the Rust-1 course."
+                MobileAchievementKind.POSTGRES_DBA -> "Complete the DBA-1 course."
+                MobileAchievementKind.PL_PG_SQL_DEVELOPER -> "Complete the PL/pgSQL-1 course."
+                MobileAchievementKind.WAVE -> "Answer 5 different questions correctly in a row."
+                MobileAchievementKind.FLAWLESS_STREAK -> "Answer 10 different questions correctly in a row."
+                MobileAchievementKind.IRON_FOCUS -> "Answer 25 different questions correctly in a row."
+                MobileAchievementKind.LEARN_FROM_MISTAKES -> "Correctly answer a question that you previously answered incorrectly."
+                MobileAchievementKind.FIXED_TEN -> "Correct 10 different questions that you previously answered incorrectly."
+                MobileAchievementKind.CLOSED_GAPS -> "In one topic, correct every question whose latest recorded result was a mistake."
+                MobileAchievementKind.EXPLORER -> "Master at least one topic in 3 different courses."
+                MobileAchievementKind.UNIVERSAL -> "Master at least one topic in every available course."
+                MobileAchievementKind.FULL_DBA_STACK -> "Complete SQL-1, PSQL-1, PG-Catalogs-1 and DBA-1."
             }
         } else {
             when (kind) {
-                MobileAchievementKind.FIRST_ANSWER -> "Ответить на первый вопрос теста."
-                MobileAchievementKind.HUNDRED_ANSWERS -> "Ответить на 100 вопросов тестов."
-                MobileAchievementKind.PERFECT_TWENTY -> "Пройти тест из 20 вопросов без единой ошибки."
-                MobileAchievementKind.QUIZ_VETERAN -> "Завершить 10 тестов."
-                MobileAchievementKind.FIRST_SQL -> "Решить первое задание SQL-практики."
-                MobileAchievementKind.ONE_SHOT -> "Решить SQL-задачу с первой проверки."
-                MobileAchievementKind.QUERY_NINJA -> "Решить 25 SQL-задач."
-                MobileAchievementKind.SEVEN_DAY_STREAK -> "Держать учебную серию 7 дней."
-                MobileAchievementKind.THIRTY_DAY_STREAK -> "Держать учебную серию 30 дней."
-                MobileAchievementKind.COURSE_MASTER -> "Освоить все темы одного курса."
-                MobileAchievementKind.MAD_NINJA -> "Достичь ранга MadNinja DBA."
+                MobileAchievementKind.FIRST_STEP -> "Впервые завершить тест."
+                MobileAchievementKind.PERFECT_QUIZ -> "Пройти тест минимум из 20 вопросов без единой ошибки."
+                MobileAchievementKind.CONFIDENT_KNOWLEDGE -> "Набрать не менее 90% в тесте минимум из 20 вопросов."
+                MobileAchievementKind.FIRST_TOPIC_MASTERY -> "Впервые освоить тему."
+                MobileAchievementKind.COURSE_COMPLETED -> "Освоить все темы одного курса."
+                MobileAchievementKind.PERFECTIONIST -> "Хотя бы раз правильно ответить на каждый активный вопрос одного курса."
+                MobileAchievementKind.SQL_MASTER -> "Завершить курс SQL-1."
+                MobileAchievementKind.RUST_MASTER -> "Завершить курс Rust-1."
+                MobileAchievementKind.POSTGRES_DBA -> "Завершить курс DBA-1."
+                MobileAchievementKind.PL_PG_SQL_DEVELOPER -> "Завершить курс PL/pgSQL-1."
+                MobileAchievementKind.WAVE -> "Правильно ответить на 5 разных вопросов подряд."
+                MobileAchievementKind.FLAWLESS_STREAK -> "Правильно ответить на 10 разных вопросов подряд."
+                MobileAchievementKind.IRON_FOCUS -> "Правильно ответить на 25 разных вопросов подряд."
+                MobileAchievementKind.LEARN_FROM_MISTAKES -> "Правильно ответить на вопрос, в котором раньше была ошибка."
+                MobileAchievementKind.FIXED_TEN -> "Исправить ошибки в 10 разных вопросах."
+                MobileAchievementKind.CLOSED_GAPS -> "В одной теме исправить все вопросы, чей последний результат был ошибочным."
+                MobileAchievementKind.EXPLORER -> "Освоить хотя бы по одной теме в 3 разных курсах."
+                MobileAchievementKind.UNIVERSAL -> "Освоить хотя бы одну тему в каждом доступном курсе."
+                MobileAchievementKind.FULL_DBA_STACK -> "Завершить SQL-1, PSQL-1, PG-Catalogs-1 и DBA-1."
             }
         }
+
+    fun achievementUnlockedTitle(count: Int): String =
+        if (this === ENGLISH_STRINGS) {
+            if (count == 1) "Achievement unlocked!" else "Achievements unlocked: $count"
+        } else {
+            if (count == 1) "Достижение открыто!" else "Открыто достижений: $count"
+        }
+
+    fun achievementReward(points: ULong): String = "+$points XP"
+
+    val closeAchievement: String
+        get() = if (this === ENGLISH_STRINGS) "Close" else "Закрыть"
 
     fun achievementRarity(value: MobileAchievementRarity): String =
         if (this === ENGLISH_STRINGS) {

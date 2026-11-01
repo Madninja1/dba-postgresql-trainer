@@ -1,0 +1,700 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-admin-monitoring-tools",
+  "questions": [
+    {
+      "key": "dba1-admin-monitoring-tools-001",
+      "type": "single_choice",
+      "text": "What is an external PostgreSQL monitoring system used for?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To regularly collect, store, and visualize PostgreSQL and operating-system metrics",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To completely replace the PostgreSQL server",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To store user tables outside PGDATA",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To disable PostgreSQL's own statistics collection",
+          "correct": false
+        }
+      ],
+      "explanation": "The material emphasizes the need for a system that collects varied metrics, retains their history, and presents the results in a convenient form.",
+      "source": {
+        "key": "dba1-12-external-monitoring",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "External Monitoring",
+        "locator": "Requirements for a full monitoring system",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-002",
+      "type": "multiple_choice",
+      "text": "Which of the listed systems are general-purpose monitoring systems? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Zabbix",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Munin",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Cacti",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_repack",
+          "correct": false
+        }
+      ],
+      "explanation": "Zabbix, Munin, and Cacti are listed as examples of general-purpose monitoring systems.",
+      "source": {
+        "key": "dba1-12-external-monitoring-002",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "External Monitoring",
+        "locator": "General-purpose systems",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-003",
+      "type": "single_choice",
+      "text": "Which listed tool is a PostgreSQL-specific monitoring solution?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pgpro_pwr",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "logrotate",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "iostat",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_checksums",
+          "correct": false
+        }
+      ],
+      "explanation": "The PostgreSQL-specific systems section lists pg_profile, pgpro_pwr, PGObserver, PoWA, and OPM.",
+      "source": {
+        "key": "dba1-12-postgresql-monitoring-tools",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "External Monitoring",
+        "locator": "PostgreSQL monitoring systems",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-004",
+      "type": "multiple_choice",
+      "text": "Which of the listed tools are PostgreSQL monitoring systems? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_profile",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "PGObserver",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "PostgreSQL Workload Analyzer (PoWA)",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Open PostgreSQL Monitoring (OPM)",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "pg_dump",
+          "correct": false
+        }
+      ],
+      "explanation": "All four names appear on the slide with specialized PostgreSQL monitoring systems. `pg_dump` is not one of the monitoring systems listed in the lecture.",
+      "source": {
+        "key": "dba1-12-postgresql-monitoring-tools",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "External Monitoring",
+        "locator": "PostgreSQL monitoring systems",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-005",
+      "type": "single_choice",
+      "text": "What is the main purpose of the pg_stat_statements extension in this topic?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To collect aggregated execution statistics for SQL queries",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To move tables between tablespaces",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To rotate server logs",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To create backups",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_stat_statements is intended to accumulate planning and execution statistics for SQL statements.",
+      "source": {
+        "key": "postgresql-16-pg-stat-statements",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_stat_statements",
+        "locator": "Purpose of the extension",
+        "url": "https://postgrespro.ru/docs/postgresql/16/pgstatstatements"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-006",
+      "type": "multiple_choice",
+      "text": "Which actions are required to start using pg_stat_statements and inspect the collected statistics? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Prepare the extension library for loading",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Create the extension",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Execute several queries",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Inspect the pg_stat_statements view",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Drop the extension before running the queries",
+          "correct": false
+        }
+      ],
+      "explanation": "This exact sequence forms the additional exercise in the lesson. Dropping the extension is not part of the stated procedure.",
+      "source": {
+        "key": "dba1-12-pg-stat-statements-practice",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice+",
+        "locator": "Installing and checking pg_stat_statements",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-007",
+      "type": "single_choice",
+      "text": "Which parameter must be changed before using pg_stat_statements?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "shared_preload_libraries",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "search_path",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "temp_buffers",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "log_rotation_age",
+          "correct": false
+        }
+      ],
+      "explanation": "The notes explicitly require adding the extension to shared_preload_libraries before CREATE EXTENSION.",
+      "source": {
+        "key": "dba1-12-pg-stat-statements-practice-007",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice+",
+        "locator": "shared_preload_libraries",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-008",
+      "type": "multiple_choice",
+      "text": "What are the consequences of adding pg_stat_statements to shared_preload_libraries? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The server must be restarted after changing the parameter",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "After the server starts, CREATE EXTENSION can be executed",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A SET command in the current session alone is not sufficient for this preload",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The change requires recreating the entire cluster with initdb",
+          "correct": false
+        }
+      ],
+      "explanation": "The exercise note explicitly says to change shared_preload_libraries and then restart the server.",
+      "source": {
+        "key": "dba1-12-pg-stat-statements-practice-008",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice+",
+        "locator": "Preloading pg_stat_statements",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-009",
+      "type": "single_choice",
+      "text": "What does the pg_stat_statements view represent after queries have been executed?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A source of aggregated statistics for tracked SQL statements",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A list of current connections only",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The physical WAL log",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A list of tablespace files",
+          "correct": false
+        }
+      ],
+      "explanation": "The view lets you analyze accumulated query-execution characteristics rather than only current activity.",
+      "source": {
+        "key": "postgresql-16-pg-stat-statements-009",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_stat_statements",
+        "locator": "pg_stat_statements view",
+        "url": "https://postgrespro.ru/docs/postgresql/16/pgstatstatements"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-010",
+      "type": "multiple_choice",
+      "text": "Which kinds of information make pg_stat_statements useful for comparing queries? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Number of calls",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Execution time consumed",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Number of rows processed",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Physical contents of every table row",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_stat_statements collects aggregated query-execution metrics that help identify frequently executed and expensive operations.",
+      "source": {
+        "key": "postgresql-16-pg-stat-statements-010",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_stat_statements",
+        "locator": "Execution-statistics columns",
+        "url": "https://postgrespro.ru/docs/postgresql/16/pgstatstatements"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-011",
+      "type": "single_choice",
+      "text": "How does external monitoring differ from manually inspecting server state at a single point in time?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It continuously collects metrics and retains their history",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It works only while PostgreSQL is stopped",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It eliminates the need for any OS metrics",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It stores only SQL query text",
+          "correct": false
+        }
+      ],
+      "explanation": "The slide emphasizes metric history and visualization, which make it possible to analyze changes over time.",
+      "source": {
+        "key": "dba1-12-external-monitoring-011",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "External Monitoring",
+        "locator": "Metric history and visualization",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-012",
+      "type": "multiple_choice",
+      "text": "Which metric sources should a complete monitoring system cover? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "PostgreSQL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The operating system",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "History of previously collected measurements",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Only the contents of postgresql.conf",
+          "correct": false
+        }
+      ],
+      "explanation": "The lecture describes practical monitoring as collecting different metrics from PostgreSQL and the OS, then storing history and visualizing it.",
+      "source": {
+        "key": "dba1-12-external-monitoring-012",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "External Monitoring",
+        "locator": "Monitoring-system requirements",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-013",
+      "type": "single_choice",
+      "text": "Which tool belongs to PostgreSQL Enterprise and is intended for workload performance analysis?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pgpro_pwr",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_ctl",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_checksums",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "logrotate",
+          "correct": false
+        }
+      ],
+      "explanation": "pgpro_pwr is included in the notes among specialized monitoring solutions and is linked to Postgres Pro Enterprise documentation.",
+      "source": {
+        "key": "postgrespro-enterprise-pgpro-pwr",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "External Monitoring",
+        "locator": "pgpro_pwr",
+        "url": "https://postgrespro.ru/docs/enterprise/16/pgpro-pwr"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-014",
+      "type": "multiple_choice",
+      "text": "Which categories of solutions are used for external PostgreSQL monitoring? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "General-purpose monitoring systems",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Cloud monitoring services",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Specialized PostgreSQL solutions",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Only built-in psql meta-commands",
+          "correct": false
+        }
+      ],
+      "explanation": "The slide distinguishes general-purpose, cloud, and PostgreSQL-specific tools.",
+      "source": {
+        "key": "postgresql-wiki-monitoring",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "External Monitoring",
+        "locator": "Monitoring tools overview",
+        "url": "https://wiki.postgresql.org/wiki/Monitoring"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-015",
+      "type": "single_choice",
+      "text": "Which approach is best suited for finding queries that accumulate significant load over a long period?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Analyze aggregated pg_stat_statements statistics",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Look at df once",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Inspect only pg_stat_progress_vacuum",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Check the list of tablespaces",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_stat_statements accumulates statistics over many query executions, making it suitable for analyzing cumulative load rather than only current state.",
+      "source": {
+        "key": "postgresql-16-pg-stat-statements-015",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_stat_statements",
+        "locator": "Aggregated statement statistics",
+        "url": "https://postgrespro.ru/docs/postgresql/16/pgstatstatements"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-016",
+      "type": "multiple_choice",
+      "text": "An administrator is building continuous PostgreSQL performance monitoring. Which actions are appropriate? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Collect OS metrics",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Collect internal PostgreSQL metrics",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Retain metric history for comparison over time",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Rely only on manually inspecting processes after an incident has already occurred",
+          "correct": false
+        }
+      ],
+      "explanation": "The final lesson block emphasizes systematic monitoring: collecting different classes of metrics, retaining history, and presenting information conveniently.",
+      "source": {
+        "key": "dba1-12-external-monitoring-016",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "External Monitoring",
+        "locator": "Full monitoring system",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-017",
+      "type": "single_choice",
+      "text": "Why do two queries that differ only in constant values usually end up in one pg_stat_statements entry?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_stat_statements groups queries with the same internal structure, normally replacing constants with parameters",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "PostgreSQL stores only the last executed SQL text",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "All queries from one user have the same queryid",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Constants are removed from source tables before execution",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_stat_statements combines structurally equivalent queries using the internal queryid; constant values normally do not distinguish entries and are displayed as parameters such as $1.",
+      "source": {
+        "key": "dba1-12-pgss-normalization",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_stat_statements",
+        "locator": "Query normalization and queryid",
+        "url": "https://postgrespro.ru/docs/postgresql/16/pgstatstatements"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-018",
+      "type": "multiple_choice",
+      "text": "Which pg_stat_statements.track values and meanings are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "top — track top-level statements",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "all — also track nested statements",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "none — disable statement statistics collection",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "snapshot — save only one query per transaction",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_stat_statements.track supports top, all, and none; the default is top.",
+      "source": {
+        "key": "dba1-12-pgss-track",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_stat_statements",
+        "locator": "pg_stat_statements.track parameter",
+        "url": "https://postgrespro.ru/docs/postgresql/16/pgstatstatements"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-019",
+      "type": "single_choice",
+      "text": "What is pg_stat_statements_reset() used for?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To reset accumulated pg_stat_statements statistics globally or for a selected user, database, and queryid",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To restart PostgreSQL after changing shared_preload_libraries",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To rebuild system-catalog indexes",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To remove the pg_stat_statements extension",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_stat_statements_reset() starts a new statistics-collection period; when needed, the reset can be limited by userid, dbid, and queryid.",
+      "source": {
+        "key": "dba1-12-pgss-reset",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_stat_statements",
+        "locator": "pg_stat_statements_reset function",
+        "url": "https://postgrespro.ru/docs/postgresql/16/pgstatstatements"
+      }
+    }
+  ]
+}

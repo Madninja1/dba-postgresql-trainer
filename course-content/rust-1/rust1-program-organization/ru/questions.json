@@ -5,7 +5,7 @@
     {
       "key": "rust1-program-organization-001",
       "type": "single_choice",
-      "text": "Что в главе 7 называется крейтом?",
+      "text": "Что такое крейт (`crate`) в Rust?",
       "answers": [
         {
           "key": "a",
@@ -77,7 +77,7 @@
     {
       "key": "rust1-program-organization-003",
       "type": "single_choice",
-      "text": "Что такое пакет в терминологии главы 7?",
+      "text": "Что такое пакет (`package`) в Cargo?",
       "answers": [
         {
           "key": "a",
@@ -113,7 +113,7 @@
     {
       "key": "rust1-program-organization-004",
       "type": "multiple_choice",
-      "text": "Какие ограничения на состав пакета указаны в материале? Выберите все правильные варианты.",
+      "text": "Какие ограничения действуют на состав Cargo-пакета? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -257,7 +257,7 @@
     {
       "key": "rust1-program-organization-008",
       "type": "multiple_choice",
-      "text": "Какие задачи в обзоре главы 7 относятся к модульной системе? Выберите все правильные варианты.",
+      "text": "Какие задачи решает модульная система Rust? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -287,42 +287,6 @@
         "module": "Rust",
         "section": "Управление растущими проектами с помощью пакетов, крейтов и модулей",
         "locator": "Глава 7 — обзор пакетов, крейтов, модулей, use и путей, стр. 157",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-program-organization-009",
-      "type": "single_choice",
-      "text": "С какого файла компилятор обычно начинает для библиотечного крейта?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "src/lib.rs",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "src/main.rs",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "Cargo.lock",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "src/bin/lib.rs",
-          "correct": false
-        }
-      ],
-      "explanation": "В шпаргалке по модулям src/lib.rs указан как обычный корневой модуль библиотечного крейта.",
-      "source": {
-        "key": "rust1-program-organization-modules",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Определение модулей для контроля видимости и закрытости",
-        "locator": "Глава 7 — раздел «Определение модулей для контроля видимости и закрытости», стр. 160–164",
         "url": null
       }
     },
@@ -435,45 +399,9 @@
       }
     },
     {
-      "key": "rust1-program-organization-013",
-      "type": "single_choice",
-      "text": "Какой путь в примере шпаргалки указывает на `Asparagus` из `garden::vegetables`?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "crate::garden::vegetables::Asparagus",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "crate.garden.vegetables.Asparagus",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "super::crate::Asparagus",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "use::garden::Asparagus",
-          "correct": false
-        }
-      ],
-      "explanation": "Элементы пути разделяются `::`; абсолютный путь в текущем крейте начинается с `crate`.",
-      "source": {
-        "key": "rust1-program-organization-modules",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Определение модулей для контроля видимости и закрытости",
-        "locator": "Глава 7 — раздел «Определение модулей для контроля видимости и закрытости», стр. 160–164",
-        "url": null
-      }
-    },
-    {
       "key": "rust1-program-organization-014",
       "type": "multiple_choice",
-      "text": "Какие элементы могут находиться внутри модуля согласно примеру главы 7? Выберите все правильные варианты.",
+      "text": "Какие элементы могут находиться внутри модуля Rust? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -507,45 +435,9 @@
       }
     },
     {
-      "key": "rust1-program-organization-015",
-      "type": "single_choice",
-      "text": "Как называется неявный модуль в корне дерева модулей?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "crate",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "root",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "self",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "package",
-          "correct": false
-        }
-      ],
-      "explanation": "Материал описывает `crate` как неявного родителя всего дерева модулей.",
-      "source": {
-        "key": "rust1-program-organization-modules",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Определение модулей для контроля видимости и закрытости",
-        "locator": "Глава 7 — раздел «Определение модулей для контроля видимости и закрытости», стр. 160–164",
-        "url": null
-      }
-    },
-    {
       "key": "rust1-program-organization-016",
       "type": "multiple_choice",
-      "text": "Какие отношения в дереве модулей описаны в материале? Выберите все правильные варианты.",
+      "text": "Какие отношения существуют между элементами дерева модулей? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -641,78 +533,6 @@
         }
       ],
       "explanation": "Относительные пути исходят из текущего модуля и могут использовать self, super или локальный идентификатор; crate указывает абсолютный путь текущего крейта.",
-      "source": {
-        "key": "rust1-program-organization-paths",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Пути для ссылки на элемент в дереве модулей",
-        "locator": "Глава 7 — раздел «Пути для ссылки на элемент в дереве модулей», стр. 165–166",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-program-organization-019",
-      "type": "single_choice",
-      "text": "Чем в синтаксисе пути разделяются идентификаторы?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Двойным двоеточием `::`",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Точкой `.`",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "Косой чертой `/`",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "Оператором `->`",
-          "correct": false
-        }
-      ],
-      "explanation": "И абсолютные, и относительные пути состоят из идентификаторов, разделённых `::`.",
-      "source": {
-        "key": "rust1-program-organization-paths",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Пути для ссылки на элемент в дереве модулей",
-        "locator": "Глава 7 — раздел «Пути для ссылки на элемент в дереве модулей», стр. 165–166",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-program-organization-020",
-      "type": "multiple_choice",
-      "text": "Какие последствия перемещения кода сравнивает книга при выборе абсолютного и относительного пути? Выберите все правильные варианты.",
-      "answers": [
-        {
-          "key": "a",
-          "text": "При совместном переносе вызывающего кода и целевого модуля относительный путь может остаться действительным",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "При переносе только вызывающей функции абсолютный путь к отдельно оставшемуся элементу может не измениться",
-          "correct": true
-        },
-        {
-          "key": "c",
-          "text": "Выбор пути зависит от ожидаемой реорганизации проекта",
-          "correct": true
-        },
-        {
-          "key": "d",
-          "text": "Абсолютный и относительный путь всегда требуют одинаковых изменений при рефакторинге",
-          "correct": false
-        }
-      ],
-      "explanation": "Материал сравнивает устойчивость обоих вариантов при разных перемещениях и рекомендует выбирать путь с учётом структуры проекта.",
       "source": {
         "key": "rust1-program-organization-paths",
         "kind": "course_material",
@@ -833,7 +653,7 @@
     {
       "key": "rust1-program-organization-024",
       "type": "multiple_choice",
-      "text": "Что нужно, чтобы вызов `crate::front_of_house::hosting::add_to_waitlist()` из доступного контекста прошёл проверку приватности в показанном примере? Выберите все правильные варианты.",
+      "text": "Что нужно, чтобы вызов `crate::front_of_house::hosting::add_to_waitlist()` из доступного контекста прошёл проверку приватности? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -867,45 +687,9 @@
       }
     },
     {
-      "key": "rust1-program-organization-025",
-      "type": "single_choice",
-      "text": "Какую роль библиотечного крейта рекомендуется оставить в пакете, где есть и src/lib.rs, и src/main.rs?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Содержать основную переиспользуемую функциональность, которую вызывает бинарный крейт",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Содержать только функцию main",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "Дублировать весь код бинарного крейта",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "Хранить только настройки Cargo",
-          "correct": false
-        }
-      ],
-      "explanation": "Книга рекомендует помещать основную функциональность в библиотечный крейт, а бинарному оставить код запуска и вызова публичного API библиотеки.",
-      "source": {
-        "key": "rust1-program-organization-bin-lib",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Лучшие практики для пакетов с бинарным и библиотечным крейтами",
-        "locator": "Глава 7 — раздел «Лучшие практики для пакетов с бинарным и библиотечным крейтами», стр. 171",
-        "url": null
-      }
-    },
-    {
       "key": "rust1-program-organization-026",
       "type": "multiple_choice",
-      "text": "Какие преимущества даёт разделение пакета на библиотечный и бинарный крейты по рекомендуемому шаблону? Выберите все правильные варианты.",
+      "text": "Какие преимущества даёт разделение пакета на библиотечный и бинарный крейты? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -975,42 +759,6 @@
       }
     },
     {
-      "key": "rust1-program-organization-028",
-      "type": "multiple_choice",
-      "text": "Когда использование `super` в материале считается удобным? Выберите все правильные варианты.",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Когда дочерний код тесно связан с элементом родительского модуля",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Когда связанные части, вероятно, будут перемещаться вместе",
-          "correct": true
-        },
-        {
-          "key": "c",
-          "text": "Чтобы уменьшить число изменений при реорганизации такого фрагмента дерева",
-          "correct": true
-        },
-        {
-          "key": "d",
-          "text": "Чтобы обратиться к любому внешнему crate без Cargo.toml",
-          "correct": false
-        }
-      ],
-      "explanation": "В примере super подчёркивает связь ребёнка с родителем и делает совместный перенос этой части дерева менее затратным.",
-      "source": {
-        "key": "rust1-program-organization-super",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Начинаем относительный путь с помощью super",
-        "locator": "Глава 7 — раздел «Начинаем относительный путь с помощью super», стр. 171–172",
-        "url": null
-      }
-    },
-    {
       "key": "rust1-program-organization-029",
       "type": "single_choice",
       "text": "Что происходит с полями структуры при объявлении `pub struct Breakfast`?",
@@ -1037,42 +785,6 @@
         }
       ],
       "explanation": "Для структуры `pub` открывает тип, но поля подчиняются общему правилу приватности и требуют отдельного `pub`.",
-      "source": {
-        "key": "rust1-program-organization-pub-types",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Делаем общедоступными структуры и перечисления",
-        "locator": "Глава 7 — раздел «Делаем общедоступными структуры и перечисления», стр. 172–174",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-program-organization-030",
-      "type": "multiple_choice",
-      "text": "Почему в примере `Breakfast` нужна public-функция вроде `Breakfast::summer`? Выберите все правильные варианты.",
-      "answers": [
-        {
-          "key": "a",
-          "text": "У структуры есть private-поле seasonal_fruit",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Внешний код не может напрямую задать private-поле при создании значения",
-          "correct": true
-        },
-        {
-          "key": "c",
-          "text": "Public ассоциированная функция может сконструировать корректный экземпляр внутри модуля",
-          "correct": true
-        },
-        {
-          "key": "d",
-          "text": "Потому что public-структуры вообще нельзя создавать литералом",
-          "correct": false
-        }
-      ],
-      "explanation": "Из-за private-поля внешний код не может заполнить все поля напрямую; модуль предоставляет public-конструктор, который имеет доступ к private-деталям.",
       "source": {
         "key": "rust1-program-organization-pub-types",
         "kind": "course_material",
@@ -1227,42 +939,6 @@
       }
     },
     {
-      "key": "rust1-program-organization-035",
-      "type": "single_choice",
-      "text": "Какой стиль подключения функции через `use` книга называет идиоматичным?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Подключить родительский модуль и вызывать функцию как `hosting::add_to_waitlist()`",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Всегда импортировать функцию до её короткого имени",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "Не использовать use для функций вообще",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "Всегда использовать glob",
-          "correct": false
-        }
-      ],
-      "explanation": "Для функций книга предпочитает вводить родительский модуль: это показывает, что функция не локальная, но избавляет от повторения длинного пути.",
-      "source": {
-        "key": "rust1-program-organization-use",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Подключение путей в область видимости с помощью ключевого слова use",
-        "locator": "Глава 7 — разделы о use, as и pub use, стр. 175–180",
-        "url": null
-      }
-    },
-    {
       "key": "rust1-program-organization-036",
       "type": "multiple_choice",
       "text": "Какие утверждения об идиомах `use` верны? Выберите все правильные варианты.",
@@ -1299,45 +975,9 @@
       }
     },
     {
-      "key": "rust1-program-organization-037",
-      "type": "single_choice",
-      "text": "Как избежать конфликта двух импортируемых типов с одинаковым именем `Result`?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "Использовать `as` и дать одному из типов другое локальное имя",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "Объявить оба через glob и надеяться на порядок",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "Сделать один тип private",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "Переименовать файл Cargo.toml",
-          "correct": false
-        }
-      ],
-      "explanation": "`as` позволяет задать локальный псевдоним, например `use std::io::Result as IoResult;`.",
-      "source": {
-        "key": "rust1-program-organization-use",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Подключение путей в область видимости с помощью ключевого слова use",
-        "locator": "Глава 7 — разделы о use, as и pub use, стр. 175–180",
-        "url": null
-      }
-    },
-    {
       "key": "rust1-program-organization-038",
       "type": "multiple_choice",
-      "text": "Какие варианты работы с двумя типами `Result` из разных модулей показаны как допустимые? Выберите все правильные варианты.",
+      "text": "Какие способы работы с двумя типами `Result` из разных модулей допустимы? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -1445,7 +1085,7 @@
     {
       "key": "rust1-program-organization-041",
       "type": "single_choice",
-      "text": "Что требуется для использования внешнего пакета вроде `rand` по примеру главы 7?",
+      "text": "Что требуется для использования внешнего пакета вроде `rand`?",
       "answers": [
         {
           "key": "a",
@@ -1515,45 +1155,9 @@
       }
     },
     {
-      "key": "rust1-program-organization-043",
-      "type": "single_choice",
-      "text": "Как одной инструкцией записать импорты `std::cmp::Ordering` и `std::io`?",
-      "answers": [
-        {
-          "key": "a",
-          "text": "`use std::{cmp::Ordering, io};`",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "`use std::cmp::Ordering + io;`",
-          "correct": false
-        },
-        {
-          "key": "c",
-          "text": "`use std::*::Ordering::io;`",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "`use {std::cmp, std::io}::Ordering;`",
-          "correct": false
-        }
-      ],
-      "explanation": "Вложенные пути позволяют вынести общий префикс и перечислить различающиеся продолжения в фигурных скобках.",
-      "source": {
-        "key": "rust1-program-organization-nested-use",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Использование вложенных путей для уменьшения длинных списков use",
-        "locator": "Глава 7 — вложенные пути и glob, стр. 181–182",
-        "url": null
-      }
-    },
-    {
       "key": "rust1-program-organization-044",
       "type": "multiple_choice",
-      "text": "Какие возможности вложенных путей `use` показаны в материале? Выберите все правильные варианты.",
+      "text": "Какие возможности поддерживают вложенные пути `use`? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -1757,42 +1361,6 @@
         }
       ],
       "explanation": "Путь файла подмодуля соответствует его месту в дереве модулей и располагается внутри каталога родительского модуля.",
-      "source": {
-        "key": "rust1-program-organization-files",
-        "kind": "course_material",
-        "module": "Rust",
-        "section": "Разделение модулей на разные файлы",
-        "locator": "Глава 7 — раздел «Разделение модулей на разные файлы», стр. 183–185",
-        "url": null
-      }
-    },
-    {
-      "key": "rust1-program-organization-050",
-      "type": "multiple_choice",
-      "text": "Какие пути для одного и того же модуля относятся к новому и старому поддерживаемому стилю? Выберите все правильные варианты.",
-      "answers": [
-        {
-          "key": "a",
-          "text": "src/front_of_house.rs",
-          "correct": true
-        },
-        {
-          "key": "b",
-          "text": "src/front_of_house/mod.rs",
-          "correct": true
-        },
-        {
-          "key": "c",
-          "text": "src/front_of_house.toml",
-          "correct": false
-        },
-        {
-          "key": "d",
-          "text": "src/mod/front_of_house.rs как обязательный путь",
-          "correct": false
-        }
-      ],
-      "explanation": "Для модуля front_of_house компилятор поддерживает современный файл front_of_house.rs и старый вариант front_of_house/mod.rs.",
       "source": {
         "key": "rust1-program-organization-files",
         "kind": "course_material",

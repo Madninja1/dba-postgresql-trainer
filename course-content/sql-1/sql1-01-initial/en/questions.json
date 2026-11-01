@@ -1,0 +1,669 @@
+{
+  "schema_version": 1,
+  "topic": "sql1-initial",
+  "questions": [
+    {
+      "type": "single_choice",
+      "text": "In PostgreSQL, what does a relation represent in the basic SQL explanation?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A table",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "An index",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A transaction",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A schema",
+          "correct": false
+        }
+      ],
+      "explanation": "In the introductory material, relation is used as the mathematically precise term for a table.",
+      "source": {
+        "key": "sql1-initial-relations",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "2.2. Concepts",
+        "locator": "Relation and table",
+        "url": null
+      },
+      "key": "sql1-initial-001"
+    },
+    {
+      "type": "single_choice",
+      "text": "Which statement creates a table?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "CREATE TABLE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "INSERT INTO",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "SELECT TABLE",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "ALTER ROW",
+          "correct": false
+        }
+      ],
+      "explanation": "A table is created with CREATE TABLE by specifying column names and their data types.",
+      "source": {
+        "key": "sql1-initial-create-table",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "2.3. Creating a New Table",
+        "locator": "CREATE TABLE",
+        "url": null
+      },
+      "key": "sql1-initial-002"
+    },
+    {
+      "type": "single_choice",
+      "text": "Which statement adds rows to a table?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "INSERT",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "UPDATE",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "SELECT",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "DROP",
+          "correct": false
+        }
+      ],
+      "explanation": "INSERT is used to add rows; the target column list can be specified explicitly.",
+      "source": {
+        "key": "sql1-initial-insert",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "2.4. Populating a Table With Rows",
+        "locator": "INSERT INTO",
+        "url": null
+      },
+      "key": "sql1-initial-003"
+    },
+    {
+      "type": "single_choice",
+      "text": "What does `*` mean in `SELECT * FROM weather`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "All columns",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "All tables in the database",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only the first column",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Unique rows",
+          "correct": false
+        }
+      ],
+      "explanation": "`*` is shorthand for selecting all columns.",
+      "source": {
+        "key": "sql1-initial-select-star",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "2.5. Querying a Table",
+        "locator": "SELECT *",
+        "url": null
+      },
+      "key": "sql1-initial-004"
+    },
+    {
+      "type": "single_choice",
+      "text": "Which clause filters individual rows before they enter the result?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "WHERE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "HAVING",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "ORDER BY",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "AS",
+          "correct": false
+        }
+      ],
+      "explanation": "WHERE evaluates a Boolean condition for each row and keeps rows for which the condition is true.",
+      "source": {
+        "key": "sql1-initial-where",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "2.5. Querying a Table",
+        "locator": "WHERE",
+        "url": null
+      },
+      "key": "sql1-initial-005"
+    },
+    {
+      "type": "single_choice",
+      "text": "Which clause defines the order of rows in the result?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "ORDER BY",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "GROUP BY",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "DISTINCT",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "RETURNING",
+          "correct": false
+        }
+      ],
+      "explanation": "ORDER BY is used to explicitly define the ordering of the result.",
+      "source": {
+        "key": "sql1-initial-order-by",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "2.5. Querying a Table",
+        "locator": "ORDER BY",
+        "url": null
+      },
+      "key": "sql1-initial-006"
+    },
+    {
+      "type": "single_choice",
+      "text": "How do you remove duplicate rows from a SELECT result?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Use DISTINCT",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Use DELETE",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Use ONLY",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Use SAVEPOINT",
+          "correct": false
+        }
+      ],
+      "explanation": "DISTINCT removes duplicates from the result; it does not by itself guarantee any ordering.",
+      "source": {
+        "key": "sql1-initial-distinct",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "2.5. Querying a Table",
+        "locator": "DISTINCT",
+        "url": null
+      },
+      "key": "sql1-initial-007"
+    },
+    {
+      "type": "single_choice",
+      "text": "What happens to unmatched rows from the left table in a LEFT OUTER JOIN?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They remain in the result, while columns from the right side are filled with NULL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "They are always removed",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "They are turned into duplicates",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The JOIN fails with an error",
+          "correct": false
+        }
+      ],
+      "explanation": "A left outer join preserves all rows from the left side.",
+      "source": {
+        "key": "sql1-initial-left-join",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "2.6. Joins Between Tables",
+        "locator": "LEFT OUTER JOIN",
+        "url": null
+      },
+      "key": "sql1-initial-008"
+    },
+    {
+      "type": "single_choice",
+      "text": "Which aggregate function counts rows?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "count",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "avg",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "max",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "sum",
+          "correct": false
+        }
+      ],
+      "explanation": "The introduction lists count, sum, avg, max, and min as aggregate functions.",
+      "source": {
+        "key": "sql1-initial-aggregates",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "2.7. Aggregate Functions",
+        "locator": "count",
+        "url": null
+      },
+      "key": "sql1-initial-009"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about INSERT syntax are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "You can explicitly list the target columns",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Columns can be listed in a different order",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Some columns can be omitted when allowed",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "INSERT always requires every column in physical table order",
+          "correct": false
+        }
+      ],
+      "explanation": "An explicit column list makes INSERT less dependent on the physical order of table columns.",
+      "source": {
+        "key": "sql1-initial-insert-columns",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "2.4. Populating a Table With Rows",
+        "locator": "Explicit column list",
+        "url": null
+      },
+      "key": "sql1-initial-010"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about the server-side COPY command are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "COPY is suitable for loading large amounts of data",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "COPY is usually faster than INSERT for this kind of loading",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The file path in server-side COPY refers to the computer where the server process runs",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Server-side COPY always reads the file from the psql client computer",
+          "correct": false
+        }
+      ],
+      "explanation": "Server-side COPY reads a file on the server side and is suitable for efficient bulk data loading.",
+      "source": {
+        "key": "sql1-initial-copy",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "2.4. Populating a Table With Rows",
+        "locator": "COPY FROM a file",
+        "url": null
+      },
+      "key": "sql1-initial-011"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about JOIN are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A JOIN can involve multiple tables",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A self join uses multiple instances of the same table",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "When column names are repeated, qualifying them with the table name is useful",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every JOIN must use SELECT *",
+          "correct": false
+        }
+      ],
+      "explanation": "JOIN can combine multiple tables; a self join uses multiple instances of the same table, usually through aliases.",
+      "source": {
+        "key": "sql1-initial-joins",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "2.6. Joins Between Tables",
+        "locator": "JOIN and self join",
+        "url": null
+      },
+      "key": "sql1-initial-012"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which of the following functions are basic PostgreSQL aggregate functions?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "count",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "sum",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "avg",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "max",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "min",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "median",
+          "correct": false
+        }
+      ],
+      "explanation": "These five aggregate functions are given as basic examples.",
+      "source": {
+        "key": "sql1-initial-aggregate-list",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "2.7. Aggregate Functions",
+        "locator": "Aggregate function list",
+        "url": null
+      },
+      "key": "sql1-initial-013"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about WHERE and HAVING are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "WHERE filters rows before grouping",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "HAVING filters groups after grouping and aggregate calculation",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A condition on a non-aggregated column is usually better applied in WHERE",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "WHERE is intended only for filtering already computed aggregates",
+          "correct": false
+        }
+      ],
+      "explanation": "The material separately explains the evaluation role and purpose of WHERE and HAVING.",
+      "source": {
+        "key": "sql1-initial-where-having",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "2.7. Aggregate Functions",
+        "locator": "WHERE and HAVING",
+        "url": null
+      },
+      "key": "sql1-initial-014"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which SQL commands modify table row data?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "INSERT",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "UPDATE",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "DELETE",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "VACUUM",
+          "correct": false
+        }
+      ],
+      "explanation": "INSERT adds rows, UPDATE modifies existing rows, and DELETE removes rows.",
+      "source": {
+        "key": "sql1-initial-dml",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "2.4, 2.8, 2.9",
+        "locator": "INSERT / UPDATE / DELETE",
+        "url": null
+      },
+      "key": "sql1-initial-015"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about PostgreSQL transactions are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "BEGIN starts an explicit transaction block",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "COMMIT makes its changes permanent",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "ROLLBACK cancels changes in the current transaction",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "SAVEPOINT allows part of the work to be rolled back",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "COMMIT cancels all changes",
+          "correct": false
+        }
+      ],
+      "explanation": "BEGIN starts an explicit transaction, COMMIT makes changes permanent, ROLLBACK cancels them, and SAVEPOINT allows partial rollback.",
+      "source": {
+        "key": "sql1-initial-transactions",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "3.4. Transactions",
+        "locator": "BEGIN, COMMIT, ROLLBACK, SAVEPOINT",
+        "url": null
+      },
+      "key": "sql1-initial-016"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about SQL identifiers in PostgreSQL are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Unquoted identifiers are folded to lower case",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Double quotes preserve the case of an identifier",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Unquoted keywords are case-insensitive",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Single quotes are used for a regular table name when you want to preserve its case",
+          "correct": false
+        }
+      ],
+      "explanation": "The syntax chapter distinguishes unquoted identifiers from identifiers enclosed in double quotes.",
+      "source": {
+        "key": "sql1-initial-identifiers",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "4.1.1. Identifiers and Key Words",
+        "locator": "Case and double quotes",
+        "url": null
+      },
+      "key": "sql1-initial-017"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about DELETE without WHERE are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It deletes all rows from the table",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The system is not required to ask for confirmation",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It is equivalent to DROP TABLE",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It deletes only the first row",
+          "correct": false
+        }
+      ],
+      "explanation": "The material explicitly warns that DELETE FROM table without a condition removes all rows from the table.",
+      "source": {
+        "key": "sql1-initial-delete-all",
+        "kind": "course_material",
+        "module": "PostgreSQL 16 — SQL Language",
+        "section": "2.9. Deletions",
+        "locator": "DELETE without WHERE",
+        "url": null
+      },
+      "key": "sql1-initial-018"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "dba-1",
+  "slug": "dba1-admin-monitoring",
+  "notes_part": 12,
+  "topic_number": 12,
+  "title": "PostgreSQL Monitoring",
+  "description": "PostgreSQL monitoring through OS tools, pg_stat_activity, cumulative statistics, statistics snapshots, and progress views",
+  "sort_order": 120
+}

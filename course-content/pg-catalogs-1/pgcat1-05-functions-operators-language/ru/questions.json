@@ -41,7 +41,7 @@
     {
       "key": "pgcat1-functions-operators-language-002",
       "type": "multiple_choice",
-      "text": "Какие значения pg_aggregate.aggkind указаны в материале?",
+      "text": "Какие значения `pg_aggregate.aggkind` обозначают поддерживаемые виды агрегатов?",
       "answers": [
         {
           "key": "a",
@@ -190,7 +190,7 @@
     {
       "key": "pgcat1-functions-operators-language-006",
       "type": "multiple_choice",
-      "text": "Какие значения pg_proc.proparallel описаны в материале?",
+      "text": "Какие значения `pg_proc.proparallel` используются для классификации параллельной безопасности функции?",
       "answers": [
         {
           "key": "a",

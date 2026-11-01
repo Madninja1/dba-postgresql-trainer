@@ -41,7 +41,7 @@
     {
       "key": "pgcat1-extensions-fdw-largeobjects-002",
       "type": "multiple_choice",
-      "text": "Какие поля pg_extension описаны в материале?",
+      "text": "Какие утверждения о полях `pg_extension` верны?",
       "answers": [
         {
           "key": "a",
@@ -272,7 +272,7 @@
     {
       "key": "pgcat1-extensions-fdw-largeobjects-008",
       "type": "multiple_choice",
-      "text": "Какие ограничения доступа к pg_user_mapping указаны в материале?",
+      "text": "Какие утверждения о доступе к `pg_user_mapping` и его связях верны?",
       "answers": [
         {
           "key": "a",
@@ -295,7 +295,7 @@
           "correct": false
         }
       ],
-      "explanation": "Документация направляет обычных пользователей к view pg_user_mappings.",
+      "explanation": "Обычные пользователи не имеют прямого доступа к `pg_user_mapping`; для них предназначено представление `pg_user_mappings`. Поле `umserver` ссылается на `pg_foreign_server`.",
       "source": {
         "key": "pgcat1-pg-user-mapping-5ea7e8bc",
         "kind": "postgresql_docs",
@@ -416,7 +416,7 @@
     {
       "key": "pgcat1-extensions-fdw-largeobjects-012",
       "type": "multiple_choice",
-      "text": "Какие утверждения о FDW options соответствуют материалу?",
+      "text": "Какие утверждения о хранении параметров FDW верны?",
       "answers": [
         {
           "key": "a",

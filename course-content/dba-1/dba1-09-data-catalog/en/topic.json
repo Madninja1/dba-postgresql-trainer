@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "dba-1",
+  "slug": "dba1-data-catalog",
+  "notes_part": 9,
+  "topic_number": 9,
+  "title": "System Catalog",
+  "description": "PostgreSQL system catalogs, pg_catalog and information_schema, shared and local catalog objects, naming conventions, psql meta-commands, and oid/reg* types",
+  "sort_order": 90
+}

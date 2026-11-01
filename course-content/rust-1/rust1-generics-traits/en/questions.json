@@ -1,0 +1,1194 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-generics-traits",
+  "questions": [
+    {
+      "key": "rust1-generics-traits-001",
+      "type": "single_choice",
+      "text": "What problem do generics help solve in Rust?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Reducing code duplication by replacing concrete types with parameters",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Disabling type checking",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Replacing modules",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Automatically handling all errors",
+          "correct": false
+        }
+      ],
+      "explanation": "Generics are used as abstract placeholders for types so that one implementation can work for multiple concrete cases.",
+      "source": {
+        "key": "rust1-generics-traits-intro",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Generic Types, Traits, and Lifetimes",
+        "locator": "Chapter 10 — Generic Types, Traits, and Lifetimes, pp. 235",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-007",
+      "type": "single_choice",
+      "text": "Why doesn't the simple `largest<T>` version using `>` compile for arbitrary T?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The compiler does not know that every T supports comparison with `>`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Generic functions cannot contain loops",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Slices of [T] cannot be iterated",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "T always means String",
+          "correct": false
+        }
+      ],
+      "explanation": "The error shows that T must be constrained by behavior that supports comparison; this is later expressed with a trait bound.",
+      "source": {
+        "key": "rust1-generics-traits-functions",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "In Function Definitions",
+        "locator": "Chapter 10 — In Function Definitions, pp. 239–242",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-008",
+      "type": "multiple_choice",
+      "text": "What does the compilation error in generic `largest<T>` demonstrate? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Not every operation can be applied to an arbitrary T",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "More information is needed about required type behavior",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Trait bounds can express such requirements",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Generics automatically provide every operator for every type",
+          "correct": false
+        }
+      ],
+      "explanation": "The compiler needs proof that T supports the operations used; trait constraints provide that proof.",
+      "source": {
+        "key": "rust1-generics-traits-functions",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "In Function Definitions",
+        "locator": "Chapter 10 — In Function Definitions, pp. 239–242",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-009",
+      "type": "single_choice",
+      "text": "What does `Point<T> { x: T, y: T }` mean for one instance?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Fields x and y have the same concrete type T",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "x and y may have arbitrary unrelated types without more parameters",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Both fields are always i32",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "T is chosen separately for each field",
+          "correct": false
+        }
+      ],
+      "explanation": "A single T parameter in one instance is substituted with one concrete type for both fields.",
+      "source": {
+        "key": "rust1-generics-traits-structs",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "In Struct Definitions",
+        "locator": "Chapter 10 — In Struct Definitions, pp. 243–244",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-010",
+      "type": "multiple_choice",
+      "text": "Which statements about `Point<T, U>` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "x can have type T",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "y can have a different type U",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "T and U may happen to be the same concrete type",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Having two generic parameters requires the types to be different",
+          "correct": false
+        }
+      ],
+      "explanation": "Separate generic parameters permit independent types but do not require them to differ.",
+      "source": {
+        "key": "rust1-generics-traits-structs",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "In Struct Definitions",
+        "locator": "Chapter 10 — In Struct Definitions, pp. 243–244",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-013",
+      "type": "single_choice",
+      "text": "What roles do T and E play in `Result<T, E>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "T is the success-value type and E is the error type",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Both are merely two names for the same type",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "T is an index and E is a size",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "They are used only at runtime and do not participate in typing",
+          "correct": false
+        }
+      ],
+      "explanation": "Generics let the same Result enum describe many pairs of success and error types.",
+      "source": {
+        "key": "rust1-generics-traits-enums",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "In Enum Definitions",
+        "locator": "Chapter 10 — In Enum Definitions, pp. 244–245",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-015",
+      "type": "single_choice",
+      "text": "Why must T be declared after `impl` in `impl<T> Point<T>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "So the compiler knows T is a generic parameter rather than a concrete type",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To make the method asynchronous",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To turn Point into an enum",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Because otherwise x becomes public",
+          "correct": false
+        }
+      ],
+      "explanation": "Declaring T on the impl introduces the parameter for the entire method block.",
+      "source": {
+        "key": "rust1-generics-traits-methods",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "In Method Definitions",
+        "locator": "Chapter 10 — In Method Definitions, pp. 245–247",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-016",
+      "type": "multiple_choice",
+      "text": "Which statements about methods in `impl<T> Point<T>` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They are available to Point instances with any concrete T unless additional constraints are given",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A method can return `&T` referring to a field",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "T can be used in method signatures in the block",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Such an impl automatically restricts Point to f32",
+          "correct": false
+        }
+      ],
+      "explanation": "A generic `impl<T>` applies to all `Point<T>` instantiations that satisfy any stated bounds.",
+      "source": {
+        "key": "rust1-generics-traits-methods",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "In Method Definitions",
+        "locator": "Chapter 10 — In Method Definitions, pp. 245–247",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-017",
+      "type": "single_choice",
+      "text": "What does a separate block `impl Point<f32> { ... }` mean?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Methods in that block are available only for Point<f32>",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It makes f32 a generic parameter",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It adds the method to every Point<T>",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It prevents Point<f32> from having other methods",
+          "correct": false
+        }
+      ],
+      "explanation": "A concrete impl without `<T>` specializes methods for Point where T is f32.",
+      "source": {
+        "key": "rust1-generics-traits-methods",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "In Method Definitions",
+        "locator": "Chapter 10 — In Method Definitions, pp. 245–247",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-021",
+      "type": "single_choice",
+      "text": "Suppose `Point<X1, Y1>::mixup<X2, Y2>` returns `Point<X1, Y2>`. What is the result type when it is called with `Point<i32, f64>` and `Point<&str, char>`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`Point<i32, char>`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`Point<&str, f64>`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`Point<i32, f64>`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`Point<&str, char>`",
+          "correct": false
+        }
+      ],
+      "explanation": "The result takes the `x` type from `self` (`X1 = i32`) and the `y` type from the second `Point` (`Y2 = char`).",
+      "source": {
+        "key": "rust1-generics-traits-methods",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "In Method Definitions",
+        "locator": "Chapter 10 — In Method Definitions, pp. 245–247",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-022",
+      "type": "multiple_choice",
+      "text": "Which statements about the performance of generics in Rust are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Using generics itself should not make a program slower than equivalent concrete-type code",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Rust performs monomorphization at compile time",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The compiler creates concrete versions of generic code for types actually used",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every generic call requires a runtime type lookup",
+          "correct": false
+        }
+      ],
+      "explanation": "Monomorphization moves specialization of generic code to compile time.",
+      "source": {
+        "key": "rust1-generics-traits-monomorphization",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Performance of Code Using Generics",
+        "locator": "Chapter 10 — Performance of Code Using Generics, pp. 247–248",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-023",
+      "type": "single_choice",
+      "text": "What is monomorphization of generics in Rust?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Turning generic code into concrete code by substituting the types actually used",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Removing all generic functions from a program",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Dynamically dispatching every call",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Turning a trait into a macro",
+          "correct": false
+        }
+      ],
+      "explanation": "The compiler examines usage sites and generates specialized versions for concrete types.",
+      "source": {
+        "key": "rust1-generics-traits-monomorphization",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Performance of Code Using Generics",
+        "locator": "Chapter 10 — Performance of Code Using Generics, pp. 247–248",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-025",
+      "type": "single_choice",
+      "text": "What does a trait tell the compiler?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "What common behavior a type can provide and share with other types",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The exact byte size of every type",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Where a module is stored in the filesystem",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Which crate must be downloaded",
+          "correct": false
+        }
+      ],
+      "explanation": "A trait describes behavior abstractly so that different types can implement it.",
+      "source": {
+        "key": "rust1-generics-traits-trait",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Traits: Defining Shared Behavior",
+        "locator": "Chapter 10 — Traits: Defining Shared Behavior, pp. 249–254",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-026",
+      "type": "multiple_choice",
+      "text": "What can a trait definition contain in Rust? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Signatures of required methods",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Methods with default implementations",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Methods can use `&self`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A trait must declare data fields like a struct",
+          "correct": false
+        }
+      ],
+      "explanation": "A trait defines methods and may provide default method bodies; it does not declare struct-style data fields.",
+      "source": {
+        "key": "rust1-generics-traits-trait",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Traits: Defining Shared Behavior",
+        "locator": "Chapter 10 — Traits: Defining Shared Behavior, pp. 249–254",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-027",
+      "type": "single_choice",
+      "text": "What must a type do to implement trait `Summary` when a required method has no default implementation?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Write `impl Summary for Type` and provide the required method implementation",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only import Summary with use",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Add a summary field to the structure",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Inherit from Summary with a colon on the struct",
+          "correct": false
+        }
+      ],
+      "explanation": "A trait implementation for a type is written in a separate impl and provides the required methods.",
+      "source": {
+        "key": "rust1-generics-traits-trait",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Traits: Defining Shared Behavior",
+        "locator": "Chapter 10 — Traits: Defining Shared Behavior, pp. 249–254",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-028",
+      "type": "multiple_choice",
+      "text": "Which benefits do traits provide as a mechanism for shared behavior? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Different types can provide the same behavioral interface",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Functions can accept values of different types when they implement the required trait",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Trait bounds can require specific behavior from a generic type",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Traits eliminate static type checking",
+          "correct": false
+        }
+      ],
+      "explanation": "Traits group types by behavior while preserving compile-time constraints.",
+      "source": {
+        "key": "rust1-generics-traits-trait",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Traits: Defining Shared Behavior",
+        "locator": "Chapter 10 — Traits: Defining Shared Behavior, pp. 249–254",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-029",
+      "type": "single_choice",
+      "text": "What does Rust's orphan rule forbid?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Implementing the foreign trait Display for the foreign type Vec<T> in your crate",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Implementing your trait for your type",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Implementing a foreign trait for your local type",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Implementing your trait for a foreign type",
+          "correct": false
+        }
+      ],
+      "explanation": "If both the trait and the type are defined outside the current crate, that implementation is forbidden.",
+      "source": {
+        "key": "rust1-generics-traits-orphan",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Implementing a Trait on a Type",
+        "locator": "Chapter 10 — Implementing a Trait on a Type, pp. 251–252",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-031",
+      "type": "single_choice",
+      "text": "Why does Rust have the orphan rule?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "So different crates cannot create conflicting implementations of the same trait for the same type",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To forbid all external libraries",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To reduce binary size",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To make traits work only with structs",
+          "correct": false
+        }
+      ],
+      "explanation": "The rule preserves coherence; otherwise the compiler could encounter competing implementations.",
+      "source": {
+        "key": "rust1-generics-traits-orphan",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Implementing a Trait on a Type",
+        "locator": "Chapter 10 — Implementing a Trait on a Type, pp. 251–252",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-032",
+      "type": "multiple_choice",
+      "text": "Which statements about a trait method's default implementation are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A trait can provide a default method body",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A type can use the default without rewriting that method",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A type can override the default with its own implementation",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A default method cannot be called on an instance implementing the trait",
+          "correct": false
+        }
+      ],
+      "explanation": "Defaults reduce required implementation code while preserving the ability to override behavior.",
+      "source": {
+        "key": "rust1-generics-traits-default",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Default Implementations",
+        "locator": "Chapter 10 — Default Implementations, pp. 252–254",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-035",
+      "type": "single_choice",
+      "text": "What does a parameter `item: &impl Summary` mean?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The function accepts a reference to a value of any type implementing Summary",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The function accepts only a concrete type literally named impl",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Summary becomes a field of item",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The item type is determined only at runtime with no compile-time checking",
+          "correct": false
+        }
+      ],
+      "explanation": "`impl Trait` in a parameter is concise syntax for requiring the specified trait implementation.",
+      "source": {
+        "key": "rust1-generics-traits-params",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Traits as Parameters",
+        "locator": "Chapter 10 — Traits as Parameters, pp. 254–256",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-036",
+      "type": "multiple_choice",
+      "text": "Which declarations are considered equivalent for a simple single parameter? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`fn notify(item: &impl Summary)`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`fn notify<T: Summary>(item: &T)`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Both restrict the accepted type through trait Summary",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`fn notify<T>(item: &T)` without a bound provides the same Summary guarantee",
+          "correct": false
+        }
+      ],
+      "explanation": "The material describes impl Trait as syntactic sugar for a simple trait bound.",
+      "source": {
+        "key": "rust1-generics-traits-params",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Traits as Parameters",
+        "locator": "Chapter 10 — Traits as Parameters, pp. 254–256",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-037",
+      "type": "single_choice",
+      "text": "How do two parameters of type `&impl Summary` differ from two `&T` parameters with `T: Summary`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The first form permits different concrete types, while the second requires the same T",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The first requires the same type and the second different types",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "They are always completely identical",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The second does not check Summary",
+          "correct": false
+        }
+      ],
+      "explanation": "One shared generic T links the types of both arguments, while separate impl Trait parameters can have different concrete types.",
+      "source": {
+        "key": "rust1-generics-traits-params",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Traits as Parameters",
+        "locator": "Chapter 10 — Traits as Parameters, pp. 254–256",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-038",
+      "type": "multiple_choice",
+      "text": "What does `T: Summary + Display` allow? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Require implementation of Summary",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Also require implementation of Display",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Use capabilities of both traits in the function body",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Mean that T must implement either Summary or Display, but not both",
+          "correct": false
+        }
+      ],
+      "explanation": "The `+` operator combines multiple trait bounds for one type.",
+      "source": {
+        "key": "rust1-generics-traits-params",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Traits as Parameters",
+        "locator": "Chapter 10 — Traits as Parameters, pp. 254–256",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-039",
+      "type": "single_choice",
+      "text": "Why is a `where` clause used?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To move complex trait bounds out of the main signature and improve readability",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To make trait checking dynamic",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To declare a new module",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To disable generic parameters",
+          "correct": false
+        }
+      ],
+      "explanation": "`where` is an alternative syntax for placing the same constraints after the signature.",
+      "source": {
+        "key": "rust1-generics-traits-params",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Traits as Parameters",
+        "locator": "Chapter 10 — Traits as Parameters, pp. 254–256",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-041",
+      "type": "single_choice",
+      "text": "What does return type `-> impl Summary` mean?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The function returns some concrete type that implements Summary without naming that type in the API",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The function may return any unrelated type on each call",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The function returns a trait object only through Box",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The function returns nothing",
+          "correct": false
+        }
+      ],
+      "explanation": "`impl Trait` hides the concrete type from callers while preserving the Summary guarantee.",
+      "source": {
+        "key": "rust1-generics-traits-return",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Returning Types That Implement Traits",
+        "locator": "Chapter 10 — Returning Types That Implement Traits, pp. 256–258",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-042",
+      "type": "multiple_choice",
+      "text": "Which statements about return-position `impl Trait` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The concrete returned type must be the same across all branches of that definition",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Calling code knows the guaranteed trait but need not know the concrete type",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It is convenient for types that are difficult to write explicitly",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "One function can return NewsArticle in one branch and SocialPost in another only because both implement Summary",
+          "correct": false
+        }
+      ],
+      "explanation": "The material emphasizes the one-concrete-type restriction for return-position impl Trait.",
+      "source": {
+        "key": "rust1-generics-traits-return",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Returning Types That Implement Traits",
+        "locator": "Chapter 10 — Returning Types That Implement Traits, pp. 256–258",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-043",
+      "type": "single_choice",
+      "text": "A function is declared as `fn make_summary(flag: bool) -> impl Summary`. Why can't it return two different concrete types from different `if` branches even if both types implement `Summary`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Return-position `impl Trait` must correspond to one concrete hidden type",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Traits cannot be used in function return position",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Conditional expressions are forbidden in functions that return `impl Trait`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A trait can be implemented by only one type",
+          "correct": false
+        }
+      ],
+      "explanation": "`-> impl Summary` hides the concrete type from callers, but the function must still have one concrete return type across all branches.",
+      "source": {
+        "key": "rust1-generics-traits-return",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Returning Types That Implement Traits",
+        "locator": "Chapter 10 — Returning Types That Implement Traits, pp. 256–258",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-044",
+      "type": "multiple_choice",
+      "text": "What does conditional `impl<T: Display + PartialOrd> Pair<T>` demonstrate? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Methods in the block are available only to Pair<T> where T implements both traits",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Another general `impl<T>` can provide methods without these extra requirements",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Bounds determine which operations are valid inside the method",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every Pair<T> automatically receives PartialOrd and Display",
+          "correct": false
+        }
+      ],
+      "explanation": "A conditional impl adds methods only for suitable T values without changing T's own properties.",
+      "source": {
+        "key": "rust1-generics-traits-conditional",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Using Trait Bounds for Conditional Method Implementations",
+        "locator": "Chapter 10 — Using Trait Bounds for Conditional Method Implementations, pp. 258–259",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-045",
+      "type": "single_choice",
+      "text": "A method on a generic type compares two values with `>` and then formats the selected value with `{}`. Which trait bounds are required for that method?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`PartialOrd + Display`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only `Clone`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only `Debug`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`Iterator + IntoIterator`",
+          "correct": false
+        }
+      ],
+      "explanation": "`PartialOrd` is needed for comparison with `>`, while `Display` is needed for `{}` formatting.",
+      "source": {
+        "key": "rust1-generics-traits-conditional",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Using Trait Bounds for Conditional Method Implementations",
+        "locator": "Chapter 10 — Using Trait Bounds for Conditional Method Implementations, pp. 258–259",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-046",
+      "type": "multiple_choice",
+      "text": "Which statements about blanket implementations are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A trait can be implemented for any type satisfying a specified bound",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Such broad implementations are widely used in the standard library",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "An example is ToString for types implementing Display",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A blanket implementation means implementing a trait only for one preselected type",
+          "correct": false
+        }
+      ],
+      "explanation": "A blanket impl extends an implementation to an entire set of types satisfying a condition.",
+      "source": {
+        "key": "rust1-generics-traits-conditional",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Using Trait Bounds for Conditional Method Implementations",
+        "locator": "Chapter 10 — Using Trait Bounds for Conditional Method Implementations, pp. 258–259",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-048",
+      "type": "multiple_choice",
+      "text": "How do generics and trait bounds complement each other? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Generics let one body of code work with different types",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Trait bounds constrain generic types to required behavior",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The compiler checks these requirements statically",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Generic code always requires dynamic type checking",
+          "correct": false
+        }
+      ],
+      "explanation": "Generics provide reuse while traits formulate safe constraints on permitted types.",
+      "source": {
+        "key": "rust1-generics-traits-intro",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Generic Types, Traits, and Lifetimes",
+        "locator": "Chapter 10 — Generic Types, Traits, and Lifetimes, pp. 235",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-049",
+      "type": "single_choice",
+      "text": "What happens if a type that does not implement Summary is passed to `notify(item: &impl Summary)`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The code does not compile",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The function runs and skips summarize",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Summary is automatically added to the type",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only a runtime warning is produced",
+          "correct": false
+        }
+      ],
+      "explanation": "The impl Summary constraint is checked by the compiler for the concrete argument type.",
+      "source": {
+        "key": "rust1-generics-traits-params",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Traits as Parameters",
+        "locator": "Chapter 10 — Traits as Parameters, pp. 254–256",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-generics-traits-050",
+      "type": "multiple_choice",
+      "text": "Which methods can safely be called on a parameter of type `&impl Summary` inside the function? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Methods provided by trait Summary",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Methods made available by additional bounds",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`summarize`, if it is part of Summary",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Any arbitrary method of any Rust type without bounds",
+          "correct": false
+        }
+      ],
+      "explanation": "A generic function body can rely only on behavior guaranteed by its bounds.",
+      "source": {
+        "key": "rust1-generics-traits-params",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Traits as Parameters",
+        "locator": "Chapter 10 — Traits as Parameters, pp. 254–256",
+        "url": null
+      }
+    }
+  ]
+}

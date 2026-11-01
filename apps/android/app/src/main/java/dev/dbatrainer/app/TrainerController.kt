@@ -1,11 +1,15 @@
 package dev.dbatrainer.app
 
+import dev.dbatrainer.app.game3d.DbaWorldReturnGate
+
 import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import dev.dbatrainer.ffi.MobileActivityStats
+import dev.dbatrainer.ffi.MobileAchievementKind
+import dev.dbatrainer.ffi.MobileAchievementProgress
 import dev.dbatrainer.ffi.MobileAnswerResult
 import dev.dbatrainer.ffi.MobileLab
 import dev.dbatrainer.ffi.MobilePracticeCategoryStats
@@ -38,7 +42,9 @@ import dev.dbatrainer.app.game.engine.KnowledgeEngine
 import java.io.File
 
 enum class AppScreen {
+    ModeSelection,
     Home,
+    Settings,
     UnfinishedQuizzes,
     TopicCourses,
     Topics,
@@ -58,6 +64,18 @@ enum class AppScreen {
     Results,
     Statistics,
     DbaWorld,
+}
+
+
+enum class AppLaunchMode {
+    ASK,
+    LEARNING,
+    DBA_WORLD;
+
+    companion object {
+        fun fromStored(value: String?): AppLaunchMode =
+            entries.firstOrNull { mode -> mode.name == value } ?: ASK
+    }
 }
 
 enum class PracticePane {
@@ -132,10 +150,15 @@ class TrainerController(context: Context) {
     )
         private set
 
+    var startupMode by mutableStateOf(
+        AppLaunchMode.fromStored(preferences.getString("startup_mode", null)),
+    )
+        private set
+
     val strings: UiStrings
         get() = uiStrings(language)
 
-    var screen by mutableStateOf(AppScreen.Home)
+    var screen by mutableStateOf(AppScreen.ModeSelection)
         private set
 
     var topics by mutableStateOf<List<MobileTopic>>(emptyList())
@@ -299,6 +322,11 @@ class TrainerController(context: Context) {
     var activityStats by mutableStateOf<MobileActivityStats?>(null)
         private set
 
+    var newlyUnlockedAchievements by mutableStateOf<List<MobileAchievementProgress>>(emptyList())
+        private set
+
+    private var quizStartUnlockedAchievementKinds: Set<MobileAchievementKind> = emptySet()
+
     var selectedStatisticsCourse by mutableStateOf<String?>(null)
         private set
 
@@ -327,6 +355,7 @@ class TrainerController(context: Context) {
             refreshPracticeState()
             activityStats = requireTrainer().activityStats()
             unfinishedSessions = requireTrainer().unfinishedSessions()
+            applyConfiguredStartupMode()
         }
     }
 
@@ -361,7 +390,7 @@ class TrainerController(context: Context) {
         }
 
     val canGoBack: Boolean
-        get() = screen != AppScreen.Home
+        get() = screen != AppScreen.ModeSelection
 
     val courseCodes: List<String>
         get() = topics
@@ -486,6 +515,57 @@ class TrainerController(context: Context) {
             .asSequence()
             .filter { task -> task.category == category }
             .fold(0UL) { total, task -> total + practiceXpAvailable(task.id) }
+
+    fun openModeSelection() {
+        returnToDbaWorldAfterLearning = false
+        screen = AppScreen.ModeSelection
+    }
+
+    fun selectLearningMode() {
+        returnToDbaWorldAfterLearning = false
+        screen = AppScreen.Home
+    }
+
+    fun selectDbaWorldMode() {
+        openDbaWorld()
+    }
+
+    fun openSettings() {
+        screen = AppScreen.Settings
+    }
+
+    fun changeStartupMode(mode: AppLaunchMode) {
+        if (startupMode == mode) {
+            return
+        }
+
+        startupMode = mode
+        preferences
+            .edit()
+            .putString("startup_mode", mode.name)
+            .apply()
+    }
+
+    private fun applyConfiguredStartupMode() {
+        if (preferences.getBoolean(DbaWorldReturnGate.FORCE_MODE_SELECTION_KEY, false)) {
+            preferences
+                .edit()
+                .remove(DbaWorldReturnGate.FORCE_MODE_SELECTION_KEY)
+                .commit()
+            screen = AppScreen.ModeSelection
+            return
+        }
+
+        when (startupMode) {
+            AppLaunchMode.ASK -> screen = AppScreen.ModeSelection
+            AppLaunchMode.LEARNING -> screen = AppScreen.Home
+            AppLaunchMode.DBA_WORLD -> {
+                returnToDbaWorldAfterLearning = false
+                dbaWorld.open(buildDbaWorldKnowledgeSnapshot())
+                screen = AppScreen.DbaWorld
+            }
+        }
+    }
 
     fun changeLanguage(language: UiLanguage) {
         if (this.language == language) {
@@ -869,6 +949,13 @@ class TrainerController(context: Context) {
 
     fun startQuiz(limit: MobileQuestionLimit) {
         runCoreAction {
+            val beforeQuiz = requireTrainer().activityStats()
+            quizStartUnlockedAchievementKinds = beforeQuiz.achievements
+                .filter { achievement -> achievement.unlocked }
+                .map { achievement -> achievement.kind }
+                .toSet()
+            newlyUnlockedAchievements = emptyList()
+
             val session = when {
                 pendingMistakeReview && pendingTopic != null -> {
                     requireTrainer().startMistakeTopicSession(
@@ -928,6 +1015,13 @@ class TrainerController(context: Context) {
 
     fun continueSavedSession(progress: MobileSessionProgress) {
         runCoreAction {
+            val beforeQuiz = requireTrainer().activityStats()
+            quizStartUnlockedAchievementKinds = beforeQuiz.achievements
+                .filter { achievement -> achievement.unlocked }
+                .map { achievement -> achievement.kind }
+                .toSet()
+            newlyUnlockedAchievements = emptyList()
+
             pendingMistakeReview = progress.isReview
             pendingCourse = progress.courseCode
             pendingTopic = progress.topicId?.let { topicId ->
@@ -1101,6 +1195,10 @@ class TrainerController(context: Context) {
                 screen = AppScreen.Home
             }
         }
+    }
+
+    fun dismissAchievementCelebration() {
+        newlyUnlockedAchievements = emptyList()
     }
 
     fun finishResults() {
@@ -1491,10 +1589,12 @@ class TrainerController(context: Context) {
 
     fun back() {
         when (screen) {
-            AppScreen.Home -> Unit
+            AppScreen.ModeSelection -> Unit
+            AppScreen.Home -> screen = AppScreen.ModeSelection
+            AppScreen.Settings -> screen = AppScreen.ModeSelection
             AppScreen.DbaWorld -> {
                 if (!dbaWorld.back()) {
-                    screen = AppScreen.Home
+                    screen = AppScreen.ModeSelection
                 }
             }
             AppScreen.UnfinishedQuizzes -> screen = AppScreen.Home
@@ -1678,7 +1778,11 @@ class TrainerController(context: Context) {
             currentQuestion = null
             feedback = null
             selectedOptionIds.clear()
-            activityStats = requireTrainer().activityStats()
+            val latestActivityStats = requireTrainer().activityStats()
+            activityStats = latestActivityStats
+            newlyUnlockedAchievements = latestActivityStats.achievements.filter { achievement ->
+                achievement.unlocked && achievement.kind !in quizStartUnlockedAchievementKinds
+            }
             unfinishedSessions = requireTrainer().unfinishedSessions()
             screen = AppScreen.Results
             return
@@ -1832,6 +1936,7 @@ class TrainerController(context: Context) {
         pendingTopic = null
         pendingCourse = null
         pendingMistakeReview = false
+        quizStartUnlockedAchievementKinds = emptySet()
     }
 
     private fun requireTrainer(): MobileTrainer =

@@ -112,7 +112,7 @@
     },
     {
       "type": "single_choice",
-      "text": "Что отличает оконную функцию от обычной агрегатной в показанном введении?",
+      "text": "Что отличает оконную функцию от обычной агрегатной функции?",
       "answers": [
         {
           "key": "a",
@@ -328,7 +328,7 @@
     },
     {
       "type": "multiple_choice",
-      "text": "Какие ограничения данных рассматриваются в главе 5?",
+      "text": "Какие из перечисленных конструкций являются ограничениями целостности данных в PostgreSQL?",
       "answers": [
         {
           "key": "a",
@@ -366,7 +366,7 @@
           "correct": false
         }
       ],
-      "explanation": "Глава 5 перечисляет эти типы ограничений целостности.",
+      "explanation": "CHECK, NOT NULL, UNIQUE, PRIMARY KEY, FOREIGN KEY и EXCLUDE являются ограничениями целостности данных.",
       "source": {
         "key": "sql1-middle-constraints",
         "kind": "course_material",
@@ -523,7 +523,7 @@
     },
     {
       "type": "multiple_choice",
-      "text": "Какие условные выражения перечислены в разделе 9.18?",
+      "text": "Какие из перечисленных конструкций являются условными выражениями PostgreSQL?",
       "answers": [
         {
           "key": "a",
@@ -556,7 +556,7 @@
           "correct": false
         }
       ],
-      "explanation": "Раздел 9.18 содержит эти условные выражения PostgreSQL.",
+      "explanation": "CASE, COALESCE, NULLIF, GREATEST и LEAST используются как условные выражения.",
       "source": {
         "key": "sql1-middle-conditional",
         "kind": "course_material",
@@ -605,7 +605,7 @@
     },
     {
       "type": "multiple_choice",
-      "text": "Какие операции сочетания запросов рассматриваются вместе?",
+      "text": "Какие операции комбинируют результаты совместимых SELECT-запросов?",
       "answers": [
         {
           "key": "a",
@@ -628,7 +628,7 @@
           "correct": false
         }
       ],
-      "explanation": "Раздел 7.4 посвящён UNION, INTERSECT и EXCEPT.",
+      "explanation": "UNION, INTERSECT и EXCEPT комбинируют результаты двух совместимых запросов.",
       "source": {
         "key": "sql1-middle-setops-list",
         "kind": "course_material",

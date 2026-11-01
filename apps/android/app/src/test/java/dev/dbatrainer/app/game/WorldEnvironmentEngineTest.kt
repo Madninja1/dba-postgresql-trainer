@@ -30,6 +30,16 @@ class WorldEnvironmentEngineTest {
     }
 
     @Test
+    fun `visual day phase can follow real device hour without changing game clock`() {
+        val clock = WorldClock(day = 120, minuteOfDay = 11 * 60)
+
+        val evening = WorldEnvironmentEngine.environmentFor(clock, visualHour = 20)
+
+        assertEquals(WorldDayPhase.EVENING, evening.dayPhase)
+        assertEquals(WorldSeason.SPRING, evening.season)
+    }
+
+    @Test
     fun `weather is stable for the same game day`() {
         val morning = WorldEnvironmentEngine.environmentFor(WorldClock(day = 120, minuteOfDay = 8 * 60))
         val evening = WorldEnvironmentEngine.environmentFor(WorldClock(day = 120, minuteOfDay = 20 * 60))

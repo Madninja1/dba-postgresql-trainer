@@ -1,0 +1,1024 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-arch-vacuum-overview",
+  "questions": [
+    {
+      "key": "dba1-arch-vacuum-overview-001",
+      "type": "single_choice",
+      "text": "What is the primary purpose of the VACUUM command?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Free the space occupied by dead tuples",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Rebuild all indexes in the database",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Create a backup copy of the table",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Change the isolation level of the current transaction",
+          "correct": false
+        }
+      ],
+      "explanation": "VACUUM processes dead row versions and frees the space they occupy for future reuse.",
+      "source": {
+        "key": "postgresql-16-vacuum",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "VACUUM",
+        "locator": "VACUUM command description",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-vacuum"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-002",
+      "type": "multiple_choice",
+      "text": "Which statements about how VACUUM selects objects are correct? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Without a table list, VACUUM processes tables in the current database that are accessible to the current user",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "One or more tables can be specified explicitly for vacuuming",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "VACUUM without a table name automatically processes every database in the cluster",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "When a table is specified, VACUUM must also vacuum every other table in the same schema",
+          "correct": false
+        }
+      ],
+      "explanation": "Without an object list, VACUUM works with suitable objects in the current database; when tables are specified, it is limited to them.",
+      "source": {
+        "key": "postgresql-16-vacuum-002",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "VACUUM",
+        "locator": "Description, table selection",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-vacuum"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-003",
+      "type": "single_choice",
+      "text": "What does VACUUM ANALYZE do?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "First vacuums, then collects statistics",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only collects statistics",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only rebuilds indexes",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Completely rewrites the table physically",
+          "correct": false
+        }
+      ],
+      "explanation": "VACUUM ANALYZE combines two operations: vacuuming followed by analysis.",
+      "source": {
+        "key": "postgresql-16-vacuum-003",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "VACUUM",
+        "locator": "VACUUM ANALYZE description",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-vacuum"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-004",
+      "type": "multiple_choice",
+      "text": "What happens after a regular VACUUM without FULL? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Freed space becomes available for reuse by the same table",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The physical file size usually does not decrease",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The operation can normally run concurrently with ordinary reads and writes",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The entire table is always rewritten into a new file",
+          "correct": false
+        }
+      ],
+      "explanation": "Regular VACUUM frees space inside the relation for reuse but, in most cases, does not return that space to the operating system.",
+      "source": {
+        "key": "postgresql-16-vacuum-004",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "VACUUM",
+        "locator": "Regular VACUUM description",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-vacuum"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-005",
+      "type": "single_choice",
+      "text": "What fundamentally distinguishes VACUUM FULL from regular VACUUM?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "VACUUM FULL rewrites the table and can return unused space to the operating system",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "VACUUM FULL only updates planner statistics",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "VACUUM FULL does not work with table contents",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "VACUUM FULL only rebuilds individual indexes",
+          "correct": false
+        }
+      ],
+      "explanation": "VACUUM FULL physically rewrites the table contents, eliminating excess free space.",
+      "source": {
+        "key": "postgresql-16-vacuum-full",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "VACUUM",
+        "locator": "FULL option",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-vacuum"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-006",
+      "type": "multiple_choice",
+      "text": "Which characteristics of VACUUM FULL must be taken into account? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It requests an exclusive lock on the table",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It is substantially heavier than regular VACUUM",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Rewriting the table requires additional disk space",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It is intended to be run after every UPDATE",
+          "correct": false
+        }
+      ],
+      "explanation": "A full vacuum rewrites the object, requires extra space, and takes a strong lock, so it is not intended for ordinary routine maintenance.",
+      "source": {
+        "key": "postgresql-16-vacuum-full-006",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "VACUUM",
+        "locator": "FULL option and notes",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-vacuum"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-007",
+      "type": "single_choice",
+      "text": "Can VACUUM be executed inside a transaction block?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "No",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Yes, always",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only after SAVEPOINT",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only at Serializable isolation level",
+          "correct": false
+        }
+      ],
+      "explanation": "The VACUUM documentation explicitly states that the command cannot be executed inside a transaction block.",
+      "source": {
+        "key": "postgresql-16-vacuum-007",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "VACUUM",
+        "locator": "Notes",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-vacuum"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-008",
+      "type": "multiple_choice",
+      "text": "Which commands can be used to perform maintenance manually? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "VACUUM — perform vacuuming",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "ANALYZE — perform analysis",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "VACUUM ANALYZE — vacuum and analyze",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "CHECKPOINT ANALYZE — vacuum and analyze",
+          "correct": false
+        }
+      ],
+      "explanation": "The lecture separately maps the VACUUM, ANALYZE, and VACUUM ANALYZE commands to their maintenance tasks.",
+      "source": {
+        "key": "dba1-06-manual-maintenance",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Manual execution",
+        "locator": "Slide 9, “Manual execution”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-009",
+      "type": "single_choice",
+      "text": "What is ANALYZE used for?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To collect statistics about table contents for use by the query planner",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To physically shrink table files",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "To repair damaged indexes",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To drop a database",
+          "correct": false
+        }
+      ],
+      "explanation": "ANALYZE collects statistics that the planner uses to estimate possible query plans.",
+      "source": {
+        "key": "postgresql-16-analyze",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "ANALYZE",
+        "locator": "Description",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-analyze"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-010",
+      "type": "multiple_choice",
+      "text": "Which statements about ANALYZE are correct? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Statistics results are stored in the pg_statistic system catalog",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Analysis can be limited to explicitly specified tables",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Statistics collection can be limited to specified columns",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "ANALYZE always rewrites the entire table",
+          "correct": false
+        }
+      ],
+      "explanation": "ANALYZE can work with the whole accessible database, selected tables, or even selected columns, and stores planner statistics.",
+      "source": {
+        "key": "postgresql-16-analyze",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "ANALYZE",
+        "locator": "Description",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-analyze"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-011",
+      "type": "single_choice",
+      "text": "In this topic, what is meant by bloat?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Excessive physical size of tables or indexes compared with the space occupied by useful data",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "An increase in the number of server connections",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Growth in the number of databases in the cluster",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "An increase in work_mem",
+          "correct": false
+        }
+      ],
+      "explanation": "The bloat section describes a situation where tables and indexes occupy more physical space than current useful data requires.",
+      "source": {
+        "key": "dba1-06-bloat",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Bloat problem",
+        "locator": "Slide 11, “Bloat problem”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-012",
+      "type": "multiple_choice",
+      "text": "Which factors can cause table and index bloat? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Poor autovacuum configuration",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Large-scale data changes",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Long-running transactions",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The mere presence of a primary key",
+          "correct": false
+        }
+      ],
+      "explanation": "The bloat slide explicitly lists autovacuum configuration, large-scale data changes, and long-running transactions.",
+      "source": {
+        "key": "dba1-06-bloat-012",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Bloat problem",
+        "locator": "Slide 11, “Causes of bloat”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-013",
+      "type": "single_choice",
+      "text": "What does the query from the PostgreSQL Wiki page “Show database bloat” show?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "An estimate of table and index bloat",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "An exact list of active transactions",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The history of postgresql.conf changes",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "WAL contents",
+          "correct": false
+        }
+      ],
+      "explanation": "The query shown on that page is intended to estimate table and index bloat.",
+      "source": {
+        "key": "postgresql-wiki-bloat",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Show database bloat",
+        "locator": "Bloat queries and Query from check_postgres",
+        "url": "https://wiki.postgresql.org/wiki/Show_database_bloat"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-014",
+      "type": "multiple_choice",
+      "text": "Which consequences can table and index bloat have? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Excessive disk-space usage",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Larger backups",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Slower sequential scans of large tables",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Less efficient index access",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Automatic removal of all indexes",
+          "correct": false
+        }
+      ],
+      "explanation": "Bloated files use more space and increase the amount of data that must be processed and stored.",
+      "source": {
+        "key": "dba1-06-bloat-014",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Bloat problem",
+        "locator": "Slide 11, “Negative impact”",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-015",
+      "type": "single_choice",
+      "text": "Which pgstattuple extension function returns the physical relation length, counts of live and dead tuples, and free-space volume?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pgstattuple",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_relation_filepath",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_reload_conf",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_backend_pid",
+          "correct": false
+        }
+      ],
+      "explanation": "pgstattuple returns detailed relation statistics, including sizes of live and dead tuples and free space.",
+      "source": {
+        "key": "postgresql-16-pgstattuple",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pgstattuple",
+        "locator": "pgstattuple(regclass) function",
+        "url": "https://postgrespro.ru/docs/postgresql/16/pgstattuple"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-016",
+      "type": "multiple_choice",
+      "text": "Which metrics are present in the result of pgstattuple? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "dead_tuple_count",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "dead_tuple_percent",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "free_space",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "free_percent",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "active_session_count",
+          "correct": false
+        }
+      ],
+      "explanation": "pgstattuple provides metrics for live and dead tuples as well as free space in the relation.",
+      "source": {
+        "key": "postgresql-16-pgstattuple-016",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pgstattuple",
+        "locator": "pgstattuple result columns",
+        "url": "https://postgrespro.ru/docs/postgresql/16/pgstattuple"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-017",
+      "type": "single_choice",
+      "text": "How does pgstattuple_approx differ from pgstattuple?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It tries to avoid a full scan and estimates some metrics approximately",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It always rebuilds the table before measuring it",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It works only with system catalogs",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It is intended exclusively for changing fillfactor",
+          "correct": false
+        }
+      ],
+      "explanation": "pgstattuple performs a full scan, whereas pgstattuple_approx uses a cheaper approach and estimates some characteristics approximately.",
+      "source": {
+        "key": "postgresql-16-pgstattuple-017",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pgstattuple",
+        "locator": "pgstattuple_approx function",
+        "url": "https://postgrespro.ru/docs/postgresql/16/pgstattuple"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-018",
+      "type": "multiple_choice",
+      "text": "When is REINDEX an appropriate operation? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The index is corrupted",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The index is heavily bloated",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "An index storage parameter was changed and the new value must be fully applied",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Column statistics need to be collected",
+          "correct": false
+        }
+      ],
+      "explanation": "REINDEX recreates index contents and is used, among other cases, for corruption, bloat, and fully applying changed storage parameters.",
+      "source": {
+        "key": "postgresql-16-reindex",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "REINDEX",
+        "locator": "Description, use cases",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-reindex"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-019",
+      "type": "single_choice",
+      "text": "Which form of REINDEX rebuilds all indexes of a specified table?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "REINDEX TABLE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "REINDEX COLUMN",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "REINDEX VACUUM",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "ANALYZE INDEX",
+          "correct": false
+        }
+      ],
+      "explanation": "REINDEX TABLE rebuilds every index of the specified table.",
+      "source": {
+        "key": "postgresql-16-reindex-019",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "REINDEX",
+        "locator": "TABLE option",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-reindex"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-020",
+      "type": "multiple_choice",
+      "text": "What is true about regular REINDEX and REINDEX CONCURRENTLY? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Regular REINDEX blocks writes to the table while rebuilding",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "REINDEX CONCURRENTLY allows normal write operations to continue",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A nonblocking rebuild performs more work and usually takes longer",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "REINDEX CONCURRENTLY is guaranteed to be faster than regular REINDEX",
+          "correct": false
+        }
+      ],
+      "explanation": "CONCURRENTLY reduces lock impact on the workload at the cost of extra passes and a longer operation.",
+      "source": {
+        "key": "postgresql-16-reindex-concurrently",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "REINDEX",
+        "locator": "Nonblocking index rebuild",
+        "url": "https://postgrespro.ru/docs/postgresql/16/sql-reindex"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-021",
+      "type": "single_choice",
+      "text": "Which tool is intended to remove table and index bloat while minimizing long exclusive locks?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_repack",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "initdb",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_ctl",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_checksums",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_repack is intended to reorganize tables and indexes while doing most of the work without holding a long exclusive lock on the table being processed.",
+      "source": {
+        "key": "pg-repack",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_repack",
+        "locator": "README, purpose of pg_repack",
+        "url": "https://github.com/reorg/pg_repack"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-022",
+      "type": "multiple_choice",
+      "text": "Which statements about pg_repack are correct? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It is a third-party PostgreSQL extension",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It can remove table and index bloat",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It allows reorganization on a live system with minimal locking",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It is a mandatory part of the PostgreSQL core",
+          "correct": false
+        }
+      ],
+      "explanation": "The lecture presents pg_repack as a third-party alternative when a long exclusive lock is undesirable; the project describes itself as an extension for online table and index reorganization.",
+      "source": {
+        "key": "pg-repack-022",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_repack",
+        "locator": "README and “Rebuilding objects” section",
+        "url": "https://github.com/reorg/pg_repack"
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-023",
+      "type": "single_choice",
+      "text": "After a large DELETE, regular VACUUM completed successfully, but the table file barely shrank. Why can this happen?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Freed space remains inside the file and can be reused for new data",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "VACUUM does not process deleted row versions",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The server must always be restarted after VACUUM",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A table can physically shrink only after ANALYZE",
+          "correct": false
+        }
+      ],
+      "explanation": "Regular vacuuming creates free space inside pages for reuse, but that does not imply a smaller file from the operating system's point of view.",
+      "source": {
+        "key": "dba1-06-bloat-023",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Bloat problem",
+        "locator": "Slide 11, effect of regular vacuuming",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-024",
+      "type": "multiple_choice",
+      "text": "Which tools can be used to compare the physical sizes of a table and its indexes before and after maintenance operations? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_table_size(table_name)",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_indexes_size(table_name)",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_backend_pid()",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "current_user",
+          "correct": false
+        }
+      ],
+      "explanation": "The practical exercise suggests measuring the table size with pg_table_size and the total size of its indexes with pg_indexes_size.",
+      "source": {
+        "key": "dba1-06-practice-size",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Practice",
+        "locator": "Measuring table and index sizes",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-025",
+      "type": "multiple_choice",
+      "text": "Which statements about the visibility map are correct? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It marks pages where all row versions are visible to all snapshots",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It helps VACUUM skip pages that cannot contain dead row versions",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It can speed up index-only access by avoiding a table-page read for a visibility check",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It exists for both tables and indexes",
+          "correct": false
+        }
+      ],
+      "explanation": "The visibility map is stored for tables. VACUUM marks pages where all row versions are visible to all snapshots; this allows vacuuming to skip such pages and helps index-only access avoid reading the table.",
+      "source": {
+        "key": "dba1-06-visibility-map",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Periodic tasks",
+        "locator": "Slide 4 — Updating the visibility map",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-026",
+      "type": "multiple_choice",
+      "text": "Which statements about the free space map are correct? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It stores information about free space inside pages",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It is used when inserting new row versions to find a suitable page",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It can exist for both tables and indexes",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It stores the commit/rollback status of each transaction",
+          "correct": false
+        }
+      ],
+      "explanation": "The free space map reflects available space in pages and helps quickly find a page for new data. Unlike the visibility map, an FSM can exist for both tables and indexes.",
+      "source": {
+        "key": "dba1-06-free-space-map",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Periodic tasks",
+        "locator": "Slide 5 — Updating the free space map",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-027",
+      "type": "multiple_choice",
+      "text": "Why does PostgreSQL freeze old row versions? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "So old row versions no longer depend on the specific transaction number that created them",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To avoid an emergency caused by exhaustion of the 32-bit XID space",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "So frozen row versions are considered visible to all snapshots",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "To physically shrink the table file as much as possible",
+          "correct": false
+        }
+      ],
+      "explanation": "The normal XID space is limited. Sufficiently old row versions are marked frozen: their old XID is no longer needed for visibility checks and the versions are treated as visible to all snapshots. Timely freezing prevents transaction ID wraparound.",
+      "source": {
+        "key": "dba1-06-xid-freeze",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Periodic tasks",
+        "locator": "Slide 7 — Freezing old row versions",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-vacuum-overview-028",
+      "type": "multiple_choice",
+      "text": "Which statements about autovacuum are correct? Select all that apply.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The autovacuum launcher schedules maintenance and starts worker processes",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "An autovacuum worker processes tables in one database that require maintenance",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The more actively a table changes, the more frequently autovacuum may process it",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Autovacuum works independently of the track_counts setting",
+          "correct": false
+        }
+      ],
+      "explanation": "The material describes a continuously running autovacuum launcher and parallel autovacuum workers that it starts. Processing frequency depends on change activity; automatic vacuuming does not work if either autovacuum or track_counts is disabled.",
+      "source": {
+        "key": "dba1-06-autovacuum",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Autovacuum",
+        "locator": "Slide 8 — Autovacuum launcher and autovacuum worker",
+        "url": null
+      }
+    }
+  ]
+}

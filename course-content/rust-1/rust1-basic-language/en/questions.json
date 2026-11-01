@@ -1,0 +1,1348 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-basic-language",
+  "questions": [
+    {
+      "key": "rust1-basic-language-001",
+      "type": "single_choice",
+      "text": "What happens with this code?\n\n```rust\nlet x = 5;\nx = 6;\n```",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The code compiles and `x` becomes 6",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "Compilation fails because it tries to modify an immutable variable",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`x` automatically becomes `mut`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "An error occurs only in a release build",
+          "correct": false
+        }
+      ],
+      "explanation": "Variables are immutable by default; assigning again without `mut` causes a compilation error.",
+      "source": {
+        "key": "rust1-basic-language-immutability",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Variables and Mutability",
+        "locator": "Chapter 3 — Variables and Mutability, pp. 45–46",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-004",
+      "type": "single_choice",
+      "text": "Which option correctly describes shadowing?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A repeated `let` with the same name creates a new variable",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Changing a value without a new `let`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Removing a variable from scope",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Automatically turning all variables into `mut`",
+          "correct": false
+        }
+      ],
+      "explanation": "With shadowing, `let` is used again with the same name and the new variable shadows the previous one.",
+      "source": {
+        "key": "rust1-basic-language-shadowing",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Variables and Mutability",
+        "locator": "Chapter 3 — Variables and Mutability, pp. 47–49",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-005",
+      "type": "single_choice",
+      "text": "Why is `let spaces = \"   \"; let spaces = spaces.len();` valid?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Shadowing allows a new variable with the same name to have a different type",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`len()` returns a string",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "All variables can change type after assignment",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "String literals have type `usize`",
+          "correct": false
+        }
+      ],
+      "explanation": "A repeated `let` creates a new variable, so shadowing allows the type to change while preserving the name.",
+      "source": {
+        "key": "rust1-basic-language-shadow-type",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Variables and Mutability",
+        "locator": "Chapter 3 — Variables and Mutability, pp. 48–49",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-006",
+      "type": "single_choice",
+      "text": "What does Rust being statically typed mean?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The types of all variables must be known at compile time",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Types are determined only at runtime",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Any variable can change type without a new `let`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Type annotations are forbidden",
+          "correct": false
+        }
+      ],
+      "explanation": "The material defines static typing as requiring the types of all variables to be known at compile time.",
+      "source": {
+        "key": "rust1-basic-language-static-typing",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Data Types",
+        "locator": "Chapter 3 — Data Types, pp. 50",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-007",
+      "type": "single_choice",
+      "text": "Which integer type is used by default when the context does not require another one?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "u8",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "i32",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "usize",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "i128",
+          "correct": false
+        }
+      ],
+      "explanation": "The default integer type is `i32`.",
+      "source": {
+        "key": "rust1-basic-language-integer-default",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Data Types",
+        "locator": "Chapter 3 — Data Types, pp. 52",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-009",
+      "type": "single_choice",
+      "text": "What happens when a `u8` integer overflows in a debug build?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Overflow checking causes a runtime panic",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The value always silently wraps",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The compiler automatically changes the type to `u16`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The value becomes `None` without special methods",
+          "correct": false
+        }
+      ],
+      "explanation": "In debug mode, Rust enables integer-overflow checks that cause a panic.",
+      "source": {
+        "key": "rust1-basic-language-overflow-debug",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Data Types",
+        "locator": "Chapter 3 — Data Types, pp. 52",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-010",
+      "type": "single_choice",
+      "text": "Which method returns `None` on integer overflow?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "wrapping_add",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "checked_add",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "saturating_add",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "overflowing_add",
+          "correct": false
+        }
+      ],
+      "explanation": "The `checked_*` family returns `None` on overflow.",
+      "source": {
+        "key": "rust1-basic-language-checked-overflow",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Data Types",
+        "locator": "Chapter 3 — Data Types, pp. 53",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-011",
+      "type": "single_choice",
+      "text": "Which floating-point type is used by default?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "f16",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "f32",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "f64",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "f128",
+          "correct": false
+        }
+      ],
+      "explanation": "The default is `f64`.",
+      "source": {
+        "key": "rust1-basic-language-float-default",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Data Types",
+        "locator": "Chapter 3 — Data Types, pp. 53",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-012",
+      "type": "single_choice",
+      "text": "How does integer division behave in Rust?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It always rounds upward",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "It truncates toward zero",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It returns `f64`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It always panics when there is a remainder",
+          "correct": false
+        }
+      ],
+      "explanation": "Integer division truncates the result toward zero.",
+      "source": {
+        "key": "rust1-basic-language-integer-division",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Data Types",
+        "locator": "Chapter 3 — Data Types, pp. 53–54",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-015",
+      "type": "single_choice",
+      "text": "What is the size of Rust `char`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "1 byte",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "2 bytes",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "4 bytes",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "8 bytes",
+          "correct": false
+        }
+      ],
+      "explanation": "The material states that `char` occupies four bytes and represents a Unicode scalar value.",
+      "source": {
+        "key": "rust1-basic-language-char-size",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Data Types",
+        "locator": "Chapter 3 — Data Types, pp. 55",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-016",
+      "type": "single_choice",
+      "text": "Which property distinguishes a tuple from an array?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Tuple elements can have different types",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A tuple is always mutable",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A tuple does not have a fixed length",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A tuple is indexed only by strings",
+          "correct": false
+        }
+      ],
+      "explanation": "Tuple positions can have different types, whereas all array elements must have the same type.",
+      "source": {
+        "key": "rust1-basic-language-tuple",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Data Types",
+        "locator": "Chapter 3 — Data Types, pp. 55–56",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-019",
+      "type": "single_choice",
+      "text": "Which property is characteristic of Rust arrays?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "All elements must have one type and the length is fixed",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Every element must have its own type",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The length always changes at runtime",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "An array is always stored only on the heap",
+          "correct": false
+        }
+      ],
+      "explanation": "Arrays contain elements of one type and have a fixed length.",
+      "source": {
+        "key": "rust1-basic-language-array",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Data Types",
+        "locator": "Chapter 3 — Data Types, pp. 56–57",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-020",
+      "type": "single_choice",
+      "text": "What happens if an array is indexed at runtime with an index greater than or equal to its length?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The first element is returned",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "The program panics",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The array grows",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`None` is returned automatically",
+          "correct": false
+        }
+      ],
+      "explanation": "Rust checks array bounds; an invalid index causes a panic.",
+      "source": {
+        "key": "rust1-basic-language-array-bounds",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Data Types",
+        "locator": "Chapter 3 — Data Types, pp. 58–59",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-021",
+      "type": "single_choice",
+      "text": "What must be specified for every parameter in a function signature?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Its type",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Its default value",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The `mut` keyword",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A lifetime in every case",
+          "correct": false
+        }
+      ],
+      "explanation": "Every function parameter must have an explicit type in the signature.",
+      "source": {
+        "key": "rust1-basic-language-function-params",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Functions",
+        "locator": "Chapter 3 — Functions, pp. 61–62",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-022",
+      "type": "single_choice",
+      "text": "How does a statement differ from an expression?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A statement performs an action and does not return a value; an expression evaluates to a value",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A statement always returns a number; an expression returns nothing",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "There is no difference",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Expressions are allowed only in `if`",
+          "correct": false
+        }
+      ],
+      "explanation": "The material defines statements as actions that do not return values and expressions as constructs that evaluate to values.",
+      "source": {
+        "key": "rust1-basic-language-statements-expressions",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Functions",
+        "locator": "Chapter 3 — Functions, pp. 62–64",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-023",
+      "type": "single_choice",
+      "text": "What happens if the semicolon is kept after `x + 1` in `fn plus_one(x: i32) -> i32 { x + 1; }`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The function returns `x + 1`",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "A type mismatch occurs because the body effectively returns `()`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The semicolon is ignored",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The function becomes `async`",
+          "correct": false
+        }
+      ],
+      "explanation": "The semicolon turns the final expression into a statement; the body then yields `()` instead of `i32`, so the function does not compile.",
+      "source": {
+        "key": "rust1-basic-language-return-semicolon",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Functions",
+        "locator": "Chapter 3 — Functions, pp. 64–66",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-024",
+      "type": "single_choice",
+      "text": "What type must an `if` condition have?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Any numeric type",
+          "correct": false
+        },
+        {
+          "key": "b",
+          "text": "`bool`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Only `i32`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`String`",
+          "correct": false
+        }
+      ],
+      "explanation": "Rust requires an `if` condition to have type `bool`; numbers are not automatically converted to Boolean values.",
+      "source": {
+        "key": "rust1-basic-language-if-bool",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Control Flow",
+        "locator": "Chapter 3 — Control Flow, pp. 68–69",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-026",
+      "type": "multiple_choice",
+      "text": "Which statements about immutability and `mut` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Variables are immutable by default",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`mut` allows the value bound to a variable to be changed",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`mut` also communicates the intent to change the value to the reader",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every immutable variable automatically becomes a `const` constant",
+          "correct": false
+        }
+      ],
+      "explanation": "The material distinguishes ordinary immutable variables from constants; `mut` explicitly permits mutation and communicates intent.",
+      "source": {
+        "key": "rust1-basic-language-mutability-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Variables and Mutability",
+        "locator": "Chapter 3 — Variables and Mutability, pp. 45–46",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-027",
+      "type": "multiple_choice",
+      "text": "Which properties are characteristic of Rust constants? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They are declared with `const`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "They cannot use `mut`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "They require a type annotation",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "They can be assigned any value computed only at runtime",
+          "correct": false
+        }
+      ],
+      "explanation": "Constants are always immutable, are declared with `const`, require a type, and are initialized with a constant expression.",
+      "source": {
+        "key": "rust1-basic-language-constant-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Variables and Mutability",
+        "locator": "Chapter 3 — Variables and Mutability, pp. 46–47",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-029",
+      "type": "multiple_choice",
+      "text": "Which statements distinguish shadowing from `mut`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Shadowing uses a new `let`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Shadowing creates a new variable",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Shadowing can change the value's type while preserving the name",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`mut` always allows assigning a value of a different type to the same variable",
+          "correct": false
+        }
+      ],
+      "explanation": "A repeated `let` creates a new variable and can use a different type; ordinary assignment to a `mut` variable preserves the variable's type.",
+      "source": {
+        "key": "rust1-basic-language-shadow-vs-mut",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Variables and Mutability",
+        "locator": "Chapter 3 — Variables and Mutability, pp. 48–49",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-030",
+      "type": "multiple_choice",
+      "text": "Which statements about type inference in Rust are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Rust often infers a type from the value and its use",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "When several types are possible, an explicit annotation may be required",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The `parse` example requires specifying the desired numeric type",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Rust determines variable types only after the program starts",
+          "correct": false
+        }
+      ],
+      "explanation": "Types must be known at compile time; the compiler often infers them, but ambiguous cases require an annotation.",
+      "source": {
+        "key": "rust1-basic-language-type-inference",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Data Types",
+        "locator": "Chapter 3 — Data Types, pp. 50",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-031",
+      "type": "multiple_choice",
+      "text": "Which types are named as Rust's four main scalar types? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Integers",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Floating-point numbers",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Boolean type",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Tuple",
+          "correct": false
+        },
+        {
+          "key": "e",
+          "text": "The `char` character type",
+          "correct": true
+        }
+      ],
+      "explanation": "The four groups are integers, floating-point numbers, `bool`, and `char`; tuples are compound types.",
+      "source": {
+        "key": "rust1-basic-language-scalar-types",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Data Types",
+        "locator": "Chapter 3 — Data Types, pp. 51–55",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-033",
+      "type": "multiple_choice",
+      "text": "Which forms of integer literals does Rust support? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Hexadecimal `0xff`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Octal `0o77`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Binary `0b1111_0000`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Decimal literals can only be written without underscores",
+          "correct": false
+        }
+      ],
+      "explanation": "The table shows different bases; underscores are allowed as visual separators.",
+      "source": {
+        "key": "rust1-basic-language-integer-literals",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Data Types",
+        "locator": "Chapter 3 — Data Types, pp. 52",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-034",
+      "type": "multiple_choice",
+      "text": "Which statements about `isize` and `usize` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Their size depends on the architecture",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "They are 64 bits on a 64-bit architecture",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "They are 32 bits on a 32-bit architecture",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The material names them as the primary choice for storing fractional numbers",
+          "correct": false
+        }
+      ],
+      "explanation": "`isize` and `usize` are architecture-dependent; the material also mentions `usize`/`isize` in the context of indexing collections.",
+      "source": {
+        "key": "rust1-basic-language-pointer-sized-int",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Data Types",
+        "locator": "Chapter 3 — Data Types, pp. 52",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-035",
+      "type": "multiple_choice",
+      "text": "Which method families allow explicit handling of integer overflow? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`wrapping_*`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`checked_*`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`overflowing_*`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`saturating_*`",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`panic_*`",
+          "correct": false
+        }
+      ],
+      "explanation": "The material lists all four families as ways to explicitly choose overflow behavior.",
+      "source": {
+        "key": "rust1-basic-language-overflow-methods",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Data Types",
+        "locator": "Chapter 3 — Data Types, pp. 53",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-038",
+      "type": "multiple_choice",
+      "text": "Which statements about Rust `char` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Literals use single quotes",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`char` occupies four bytes",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`char` represents a Unicode scalar value",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`char` is limited to ASCII",
+          "correct": false
+        }
+      ],
+      "explanation": "`char` is a four-byte Unicode scalar value and can represent more than ASCII.",
+      "source": {
+        "key": "rust1-basic-language-char-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Data Types",
+        "locator": "Chapter 3 — Data Types, pp. 55",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-039",
+      "type": "multiple_choice",
+      "text": "Which statements about tuples are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A tuple can combine values of different types",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Its length is fixed after declaration",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It can be destructured with a `let` pattern",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Tuple elements must all have one type",
+          "correct": false
+        }
+      ],
+      "explanation": "A tuple has a fixed length, can contain different types, and supports destructuring.",
+      "source": {
+        "key": "rust1-basic-language-tuple-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Data Types",
+        "locator": "Chapter 3 — Data Types, pp. 55–56",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-040",
+      "type": "multiple_choice",
+      "text": "Which statements about arrays are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "All array elements have one type",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "An array's length is fixed",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The type `[i32; 5]` means five `i32` elements",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`[3; 5]` means an array containing the values 3, 4, and 5",
+          "correct": false
+        }
+      ],
+      "explanation": "An array is fixed-size and homogeneous; `[3; 5]` creates five elements, each equal to 3.",
+      "source": {
+        "key": "rust1-basic-language-array-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Data Types",
+        "locator": "Chapter 3 — Data Types, pp. 56–57",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-041",
+      "type": "multiple_choice",
+      "text": "What happens when Rust code indexes an array out of bounds? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Rust checks that the index is less than the array length",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "An invalid runtime index causes the program to panic",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The check prevents execution from continuing with invalid memory access",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Any out-of-bounds access automatically returns `None` through `[]`",
+          "correct": false
+        }
+      ],
+      "explanation": "With `[]`, an invalid index causes a panic, preventing execution from continuing with invalid access.",
+      "source": {
+        "key": "rust1-basic-language-array-safety",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Data Types",
+        "locator": "Chapter 3 — Data Types, pp. 58–59",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-042",
+      "type": "multiple_choice",
+      "text": "Which rules about defining and calling Rust functions are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A function is declared with `fn`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Parameter types are written in the signature",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Multiple parameters are separated by commas",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A function must always be defined earlier in the source file than the call site",
+          "correct": false
+        }
+      ],
+      "explanation": "Definition order does not matter as long as the function is visible in the relevant scope; the other statements are shown directly.",
+      "source": {
+        "key": "rust1-basic-language-function-definition",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Functions",
+        "locator": "Chapter 3 — Functions, pp. 60–62",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-043",
+      "type": "multiple_choice",
+      "text": "Which of the following constructs are expressions in Rust? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The mathematical operation `5 + 6`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A function call",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A macro call",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The whole statement `let y = 6;` returns the value 6",
+          "correct": false
+        }
+      ],
+      "explanation": "Operations, function/macro calls, and blocks can be expressions; a `let` statement does not return a value.",
+      "source": {
+        "key": "rust1-basic-language-expression-examples",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Functions",
+        "locator": "Chapter 3 — Functions, pp. 62–64",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-044",
+      "type": "multiple_choice",
+      "text": "Which ways of returning a value from a function are described? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The value of the body's final expression",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "An early `return` with a value",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The return type is written after `->`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A semicolon after the final expression is required to return its value",
+          "correct": false
+        }
+      ],
+      "explanation": "Normal return uses the final expression without `;`, while `return` can exit early.",
+      "source": {
+        "key": "rust1-basic-language-function-return",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Functions",
+        "locator": "Chapter 3 — Functions, pp. 64–66",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-046",
+      "type": "multiple_choice",
+      "text": "Which statements about `if` are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The condition must be `bool`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`else` is optional",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "If the condition is false and there is no `else`, the `if` block is skipped",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Rust automatically treats every nonzero integer as `true`",
+          "correct": false
+        }
+      ],
+      "explanation": "Rust requires `bool` and does not automatically convert numbers to Boolean values.",
+      "source": {
+        "key": "rust1-basic-language-if-properties",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Control Flow",
+        "locator": "Chapter 3 — Control Flow, pp. 68–70",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-047",
+      "type": "multiple_choice",
+      "text": "How is an `if` / `else if` chain evaluated in Rust? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Conditions are checked from top to bottom",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The branch for the first true condition is executed",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "After a branch is selected, later `else if` conditions are not evaluated",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Every branch whose condition is true executes independently",
+          "correct": false
+        }
+      ],
+      "explanation": "The chain selects the first matching branch; later conditions in the chain are not evaluated.",
+      "source": {
+        "key": "rust1-basic-language-else-if",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Control Flow",
+        "locator": "Chapter 3 — Control Flow, pp. 70–71",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-048",
+      "type": "multiple_choice",
+      "text": "Which statements about `if` as an expression are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Its result can be assigned with `let`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Branch results must have a compatible type",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A block evaluates to its final expression",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A number from `if` and a string from `else` can be assigned to one variable without an error",
+          "correct": false
+        }
+      ],
+      "explanation": "When assigning an `if` result, both branches must produce a single compatible type.",
+      "source": {
+        "key": "rust1-basic-language-if-expression",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Control Flow",
+        "locator": "Chapter 3 — Control Flow, pp. 71–72",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-049",
+      "type": "multiple_choice",
+      "text": "What do `break` and `continue` do? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`break` stops the loop",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`continue` skips the remaining code in the current iteration",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`continue` moves to the next iteration",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`break` always terminates the entire program rather than just the loop",
+          "correct": false
+        }
+      ],
+      "explanation": "`break` exits the loop, while `continue` jumps to the next iteration.",
+      "source": {
+        "key": "rust1-basic-language-break-continue",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Control Flow",
+        "locator": "Chapter 3 — Control Flow, pp. 73",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-basic-language-050",
+      "type": "multiple_choice",
+      "text": "Which statements about loop labels are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A label starts with a single quote",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It can be used with `break`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It can be used with `continue`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Without a label, `break` in nested loops always exits the outermost loop",
+          "correct": false
+        }
+      ],
+      "explanation": "Without a label, the operation applies to the innermost loop; a label lets you target another loop.",
+      "source": {
+        "key": "rust1-basic-language-loop-labels",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Control Flow",
+        "locator": "Chapter 3 — Control Flow, pp. 74–75",
+        "url": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "dba-1",
+  "slug": "dba1-arch-vacuum-overview",
+  "notes_part": 6,
+  "topic_number": 6,
+  "title": "Vacuuming and Bloat",
+  "description": "Manual VACUUM and ANALYZE, table and index bloat, bloat diagnostics, VACUUM FULL, REINDEX, and pg_repack",
+  "sort_order": 60
+}

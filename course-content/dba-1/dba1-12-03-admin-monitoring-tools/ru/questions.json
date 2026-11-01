@@ -5,7 +5,7 @@
     {
       "key": "dba1-admin-monitoring-tools-001",
       "type": "single_choice",
-      "text": "Зачем на практике используется внешняя система мониторинга PostgreSQL согласно конспекту?",
+      "text": "Для чего используется внешняя система мониторинга PostgreSQL?",
       "answers": [
         {
           "key": "a",
@@ -41,7 +41,7 @@
     {
       "key": "dba1-admin-monitoring-tools-002",
       "type": "multiple_choice",
-      "text": "Какие универсальные системы мониторинга перечислены в конспекте? Выберите все правильные варианты.",
+      "text": "Какие из перечисленных систем относятся к универсальным системам мониторинга? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -77,7 +77,7 @@
     {
       "key": "dba1-admin-monitoring-tools-003",
       "type": "single_choice",
-      "text": "Какой из перечисленных инструментов конспект относит к специализированным средствам мониторинга PostgreSQL?",
+      "text": "Какой из перечисленных инструментов является специализированным средством мониторинга PostgreSQL?",
       "answers": [
         {
           "key": "a",
@@ -113,7 +113,7 @@
     {
       "key": "dba1-admin-monitoring-tools-004",
       "type": "multiple_choice",
-      "text": "Какие средства в лекции перечислены именно среди систем мониторинга PostgreSQL? Выберите все правильные варианты.",
+      "text": "Какие из перечисленных средств являются системами мониторинга PostgreSQL? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -190,7 +190,7 @@
     {
       "key": "dba1-admin-monitoring-tools-006",
       "type": "multiple_choice",
-      "text": "Какие действия требуется выполнить в практической работе с pg_stat_statements? Выберите все правильные варианты.",
+      "text": "Какие действия необходимы для начала работы с pg_stat_statements и просмотра собранной статистики? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -231,7 +231,7 @@
     {
       "key": "dba1-admin-monitoring-tools-007",
       "type": "single_choice",
-      "text": "Какой параметр необходимо изменить перед использованием pg_stat_statements согласно практическому заданию?",
+      "text": "Какой параметр необходимо изменить перед использованием pg_stat_statements?",
       "answers": [
         {
           "key": "a",
@@ -267,7 +267,7 @@
     {
       "key": "dba1-admin-monitoring-tools-008",
       "type": "multiple_choice",
-      "text": "Какие последствия изменения shared_preload_libraries для pg_stat_statements указаны в материале? Выберите все правильные варианты.",
+      "text": "Какие последствия имеет добавление pg_stat_statements в shared_preload_libraries? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -375,7 +375,7 @@
     {
       "key": "dba1-admin-monitoring-tools-011",
       "type": "single_choice",
-      "text": "Чем внешний мониторинг отличается от просмотра состояния сервера вручную в отдельный момент времени по смыслу конспекта?",
+      "text": "Чем внешний мониторинг отличается от просмотра состояния сервера вручную в отдельный момент времени?",
       "answers": [
         {
           "key": "a",
@@ -411,7 +411,7 @@
     {
       "key": "dba1-admin-monitoring-tools-012",
       "type": "multiple_choice",
-      "text": "Какие источники метрик должна охватывать полноценная система мониторинга согласно лекции? Выберите все правильные варианты.",
+      "text": "Какие источники метрик должна охватывать полноценная система мониторинга? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -447,7 +447,7 @@
     {
       "key": "dba1-admin-monitoring-tools-013",
       "type": "single_choice",
-      "text": "Какой инструмент из списка занятия относится к PostgreSQL Enterprise и предназначен для анализа производительности рабочей нагрузки?",
+      "text": "Какой инструмент относится к PostgreSQL Enterprise и предназначен для анализа производительности рабочей нагрузки?",
       "answers": [
         {
           "key": "a",
@@ -483,7 +483,7 @@
     {
       "key": "dba1-admin-monitoring-tools-014",
       "type": "multiple_choice",
-      "text": "Какие категории решений представлены в материалах по внешнему мониторингу? Выберите все правильные варианты.",
+      "text": "Какие категории решений применяются для внешнего мониторинга PostgreSQL? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -555,7 +555,7 @@
     {
       "key": "dba1-admin-monitoring-tools-016",
       "type": "multiple_choice",
-      "text": "Администратор строит постоянный мониторинг производительности. Какие действия соответствуют подходу занятия? Выберите все правильные варианты.",
+      "text": "Администратор строит постоянный мониторинг производительности PostgreSQL. Какие действия для этого подходят? Выберите все правильные варианты.",
       "answers": [
         {
           "key": "a",
@@ -586,6 +586,114 @@
         "section": "Внешний мониторинг",
         "locator": "Полноценная система мониторинга",
         "url": null
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-017",
+      "type": "single_choice",
+      "text": "Почему два запроса, отличающиеся только значениями констант, обычно попадают в одну запись pg_stat_statements?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_stat_statements группирует запросы с одинаковой внутренней структурой, обычно заменяя константы параметрами",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "PostgreSQL сохраняет только последний выполненный SQL-текст",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Все запросы одного пользователя имеют один queryid",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Константы удаляются из исходных таблиц перед выполнением",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_stat_statements объединяет структурно эквивалентные запросы по внутреннему queryid; значения констант обычно не различают записи и отображаются как параметры вроде $1.",
+      "source": {
+        "key": "dba1-12-pgss-normalization",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_stat_statements",
+        "locator": "Нормализация запросов и queryid",
+        "url": "https://postgrespro.ru/docs/postgresql/16/pgstatstatements"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-018",
+      "type": "multiple_choice",
+      "text": "Какие значения pg_stat_statements.track и их смысл верны? Выберите все правильные варианты.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "top — отслеживать операторы верхнего уровня",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "all — также учитывать вложенные операторы",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "none — отключить сбор статистики операторов",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "snapshot — сохранять только один запрос на транзакцию",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_stat_statements.track поддерживает top, all и none; значение по умолчанию — top.",
+      "source": {
+        "key": "dba1-12-pgss-track",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_stat_statements",
+        "locator": "Параметр pg_stat_statements.track",
+        "url": "https://postgrespro.ru/docs/postgresql/16/pgstatstatements"
+      }
+    },
+    {
+      "key": "dba1-admin-monitoring-tools-019",
+      "type": "single_choice",
+      "text": "Для чего используется pg_stat_statements_reset()?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Для сброса накопленной статистики pg_stat_statements полностью или для выбранного пользователя, базы и queryid",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Для перезапуска PostgreSQL после изменения shared_preload_libraries",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Для пересоздания индексов системного каталога",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Для удаления расширения pg_stat_statements",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_stat_statements_reset() начинает новый период накопления статистики; при необходимости сброс можно ограничить userid, dbid и queryid.",
+      "source": {
+        "key": "dba1-12-pgss-reset",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "pg_stat_statements",
+        "locator": "Функция pg_stat_statements_reset",
+        "url": "https://postgrespro.ru/docs/postgresql/16/pgstatstatements"
       }
     }
   ]

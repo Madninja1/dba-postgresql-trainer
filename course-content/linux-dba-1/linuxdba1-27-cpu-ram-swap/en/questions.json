@@ -1,0 +1,602 @@
+{
+  "schema_version": 1,
+  "topic": "linuxdba1-cpu-ram-swap",
+  "questions": [
+    {
+      "key": "linuxdba1-cpu-ram-swap-001",
+      "type": "single_choice",
+      "text": "Which command in the lab shows the number of available CPU processors/threads?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "nproc",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "free",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "swapon",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "du",
+          "correct": false
+        }
+      ],
+      "explanation": "`nproc` is used to quickly determine the number of available CPUs.",
+      "source": {
+        "key": "linuxdba1-27-nproc",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "CPU",
+        "locator": "Lab 27 — beginning CPU diagnostics",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-cpu-ram-swap-002",
+      "type": "multiple_choice",
+      "text": "Which information does the lab recommend looking at in `lscpu`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "CPU(s)",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Core(s) per socket",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Thread(s) per core",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Model name",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Number of PGDATA inodes",
+          "correct": false
+        }
+      ],
+      "explanation": "`lscpu` is used to understand processor architecture and topology.",
+      "source": {
+        "key": "linuxdba1-27-lscpu",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "CPU",
+        "locator": "Lab 27 — `lscpu`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-cpu-ram-swap-003",
+      "type": "single_choice",
+      "text": "What do the three load-average values in `uptime` mean?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Average load over approximately 1, 5, and 15 minutes",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Percentages of user/system/idle CPU",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "RAM/swap/cache usage",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Number of PostgreSQL databases",
+          "correct": false
+        }
+      ],
+      "explanation": "In the lab, load average is interpreted over 1, 5, and 15 minutes, and the material explicitly notes that it is not a CPU percentage.",
+      "source": {
+        "key": "linuxdba1-27-load-average",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "CPU",
+        "locator": "Lab 27 — load average",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-cpu-ram-swap-004",
+      "type": "multiple_choice",
+      "text": "Which `%Cpu(s)` fields in `top` are covered in the lab? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`us` — user CPU",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`sy` — system CPU",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`id` — idle CPU",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`wa` — I/O wait",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`si` — free inodes",
+          "correct": false
+        }
+      ],
+      "explanation": "For quick load classification, the lab uses `us`, `sy`, `id`, and `wa`.",
+      "source": {
+        "key": "linuxdba1-27-top-cpu",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "CPU",
+        "locator": "Lab 27 — `top`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-cpu-ram-swap-005",
+      "type": "single_choice",
+      "text": "Which `free -h` field is especially important for estimating memory that is realistically available without swap pressure?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "available",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "free only",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "shared only",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "total only",
+          "correct": false
+        }
+      ],
+      "explanation": "The material warns that a small `free` value alone does not mean RAM is exhausted; `available` is usually more informative.",
+      "source": {
+        "key": "linuxdba1-27-free-available",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "RAM",
+        "locator": "Lab 27 — `free -h`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-cpu-ram-swap-006",
+      "type": "multiple_choice",
+      "text": "Which statements about swap match the lab? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`swapon --show` displays active swap areas",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`free -h` also contains a Swap line",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A nonzero Swap used value alone does not prove active memory pressure",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Swap must always be enabled to perform the lab",
+          "correct": false
+        }
+      ],
+      "explanation": "The lab distinguishes the presence/occupancy of swap from active page movement, which is visible through `si/so`.",
+      "source": {
+        "key": "linuxdba1-27-swap",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "RAM and swap",
+        "locator": "Lab 27 — checking swap",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-cpu-ram-swap-007",
+      "type": "single_choice",
+      "text": "What does the argument `1` mean in `vmstat 1`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Update statistics about once per second",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Show only one CPU",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Use 1 MB of memory",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Show only one process",
+          "correct": false
+        }
+      ],
+      "explanation": "In the lab, `vmstat 1` is used as a continuous stream of metrics with a one-second interval.",
+      "source": {
+        "key": "linuxdba1-27-vmstat-interval",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "vmstat",
+        "locator": "Lab 27 — running `vmstat 1`",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-cpu-ram-swap-008",
+      "type": "multiple_choice",
+      "text": "What do the `r`, `b`, `si`, and `so` fields in `vmstat` mean according to the material? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`r` — runnable processes that need CPU",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`b` — processes blocked waiting for I/O",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`si` — swap in",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`so` — swap out",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`b` — buff/cache size in gigabytes",
+          "correct": false
+        }
+      ],
+      "explanation": "These fields help distinguish CPU queueing, blocked I/O, and swap activity.",
+      "source": {
+        "key": "linuxdba1-27-vmstat-fields",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "vmstat",
+        "locator": "Lab 27 — main vmstat fields",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-cpu-ram-swap-009",
+      "type": "single_choice",
+      "text": "If CPU = 2, `r = 8`, `id = 0`, and `us = 95`, which bottleneck is most likely according to the lab's model?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "CPU bottleneck",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only inode exhaustion",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only a mount-point problem",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Low CPU activity",
+          "correct": false
+        }
+      ],
+      "explanation": "A high `r` with two CPUs, almost no idle time, and high user CPU indicate a queue for CPU resources.",
+      "source": {
+        "key": "linuxdba1-27-cpu-scenario",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "CPU bottleneck",
+        "locator": "Lab 27 — practical CPU scenario",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-cpu-ram-swap-010",
+      "type": "multiple_choice",
+      "text": "What do the parameters in `pgbench -c 10 -j 2 -T 60 lab` mean in the lab? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`-c 10` — 10 clients",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`-j 2` — 2 pgbench worker threads",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`-T 60` — run for 60 seconds",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`lab` — database on which the test runs",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`-j 2` — use 2 GB shared_buffers",
+          "correct": false
+        }
+      ],
+      "explanation": "The lab uses `pgbench` to compare latency and TPS before and during system load.",
+      "source": {
+        "key": "linuxdba1-27-pgbench-flags",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "PostgreSQL under load",
+        "locator": "Lab 27 — pgbench during system load",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-cpu-ram-swap-011",
+      "type": "single_choice",
+      "text": "Why does a small `free` value in Linux not necessarily mean there is a memory shortage?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Linux actively uses RAM for cache, so `available` should also be considered",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Because `free` shows only CPU",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Because Linux does not use RAM",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Because `free` always equals swap",
+          "correct": false
+        }
+      ],
+      "explanation": "A large buff/cache value with normal `available` can be a normal state rather than memory pressure.",
+      "source": {
+        "key": "linuxdba1-27-page-cache",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "RAM",
+        "locator": "Lab 27 — page cache and the free field",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-cpu-ram-swap-012",
+      "type": "multiple_choice",
+      "text": "If `id = 70`, `wa = 25`, and `r = 1`, which conclusions match the lab? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "This does not look like a saturated CPU",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "High `wa` points toward I/O waiting",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Low `r` does not show a queue of many runnable tasks",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "This unambiguously means active swap out",
+          "correct": false
+        }
+      ],
+      "explanation": "High idle together with noticeable I/O wait looks more like an I/O bottleneck than pure CPU shortage.",
+      "source": {
+        "key": "linuxdba1-27-io-wait-scenario",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "I/O wait",
+        "locator": "Lab 27 — practical non-CPU scenario",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-cpu-ram-swap-013",
+      "type": "single_choice",
+      "text": "What does `stress-ng --cpu 2 --timeout 120s` do in the lab?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Creates two CPU workers for 120 seconds",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Creates two PostgreSQL databases",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Uses 120 GB of RAM",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Formats two block devices",
+          "correct": false
+        }
+      ],
+      "explanation": "`--cpu 2` sets two CPU workers, while `--timeout 120s` limits the duration of the load.",
+      "source": {
+        "key": "linuxdba1-27-stress-cpu",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "CPU bottleneck",
+        "locator": "Lab 27 — CPU load with stress-ng",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-cpu-ram-swap-014",
+      "type": "multiple_choice",
+      "text": "Which signs of memory pressure are listed in the lab? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`available` RAM decreases",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Swap used may grow",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`si/so` may become nonzero during active swapping",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`id` must always be 0",
+          "correct": false
+        }
+      ],
+      "explanation": "Memory pressure is evaluated through available RAM and swap activity; CPU idle by itself is not a required sign.",
+      "source": {
+        "key": "linuxdba1-27-memory-pressure",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "RAM and swap",
+        "locator": "Lab 27 — signs of memory pressure",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-cpu-ram-swap-015",
+      "type": "single_choice",
+      "text": "How do you list processes sorted by CPU usage in descending order according to the lab?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "ps aux --sort=-%cpu | head",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "ps aux --sort=+%mem | tail",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "free -h --cpu",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "vmstat --pid postgres",
+          "correct": false
+        }
+      ],
+      "explanation": "`--sort=-%cpu` sorts by CPU in descending order, while `head` keeps the top rows.",
+      "source": {
+        "key": "linuxdba1-27-ps-sort-cpu",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "Process diagnostics",
+        "locator": "Lab 27 — sorting ps by CPU",
+        "url": null
+      }
+    },
+    {
+      "key": "linuxdba1-cpu-ram-swap-016",
+      "type": "multiple_choice",
+      "text": "How does `swap used` differ from active swapping in the lab's model? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A nonzero amount of used swap does not by itself mean there is a problem",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Sustained nonzero `si/so` shows active page movement",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`si/so` is more important for assessing current swap activity",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Any `Swap used > 0` automatically means a CPU bottleneck",
+          "correct": false
+        }
+      ],
+      "explanation": "The material explicitly reinforces that data being present in swap and active swapping right now are not the same thing.",
+      "source": {
+        "key": "linuxdba1-27-swap-used-vs-active",
+        "kind": "course_material",
+        "module": "Linux DBA",
+        "section": "RAM and swap",
+        "locator": "Lab 27 — swap used vs swapping",
+        "url": null
+      }
+    }
+  ]
+}

@@ -54,7 +54,7 @@ data class KnowledgeRequirementAccess(
         get() = progress?.passed == true
 
     val started: Boolean
-        get() = progress?.started == true || passed || purchased
+        get() = progress?.started == true || passed
 }
 
 data class IncidentKnowledgeAccess(

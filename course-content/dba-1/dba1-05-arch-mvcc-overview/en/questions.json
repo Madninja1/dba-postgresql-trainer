@@ -1,0 +1,885 @@
+{
+  "schema_version": 1,
+  "topic": "dba1-arch-mvcc-overview",
+  "questions": [
+    {
+      "key": "dba1-arch-mvcc-overview-001",
+      "type": "single_choice",
+      "text": "What does multiversioning mean in PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The ability for multiple versions of the same row to exist",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Storing multiple copies of the entire database",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Automatically creating multiple indexes",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Running multiple PostgreSQL instances at the same time",
+          "correct": false
+        }
+      ],
+      "explanation": "The material defines multiversioning as the existence of multiple versions of the same row.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-mvcc",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Multiversioning",
+        "locator": "Slide 3 “Multiversioning”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/mvcc-intro"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-002",
+      "type": "multiple_choice",
+      "text": "Which statements about row versions are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Multiple versions of one row can exist",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Versions differ by their period of validity",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Transaction numbers are used as the time markers",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Transaction numbers are assigned in increasing order",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "Each row version must be stored in a separate table",
+          "correct": false
+        }
+      ],
+      "explanation": "The course associates the lifetime of a row version with transaction identifiers, which are assigned in increasing order.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-mvcc",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Multiversioning",
+        "locator": "Slide 3 “Multiversioning”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/mvcc-intro"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-003",
+      "type": "single_choice",
+      "text": "What does a transaction work with when MVCC is used?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A data snapshot — a consistent view at a particular moment",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only the physical contents of files at the current millisecond",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only data modified by the transaction itself",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A backup copy of the cluster",
+          "correct": false
+        }
+      ],
+      "explanation": "A snapshot is a consistent view of data that determines which row versions a transaction can see.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-snapshot",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Data Snapshots",
+        "locator": "Section on data snapshots",
+        "url": "https://postgrespro.ru/docs/postgresql/16/mvcc-intro"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-004",
+      "type": "single_choice",
+      "text": "What primarily distinguishes PostgreSQL isolation levels in the context of MVCC?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "When the data snapshot is created",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The data-page size",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The WAL format",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The number of allowed tables",
+          "correct": false
+        }
+      ],
+      "explanation": "The summary of the material explicitly notes that isolation levels differ in when a snapshot is created.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-isolation",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Isolation Levels",
+        "locator": "Section on isolation levels",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transaction-iso"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-005",
+      "type": "single_choice",
+      "text": "How does PostgreSQL handle the Read Uncommitted isolation level?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It effectively behaves as Read Committed",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It behaves as Serializable",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It completely disables MVCC",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It is the default isolation level",
+          "correct": false
+        }
+      ],
+      "explanation": "Read Uncommitted does not have separate semantics in PostgreSQL and behaves like Read Committed.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-isolation-005",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Isolation Levels",
+        "locator": "Slide 5 “Isolation Levels”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transaction-iso"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-006",
+      "type": "single_choice",
+      "text": "Which isolation level is the PostgreSQL default?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Read Committed",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Read Uncommitted",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Repeatable Read",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Serializable",
+          "correct": false
+        }
+      ],
+      "explanation": "The course explicitly identifies Read Committed as PostgreSQL's default isolation level.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-read-committed",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Isolation Levels",
+        "locator": "Slide 5 “Read Committed”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transaction-iso"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-007",
+      "type": "single_choice",
+      "text": "When is a data snapshot created at Read Committed?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "At the start of each SQL statement",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Once when the server starts",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only at COMMIT",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Once for the entire client session",
+          "correct": false
+        }
+      ],
+      "explanation": "At Read Committed, a new snapshot is built for each SQL statement.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-read-committed",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Isolation Levels",
+        "locator": "Slide 5 “Read Committed”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transaction-iso"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-008",
+      "type": "single_choice",
+      "text": "Why can two identical SELECT statements in one Read Committed transaction return different results?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Each statement gets a new snapshot and can see changes committed between the queries",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "PostgreSQL randomly selects row versions",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Read Committed does not use snapshots",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The first SELECT always blocks the second",
+          "correct": false
+        }
+      ],
+      "explanation": "Because the snapshot is built at the start of each statement, a later query can see newly committed data.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-read-committed-008",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Isolation Levels",
+        "locator": "“Read Committed” section",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transaction-iso"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-009",
+      "type": "single_choice",
+      "text": "When is the snapshot created at Repeatable Read?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "When the transaction's first statement is executed",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Before every individual statement",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only after COMMIT",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Every time a new table is accessed",
+          "correct": false
+        }
+      ],
+      "explanation": "The material describes this as creation of a snapshot at the start of a transaction, more precisely when its first statement is executed.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-repeatable-read",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Isolation Levels",
+        "locator": "Slide 5 “Repeatable Read”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transaction-iso"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-010",
+      "type": "multiple_choice",
+      "text": "Which statements about PostgreSQL Repeatable Read are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "All queries in the transaction use one snapshot",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Queries in the transaction see the same consistent view of data",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The level is convenient for reports made up of several queries",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A new snapshot must be created for every statement",
+          "correct": false
+        }
+      ],
+      "explanation": "Repeatable Read keeps one snapshot throughout the transaction, which makes it suitable, for example, for multi-step reports.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-repeatable-read-010",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Isolation Levels",
+        "locator": "“Repeatable Read” section",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transaction-iso"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-011",
+      "type": "multiple_choice",
+      "text": "What is true of Serializable? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It provides full isolation",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "An application can be written as if the transaction were running alone",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Some transactions can be aborted",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The application must be able to retry aborted transactions",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "It guarantees that no transaction will ever be aborted",
+          "correct": false
+        }
+      ],
+      "explanation": "Serializable provides the strictest isolation, but the price is that transactions can be aborted and must be retried by the application.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-serializable",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Isolation Levels",
+        "locator": "“Serializable” section",
+        "url": "https://postgrespro.ru/docs/postgresql/16/transaction-iso"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-012",
+      "type": "single_choice",
+      "text": "Why does multiversioning require periodic cleanup?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Because old row versions eventually become unnecessary",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Because every SELECT damages pages",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Because MVCC deletes indexes",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Because snapshots cannot be used more than once",
+          "correct": false
+        }
+      ],
+      "explanation": "MVCC leaves historical row versions behind; when no transaction can need them anymore, they should be cleaned up.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-vacuum",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Cleanup",
+        "locator": "Section on cleaning up old versions",
+        "url": "https://postgrespro.ru/docs/postgresql/16/routine-vacuuming"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-013",
+      "type": "multiple_choice",
+      "text": "How can old row versions be cleaned up? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "By background processes",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Manually with VACUUM",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Only when the server restarts",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only with DROP TABLE",
+          "correct": false
+        }
+      ],
+      "explanation": "The material mentions both automatic background cleanup and the possibility of running it manually with VACUUM.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-vacuum-013",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Cleanup",
+        "locator": "Cleanup section",
+        "url": "https://postgrespro.ru/docs/postgresql/16/routine-vacuuming"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-014",
+      "type": "single_choice",
+      "text": "How do long transactions and long-running queries affect cleanup?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They can hold back the cleanup horizon and prevent removal of old row versions",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "They automatically remove all old versions",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "They disable MVCC for other sessions",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "They force PostgreSQL to immediately run a full VACUUM",
+          "correct": false
+        }
+      ],
+      "explanation": "An old transaction may still need old versions, so the cleanup horizon cannot advance beyond it.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-vacuum-horizon",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Cleanup",
+        "locator": "Section on the cleanup horizon",
+        "url": "https://postgrespro.ru/docs/postgresql/16/routine-vacuuming"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-015",
+      "type": "multiple_choice",
+      "text": "What can result from failing to clean up historical versions in time? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Tables consume unnecessary space",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Indexes grow",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Finding current versions can become slower",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "PostgreSQL stops supporting transactions",
+          "correct": false
+        }
+      ],
+      "explanation": "Accumulation of obsolete versions increases the size of tables and indexes and makes work with current versions less efficient.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-vacuum-015",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Cleanup",
+        "locator": "Section on the consequences of delayed cleanup",
+        "url": "https://postgrespro.ru/docs/postgresql/16/routine-vacuuming"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-016",
+      "type": "single_choice",
+      "text": "How does MVCC affect the amount of locking required?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It allows PostgreSQL to use only the minimum necessary locking",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It requires locking the whole database for every read",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It completely forbids all locks",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It uses locks only for SELECT",
+          "correct": false
+        }
+      ],
+      "explanation": "One advantage of multiversioning is the reduced need for locking, which improves concurrency.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-locking",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Locks",
+        "locator": "Section on the role of locks with MVCC",
+        "url": "https://postgrespro.ru/docs/postgresql/16/explicit-locking"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-017",
+      "type": "single_choice",
+      "text": "What happens during an ordinary row read in PostgreSQL?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The read blocks neither readers nor writers",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The row is locked against any changes until the end of the session",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The entire table is locked",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "SELECT always waits for all other transactions to finish",
+          "correct": false
+        }
+      ],
+      "explanation": "Ordinary reads under MVCC do not need to lock rows against reading or modification.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-row-locks",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Locks",
+        "locator": "Slide 8 “Row Locks”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/explicit-locking"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-018",
+      "type": "single_choice",
+      "text": "What happens when a row is modified?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The row is locked against other modifications but remains available for reading",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The row becomes unavailable even to SELECT",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The entire cluster is locked",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "No lock is taken even for competing modifications",
+          "correct": false
+        }
+      ],
+      "explanation": "Modifying a row conflicts with other modifications of that same row, but does not prevent an ordinary read.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-row-locks",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Locks",
+        "locator": "Slide 8 “Row Locks”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/explicit-locking"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-019",
+      "type": "single_choice",
+      "text": "When can a transaction wait for a row lock to be released?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "When it tries to modify a row already modified by another unfinished transaction",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "During any ordinary SELECT",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "When reading the system catalog",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "At every BEGIN",
+          "correct": false
+        }
+      ],
+      "explanation": "A conflict occurs between concurrent changes to one row: the second writer must wait until the first writer's situation is resolved.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-row-locks-019",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Locks",
+        "locator": "Section on row locks",
+        "url": "https://postgrespro.ru/docs/postgresql/16/explicit-locking"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-020",
+      "type": "multiple_choice",
+      "text": "What does PostgreSQL use table-level locks for? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "To prevent a table from being altered or dropped while another incompatible operation is using it",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "To restrict reads during some table rebuild or movement operations",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "To make every SELECT execute sequentially",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "To replace MVCC",
+          "correct": false
+        }
+      ],
+      "explanation": "In addition to row locks, there are higher-level locks needed to coordinate operations involving the structure and physical state of tables.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-table-locks",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Locks",
+        "locator": "Slide 8 “Table Locks”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/explicit-locking"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-021",
+      "type": "multiple_choice",
+      "text": "What is true about the lifetime of locks? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They can be acquired automatically as needed",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Some locks can be acquired manually",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "They are normally released automatically when the transaction ends",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A lock acquired after a SAVEPOINT can be released by rolling back to that savepoint",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "All locks persist until PostgreSQL is restarted",
+          "correct": false
+        }
+      ],
+      "explanation": "The material associates the normal lifetime of locks with a transaction; when rolling back to a savepoint, locks acquired after that savepoint can also be released.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-lock-lifetime",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Locks",
+        "locator": "Slide 8 “Lock Lifetime”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/explicit-locking"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-022",
+      "type": "single_choice",
+      "text": "What is the best short description of reader/writer interaction under PostgreSQL MVCC?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Writers do not block readers, and readers do not block anyone",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Every reader blocks all writers",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Every writer blocks all reads of the table",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Reading and writing can never happen concurrently",
+          "correct": false
+        }
+      ],
+      "explanation": "This wording is presented on the topic's summary slide as one of the key consequences of MVCC.",
+      "source": {
+        "key": "dba1-arch-mvcc-overview-summary",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Summary",
+        "locator": "Slide 11 “Summary”",
+        "url": "https://postgrespro.ru/docs/postgresql/16/mvcc-intro"
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-023",
+      "type": "multiple_choice",
+      "text": "Which data is included in a simplified PostgreSQL snapshot model? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The number of the last committed transaction when the snapshot was created",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The list of transactions active when the snapshot was created",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "A complete physical copy of all database pages",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A list of all SQL queries executed since server startup",
+          "correct": false
+        }
+      ],
+      "explanation": "A snapshot does not physically copy data. In the lesson model, it is described by a few numbers: the boundary of committed transactions and the list of transactions that were still active.",
+      "source": {
+        "key": "dba1-arch-mvcc-snapshot-content",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Data Snapshot",
+        "locator": "Slide 4 — Data Snapshot",
+        "url": null
+      }
+    },
+    {
+      "key": "dba1-arch-mvcc-overview-024",
+      "type": "multiple_choice",
+      "text": "Which statements about transaction status and rollback are correct? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Transaction statuses are stored in service files under PGDATA/pg_xact",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "On commit or abort, it is sufficient to change the transaction status",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "On ROLLBACK, PostgreSQL must physically restore every modified page to its previous state",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Versions created by an aborted transaction can remain physically present, but other transactions do not consider them visible",
+          "correct": true
+        }
+      ],
+      "explanation": "The material describes the commit log (clog): transaction status is recorded separately, so aborting a transaction does not require physically undoing all changes; versions from an aborted transaction are ignored according to its status.",
+      "source": {
+        "key": "dba1-arch-mvcc-transaction-status",
+        "kind": "course_material",
+        "module": "DBA1",
+        "section": "Transaction Status",
+        "locator": "Slide 10 — Transaction Status",
+        "url": null
+      }
+    }
+  ]
+}

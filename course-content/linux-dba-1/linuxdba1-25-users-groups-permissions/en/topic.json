@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "course": "linux-dba-1",
+  "slug": "linuxdba1-users-groups-permissions",
+  "notes_part": 25,
+  "topic_number": 3,
+  "title": "Linux Users, Groups, and Permissions",
+  "description": "UID and GID, owners and groups, rwx permissions, chmod, chown, umask, and diagnosing Permission denied for PostgreSQL processes",
+  "sort_order": 30
+}

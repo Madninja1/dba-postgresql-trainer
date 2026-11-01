@@ -16,3 +16,5 @@ keystore.properties
 /dist/
 todo.txt
 dba.zip
+# Godot editor/import cache
+/apps/dba-world/.godot/

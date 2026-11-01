@@ -1,0 +1,509 @@
+{
+  "schema_version": 1,
+  "topic": "pgcat1-planner-text-search",
+  "questions": [
+    {
+      "key": "pgcat1-planner-text-search-001",
+      "type": "single_choice",
+      "text": "Which catalog contains statistics about database contents created by ANALYZE and used by the planner?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_statistic",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_statistic_ext",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_class",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_stats_ext",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_statistic stores basic column and expression statistics created by ANALYZE and used by the planner.",
+      "source": {
+        "key": "pgcat1-pg-statistic-0a2f3c41",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.51. pg_statistic",
+        "locator": "Purpose of pg_statistic",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-statistic"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-002",
+      "type": "multiple_choice",
+      "text": "Which pg_statistic fields belong to basic column statistics?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "stanullfrac — fraction of NULL values",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "stawidth — average size of non-NULL values",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "stadistinct — estimated number of distinct non-NULL values",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "starelid — table or index",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "staattnum — column number",
+          "correct": true
+        },
+        {
+          "key": "f",
+          "text": "stanullfrac stores the exact number of rows containing NULL",
+          "correct": false
+        }
+      ],
+      "explanation": "These fields identify the relation/column and store key general statistics.",
+      "source": {
+        "key": "pgcat1-pg-statistic-a93a8f60",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.51. pg_statistic",
+        "locator": "starelid, staattnum, stanullfrac, stawidth, stadistinct",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-statistic"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-003",
+      "type": "single_choice",
+      "text": "Why is pg_statistic not readable by every user?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Even statistics can reveal confidential information about data values",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It contains mandatory plain-text passwords for every role",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It always blocks tables for writes",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It stores postgresql.conf",
+          "correct": false
+        }
+      ],
+      "explanation": "The documentation notes that even min/max or other statistics can reveal sensitive data.",
+      "source": {
+        "key": "pgcat1-pg-statistic-13f6c6e1",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.51. pg_statistic",
+        "locator": "Access restriction and the pg_stats view",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-statistic"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-004",
+      "type": "multiple_choice",
+      "text": "What is offered to ordinary users instead of direct access to pg_statistic?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The pg_stats view",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It shows information only for tables the user can read",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_stats is based on pg_statistic",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_authid",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_stats is a safer user-facing view over pg_statistic that filters information according to the current user's privileges.",
+      "source": {
+        "key": "pgcat1-pg-statistic-06d92697",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.51. pg_statistic",
+        "locator": "pg_stats view",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-statistic"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-005",
+      "type": "single_choice",
+      "text": "Where is the definition of an extended-statistics object created by CREATE STATISTICS stored?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_statistic_ext",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_statistic_ext_data",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_statistic",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_proc",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_statistic_ext contains the definition of an extended-statistics object; the computed data appear in pg_statistic_ext_data after ANALYZE.",
+      "source": {
+        "key": "pgcat1-pg-statistic-ext-79deaaa0",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.52. pg_statistic_ext",
+        "locator": "Purpose and relationship to CREATE STATISTICS/ANALYZE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-statistic-ext"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-006",
+      "type": "multiple_choice",
+      "text": "Which `pg_statistic_ext.stxkind` values represent extended statistics kinds?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`d` — n-distinct",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`e` — expression statistics",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`f` — functional dependencies",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`m` — MCV lists",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "`h` — hash index",
+          "correct": false
+        }
+      ],
+      "explanation": "stxkind lists the enabled extended-statistics kinds: d/e/f/m.",
+      "source": {
+        "key": "pgcat1-pg-statistic-ext-963fd9e7",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.52. pg_statistic_ext",
+        "locator": "stxkind column",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-statistic-ext"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-007",
+      "type": "single_choice",
+      "text": "Where are computed extended-statistics values stored after ANALYZE?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_statistic_ext_data",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_statistic_ext",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_stats",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_class",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_statistic_ext_data stores the actual data for objects defined in pg_statistic_ext.",
+      "source": {
+        "key": "pgcat1-pg-statistic-ext-data-06071eee",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.53. pg_statistic_ext_data",
+        "locator": "Purpose of pg_statistic_ext_data",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-statistic-ext-data"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-008",
+      "type": "multiple_choice",
+      "text": "Which data can pg_statistic_ext_data contain?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "stxdndistinct — n-distinct",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "stxddependencies — functional dependencies",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "stxdmcv — MCV list",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "stxdexpr — expression statistics",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "subconninfo — subscription connection string",
+          "correct": false
+        }
+      ],
+      "explanation": "Extended statistics are serialized into separate fields for distinct counts, dependencies, MCVs, and expressions.",
+      "source": {
+        "key": "pgcat1-pg-statistic-ext-data-b31c0e8e",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.53. pg_statistic_ext_data",
+        "locator": "stxdndistinct, stxddependencies, stxdmcv, stxdexpr",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-statistic-ext-data"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-009",
+      "type": "single_choice",
+      "text": "What does pg_ts_config represent?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Text search configurations that connect a parser with sets of dictionaries by token type",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A table of runtime GUC settings",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "A role catalog",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A WAL-segment catalog",
+          "correct": false
+        }
+      ],
+      "explanation": "A text search configuration defines a parser, while the token-to-dictionary mapping is stored in pg_ts_config_map.",
+      "source": {
+        "key": "pgcat1-pg-ts-config-ca0b1650",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.59. pg_ts_config",
+        "locator": "Purpose of pg_ts_config",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-ts-config"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-010",
+      "type": "multiple_choice",
+      "text": "Which relationships between full-text search catalogs are correct?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_ts_config.cfgparser references pg_ts_parser",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_ts_config_map.mapcfg references pg_ts_config",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_ts_config_map.mapdict references pg_ts_dict",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "pg_ts_dict.dicttemplate references pg_ts_template",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "pg_ts_parser stores role membership",
+          "correct": false
+        }
+      ],
+      "explanation": "A configuration uses a parser and mappings; mappings point to dictionaries, and each dictionary is based on a template.",
+      "source": {
+        "key": "pgcat1-pg-ts-config-map-9b89f21f",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.60. pg_ts_config_map",
+        "locator": "mapcfg and mapdict relationships in the text-search chain",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-ts-config-map"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-011",
+      "type": "single_choice",
+      "text": "Which catalog describes text search parsers that split text into lexemes and assign token types?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_ts_parser",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_ts_dict",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "pg_ts_template",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "pg_ts_config",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_ts_parser stores parser lifecycle functions: start, token, end, and additional callbacks.",
+      "source": {
+        "key": "pgcat1-pg-ts-parser-9a98dbbf",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.62. pg_ts_parser",
+        "locator": "Purpose of pg_ts_parser",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-ts-parser"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-012",
+      "type": "multiple_choice",
+      "text": "Which statements about pg_ts_dict and pg_ts_template are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "pg_ts_dict defines dictionaries and their parameters",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "pg_ts_dict.dicttemplate references a dictionary template",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "pg_ts_template is a template for a class of dictionaries",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Only superusers may create new templates because their implementation requires C-level functions",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "pg_ts_template stores subscription slots",
+          "correct": false
+        }
+      ],
+      "explanation": "A dictionary configures a template, while the template provides implementation functions; creating new templates requires superuser privileges.",
+      "source": {
+        "key": "pgcat1-pg-ts-template-e3f8eb4a",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.63. pg_ts_template",
+        "locator": "Purpose of pg_ts_template and creation restriction",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-ts-template"
+      }
+    },
+    {
+      "key": "pgcat1-planner-text-search-013",
+      "type": "multiple_choice",
+      "text": "Which statements about pg_ts_dict are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The catalog contains text search dictionaries",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "dictname is the dictionary name",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "dicttemplate references pg_ts_template",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "dictinitoption stores template initialization parameters",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "A dictionary stores a replication slot",
+          "correct": false
+        }
+      ],
+      "explanation": "pg_ts_dict describes text search dictionaries, their namespace/owner, template, and initialization options.",
+      "source": {
+        "key": "pgcat1-pg-ts-dict-23d11bef",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — Chapter 53. System Catalogs",
+        "section": "53.61. pg_ts_dict",
+        "locator": "Purpose; dictname; dicttemplate; dictinitoption",
+        "url": "https://postgrespro.ru/docs/postgresql/16/catalog-pg-ts-dict"
+      }
+    }
+  ]
+}

@@ -113,7 +113,7 @@
     {
       "key": "pgcat1-indexes-access-methods-004",
       "type": "multiple_choice",
-      "text": "Какие значения pg_amop.amoppurpose указаны в материале?",
+      "text": "Какие значения допустимы для `pg_amop.amoppurpose`?",
       "answers": [
         {
           "key": "a",

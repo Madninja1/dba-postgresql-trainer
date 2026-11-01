@@ -2,7 +2,7 @@ package dev.dbatrainer.app.game.domain
 
 const val DBA_WORLD_TIME_ZONE_ID = "Europe/Moscow"
 const val INITIAL_COMPANY_BALANCE = 25_000L
-const val DBA_WORLD_START_YEAR = 2026
+const val DBA_WORLD_START_YEAR = 2045
 const val REAL_MILLIS_PER_GAME_MINUTE = 5_000L
 
 const val DISK_FULL_COMPANY_REWARD = 1_500L

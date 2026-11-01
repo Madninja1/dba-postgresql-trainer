@@ -1,0 +1,1127 @@
+{
+  "schema_version": 1,
+  "topic": "rust1-testing-app-architecture",
+  "questions": [
+    {
+      "key": "rust1-testing-app-architecture-001",
+      "type": "single_choice",
+      "text": "What does the `#[test]` attribute on a function indicate?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The function should be executed as a test during `cargo test`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The function should run only in the release profile",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The function automatically becomes public",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The function must return `Result`",
+          "correct": false
+        }
+      ],
+      "explanation": "`#[test]` marks an ordinary function as a test; Cargo includes it in the test binary and runs it during `cargo test`.",
+      "source": {
+        "key": "rust1-testing-app-architecture-test-attribute",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 11 — Testing and Application Architecture, pp. 276–279",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-003",
+      "type": "multiple_choice",
+      "text": "Which statements about assertions in tests are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`assert!(condition)` expects `true`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`assert_ne!(a, b)` checks that the values differ",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`assert_eq!` and `assert_ne!` can display the compared values on failure",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`assert!` automatically checks every branch of a `match`",
+          "correct": false
+        }
+      ],
+      "explanation": "`assert!` checks a Boolean condition, while `assert_eq!` and `assert_ne!` test equality and inequality. Exhaustiveness of `match` is checked by the compiler, not by `assert!`.",
+      "source": {
+        "key": "rust1-testing-app-architecture-assertions-q003",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 11 — Testing and Application Architecture, pp. 282–289",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-004",
+      "type": "multiple_choice",
+      "text": "Which statements about `#[should_panic]` are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The test passes if `panic!` actually occurs inside it",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The `expected` parameter can check for a substring in the panic message",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Without `expected`, a test can pass because of a panic for an unexpected reason",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The attribute turns any compilation error into a successful test",
+          "correct": false
+        }
+      ],
+      "explanation": "`#[should_panic]` is for expected panics. `expected` makes the check more precise by requiring a matching substring in the panic message; compilation errors are not converted into passing tests.",
+      "source": {
+        "key": "rust1-testing-app-architecture-should-panic",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 11 — Testing and Application Architecture, pp. 291–293",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-005",
+      "type": "single_choice",
+      "text": "How is a test function that returns `Result<(), String>` interpreted?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`Ok(())` means success and `Err(...)` means test failure",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Any `Result` is considered success",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The test passes only on `Err(...)`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "This signature is allowed only for integration tests",
+          "correct": false
+        }
+      ],
+      "explanation": "A test may return `Result`: `Ok(())` represents success and `Err(...)` failure. This also allows `?` inside the test.",
+      "source": {
+        "key": "rust1-testing-app-architecture-result-tests",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 11 — Testing and Application Architecture, pp. 294–295",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-006",
+      "type": "multiple_choice",
+      "text": "Which properties does a typical unit-test module with `#[cfg(test)]` have? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It is compiled when tests are run",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It can use `use super::*` to access the parent module",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It can test private functions of the parent module",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It must be located only in the `tests/` directory",
+          "correct": false
+        }
+      ],
+      "explanation": "`#[cfg(test)]` usually surrounds a unit-test module next to the code. As a child module it can access private parent items; `tests/` is used for integration tests.",
+      "source": {
+        "key": "rust1-testing-app-architecture-unit-tests",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 11 — Testing and Application Architecture, pp. 304–307",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-007",
+      "type": "single_choice",
+      "text": "How does an integration test differ from a unit test in a Rust project?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It uses the library as external code and sees its public API",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It can always call private library functions directly",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It is compiled only with `main.rs`, not `lib.rs`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It is not run by `cargo test`",
+          "correct": false
+        }
+      ],
+      "explanation": "An integration test is external to the library and tests it through its public API like a normal crate user.",
+      "source": {
+        "key": "rust1-testing-app-architecture-integration-tests",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 11 — Testing and Application Architecture, pp. 307–310",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-008",
+      "type": "multiple_choice",
+      "text": "Which statements about the `tests/` directory are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Cargo looks there for integration tests",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Each test file is compiled as a separate crate",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Files in `tests/` do not need `#[cfg(test)]`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Files in `tests/` can access all private functions in `src/lib.rs`",
+          "correct": false
+        }
+      ],
+      "explanation": "`tests/` has special meaning to Cargo. Each integration-test file is a separate crate and can use only the library's public API.",
+      "source": {
+        "key": "rust1-testing-app-architecture-integration-tests",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 11 — Testing and Application Architecture, pp. 307–310",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-009",
+      "type": "multiple_choice",
+      "text": "Which methods can be used to control Cargo test execution? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Filter tests by name with `cargo test <name>`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Mark an expensive test with `#[ignore]`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Run ignored tests with `cargo test -- --ignored`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "All tests must run sequentially by default",
+          "correct": false
+        }
+      ],
+      "explanation": "The material shows name filtering and `#[ignore]`. Tests can run in parallel by default, so sequential execution is not guaranteed.",
+      "source": {
+        "key": "rust1-testing-app-architecture-running-tests",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 11 — Testing and Application Architecture, pp. 296–303",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-011",
+      "type": "multiple_choice",
+      "text": "Why does `Config::build` return `Result` instead of terminating the program with `panic!`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Missing arguments are an expected user-input error",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The function can report the problem to its caller",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The decision about displaying the message and terminating the process can remain in `main`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`Result` automatically prints the error to stderr",
+          "correct": false
+        }
+      ],
+      "explanation": "Configuration parsing is separated from the reaction to failure: `Config::build` returns `Err`, while `main` decides how to report it and terminate the process.",
+      "source": {
+        "key": "rust1-testing-app-architecture-config-build",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 12 — Testing and Application Architecture, pp. 326–330",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-014",
+      "type": "multiple_choice",
+      "text": "What is gained by moving `Config`, `Config::build`, and `run` from `main.rs` to `lib.rs`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It reduces the number of responsibilities in `main`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It lets tests call library logic directly",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "It creates a public library API for the binary crate",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It makes error handling in `main` impossible",
+          "correct": false
+        }
+      ],
+      "explanation": "The book moves core logic into `lib.rs` so `main.rs` remains a thin shell and library functions can be called directly in tests.",
+      "source": {
+        "key": "rust1-testing-app-architecture-main-lib-split",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 12 — Testing and Application Architecture, pp. 332–334",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-015",
+      "type": "single_choice",
+      "text": "What does `if let Err(e) = run(config) { ... }` do in `main`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It handles only the error case from `run`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It unwraps only `Ok(())`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It prevents `run` from ever returning an error",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It turns `run` into a unit test",
+          "correct": false
+        }
+      ],
+      "explanation": "Because success from `run` contains only `()`, `main` is interested in `Err`; `if let Err(e)` handles that case and can terminate the process.",
+      "source": {
+        "key": "rust1-testing-app-architecture-run-main-error",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 12 — Testing and Application Architecture, pp. 332",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-016",
+      "type": "multiple_choice",
+      "text": "Which responsibilities should typically remain in `main.rs` after separating a binary project into CLI glue and library logic? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Reading external launch arguments",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Creating `Config`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Calling `run` and handling errors at the top level",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Implementing all line-search logic",
+          "correct": false
+        }
+      ],
+      "explanation": "After the split, search logic lives in the library crate. `main` remains the entry point that obtains input, builds configuration, invokes the library, and reacts to errors.",
+      "source": {
+        "key": "rust1-testing-app-architecture-main-lib-split-q016",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 12 — Testing and Application Architecture, pp. 332–334",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-019",
+      "type": "multiple_choice",
+      "text": "Which steps are part of the TDD cycle? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Write a test that initially fails",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Verify that the test fails for the expected reason",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Write the minimum code to pass the test and then refactor",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Delete all tests after the first successful compilation",
+          "correct": false
+        }
+      ],
+      "explanation": "In `minigrep`, the book demonstrates a cycle of a failing test, confirming why it fails, minimal implementation, a passing test, and refactoring.",
+      "source": {
+        "key": "rust1-testing-app-architecture-tdd",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 12 — Testing and Application Architecture, pp. 334–340",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-020",
+      "type": "single_choice",
+      "text": "Why did search tests become easier to write after moving the main logic to `lib.rs`?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Functions can be called directly with different arguments and their return values asserted",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`cargo test` stopped compiling `main.rs`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "All functions automatically became `const`",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Tests no longer need the Rust compiler",
+          "correct": false
+        }
+      ],
+      "explanation": "Once the library is extracted, tests can call search functions directly instead of launching the binary and supplying command-line input.",
+      "source": {
+        "key": "rust1-testing-app-architecture-tdd-q020",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 12 — Testing and Application Architecture, pp. 334",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-021",
+      "type": "single_choice",
+      "text": "What happens to a test when an unexpected `panic!` occurs inside the test function?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The test is considered failed",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The test is automatically marked `ignored`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Cargo reruns the test until it passes",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The panic is converted to `Ok(())`",
+          "correct": false
+        }
+      ],
+      "explanation": "A normal test passes when its code finishes without panic; an unexpected `panic!` makes the test fail.",
+      "source": {
+        "key": "rust1-testing-app-architecture-test-anatomy",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 11 — Testing and Application Architecture, pp. 277–280",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-022",
+      "type": "multiple_choice",
+      "text": "Which elements are typical of a Rust test function? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The `#[test]` attribute",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Preparing the required data or state",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Calling the code under test",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Checking the result with assertion macros or another failure condition",
+          "correct": true
+        },
+        {
+          "key": "e",
+          "text": "The test function must be called manually from `main()`",
+          "correct": false
+        }
+      ],
+      "explanation": "The material presents a test as a `#[test]` function that prepares data, runs the code under test, and asserts the expected result.",
+      "source": {
+        "key": "rust1-testing-app-architecture-test-anatomy-q022",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 11 — Testing and Application Architecture, pp. 277–280",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-024",
+      "type": "multiple_choice",
+      "text": "Why is a custom message on `assert!` useful when a test fails? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It can show the actual value obtained",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It can add context about the violated expectation",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The message is formatted similarly to `format!` arguments",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It changes a `false` condition to `true`",
+          "correct": false
+        }
+      ],
+      "explanation": "The book adds a custom assertion message so failure output includes actual data and context that helps diagnose the problem.",
+      "source": {
+        "key": "rust1-testing-app-architecture-assert-message",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 11 — Testing and Application Architecture, pp. 288–290",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-025",
+      "type": "single_choice",
+      "text": "Which of the two tests is more resilient to changing the greeting from `Hello, Carol!` to different text when only the presence of the name matters?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "`assert!(result.contains(\"Carol\"))`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`assert_eq!(result, \"Hello, Carol!\")`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`assert_ne!(result.len(), 0)` regardless of the name",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "`#[should_panic]`",
+          "correct": false
+        }
+      ],
+      "explanation": "The book checks only the required property—the presence of the name—so the test does not depend on irrelevant greeting wording.",
+      "source": {
+        "key": "rust1-testing-app-architecture-behavior-test",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 11 — Testing and Application Architecture, pp. 288–290",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-026",
+      "type": "multiple_choice",
+      "text": "Which statements about `#[should_panic(expected = \"...\")]` are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The test must panic",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The panic message must contain the specified substring",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "You can choose only a unique, stable part of the message",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The complete message must match exactly in every case",
+          "correct": false
+        }
+      ],
+      "explanation": "`expected` checks for a substring in the panic message; a sufficiently unique part can be used instead of the complete message.",
+      "source": {
+        "key": "rust1-testing-app-architecture-should-panic-expected",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 11 — Testing and Application Architecture, pp. 292–294",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-028",
+      "type": "multiple_choice",
+      "text": "Which statements about tests returning `Result<T, E>` are true? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They can use `?` for intermediate operations",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`Ok(())` can mean a successful test",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`Err(...)` means a failed test",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "They should be combined with `#[should_panic]` to test `Err`",
+          "correct": false
+        }
+      ],
+      "explanation": "Returning `Result` is convenient for `?`; the book notes that `#[should_panic]` is not used with this style to test an `Err`.",
+      "source": {
+        "key": "rust1-testing-app-architecture-result-tests-q028",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 11 — Testing and Application Architecture, pp. 295",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-030",
+      "type": "multiple_choice",
+      "text": "Why can parallel test execution by default be a problem? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Tests may read and modify the same shared resource at the same time",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Tests can interfere with one another when using the same file",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Test execution order cannot be used as a reliable dependency",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Parallel execution automatically makes every test nondeterministic",
+          "correct": false
+        }
+      ],
+      "explanation": "The book warns about tests that share state, such as one file: parallel execution can make them interfere with each other.",
+      "source": {
+        "key": "rust1-testing-app-architecture-test-threads-q030",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 11 — Testing and Application Architecture, pp. 296–299",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-032",
+      "type": "multiple_choice",
+      "text": "Which methods can be used to filter tests run by Cargo? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Pass part of a name after `cargo test`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Run one test by its name",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Use one string filter to select multiple tests whose names contain it",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Filtering requires changing `#[test]` in source code",
+          "correct": false
+        }
+      ],
+      "explanation": "The argument after `cargo test` acts as a name filter and can select one test or several tests that share a substring.",
+      "source": {
+        "key": "rust1-testing-app-architecture-test-filter",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 11 — Testing and Application Architecture, pp. 301–303",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-033",
+      "type": "single_choice",
+      "text": "What does the `#[ignore]` attribute do to a test during a normal `cargo test` run?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "It excludes the test from the normal run",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It makes the test count as successful without executing it",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It runs the test first",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It permanently removes the test from the test binary",
+          "correct": false
+        }
+      ],
+      "explanation": "A test marked `#[ignore]` is skipped during a normal run and reported as ignored.",
+      "source": {
+        "key": "rust1-testing-app-architecture-ignore",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 11 — Testing and Application Architecture, pp. 303–304",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-035",
+      "type": "single_choice",
+      "text": "Why can a unit test inside `mod tests` call a private function from its parent module?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Child modules can access items in their parent modules",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`#[test]` automatically makes everything `pub`",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "`use super::*` disables privacy throughout the crate",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Rust privacy does not apply during `cargo test`",
+          "correct": false
+        }
+      ],
+      "explanation": "The book demonstrates a private function being tested from the child `tests` module; Rust module rules let a child module see parent items.",
+      "source": {
+        "key": "rust1-testing-app-architecture-private-tests",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 11 — Testing and Application Architecture, pp. 306–307",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-036",
+      "type": "multiple_choice",
+      "text": "Which properties of integration tests follow from each file in `tests/` being a separate crate? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The project library must be imported into scope",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Only the library's public API is available",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Each file is compiled separately",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Private functions in `src/lib.rs` are directly accessible without `pub`",
+          "correct": false
+        }
+      ],
+      "explanation": "A separate test crate behaves like an external library user: it imports the library and can access only public items.",
+      "source": {
+        "key": "rust1-testing-app-architecture-integration-crates",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 11 — Testing and Application Architecture, pp. 307–309",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-038",
+      "type": "multiple_choice",
+      "text": "Which statements are true about integration tests for a project that contains only `src/main.rs`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Such a binary crate cannot be imported into an integration test as a library",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Useful logic is recommended to be moved to `src/lib.rs`",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "`src/main.rs` can remain a thin launcher for the library",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Adding `#[cfg(test)]` to `main.rs` is enough to give an external integration test access to private APIs",
+          "correct": false
+        }
+      ],
+      "explanation": "The book recommends moving the main functionality of binary projects into a library crate so integration tests can exercise its public API.",
+      "source": {
+        "key": "rust1-testing-app-architecture-binary-integration",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 11 — Testing and Application Architecture, pp. 311–313",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-040",
+      "type": "multiple_choice",
+      "text": "What problems exist in the early version `let query = &args[1]; let file_path = &args[2];`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "With too few arguments, indexing can panic",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Argument-parsing logic is mixed into `main` responsibilities",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "The relationship between the two configuration parameters is not expressed by a dedicated type",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Indexing a `Vec` automatically returns an already-handled `Result`",
+          "correct": false
+        }
+      ],
+      "explanation": "The chapter fixes these issues step by step: checking length, extracting configuration parsing, and grouping parameters in `Config`.",
+      "source": {
+        "key": "rust1-testing-app-architecture-config-refactor",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 12 — Testing and Application Architecture, pp. 317–326",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-042",
+      "type": "multiple_choice",
+      "text": "Which goals does separation of responsibilities serve when refactoring a binary project such as `minigrep`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Separate configuration parsing from the main logic",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Make error handling clearer and keep it at the top level",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Keep `main` small",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Move all code, including every search detail, back into `main`",
+          "correct": false
+        }
+      ],
+      "explanation": "The book extracts configuration and working logic from `main`, leaving orchestration and top-level error handling at the entry point.",
+      "source": {
+        "key": "rust1-testing-app-architecture-separation",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 12 — Testing and Application Architecture, pp. 320–327",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-044",
+      "type": "multiple_choice",
+      "text": "What does `unwrap_or_else` do when handling the result of `Config::build`? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "On `Ok`, it extracts the inner `Config`",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "On `Err`, it calls the provided closure",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "In the example, the closure prints the error and calls `process::exit(1)`",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "It always calls the closure, even on `Ok`",
+          "correct": false
+        }
+      ],
+      "explanation": "`unwrap_or_else` either extracts the successful value or invokes the closure with the contained error.",
+      "source": {
+        "key": "rust1-testing-app-architecture-unwrap-or-else",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 12 — Testing and Application Architecture, pp. 328–330",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-046",
+      "type": "multiple_choice",
+      "text": "What does replacing `.expect(...)` with `?` inside `run` achieve? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The file-reading error is returned to the caller",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "`run` no longer has to panic on that error",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Top-level `main` can handle the `Err` centrally",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The `?` operator converts every error into successful `Ok(())`",
+          "correct": false
+        }
+      ],
+      "explanation": "Inside `run`, `?` propagates the error instead of panicking, allowing `main` to decide how to react.",
+      "source": {
+        "key": "rust1-testing-app-architecture-question-operator",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 12 — Testing and Application Architecture, pp. 330–332",
+        "url": null
+      }
+    },
+    {
+      "key": "rust1-testing-app-architecture-050",
+      "type": "multiple_choice",
+      "text": "What advantages does using `eprintln!` instead of `println!` for errors provide? Select all correct answers.",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Errors go to stderr",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Normal output remains on stdout",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Normal output can be redirected to a file while diagnostics remain on screen",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "`eprintln!` automatically makes erroneous code successful",
+          "correct": false
+        }
+      ],
+      "explanation": "Separating stdout and stderr lets useful output and diagnostic messages be redirected independently.",
+      "source": {
+        "key": "rust1-testing-app-architecture-stderr",
+        "kind": "course_material",
+        "module": "Rust",
+        "section": "Testing and Application Architecture",
+        "locator": "Chapter 12 — Testing and Application Architecture, pp. 349–351",
+        "url": null
+      }
+    }
+  ]
+}

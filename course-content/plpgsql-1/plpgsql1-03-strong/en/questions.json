@@ -1,0 +1,654 @@
+{
+  "schema_version": 1,
+  "topic": "plpgsql1-strong",
+  "questions": [
+    {
+      "type": "single_choice",
+      "text": "What happens to the plan of a command executed through dynamic EXECUTE?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "A new plan is built on every execution",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "One cached generic plan is always used",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Planning is disabled",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The psql client builds the plan",
+          "correct": false
+        }
+      ],
+      "explanation": "EXECUTE does not cache a plan; replanning can be useful when the best plan depends strongly on current parameter values.",
+      "source": {
+        "key": "plpgsql1-strong-execute-plan",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.4. Executing Dynamic Commands",
+        "locator": "EXECUTE planning",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-strong-001"
+    },
+    {
+      "type": "single_choice",
+      "text": "Which `format()` specifier is intended for an SQL identifier?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "%I",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "%L",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "%s only",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "%Q",
+          "correct": false
+        }
+      ],
+      "explanation": "`%I` is equivalent to quote_ident, while `%L` is equivalent to quote_nullable.",
+      "source": {
+        "key": "plpgsql1-strong-format-i",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.4. Executing Dynamic Commands",
+        "locator": "format %I / %L",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-strong-002"
+    },
+    {
+      "type": "single_choice",
+      "text": "Does plain EXECUTE change the special FOUND variable?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "No",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "It always sets it to true",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "It always sets it to false",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Only for DDL",
+          "correct": false
+        }
+      ],
+      "explanation": "The execution-status documentation states that EXECUTE updates diagnostic information but does not change FOUND.",
+      "source": {
+        "key": "plpgsql1-strong-execute-found",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.5. Obtaining the Result Status",
+        "locator": "EXECUTE and FOUND",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-strong-003"
+    },
+    {
+      "type": "single_choice",
+      "text": "What is GET STACKED DIAGNOSTICS used for?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Obtaining information about the currently handled error inside an EXCEPTION handler",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Listing tables",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Changing the plan cache",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "Opening a cursor",
+          "correct": false
+        }
+      ],
+      "explanation": "GET STACKED DIAGNOSTICS retrieves information about the exception currently being handled.",
+      "source": {
+        "key": "plpgsql1-strong-stacked",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.6.8.1. Obtaining Information about an Error",
+        "locator": "GET STACKED DIAGNOSTICS",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-control-structures"
+      },
+      "key": "plpgsql1-strong-004"
+    },
+    {
+      "type": "single_choice",
+      "text": "What does NEW represent in a row-level trigger function?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "The new row for INSERT or UPDATE",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The schema name",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The backend PID",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "A cursor",
+          "correct": false
+        }
+      ],
+      "explanation": "Trigger functions receive NEW and OLD records depending on the triggering operation.",
+      "source": {
+        "key": "plpgsql1-strong-trigger-new",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.10.1. Triggers on Data Changes",
+        "locator": "NEW and OLD",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-trigger"
+      },
+      "key": "plpgsql1-strong-005"
+    },
+    {
+      "type": "single_choice",
+      "text": "What must a BEFORE row trigger return to skip the operation for that row?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "NULL",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "TRUE",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Always OLD",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "0",
+          "correct": false
+        }
+      ],
+      "explanation": "For a BEFORE row trigger, returning NULL tells the trigger manager to skip the remaining processing for that row.",
+      "source": {
+        "key": "plpgsql1-strong-trigger-return",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.10.1. Triggers on Data Changes",
+        "locator": "BEFORE trigger return value",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-trigger"
+      },
+      "key": "plpgsql1-strong-006"
+    },
+    {
+      "type": "single_choice",
+      "text": "What does COMMIT AND CHAIN do in a PL/pgSQL procedure?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Commits the current transaction and starts a new one with the previous transaction characteristics",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Commits only a savepoint",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Stops the server",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "It is allowed in every function without restrictions",
+          "correct": false
+        }
+      ],
+      "explanation": "PL/pgSQL transaction management supports COMMIT/ROLLBACK and AND CHAIN variants that carry transaction characteristics forward.",
+      "source": {
+        "key": "plpgsql1-strong-chain",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.8. Transaction Management",
+        "locator": "COMMIT AND CHAIN",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-transactions"
+      },
+      "key": "plpgsql1-strong-007"
+    },
+    {
+      "type": "single_choice",
+      "text": "How does PL/pgSQL resolve ambiguity between a variable name and a column name by default?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "An ambiguous reference raises an error unless the conflict-resolution setting is changed",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The variable is always chosen",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "The column is always chosen",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "The choice is random",
+          "correct": false
+        }
+      ],
+      "explanation": "PL/pgSQL reports ambiguous references by default; qualification or configuration can make the intended meaning explicit.",
+      "source": {
+        "key": "plpgsql1-strong-ambiguity",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.11.1. Variable Substitution",
+        "locator": "Ambiguous names",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-implementation"
+      },
+      "key": "plpgsql1-strong-008"
+    },
+    {
+      "type": "single_choice",
+      "text": "What can PL/pgSQL cache for static SQL commands and expressions?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Prepared execution plans that can be reused",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "File-system snapshots",
+          "correct": false
+        },
+        {
+          "key": "c",
+          "text": "Only RAISE message text",
+          "correct": false
+        },
+        {
+          "key": "d",
+          "text": "psql passwords",
+          "correct": false
+        }
+      ],
+      "explanation": "PL/pgSQL can prepare and reuse execution plans for static expressions and SQL statements.",
+      "source": {
+        "key": "plpgsql1-strong-plan-cache",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.11.2. Plan Caching",
+        "locator": "Plan caching",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-implementation"
+      },
+      "key": "plpgsql1-strong-009"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which practices make dynamic SQL in PL/pgSQL safer?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Pass data values through USING",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Build identifiers with format(%I) or quote_ident",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Use quote_nullable/%L when inserting a possibly NULL value as text",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Insert unknown text between $$...$$ in a dynamic string",
+          "correct": false
+        }
+      ],
+      "explanation": "Data values should be passed through USING, identifiers formed with `%I`/quote_ident, and `%L`/quote_nullable used when text substitution is required. Simply dollar-quoting an unknown value does not provide safe escaping.",
+      "source": {
+        "key": "plpgsql1-strong-dynamic-safety",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.4. Executing Dynamic Commands",
+        "locator": "Safe dynamic SQL construction",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-strong-010"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about `$1`, `$2` parameters in EXECUTE ... USING are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They substitute data values",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "They preserve native data types without converting values to text",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "They work only where the SQL command accepts query parameters",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "They can directly parameterize a table name",
+          "correct": false
+        }
+      ],
+      "explanation": "Table and column names must be inserted into command text, while data values are preferably passed through USING.",
+      "source": {
+        "key": "plpgsql1-strong-execute-params",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.4. Executing Dynamic Commands",
+        "locator": "$1 parameters and USING",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-strong-011"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which information can PL/pgSQL diagnostics provide?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "ROW_COUNT through GET DIAGNOSTICS",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "PG_CONTEXT for the current call stack",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Information about a handled exception through GET STACKED DIAGNOSTICS",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "The raw contents of a WAL file",
+          "correct": false
+        }
+      ],
+      "explanation": "PL/pgSQL provides both current diagnostics and stacked diagnostics for a handled error.",
+      "source": {
+        "key": "plpgsql1-strong-diagnostics",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.5.5 and 43.6.8.1",
+        "locator": "GET DIAGNOSTICS / GET STACKED DIAGNOSTICS",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-statements"
+      },
+      "key": "plpgsql1-strong-012"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about trigger functions are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "They receive special variables describing the trigger event",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "The availability and meaning of NEW and OLD depend on the operation",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Row-level and statement-level triggers differ in access to row values",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "A trigger function is invoked only manually with SELECT",
+          "correct": false
+        }
+      ],
+      "explanation": "The trigger-function context includes special TG_* variables and operation-dependent NEW/OLD records.",
+      "source": {
+        "key": "plpgsql1-strong-trigger-context",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.10.1. Triggers on Data Changes",
+        "locator": "Trigger function context",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-trigger"
+      },
+      "key": "plpgsql1-strong-013"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about transaction control in PL/pgSQL are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Procedures invoked by CALL and DO blocks can execute COMMIT/ROLLBACK in permitted contexts",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "A new transaction starts automatically after COMMIT/ROLLBACK",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "AND CHAIN can preserve transaction characteristics",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "An ordinary PL/pgSQL function called from SELECT can always execute COMMIT",
+          "correct": false
+        }
+      ],
+      "explanation": "Transaction control is available only in the procedure/DO contexts and call-stack situations described by the documentation.",
+      "source": {
+        "key": "plpgsql1-strong-transaction-control",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.8. Transaction Management",
+        "locator": "COMMIT / ROLLBACK / AND CHAIN",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-transactions"
+      },
+      "key": "plpgsql1-strong-014"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about plan caching and EXECUTE are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Static expressions and SQL can use a cached plan",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Dynamic EXECUTE builds a plan for every execution",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "EXECUTE can help when the best plan depends strongly on current parameter values",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "EXECUTE guarantees reuse of one generic plan",
+          "correct": false
+        }
+      ],
+      "explanation": "The documentation contrasts reusable plans for static SQL with replanning for dynamic EXECUTE.",
+      "source": {
+        "key": "plpgsql1-strong-planning",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.11.2. Plan Caching",
+        "locator": "Static plans and EXECUTE",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-implementation"
+      },
+      "key": "plpgsql1-strong-015"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which techniques help eliminate conflicts between variable and column names?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Qualify a column with its table name or alias",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Qualify a variable with a block label or function name",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "Use naming conventions that distinguish variables from columns",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Always rename the system catalog",
+          "correct": false
+        }
+      ],
+      "explanation": "PL/pgSQL supports explicit qualification and recommends naming conventions to avoid ambiguous references.",
+      "source": {
+        "key": "plpgsql1-strong-name-conflicts",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.11.1. Variable Substitution",
+        "locator": "Name conflicts",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-implementation"
+      },
+      "key": "plpgsql1-strong-016"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about an EXCEPTION block are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Entering and leaving an EXCEPTION block has additional overhead",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Persistent database changes made in the failed part of the block are rolled back",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "PL/pgSQL variables retain the values they had when the error occurred",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "EXCEPTION commits the inner changes before running the handler",
+          "correct": false
+        }
+      ],
+      "explanation": "The error-handling documentation describes both the rollback semantics and the additional cost of EXCEPTION blocks.",
+      "source": {
+        "key": "plpgsql1-strong-exception-state",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.6.8. Trapping Errors",
+        "locator": "State after an error",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-control-structures"
+      },
+      "key": "plpgsql1-strong-017"
+    },
+    {
+      "type": "multiple_choice",
+      "text": "Which statements about quoting and value substitution in PL/pgSQL are true?",
+      "answers": [
+        {
+          "key": "a",
+          "text": "Dollar quoting is convenient for function bodies",
+          "correct": true
+        },
+        {
+          "key": "b",
+          "text": "Dollar quoting works well for fixed text in a function body",
+          "correct": true
+        },
+        {
+          "key": "c",
+          "text": "For unknown dynamic values, use parameters or quoting functions rather than simply surrounding them with $$",
+          "correct": true
+        },
+        {
+          "key": "d",
+          "text": "Any user input is safe when placed between $$ without validation",
+          "correct": false
+        }
+      ],
+      "explanation": "Dollar quoting is convenient for fixed function-body text, but unknown dynamic values should be passed as parameters or escaped safely with quoting functions.",
+      "source": {
+        "key": "plpgsql1-strong-quoting",
+        "kind": "postgresql_docs",
+        "module": "PostgreSQL 16 — PL/pgSQL",
+        "section": "43.12.1. Handling of Quotation Marks",
+        "locator": "Dollar quoting and dynamic values",
+        "url": "https://postgrespro.ru/docs/postgresql/16/plpgsql-development-tips"
+      },
+      "key": "plpgsql1-strong-018"
+    }
+  ]
+}
