@@ -21,7 +21,7 @@ An ordinary reference:
 
 only borrows a value.
 
-A smart pointer is a structure that behaves like a pointer but can additionally own data, store metadata, and provide special behavior. The `Deref` and `Drop` traits are especially important for smart pointers. `String` and `Vec<T>` also belong to this broader idea. The Rust Programming Language(2)
+A smart pointer is a structure that behaves like a pointer but can additionally own data, store metadata, and provide special behavior. The `Deref` and `Drop` traits are especially important for smart pointers. `String` and `Vec<T>` also belong to this broader idea. 
 
 The main types in this step:
 
@@ -83,7 +83,7 @@ b ────────────────────→ 5
 
 When a `Box` goes out of scope, both the pointer and the heap data are freed.
 
-One of its main use cases is a type whose size cannot be determined directly from a recursive definition. The Rust Programming Language(2)
+One of its main use cases is a type whose size cannot be determined directly from a recursive definition. 
 
 ---
 
@@ -169,7 +169,7 @@ impl<T> Deref for MyBox<T> {
 }
 ```
 
-With `*value`, Rust effectively uses `Deref::deref` to obtain an ordinary reference that it already knows how to dereference. The Rust Programming Language(2)
+With `*value`, Rust effectively uses `Deref::deref` to obtain an ordinary reference that it already knows how to dereference. 
 
 ---
 
@@ -203,7 +203,7 @@ Rust can perform the chain:
 &str
 ```
 
-This is called **deref coercion**. The conversions are determined at compile time and do not require manual chains of `*` and `&`. The Rust Programming Language(2)
+This is called **deref coercion**. The conversions are determined at compile time and do not require manual chains of `*` and `&`. 
 
 There is an analogous `DerefMut` for mutable references.
 
@@ -233,7 +233,7 @@ locks
 ...
 ```
 
-For example, `Box<T>` uses this mechanism to release its heap data. The Rust Programming Language(2)
+For example, `Box<T>` uses this mechanism to release its heap data. 
 
 Model:
 
@@ -296,7 +296,7 @@ strong_count == 0
 → DATA is dropped
 ```
 
-`Rc::clone` does not deeply copy the data; it increments the reference count. The Rust Programming Language(2)
+`Rc::clone` does not deeply copy the data; it increments the reference count. 
 
 ---
 
@@ -311,7 +311,7 @@ Rc<T>
 
 But ordinary `Rc<T>` mainly provides shared read access.
 
-Multiple owners must not automatically imply arbitrary simultaneous mutable references, because that would violate borrowing rules. The Rust Programming Language(2)
+Multiple owners must not automatically imply arbitrary simultaneous mutable references, because that would violate borrowing rules. 
 
 `Rc<T>` is intended for **single-threaded** use.
 
@@ -353,7 +353,7 @@ The result is:
 RefMut<T>
 ```
 
-Both types implement `Deref`, so they can be used similarly to references. The Rust Programming Language(2)
+Both types implement `Deref`, so they can be used similarly to references. 
 
 ---
 
@@ -395,7 +395,7 @@ With `RefCell<T>`:
 → panic
 ```
 
-For example, two active `borrow_mut()` calls cause a `BorrowMutError`. The Rust Programming Language(2)
+For example, two active `borrow_mut()` calls cause a `BorrowMutError`. 
 
 ---
 
@@ -437,7 +437,7 @@ can mutate the inner value
 borrowing rules are checked at runtime
 ```
 
-The book demonstrates this combination using a shared portion of multiple lists. The Rust Programming Language(2)
+The book demonstrates this combination using a shared portion of multiple lists. 
 
 ---
 
@@ -500,7 +500,7 @@ does not increase strong_count
 increases weak_count
 ```
 
-Therefore, `Weak<T>` does not keep the object alive. The Rust Programming Language(2)
+Therefore, `Weak<T>` does not keep the object alive. 
 
 To obtain the object again:
 
@@ -546,7 +546,7 @@ The parent owns the child.
 
 The child only knows about the parent but **does not own it**.
 
-This breaks the cycle and allows the structure to be dropped correctly. The Rust Programming Language(2)
+This breaks the cycle and allows the structure to be dropped correctly. 
 
 ---
 
@@ -570,7 +570,7 @@ Send / Sync
 → type-level guarantees
 ```
 
-The Rust Programming Language(2)
+
 
 ---
 
@@ -614,7 +614,7 @@ You can call:
 handle.join().unwrap();
 ```
 
-`join` blocks the current thread until the corresponding thread finishes. The Rust Programming Language(2)
+`join` blocks the current thread until the corresponding thread finishes. 
 
 Model:
 
@@ -658,7 +658,7 @@ thread::spawn(move || {
 });
 ```
 
-`move` transfers ownership of the required values into the new thread's closure. The Rust Programming Language(2)
+`move` transfers ownership of the required values into the new thread's closure. 
 
 ---
 
@@ -697,7 +697,7 @@ thread::spawn(move || {
 let received = rx.recv().unwrap();
 ```
 
-The Rust Programming Language(2)
+
 
 ---
 
@@ -731,7 +731,7 @@ channel owns/transfers value
 consumer owns value
 ```
 
-This is an important guarantee: the sender cannot continue mutating an object at the same time after it has already transferred that object to another thread. The Rust Programming Language(2)
+This is an important guarantee: the sender cannot continue mutating an object at the same time after it has already transferred that object to another thread. 
 
 ---
 
@@ -761,7 +761,7 @@ does not block
 → immediately returns Result
 ```
 
-It is useful when a thread must continue doing other work and only periodically check the channel. The Rust Programming Language(2)
+It is useful when a thread must continue doing other work and only periodically check the channel. 
 
 `rx` can also be used as an iterator, receiving messages until the channel closes.
 
@@ -800,7 +800,7 @@ if acquired
 → access to data
 ```
 
-`lock()` returns a `MutexGuard` wrapped in a `LockResult`. `MutexGuard` implements `Deref`, so it behaves like a reference to the inner value. The Rust Programming Language(2)
+`lock()` returns a `MutexGuard` wrapped in a `LockResult`. `MutexGuard` implements `Deref`, so it behaves like a reference to the inner value. 
 
 ---
 
@@ -820,7 +820,7 @@ MutexGuard dropped
 mutex unlocked
 ```
 
-You do not have to remember to unlock it manually. The Rust Programming Language(2)
+You do not have to remember to unlock it manually. 
 
 This connects to the first half of the step:
 
@@ -846,7 +846,7 @@ Rc<Mutex<T>>
 
 But `Rc<T>` is not thread-safe.
 
-Its reference counter is not designed to be changed concurrently from different threads. Therefore `Rc<T>` does not implement `Send`, and the compiler does not allow it to be transferred between threads. The Rust Programming Language(2)
+Its reference counter is not designed to be changed concurrently from different threads. Therefore `Rc<T>` does not implement `Send`, and the compiler does not allow it to be transferred between threads. 
 
 ---
 
@@ -902,7 +902,7 @@ So the classic combination is:
 Arc<Mutex<T>>
 ```
 
-The Rust Programming Language(2)
+
 
 ---
 
@@ -938,7 +938,7 @@ Arc<Mutex<T>>
 → shared mutable state
 ```
 
-The book directly compares these two pairs. The Rust Programming Language(2)
+The book directly compares these two pairs. 
 
 ---
 
@@ -965,7 +965,7 @@ Rc<T>
 
 because its reference counter is not thread-safe.
 
-If a type is composed entirely of `Send` types, it usually receives `Send` automatically. The Rust Programming Language(2)
+If a type is composed entirely of `Send` types, it usually receives `Send` automatically. 
 
 ---
 
@@ -1000,7 +1000,7 @@ Mutex<T>
 → Sync
 ```
 
-`RefCell<T>` is not suitable for multithreaded shared access because its runtime borrowing check is not thread-safe. The Rust Programming Language(2)
+`RefCell<T>` is not suitable for multithreaded shared access because its runtime borrowing check is not thread-safe. 
 
 ---
 
@@ -1060,7 +1060,7 @@ borrowing error
 → panic at runtime
 ```
 
-Therefore `RefCell<T>` expands the set of models you can express, but moves some failures to runtime. The Rust Programming Language(2)
+Therefore `RefCell<T>` expands the set of models you can express, but moves some failures to runtime. 
 
 ---
 
@@ -1092,7 +1092,7 @@ To guarantee completion:
 handle.join()
 ```
 
-But `join` blocks the current thread, so its placement affects how much concurrent execution actually happens. The Rust Programming Language(2)
+But `join` blocks the current thread, so its placement affects how much concurrent execution actually happens. 
 
 ---
 
@@ -1133,7 +1133,7 @@ waits for lock 1
 → both wait forever
 ```
 
-Rust cannot automatically rule out every such scenario. The Rust Programming Language(2)
+Rust cannot automatically rule out every such scenario. 
 
 ---
 
@@ -1151,7 +1151,7 @@ multiple threads
 → Arc<T>
 ```
 
-when reference-counted shared ownership is what you need. The Rust Programming Language(2)
+when reference-counted shared ownership is what you need. 
 
 ---
 

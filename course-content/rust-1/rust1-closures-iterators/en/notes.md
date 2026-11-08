@@ -14,7 +14,7 @@ iterators
   without manually controlling iteration
 ```
 
-Closures can be stored in variables and passed to other functions. Their main difference from an ordinary `fn` is that a closure can use values from the scope in which it was created. Iterators, in turn, provide a general way to process elements sequentially. The Rust Programming Language (2)
+Closures can be stored in variables and passed to other functions. Their main difference from an ordinary `fn` is that a closure can use values from the scope in which it was created. Iterators, in turn, provide a general way to process elements sequentially. 
 
 Main connection:
 
@@ -113,7 +113,7 @@ But closure types are usually inferred:
 let add_one = |x| x + 1;
 ```
 
-If the body contains one expression, the braces can also be omitted. The Rust Programming Language (2)
+If the body contains one expression, the braces can also be omitted. 
 
 ---
 
@@ -148,7 +148,7 @@ closure without annotations
 ≠ generic function
 ```
 
-The Rust Programming Language (2)
+
 
 ---
 
@@ -177,7 +177,7 @@ T
 → take ownership
 ```
 
-These modes correspond to the ownership and borrowing rules already studied. The Rust Programming Language (2)
+These modes correspond to the ownership and borrowing rules already studied. 
 
 ---
 
@@ -223,7 +223,7 @@ Now the closure modifies `list`, so it captures:
 &mut list
 ```
 
-While this mutable borrow is active, the ordinary `&mut` rules apply: conflicting access to `list` is not allowed. The Rust Programming Language (2)
+While this mutable borrow is active, the ordinary `&mut` rules apply: conflicting access to `list` is not allowed. 
 
 ---
 
@@ -269,7 +269,7 @@ thread::spawn(
 );
 ```
 
-Now the data belongs to the closure itself and does not depend on whether the scope where the closure was created has already ended. The Rust Programming Language (2)
+Now the data belongs to the closure itself and does not depend on whether the scope where the closure was created has already ended. 
 
 Important:
 
@@ -359,7 +359,7 @@ For example:
 |x| x + 1
 ```
 
-Such a closure can be called repeatedly without changing its environment. The Rust Programming Language (2)
+Such a closure can be called repeatedly without changing its environment. 
 
 Main model:
 
@@ -412,7 +412,7 @@ FnOnce
 → will be called at most once
 ```
 
-`unwrap_or_else` calls the closure only when the `Option` contains `None`, so `FnOnce` is sufficient. The Rust Programming Language (2)
+`unwrap_or_else` calls the closure only when the `Option` contains `None`, so `FnOnce` is sufficient. 
 
 Another example:
 
@@ -455,7 +455,7 @@ v.iter()
 
 does not yet process the elements.
 
-Rust iterators are **lazy**. The Rust Programming Language (2)
+Rust iterators are **lazy**. 
 
 ---
 
@@ -489,7 +489,7 @@ no elements remain
 → None
 ```
 
-The Rust Programming Language (2)
+
 
 ---
 
@@ -532,7 +532,7 @@ position 2
 ...
 ```
 
-The Rust Programming Language (2)
+
 
 ---
 
@@ -590,7 +590,7 @@ into_iter()
 → take ownership of elements
 ```
 
-The Rust Programming Language (2)
+
 
 This is one of the most important practical distinctions when working with iterators.
 
@@ -617,7 +617,7 @@ Result:
 
 `sum` repeatedly calls `next` until the sequence is exhausted.
 
-After consumption, that iterator cannot be used again because `sum` takes ownership of it. The Rust Programming Language (2)
+After consumption, that iterator cannot be used again because `sum` takes ownership of it. 
 
 Main model:
 
@@ -706,7 +706,7 @@ iterator
 → lazy
 ```
 
-To actually compute the values, the iterator must be consumed, for example with `collect`. The Rust Programming Language (2)
+To actually compute the values, the iterator must be consumed, for example with `collect`. 
 
 ---
 
@@ -743,7 +743,7 @@ true   false
 keep    skip
 ```
 
-The closure can use `shoe_size` from the environment — this is exactly the connection between iterators and closures. The Rust Programming Language (2)
+The closure can use `shoe_size` from the environment — this is exactly the connection between iterators and closures. 
 
 ---
 
@@ -852,7 +852,7 @@ consuming operation
 → starts the computation
 ```
 
-For this reason, Rust even warns when `map(...)` is created and then never used. The Rust Programming Language (2)
+For this reason, Rust even warns when `map(...)` is created and then never used. 
 
 ---
 
@@ -906,7 +906,7 @@ FnOnce
   OUT OF the closure when called
 ```
 
-The mere presence of `move` does not automatically mean the closure can be called only once. Classification depends on what the body does with the captured values. This follows from the book's separation between capture mode and the later behavior of the closure body. The Rust Programming Language (2)
+The mere presence of `move` does not automatically mean the closure can be called only once. Classification depends on what the body does with the captured values. This follows from the book's separation between capture mode and the later behavior of the closure body. 
 
 ---
 
@@ -979,7 +979,7 @@ manual push
 explicit loop control
 ```
 
-The book notes that Rust developers usually prefer iterator style after learning the adapters because it focuses on the goal of the transformation rather than the mechanics of iteration. The Rust Programming Language (2)
+The book notes that Rust developers usually prefer iterator style after learning the adapters because it focuses on the goal of the transformation rather than the mechanics of iteration. 
 
 ---
 
@@ -1006,7 +1006,7 @@ and `build` accepts:
 impl Iterator<Item = String>
 ```
 
-This lets it obtain arguments through `next()` and **move the `String`s directly into `Config`**, instead of borrowing slice elements and then cloning them. The Rust Programming Language (2)
+This lets it obtain arguments through `next()` and **move the `String`s directly into `Config`**, instead of borrowing slice elements and then cloning them. 
 
 This is a good example showing that an iterator is not just prettier syntax:
 
@@ -1019,7 +1019,7 @@ owning iterator
 
 ## Performance
 
-The book compares search implemented with an ordinary loop and with an iterator pipeline and shows similar performance. Iterators are described as one of Rust's **zero-cost abstractions**: high-level code compiles to roughly the same efficient low-level code one could write manually. The Rust Programming Language (2)
+The book compares search implemented with an ordinary loop and with an iterator pipeline and shows similar performance. Iterators are described as one of Rust's **zero-cost abstractions**: high-level code compiles to roughly the same efficient low-level code one could write manually. 
 
 Main point:
 
@@ -1028,7 +1028,7 @@ iterator abstraction
 ≠ mandatory runtime cost
 ```
 
-The compiler can optimize iterator chains, including removing some loop bookkeeping. The Rust Programming Language (2)
+The compiler can optimize iterator chains, including removing some loop bookkeeping. 
 
 ---
 

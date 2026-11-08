@@ -21,7 +21,7 @@ macros
   at compile time
 ```
 
-They are accompanied by advanced traits and types: associated types, fully qualified syntax, newtype, `Sized`, and function pointers. Chapter 19 itself presents these capabilities as tools for specific situations and as reference material rather than everyday basic syntax. The Rust Programming Language(2)
+They are accompanied by advanced traits and types: associated types, fully qualified syntax, newtype, `Sized`, and function pointers. Chapter 19 itself presents these capabilities as tools for specific situations and as reference material rather than everyday basic syntax. 
 
 The overall model after the entire book:
 
@@ -102,7 +102,7 @@ struct Screen {
 }
 ```
 
-Now a single `Vec` can contain different concrete types as long as each implements `Draw`. The Rust Programming Language(2)
+Now a single `Vec` can contain different concrete types as long as each implements `Draw`. 
 
 ```text
 Vec<Box<dyn Draw>>
@@ -133,7 +133,7 @@ Box<dyn Draw>
 
 The concrete size of the value hidden behind `dyn Draw` is not known in advance, so `dyn Draw` cannot be stored directly as an ordinary sized value.
 
-A trait object connects data of a concrete type with the information needed to find that trait's method implementations at runtime. The Rust Programming Language(2)
+A trait object connects data of a concrete type with the information needed to find that trait's method implementations at runtime. 
 
 ---
 
@@ -177,7 +177,7 @@ dyn Draw
 → method selection at runtime
 ```
 
-Dynamic dispatch has runtime cost and limits some optimizations such as inlining. The Rust Programming Language(2)
+Dynamic dispatch has runtime cost and limits some optimizations such as inlining. 
 
 ---
 
@@ -240,7 +240,7 @@ And `Post` stores:
 state: Option<Box<dyn State>>
 ```
 
-A state transition is performed through methods on `State` itself, which consume the old state and return a new one. The Rust Programming Language(2)
+A state transition is performed through methods on `State` itself, which consume the old state and return a new one. 
 
 Conceptually:
 
@@ -263,7 +263,7 @@ logic for a particular state
 is concentrated in one type
 ```
 
-The drawback is that states become coupled through transitions, and some logic may be duplicated. The Rust Programming Language(2)
+The drawback is that states become coupled through transitions, and some logic may be duplicated. 
 
 ---
 
@@ -292,7 +292,7 @@ invalid state
 
 This is an important general Rust idea:
 
-> if a state must be forbidden, it can sometimes be better to make that state impossible through the type system rather than check it with `if` at runtime. The Rust Programming Language(2)
+> if a state must be forbidden, it can sometimes be better to make that state impossible through the type system rather than check it with `if` at runtime. 
 
 ---
 
@@ -358,7 +358,7 @@ while let Some(x) = stack.pop() {
 }
 ```
 
-The loop continues while the pattern matches. The Rust Programming Language(2)
+The loop continues while the pattern matches. 
 
 #### `for`
 
@@ -431,7 +431,7 @@ if let
 while let
 ```
 
-The book emphasizes the distinction between refutable and irrefutable patterns as the basis for understanding where a particular pattern is allowed. The Rust Programming Language(2)
+The book emphasizes the distinction between refutable and irrefutable patterns as the basis for understanding where a particular pattern is allowed. 
 
 ---
 
@@ -550,7 +550,7 @@ or:
 let (first, .., last) = tuple;
 ```
 
-But `..` must be unambiguous: the compiler must be able to determine exactly which values are being skipped. The Rust Programming Language(2)
+But `..` must be unambiguous: the compiler must be able to determine exactly which values are being skipped. 
 
 ---
 
@@ -572,7 +572,7 @@ The pattern must match first, then this is checked:
 if condition
 ```
 
-This is called a **match guard**. The Rust Programming Language(2)
+This is called a **match guard**. 
 
 Important: a guard is additional logic and does not participate in normal pattern exhaustiveness checking in the same way as the patterns themselves.
 
@@ -622,7 +622,7 @@ unsafe {
 
 But `unsafe` **does not disable the entire borrow checker or type system**.
 
-It only allows a specific set of operations whose safety the programmer is now responsible for guaranteeing manually. The Rust Programming Language(2)
+It only allows a specific set of operations whose safety the programmer is now responsible for guaranteeing manually. 
 
 ---
 
@@ -642,7 +642,7 @@ The book lists five operations:
 5. Access fields of a union.
 ```
 
-The Rust Programming Language(2)
+
 
 `unsafe` itself does not mean the code is necessarily incorrect. It means:
 
@@ -738,7 +738,7 @@ small unsafe block
 returns safe abstraction
 ```
 
-This approach limits the region in which the programmer must manually guarantee safety. The Rust Programming Language(2)
+This approach limits the region in which the programmer must manually guarantee safety. 
 
 ---
 
@@ -756,7 +756,7 @@ extern "C" {
 
 `"C"` specifies the ABI — the convention for how the function is called at the binary level.
 
-Calling an external function is unsafe because Rust cannot verify the guarantees of code written outside Rust. The Rust Programming Language(2)
+Calling an external function is unsafe because Rust cannot verify the guarantees of code written outside Rust. 
 
 ---
 
@@ -786,7 +786,7 @@ Iterator for Counter
 → Item = u32
 ```
 
-Unlike a generic trait parameter, an associated type becomes part of the specific implementation's contract. The Rust Programming Language(2)
+Unlike a generic trait parameter, an associated type becomes part of the specific implementation's contract. 
 
 ---
 
@@ -815,7 +815,7 @@ and define the meaning of:
 point1 + point2
 ```
 
-Arbitrary new operators cannot be created; supported operations are overloaded through their corresponding traits. The Rust Programming Language(2)
+Arbitrary new operators cannot be created; supported operations are overloaded through their corresponding traits. 
 
 ---
 
@@ -844,7 +844,7 @@ which function
 must be called
 ```
 
-The Rust Programming Language(2)
+
 
 ---
 
@@ -876,7 +876,7 @@ creates a genuinely new type
 → allows trait implementations
 ```
 
-The book notes that such a wrapper is removed during compilation and does not itself add runtime cost. The Rust Programming Language(2)
+The book notes that such a wrapper is removed during compilation and does not itself add runtime cost. 
 
 Do not confuse it with a type alias:
 
@@ -890,7 +890,7 @@ An alias is only another name for the same type:
 Kilometers == i32
 ```
 
-It does not create additional type safety. The Rust Programming Language(2)
+It does not create additional type safety. 
 
 ---
 
@@ -924,7 +924,7 @@ To permit a type whose size is not known:
 T: ?Sized
 ```
 
-But then `T` is normally handled through a reference or another pointer. The Rust Programming Language(2)
+But then `T` is normally handled through a reference or another pointer. 
 
 ---
 
@@ -949,7 +949,7 @@ fn do_twice(
 
 This is specifically a **function pointer type**, not the `Fn` trait.
 
-Function pointers implement `Fn`, `FnMut`, and `FnOnce`, so they can be passed where a suitable closure is expected. The Rust Programming Language(2)
+Function pointers implement `Fn`, `FnMut`, and `FnOnce`, so they can be passed where a suitable closure is expected. 
 
 ---
 
@@ -972,7 +972,7 @@ vec![]
 panic!()
 ```
 
-Macros differ from functions because they operate on code at compile time. They can also accept a variable number of arguments and generate constructs that a runtime function cannot create, such as a trait implementation. The Rust Programming Language(2)
+Macros differ from functions because they operate on code at compile time. They can also accept a variable number of arguments and generate constructs that a runtime function cannot create, such as a trait implementation. 
 
 The cost is that macro definitions are more difficult to read and maintain.
 
@@ -1000,7 +1000,7 @@ pattern matching
 generated Rust code
 ```
 
-The Rust Programming Language(2)
+
 
 A simplified idea of `vec!`:
 
@@ -1040,7 +1040,7 @@ Therefore:
 vec![1, 2, 3]
 ```
 
-generates several `push` calls. The Rust Programming Language(2)
+generates several `push` calls. 
 
 ---
 
@@ -1066,7 +1066,7 @@ procedural macro
 Rust tokens
 ```
 
-The Rust Programming Language(2)
+
 
 There are three kinds:
 
@@ -1098,7 +1098,7 @@ generated:
 impl HelloMacro for Pancakes { ... }
 ```
 
-For working with code, the book shows `proc_macro`, `syn`, and `quote`: `syn` parses Rust code into a data structure, while `quote!` helps generate new Rust code. The Rust Programming Language(2)
+For working with code, the book shows `proc_macro`, `syn`, and `quote`: `syn` parses Rust code into a data structure, while `quote!` helps generate new Rust code. 
 
 ---
 
@@ -1121,7 +1121,7 @@ attribute contents
 annotated item
 ```
 
-and generates new code. The Rust Programming Language(2)
+and generates new code. 
 
 ---
 
@@ -1133,7 +1133,7 @@ It looks like an ordinary macro call:
 sql!(SELECT ...);
 ```
 
-Internally, however, it can perform complex parsing of the input `TokenStream` and then return generated Rust code. The Rust Programming Language(2)
+Internally, however, it can perform complex parsing of the input `TokenStream` and then return generated Rust code. 
 
 ---
 

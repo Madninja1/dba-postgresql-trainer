@@ -4,7 +4,7 @@
 
 A **lifetime is the lifetime of a reference** — the region of a program during which that reference remains valid.
 
-Every reference in Rust has a lifetime even if it is never written explicitly. In most situations, the compiler infers it automatically. An explicit annotation is required when Rust cannot determine the relationship between several references unambiguously. The Rust Programming Language (2)
+Every reference in Rust has a lifetime even if it is never written explicitly. In most situations, the compiler infers it automatically. An explicit annotation is required when Rust cannot determine the relationship between several references unambiguously. 
 
 The main purpose of lifetimes is:
 
@@ -81,7 +81,7 @@ r
 
 Rust rejects this code.
 
-The borrow checker compares the lifetimes of data and references and verifies that each reference remains valid for as long as it is used. The Rust Programming Language (2)
+The borrow checker compares the lifetimes of data and references and verifies that each reference remains valid for as long as it is used. 
 
 ---
 
@@ -167,7 +167,7 @@ and are usually short:
 'b
 ```
 
-`'a` is commonly used first. The Rust Programming Language (2)
+`'a` is commonly used first. 
 
 ---
 
@@ -204,7 +204,7 @@ annotation
 = describe lifetime relationships
 ```
 
-The Rust Programming Language (2)
+
 
 ---
 
@@ -282,7 +282,7 @@ lifetime(result)
 the shorter of lifetime(x) and lifetime(y)
 ```
 
-The Rust Programming Language (2)
+
 
 ---
 
@@ -519,7 +519,7 @@ the data
 referenced by part
 ```
 
-The Rust Programming Language (2)
+
 
 ---
 
@@ -618,7 +618,7 @@ fn first_word<'a>(
 
 The reason is **lifetime elision rules**.
 
-Rust can infer some common lifetime relationships automatically, so programmers do not need to write `'a` in every function. The Rust Programming Language (2)
+Rust can infer some common lifetime relationships automatically, so programmers do not need to write `'a` in every function. 
 
 ---
 
@@ -712,7 +712,7 @@ then the lifetime of `self` is assigned to output references.
 
 This is why method signatures are usually not overloaded with lifetime annotations.
 
-The Rust Programming Language (2)
+
 
 ---
 
@@ -855,7 +855,7 @@ let s: &'static str =
     "I have a static lifetime.";
 ```
 
-String literals are stored in the program binary and remain available throughout program execution, so they have a `'static` lifetime. The Rust Programming Language (2)
+String literals are stored in the program binary and remain available throughout program execution, so they have a `'static` lifetime. 
 
 ---
 

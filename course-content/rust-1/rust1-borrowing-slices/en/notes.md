@@ -13,7 +13,7 @@ If a `String` is passed to a function by value, ownership moves into the functio
 
 But often a function needs **temporary access to data only**, without becoming its owner. Rust solves this with **references** and the **borrowing** mechanism.
 
-A reference lets you access a value whose owner remains another variable. Unlike an ordinary pointer, Rust guarantees that a reference points to a valid value of its type for as long as the reference exists. The Rust Programming Language (2)
+A reference lets you access a value whose owner remains another variable. Unlike an ordinary pointer, Rust guarantees that a reference points to a valid value of its type for as long as the reference exists. 
 
 Main model:
 
@@ -461,7 +461,7 @@ the returned reference would point
 at already freed data
 ```
 
-Therefore the code does not compile. Rust guarantees that data cannot disappear before a reference to it is finished being used. The Rust Programming Language (2)
+Therefore the code does not compile. Rust guarantees that data cannot disappear before a reference to it is finished being used. 
 
 In this case, the solution is:
 
@@ -493,7 +493,7 @@ may refer to only part of a collection,
 not necessarily the whole collection
 ```
 
-So a slice is a kind of reference. The Rust Programming Language (2)
+So a slice is a kind of reference. 
 
 For example, instead of storing the numeric index where the first word ends, it is better to store a reference directly to the corresponding part of the string.
 
@@ -759,7 +759,7 @@ mutable borrow
 ✗ cannot coexist
 ```
 
-So a slice is not just more convenient than an index — it lets the compiler connect the validity of the result to the original data and detect the problem at compile time. The Rust Programming Language (2)
+So a slice is not just more convenient than an index — it lets the compiler connect the validity of the result to the original data and detect the problem at compile time. 
 
 ---
 
@@ -789,7 +789,7 @@ string literal
 immutable reference
 ```
 
-The Rust Programming Language (2)
+
 
 ---
 
@@ -827,7 +827,7 @@ let text = "hello world";
 first_word(text);
 ```
 
-Therefore, for a function that only needs to read string data, `&str` provides a more flexible API than `&String`. The Rust Programming Language (2)
+Therefore, for a function that only needs to read string data, `&str` provides a more flexible API than `&String`. 
 
 ---
 
@@ -866,7 +866,7 @@ That is:
 &[T]    → slice of elements of type T
 ```
 
-An array slice, like a string slice, does not own the elements; it refers to a contiguous part of a collection. The Rust Programming Language (2)
+An array slice, like a string slice, does not own the elements; it refers to a contiguous part of a collection. 
 
 ---
 
@@ -1083,7 +1083,7 @@ The main idea of Chapter 4 is therefore:
 
 > **Data has an owner, but ownership does not have to be transferred merely to use the data. It can be borrowed temporarily, while the compiler ensures that references do not conflict and do not outlive the data itself.**
 
-The book concludes that ownership, borrowing, and slices together provide memory safety at compile time. The Rust Programming Language (2)
+The book concludes that ownership, borrowing, and slices together provide memory safety at compile time. 
 
 **Size:** approximately **10–12 thousand characters** including code and diagrams.
 **Time to copy into a notebook:** approximately **60–75 minutes**. This is one of Rust's central topics; shortening the `&` / `&mut` rules and their relationship with `&str` further is not recommended.

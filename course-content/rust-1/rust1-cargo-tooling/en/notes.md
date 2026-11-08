@@ -24,7 +24,7 @@ Cargo
 └─ supports custom subcommands
 ```
 
-The main topics are release profiles, publishing to crates.io, workspaces, `cargo install`, and extending Cargo. The Rust Programming Language (2)
+The main topics are release profiles, publishing to crates.io, workspaces, `cargo install`, and extending Cargo. 
 
 ---
 
@@ -81,7 +81,7 @@ dev     → 0
 release → 3
 ```
 
-`opt-level` controls the compiler's optimization level in the `0..3` range. Higher optimization generally requires more compilation time. The Rust Programming Language (2)
+`opt-level` controls the compiler's optimization level in the `0..3` range. Higher optimization generally requires more compilation time. 
 
 Main model:
 
@@ -122,7 +122,7 @@ pub fn add_one(x: i32) -> i32 {
 function / struct / enum / ...
 ```
 
-Documentation supports Markdown. The Rust Programming Language (2)
+Documentation supports Markdown. 
 
 ---
 
@@ -162,7 +162,7 @@ Convenient form:
 cargo doc --open
 ```
 
-→ generate documentation and open it in a browser. The Rust Programming Language (2)
+→ generate documentation and open it in a browser. 
 
 ---
 
@@ -195,7 +195,7 @@ API changed
 example stayed outdated
 ```
 
-The Rust Programming Language (2)
+
 
 ---
 
@@ -217,7 +217,7 @@ The book specifically highlights:
 → requirements of an unsafe function
 ```
 
-Not every function needs all of these sections; they are guidelines for documenting important API properties. The Rust Programming Language (2)
+Not every function needs all of these sections; they are guidelines for documenting important API properties. 
 
 ---
 
@@ -237,7 +237,7 @@ For example, at the beginning of `src/lib.rs`:
 
 this description applies to the whole crate.
 
-The same form can be used inside a module for its general documentation. The Rust Programming Language (2)
+The same form can be used inside a module for its general documentation. 
 
 Remember:
 
@@ -286,7 +286,7 @@ use art::PrimaryColor;
 use art::mix;
 ```
 
-The Rust Programming Language (2)
+
 
 Main idea:
 
@@ -320,7 +320,7 @@ description = "Description of the crate."
 license = "MIT"
 ```
 
-The name on crates.io must be unique. The book also requires a description and a license for publishing; `license-file` can be used instead of a license identifier when the license text is stored in a separate file. The Rust Programming Language (2)
+The name on crates.io must be unique. The book also requires a description and a license for publishing; `license-file` can be used instead of a license identifier when the license text is stored in a separate file. 
 
 ---
 
@@ -336,7 +336,7 @@ To release a new one:
 3. run cargo publish again
 ```
 
-The book emphasizes that publishing a version is permanent: already uploaded contents cannot simply be replaced. The Rust Programming Language (2)
+The book emphasizes that publishing a version is permanent: already uploaded contents cannot simply be replaced. 
 
 ---
 
@@ -373,7 +373,7 @@ Important:
 yank ≠ delete
 ```
 
-If a secret was accidentally published, `yank` does not remove it. The book says the compromised secret should be replaced immediately. The Rust Programming Language (2)
+If a secret was accidentally published, `yank` does not remove it. The book says the compromised secret should be replaced immediately. 
 
 ---
 
@@ -391,7 +391,7 @@ one Cargo.lock
 one shared target/
 ```
 
-The Rust Programming Language (2)
+
 
 Example:
 
@@ -437,7 +437,7 @@ artifacts are placed in the shared:
 workspace/target/
 ```
 
-This lets several packages reuse compilation results and reduces unnecessary recompilation. The Rust Programming Language (2)
+This lets several packages reuse compilation results and reduces unnecessary recompilation. 
 
 ---
 
@@ -460,7 +460,7 @@ adder
 add_one
 ```
 
-The Rust Programming Language (2)
+
 
 ---
 
@@ -495,7 +495,7 @@ Cargo.toml of each package
 → its own list of allowed dependencies
 ```
 
-The Rust Programming Language (2)
+
 
 ---
 
@@ -525,7 +525,7 @@ Test one package:
 cargo test -p add_one
 ```
 
-If crates from a workspace are published, each is published separately. The Rust Programming Language (2)
+If crates from a workspace are published, each is published separately. 
 
 ---
 
@@ -543,7 +543,7 @@ For example, the book shows:
 cargo install ripgrep
 ```
 
-This installs packages containing a **binary target** — a program that can be run directly. `cargo install` is not used to install ordinary library dependencies for a project. The Rust Programming Language (2)
+This installs packages containing a **binary target** — a program that can be run directly. `cargo install` is not used to install ordinary library dependencies for a project. 
 
 ---
 
@@ -597,7 +597,7 @@ Custom subcommands can be listed together with other commands using:
 cargo --list
 ```
 
-This lets an external tool look like a natural Cargo extension. The Rust Programming Language (2)
+This lets an external tool look like a natural Cargo extension. 
 
 ---
 

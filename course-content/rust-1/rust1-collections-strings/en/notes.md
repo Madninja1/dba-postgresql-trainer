@@ -2,7 +2,7 @@
 
 ## 1. Topic
 
-Standard-library collections let you store **multiple values**, and their size may be unknown at compile time and change while the program runs. Unlike arrays and tuples, the data of the collections covered here is stored on the heap. The Rust Programming Language (2)
+Standard-library collections let you store **multiple values**, and their size may be unknown at compile time and change while the program runs. Unlike arrays and tuples, the data of the collections covered here is stored on the heap. 
 
 This chapter focuses on three main types:
 
@@ -62,7 +62,7 @@ If initial values are present:
 let v = vec![1, 2, 3];
 ```
 
-the type is inferred automatically. The Rust Programming Language (2)
+the type is inferred automatically. 
 
 ---
 
@@ -159,7 +159,7 @@ v.get(index)
 → invalid index = None
 ```
 
-`get` is appropriate when the absence of an element is a normal possible outcome. The Rust Programming Language (2)
+`get` is appropriate when the absence of an element is a normal possible outcome. 
 
 ---
 
@@ -199,7 +199,7 @@ first → old memory region
 
 would become invalid.
 
-Therefore the borrow checker prevents this kind of vector mutation while a reference to one of its elements is active. The Rust Programming Language (2)
+Therefore the borrow checker prevents this kind of vector mutation while a reference to one of its elements is active. 
 
 This is an important practical connection:
 
@@ -241,7 +241,7 @@ for i in &mut v {
 *i
 ```
 
-During such a loop, elements cannot simultaneously be inserted into or removed from the vector because the loop already borrows it. The Rust Programming Language (2)
+During such a loop, elements cannot simultaneously be inserted into or removed from the vector because the loop already borrows it. 
 
 ---
 
@@ -286,7 +286,7 @@ This applies the already studied:
 enum + match
 ```
 
-to create a type-safe heterogeneous collection whose possible variants are known in advance. The Rust Programming Language (2)
+to create a type-safe heterogeneous collection whose possible variants are known in advance. 
 
 ---
 
@@ -308,7 +308,7 @@ the Vec itself
 its elements
 ```
 
-So ordinary ownership rules continue to apply to collections. The Rust Programming Language (2)
+So ordinary ownership rules continue to apply to collections. 
 
 ---
 
@@ -358,7 +358,7 @@ String literals:
 
 have the form `&str`.
 
-The book describes `String` as a wrapper around a sequence of bytes with additional guarantees and operations for working with text. The Rust Programming Language (2)
+The book describes `String` as a wrapper around a sequence of bytes with additional guarantees and operations for working with text. 
 
 ---
 
@@ -382,7 +382,7 @@ or:
 let s = "hello".to_string();
 ```
 
-In this case, `String::from` and `to_string` produce equivalent results. The Rust Programming Language (2)
+In this case, `String::from` and `to_string` produce equivalent results. 
 
 ---
 
@@ -417,7 +417,7 @@ s1.push_str(s2);
 println!("{s2}");
 ```
 
-`s2` remains available. The Rust Programming Language (2)
+`s2` remains available. 
 
 ---
 
@@ -502,7 +502,7 @@ The compiler can coerce:
 &String → &str
 ```
 
-for the second argument. The Rust Programming Language (2)
+for the second argument. 
 
 ---
 
@@ -534,7 +534,7 @@ uses references to its arguments
 does not take their ownership
 ```
 
-For combining several values it is often easier to read than a chain of `+` operations. The Rust Programming Language (2)
+For combining several values it is often easier to read than a chain of `+` operations. 
 
 ---
 
@@ -552,7 +552,7 @@ let s = String::from("hello");
 let c = s[0]; // error
 ```
 
-The reason is that `String` is stored as UTF-8, where one perceived character does not necessarily correspond to one byte. The Rust Programming Language (2)
+The reason is that `String` is stored as UTF-8, where one perceived character does not necessarily correspond to one byte. 
 
 For example, the book shows:
 
@@ -618,7 +618,7 @@ So:
 ≠ necessarily 1 visible character
 ```
 
-The Rust Programming Language (2)
+
 
 ---
 
@@ -646,7 +646,7 @@ O(1)
 
 But locating an arbitrary Unicode character would require scanning the string and analyzing UTF-8 boundaries.
 
-Therefore Rust requires the programmer to state explicitly what should be retrieved. The Rust Programming Language (2)
+Therefore Rust requires the programmer to state explicitly what should be retrieved. 
 
 ---
 
@@ -682,7 +682,7 @@ Therefore:
 a string slice uses byte boundaries
 ```
 
-and the range must follow valid UTF-8 boundaries. The Rust Programming Language (2)
+and the range must follow valid UTF-8 boundaries. 
 
 This is one of the main pitfalls of `String`.
 
@@ -731,7 +731,7 @@ need bytes?
 → bytes()
 ```
 
-The standard library does not directly provide grapheme-cluster segmentation; the book notes that separate libraries exist for this. The Rust Programming Language (2)
+The standard library does not directly provide grapheme-cluster segmentation; the book notes that separate libraries exist for this. 
 
 ---
 
@@ -752,7 +752,7 @@ For example:
 
 Unlike `Vec`, where data is normally found by numeric position, `HashMap` lets you retrieve a value by key.
 
-All keys must have one type `K`, and all values one type `V`. The data is stored on the heap. The Rust Programming Language (2)
+All keys must have one type `K`, and all values one type `V`. The data is stored on the heap. 
 
 ---
 
@@ -811,7 +811,7 @@ The book also uses:
 scores.get(&team).copied().unwrap_or(0)
 ```
 
-to obtain an `i32` value and use `0` if the key is absent. The Rust Programming Language (2)
+to obtain an `i32` value and use `0` if the key is absent. 
 
 ---
 
@@ -830,7 +830,7 @@ HashMap iteration order
 is not guaranteed to match insertion order
 ```
 
-The pairs may be printed in an arbitrary order in the book's examples. The Rust Programming Language (2)
+The pairs may be printed in an arbitrary order in the book's examples. 
 
 ---
 
@@ -862,7 +862,7 @@ value ─ move ───→ HashMap
 
 The original variables can no longer be used afterward.
 
-If the `HashMap` stores references instead, ownership of the referenced data does not move, but that data must remain valid long enough. The Rust Programming Language (2)
+If the `HashMap` stores references instead, ownership of the referenced data does not move, but that data must remain valid long enough. 
 
 ---
 
@@ -883,7 +883,7 @@ the result is:
 "Blue" → 25
 ```
 
-The new value replaces the old one. The Rust Programming Language (2)
+The new value replaces the old one. 
 
 ---
 
@@ -919,7 +919,7 @@ key is absent
 &mut V
 ```
 
-The Rust Programming Language (2)
+
 
 ---
 
@@ -954,7 +954,7 @@ value  insert 0
 *count += 1
 ```
 
-The result is a count of how many times each word appears. The Rust Programming Language (2)
+The result is a count of how many times each word appears. 
 
 This is one of the most useful `HashMap` patterns.
 
@@ -1119,7 +1119,7 @@ and update the existing value
 
 ## Hashing
 
-The book notes that the default hash function used by `HashMap` is selected with protection against a certain class of DoS attacks in mind, which trades some performance for security. If profiling shows hashing is a bottleneck, the hasher can be replaced. The Rust Programming Language (2)
+The book notes that the default hash function used by `HashMap` is selected with protection against a certain class of DoS attacks in mind, which trades some performance for security. If profiling shows hashing is a bottleneck, the hasher can be replaced. 
 
 For basic Rust ownership knowledge, this is enough; `BuildHasher` details do not need to be memorized here.
 

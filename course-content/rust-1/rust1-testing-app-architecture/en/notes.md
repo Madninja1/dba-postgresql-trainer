@@ -2,7 +2,7 @@
 
 ## 1. Topic
 
-The Rust compiler checks types, ownership, borrowing, and lifetimes, but it cannot prove that a program implements exactly the business logic intended by the programmer. Automated tests are used for that. The Rust Programming Language (2)
+The Rust compiler checks types, ownership, borrowing, and lifetimes, but it cannot prove that a program implements exactly the business logic intended by the programmer. Automated tests are used for that. 
 
 Basic test model:
 
@@ -29,7 +29,7 @@ lib.rs
 → functions that are convenient to test
 ```
 
-This separation matters because library code can be called directly from tests without launching the complete executable every time. The Rust Programming Language (2)
+This separation matters because library code can be called directly from tests without launching the complete executable every time. 
 
 ---
 
@@ -54,7 +54,7 @@ Run it with:
 cargo test
 ```
 
-`#[test]` tells the test runner to execute the function as a test. Cargo compiles a test binary, runs the marked functions, and reports the result. The Rust Programming Language (2)
+`#[test]` tells the test runner to execute the function as a test. Cargo compiles a test binary, runs the marked functions, and reports the result. 
 
 ---
 
@@ -114,7 +114,7 @@ For these macros to work, compared types must implement `PartialEq`, and for dia
 #[derive(PartialEq, Debug)]
 ```
 
-The Rust Programming Language (2)
+
 
 ---
 
@@ -185,7 +185,7 @@ fn greater_than_100() {
 }
 ```
 
-Now the panic message must contain the specified substring. The Rust Programming Language (2)
+Now the panic message must contain the specified substring. 
 
 ---
 
@@ -224,7 +224,7 @@ Err(...)
 
 This is useful when the test already calls operations returning `Result` and you want to use `?`.
 
-The book specifically notes that `#[should_panic]` is not used with this style: when testing a `Result` error, work with the `Result` itself. The Rust Programming Language (2)
+The book specifically notes that `#[should_panic]` is not used with this style: when testing a `Result` error, work with the `Result` itself. 
 
 ---
 
@@ -261,7 +261,7 @@ use super::*
 → gives tests access to the parent module's contents
 ```
 
-Unit tests are usually placed next to the code they test in `src`. They can test private functions because they are a child module of the tested module. The Rust Programming Language (2)
+Unit tests are usually placed next to the code they test in `src`. They can test private functions because they are a child module of the tested module. 
 
 ---
 
@@ -303,7 +303,7 @@ Files under `tests/` do not need an explicit:
 #[cfg(test)]
 ```
 
-because Cargo already knows they are integration tests. The Rust Programming Language (2)
+because Cargo already knows they are integration tests. 
 
 ---
 
@@ -322,7 +322,7 @@ INTEGRATION TEST
 → checks that parts work together
 ```
 
-Both are needed for different levels of verification. The Rust Programming Language (2)
+Both are needed for different levels of verification. 
 
 ---
 
@@ -346,7 +346,7 @@ Or filter by part of a name:
 cargo test add
 ```
 
-Tests may run in parallel by default, so they should not unnecessarily depend on shared mutable state. The Rust Programming Language (2)
+Tests may run in parallel by default, so they should not unnecessarily depend on shared mutable state. 
 
 An expensive test can be marked:
 
@@ -364,7 +364,7 @@ Run only ignored tests:
 cargo test -- --ignored
 ```
 
-This is secondary functionality, but useful to recognize in a real project. The Rust Programming Language (2)
+This is secondary functionality, but useful to recognize in a real project. 
 
 ---
 
@@ -422,7 +422,7 @@ args[1] → "needle"
 args[2] → "haystack"
 ```
 
-Here `--` separates Cargo arguments from arguments for the program itself. The Rust Programming Language (2)
+Here `--` separates Cargo arguments from arguments for the program itself. 
 
 ---
 
@@ -455,7 +455,7 @@ the configuration of one run
 
 The structure makes that relationship explicit.
 
-An earlier tuple-based version was replaced by `Config` because named fields express the meaning of data more clearly and are easier to maintain. The Rust Programming Language (2)
+An earlier tuple-based version was replaced by `Config` because named fields express the meaning of data more clearly and are easier to maintain. 
 
 ---
 
@@ -496,7 +496,7 @@ takes raw input
 and turns it into meaningful configuration
 ```
 
-Also, `build` returns `Result` instead of calling `panic!` because missing arguments are an expected user-input error. The Rust Programming Language (2)
+Also, `build` returns `Result` instead of calling `panic!` because missing arguments are an expected user-input error. 
 
 ---
 
@@ -567,7 +567,7 @@ failure
 
 `()` indicates that the function is executed for its effects rather than to produce a useful value.
 
-`?` propagates a file-reading error to the caller. The Rust Programming Language (2)
+`?` propagates a file-reading error to the caller. 
 
 ---
 
@@ -589,7 +589,7 @@ accepts a path
 → returns Result<String, ...>
 ```
 
-So file I/O naturally fits into the already studied `Result` + `?` model. The Rust Programming Language (2)
+So file I/O naturally fits into the already studied `Result` + `?` model. 
 
 ---
 
@@ -627,7 +627,7 @@ search_case_insensitive
 main logic
 ```
 
-As a result, most functionality becomes a library API that can be tested directly. The Rust Programming Language (2)
+As a result, most functionality becomes a library API that can be tested directly. 
 
 This is one of the chapter's key architectural ideas.
 
@@ -671,7 +671,7 @@ ignore_case == true
 → search_case_insensitive(...)
 ```
 
-The book also notes that if one setting can come from several sources, the program needs to define which source has priority. The Rust Programming Language (2)
+The book also notes that if one setting can come from several sources, the program needs to define which source has priority. 
 
 ---
 
@@ -725,7 +725,7 @@ stderr
 → diagnostics and errors
 ```
 
-The book changes error output in `main` to `eprintln!` so redirecting normal output does not swallow errors. The Rust Programming Language (2)
+The book changes error output in `main` to `eprintln!` so redirecting normal output does not swallow errors. 
 
 ---
 
@@ -762,7 +762,7 @@ error handling
 reuse
 ```
 
-The Rust Programming Language (2)
+
 
 ---
 
@@ -831,7 +831,7 @@ or
 explicitly propagate it
 ```
 
-In `minigrep`, `main` handles the error returned by `run`. The Rust Programming Language (2)
+In `minigrep`, `main` handles the error returned by `run`. 
 
 ---
 
@@ -849,7 +849,7 @@ Chapter 12 demonstrates a simple test-driven development cycle:
 
 For example, a test for `search` is written first, then a minimal empty implementation, then the working search logic.
 
-The book does not present TDD as the only development approach, but uses it as a way to grow `minigrep` gradually. The Rust Programming Language (2)
+The book does not present TDD as the only development approach, but uses it as a way to grow `minigrep` gradually. 
 
 ---
 

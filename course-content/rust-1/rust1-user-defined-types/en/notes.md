@@ -12,7 +12,7 @@ enum
 → a value can be one of several variants
 ```
 
-Structures let you group related fields under one type. Enumerations let you describe a type as a set of allowed variants, and each variant can store its own data. Types such as `Option<T>` are built on these mechanisms, while `match` and `if let` are used to handle variants. The Rust Programming Language (2)
+Structures let you group related fields under one type. Enumerations let you describe a type as a set of allowed variants, and each variant can store its own data. Types such as `Option<T>` are built on these mechanisms, while `match` and `if let` are used to handle variants. 
 
 ---
 
@@ -50,7 +50,7 @@ let user = User {
 };
 ```
 
-Unlike a tuple, structure fields have names, so their meaning does not depend on position. The Rust Programming Language (2)
+Unlike a tuple, structure fields have names, so their meaning does not depend on position. 
 
 Accessing a field:
 
@@ -83,7 +83,7 @@ let mut user
 instance fields can be changed
 ```
 
-The Rust Programming Language (2)
+
 
 ---
 
@@ -116,7 +116,7 @@ username,
 email,
 ```
 
-This is only shorthand syntax; the meaning does not change. The Rust Programming Language (2)
+This is only shorthand syntax; the meaning does not change. 
 
 ---
 
@@ -147,7 +147,7 @@ user2.username
 
 After this, using the whole `user1` may no longer be allowed.
 
-If only `Copy` fields such as `bool` or `u64` are copied, those values are copied normally. The Rust Programming Language (2)
+If only `Copy` fields such as `bool` or `u64` are copied, those values are copied normally. 
 
 This connection is important:
 
@@ -200,7 +200,7 @@ black.0
 black.1
 ```
 
-A tuple struct is useful when you need a **distinct type** but do not need names for each field. The Rust Programming Language (2)
+A tuple struct is useful when you need a **distinct type** but do not need names for each field. 
 
 ---
 
@@ -220,7 +220,7 @@ let subject = AlwaysEqual;
 
 This is called a **unit-like struct** because it resembles the `()` type.
 
-The book notes that such a structure is useful when you need to define behavior for a type but do not need to store any data inside it. The Rust Programming Language (2)
+The book notes that such a structure is useful when you need to define behavior for a type but do not need to store any data inside it. 
 
 ---
 
@@ -243,7 +243,7 @@ User
 
 The data therefore exists as long as the structure exists.
 
-A structure can also store references to data owned elsewhere, but then **lifetimes** must be described. The book postpones that mechanism until Chapter 10. The Rust Programming Language (2)
+A structure can also store references to data owned elsewhere, but then **lifetimes** must be described. The book postpones that mechanism until Chapter 10. 
 
 For now, use this practical model:
 
@@ -291,7 +291,7 @@ Call it with:
 rect.area()
 ```
 
-A method resembles a function, but it is associated with a particular type and receives `self` as its first parameter. The Rust Programming Language (2)
+A method resembles a function, but it is associated with a particular type and receives `self` as its first parameter. 
 
 ---
 
@@ -464,7 +464,7 @@ Type::function()
 
 Such functions are often used to create instances.
 
-The book specifically notes that the name `new` is common for these functions but **is not a special Rust keyword**. The Rust Programming Language (2)
+The book specifically notes that the name `new` is common for these functions but **is not a special Rust keyword**. 
 
 You may have several blocks:
 
@@ -593,7 +593,7 @@ All of them still have one type:
 Message
 ```
 
-The Rust Programming Language (2)
+
 
 This expresses the model:
 
@@ -669,7 +669,7 @@ let letter = Some('a');
 let missing: Option<i32> = None;
 ```
 
-In the last case, the type must be specified because from `None` alone the compiler cannot infer what type would appear inside `Some`. The Rust Programming Language (2)
+In the last case, the type must be specified because from `None` alone the compiler cannot infer what type would appear inside `Some`. 
 
 ---
 
@@ -708,7 +708,7 @@ None
 → no value exists
 ```
 
-Thus absence is represented in the type system rather than hidden inside an ordinary value. The Rust Programming Language (2)
+Thus absence is represented in the type system rather than hidden inside an ordinary value. 
 
 ---
 
@@ -743,7 +743,7 @@ fn value(coin: Coin) -> u8 {
 }
 ```
 
-Rust checks the patterns in order and executes the code of the first matching arm. `match` itself is an expression, so the value of the executed arm becomes the value of the entire `match`. The Rust Programming Language (2)
+Rust checks the patterns in order and executes the code of the first matching arm. `match` itself is an expression, so the value of the executed arm becomes the value of the entire `match`. 
 
 ---
 
@@ -962,7 +962,7 @@ bind inner values
 execute the block
 ```
 
-`if let` ignores the remaining variants. The Rust Programming Language (2)
+`if let` ignores the remaining variants. 
 
 Main tradeoff:
 

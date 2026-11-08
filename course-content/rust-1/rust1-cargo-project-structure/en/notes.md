@@ -2,7 +2,7 @@
 
 ## 1. Topic
 
-Rust is a compiled language: source code is first compiled into an executable file, after which that file can be run independently of the Rust compiler. For a single file you can use `rustc`, but real projects are usually managed through **Cargo** — Rust's build system and dependency manager. The Rust Programming Language The Rust Programming Language
+Rust is a compiled language: source code is first compiled into an executable file, after which that file can be run independently of the Rust compiler. For a single file you can use `rustc`, but real projects are usually managed through **Cargo** — Rust's build system and dependency manager.  
 
 Main tools:
 
@@ -25,7 +25,7 @@ Update Rust:
 rustup update
 ```
 
-The Rust Programming Language
+
 
 ---
 
@@ -41,7 +41,7 @@ fn main() {
 }
 ```
 
-`main` is the entry point of an executable program. `fn` declares a function, and its body is enclosed in `{}`. `println!` is a **macro**, not an ordinary function: `!` indicates a macro invocation. The Rust Programming Language The Rust Programming Language
+`main` is the entry point of an executable program. `fn` declares a function, and its body is enclosed in `{}`. `println!` is a **macro**, not an ordinary function: `!` indicates a macro invocation.  
 
 A single file can be compiled directly:
 
@@ -49,7 +49,7 @@ A single file can be compiled directly:
 rustc main.rs
 ```
 
-After successful compilation, an executable binary is produced. Compilation and execution are separate stages. The Rust Programming Language
+After successful compilation, an executable binary is produced. Compilation and execution are separate stages. 
 
 For real development, Cargo is usually used instead of invoking `rustc` directly.
 
@@ -63,7 +63,7 @@ Cargo performs several tasks:
 - compiles code;
 - manages external dependencies;
 - downloads and compiles dependencies;
-- reuses already built parts of the project when they have not changed. The Rust Programming Language The Rust Programming Language
+- reuses already built parts of the project when they have not changed.  
 
 Create a project:
 
@@ -81,7 +81,7 @@ my_project/
     └── main.rs
 ```
 
-Project source code is stored in `src`. Project configuration is stored in `Cargo.toml`. Cargo can also initialize a Git repository. The Rust Programming Language The Rust Programming Language
+Project source code is stored in `src`. Project configuration is stored in `Cargo.toml`. Cargo can also initialize a Git repository.  
 
 ---
 
@@ -102,7 +102,7 @@ edition = "2021"
 
 The `[package]` section contains parameters of the package itself: name, version, and Rust edition.
 
-The `[dependencies]` section contains the project's external dependencies. The Rust Programming Language
+The `[dependencies]` section contains the project's external dependencies. 
 
 For example:
 
@@ -125,7 +125,7 @@ compile dependencies
 compile the project
 ```
 
-Dependencies are downloaded from a registry; the book identifies **Crates.io** as the place where public Rust packages are published. Transitive dependencies are downloaded automatically as well. The Rust Programming Language
+Dependencies are downloaded from a registry; the book identifies **Crates.io** as the place where public Rust packages are published. Transitive dependencies are downloaded automatically as well. 
 
 ---
 
@@ -133,7 +133,7 @@ Dependencies are downloaded from a registry; the book identifies **Crates.io** a
 
 `Cargo.toml` specifies **allowed versions**, while `Cargo.lock` records the exact versions actually selected by Cargo.
 
-On the first build, Cargo determines suitable dependency versions and writes them to `Cargo.lock`. Subsequent builds use the locked versions, which allows the same project to be rebuilt with the same dependency set. The Rust Programming Language
+On the first build, Cargo determines suitable dependency versions and writes them to `Cargo.lock`. Subsequent builds use the locked versions, which allows the same project to be rebuilt with the same dependency set. 
 
 Simplified:
 
@@ -147,7 +147,7 @@ Cargo.lock
 "which exact versions are used"
 ```
 
-`Cargo.lock` should not be edited manually: Cargo manages it. The Rust Programming Language
+`Cargo.lock` should not be edited manually: Cargo manages it. 
 
 Update dependencies within the constraints of `Cargo.toml`:
 
@@ -155,7 +155,7 @@ Update dependencies within the constraints of `Cargo.toml`:
 cargo update
 ```
 
-The command resolves versions again and updates `Cargo.lock`. The Rust Programming Language
+The command resolves versions again and updates `Cargo.lock`. 
 
 ---
 
@@ -175,7 +175,7 @@ is equivalent to the requirement:
 ^0.8.5
 ```
 
-That means compatible versions at least `0.8.5` but below `0.9.0` are allowed. Moving to the next incompatible series requires changing the requirement in `Cargo.toml`. The Rust Programming Language
+That means compatible versions at least `0.8.5` but below `0.9.0` are allowed. Moving to the next incompatible series requires changing the requirement in `Cargo.toml`. 
 
 ---
 
@@ -197,7 +197,7 @@ cargo new project_name
 cargo check
 ```
 
-Checks whether the project compiles but does not produce an executable file. It is therefore usually faster than a full build. The Rust Programming Language
+Checks whether the project compiles but does not produce an executable file. It is therefore usually faster than a full build. 
 
 ### Build
 
@@ -211,7 +211,7 @@ A normal build is created in:
 target/debug/
 ```
 
-The Rust Programming Language
+
 
 ### Build and Run Immediately
 
@@ -219,7 +219,7 @@ The Rust Programming Language
 cargo run
 ```
 
-If the sources have not changed, Cargo can reuse the already built binary instead of compiling it again. The Rust Programming Language
+If the sources have not changed, Cargo can reuse the already built binary instead of compiling it again. 
 
 ### Release Build
 
@@ -233,7 +233,7 @@ Result:
 target/release/
 ```
 
-A release build enables optimizations. It takes longer to compile but is intended for fast final execution. The book recommends measuring performance using a release build. The Rust Programming Language
+A release build enables optimizations. It takes longer to compile but is intended for fast final execution. The book recommends measuring performance using a release build. 
 
 Summary:
 
@@ -279,7 +279,7 @@ Without `use`, you would need to write the full path:
 std::io::stdin()
 ```
 
-The Rust Programming Language The Rust Programming Language
+ 
 
 For now it is enough to understand:
 
@@ -312,7 +312,7 @@ String::new()
 
 `new` is associated with the `String` type, but it is not called on a particular object. `::` is used to access an item associated with a type.
 
-`String::new()` creates a new empty `String` value. The Rust Programming Language
+`String::new()` creates a new empty `String` value. 
 
 ### Method
 
@@ -326,7 +326,7 @@ For example:
 io::stdin().read_line(...)
 ```
 
-A method is called on a particular value through `.`. The Rust Programming Language
+A method is called on a particular value through `.`. 
 
 For now, only the syntax difference matters:
 
@@ -354,7 +354,7 @@ To change a value, mutability must be explicit:
 let mut x = 5;
 ```
 
-The Rust Programming Language
+
 
 This is only the basic rule for now; variables and `mut` are covered in detail in the next step.
 
@@ -382,7 +382,7 @@ Mutable reference:
 &mut value
 ```
 
-You do not need to memorize the detailed borrowing rules yet — they are a separate major mechanism in the ownership chapter. The Rust Programming Language
+You do not need to memorize the detailed borrowing rules yet — they are a separate major mechanism in the ownership chapter. 
 
 ---
 
@@ -397,7 +397,7 @@ Ok    operation succeeded
 Err   an error occurred
 ```
 
-`Ok` contains the successful value; `Err` contains information about the error. The Rust Programming Language
+`Ok` contains the successful value; `Err` contains information about the error. 
 
 Example from the book:
 
@@ -414,7 +414,7 @@ Ok(value)  → returns value
 Err(...)   → terminates the program with the specified message
 ```
 
-Rust warns when a returned `Result` is simply ignored because a possible error has been left unhandled. The Rust Programming Language
+Rust warns when a returned `Result` is simply ignored because a possible error has been left unhandled. 
 
 Full error handling will be covered in a separate step.
 

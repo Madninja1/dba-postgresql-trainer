@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/player/visual/aleksey_visual.gd" id="1_aleksey"]
+
+[node name="AlekseyVisual" type="Node3D"]
+script = ExtResource("1_aleksey")
+
+[node name="ModelRoot" type="Node3D" parent="."]
+
+[node name="CameraFocus" type="Marker3D" parent="."]
+position = Vector3(0, 1.55, 0)
+
+[node name="NameAnchor" type="Marker3D" parent="."]
+position = Vector3(0, 1.92, 0)

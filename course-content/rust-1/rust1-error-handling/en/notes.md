@@ -22,7 +22,7 @@ unrecoverable error
 → panic!
 ```
 
-Rust does not use exceptions in the form common in many other languages: expected failures are represented as ordinary `Result` values that the calling code must handle. The Rust Programming Language (2)
+Rust does not use exceptions in the form common in many other languages: expected failures are represented as ordinary `Result` values that the calling code must handle. 
 
 Main model:
 
@@ -427,7 +427,7 @@ if Err
 → return Err(...)
 ```
 
-This pattern is common enough that Rust provides a dedicated operator for it. The Rust Programming Language (2)
+This pattern is common enough that Rust provides a dedicated operator for it. 
 
 ---
 
@@ -641,7 +641,7 @@ If it returns:
 Err(...)
 ```
 
-it exits with a nonzero status. The Rust Programming Language (2)
+it exits with a nonzero status. 
 
 ---
 
@@ -685,7 +685,7 @@ show a message?
 panic?
 ```
 
-For this reason, the book calls `Result` a good default choice for a function that can fail. The Rust Programming Language (2)
+For this reason, the book calls `Result` a good default choice for a function that can fail. 
 
 ---
 

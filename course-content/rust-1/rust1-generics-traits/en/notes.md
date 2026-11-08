@@ -19,7 +19,7 @@ HashMap<K, V>
 Result<T, E>
 ```
 
-The main purpose of generics is to remove duplication while preserving compile-time type checking. The Rust Programming Language (2)
+The main purpose of generics is to remove duplication while preserving compile-time type checking. 
 
 But a bare `T` is often not enough. A function may not work with every possible type, but only with types that:
 
@@ -100,7 +100,7 @@ V
 E
 ```
 
-and are written in `UpperCamelCase`. The Rust Programming Language (2)
+and are written in `UpperCamelCase`. 
 
 ---
 
@@ -194,7 +194,7 @@ y: T
 → both fields must have the same concrete type
 ```
 
-If `x` determines `T` to be an integer type, `y` must have that same type. The Rust Programming Language (2)
+If `x` determines `T` to be an integer type, `y` must have that same type. 
 
 ---
 
@@ -428,7 +428,7 @@ compiler
 specialized concrete code
 ```
 
-So generics do not add runtime type checks. The Rust Programming Language (2)
+So generics do not add runtime type checks. 
 
 ---
 
@@ -455,7 +455,7 @@ must provide:
 summarize(&self) -> String
 ```
 
-The trait does not have to define a concrete data type — it defines a set of required methods. The book compares traits with interfaces in other languages while noting that they are not identical. The Rust Programming Language (2)
+The trait does not have to define a concrete data type — it defines a set of required methods. The book compares traits with interfaces in other languages while noting that they are not identical. 
 
 ---
 
@@ -583,7 +583,7 @@ impl Display for Vec<T>
 
 when both `Display` and `Vec` belong to the standard library.
 
-The reason is implementation coherence: otherwise two independent crates could provide different implementations of the same trait for the same type, and Rust could not choose unambiguously. The book connects this restriction with **coherence** and the **orphan rule**. The Rust Programming Language (2)
+The reason is implementation coherence: otherwise two independent crates could provide different implementations of the same trait for the same type, and Rust could not choose unambiguously. The book connects this restriction with **coherence** and the **orphan rule**. 
 
 ---
 
@@ -655,7 +655,7 @@ summarize_author
 
 while `summarize` gets shared behavior for free.
 
-This lets a trait define a small required core and build common functionality on top of it. The Rust Programming Language (2)
+This lets a trait define a small required core and build common functionality on top of it. 
 
 A limitation noted by the book: an overridden method cannot call the trait's default implementation of that same method.
 
@@ -722,7 +722,7 @@ but
 T must implement Summary
 ```
 
-The Rust Programming Language (2)
+
 
 ---
 
@@ -894,7 +894,7 @@ two different concrete types
 → ✗
 ```
 
-The trait-object solution for different types is postponed until Chapter 17. The Rust Programming Language (2)
+The trait-object solution for different types is postponed until Chapter 17. 
 
 ---
 
@@ -944,7 +944,7 @@ cmp_display
   T: Display + PartialOrd
 ```
 
-This is called a conditional implementation. The Rust Programming Language (2)
+This is called a conditional implementation. 
 
 ---
 
@@ -977,7 +977,7 @@ This is why, for example:
 let s = 3.to_string();
 ```
 
-works through the relationship between implemented traits. The Rust Programming Language (2)
+works through the relationship between implemented traits. 
 
 ---
 
@@ -1043,7 +1043,7 @@ If formatting is needed:
 T: Display
 ```
 
-The compiler checks these requirements at compile time, not runtime. The Rust Programming Language (2)
+The compiler checks these requirements at compile time, not runtime. 
 
 ---
 

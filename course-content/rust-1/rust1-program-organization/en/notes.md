@@ -18,7 +18,7 @@ pub     → controls visibility
 use     → brings a path into the current scope
 ```
 
-The book describes program organization specifically in terms of packages, crates, modules, and paths. The Rust Programming Language (2)
+The book describes program organization specifically in terms of packages, crates, modules, and paths. 
 
 Main hierarchy:
 
@@ -78,7 +78,7 @@ Examples from the book include a command-line program and a server.
 
 Does not contain `main` and does not produce a standalone executable.
 
-Its purpose is to provide functionality to other code. The Rust Programming Language (2)
+Its purpose is to provide functionality to other code. 
 
 ---
 
@@ -103,7 +103,7 @@ must contain:
 → at least one crate
 ```
 
-The Rust Programming Language (2)
+
 
 ---
 
@@ -147,7 +147,7 @@ Additional binary crates can be placed in:
 src/bin/
 ```
 
-where each file corresponds to a separate binary crate. The Rust Programming Language (2)
+where each file corresponds to a separate binary crate. 
 
 ---
 
@@ -180,7 +180,7 @@ traits
 other modules
 ```
 
-Its main job is to organize code while also controlling visibility. The Rust Programming Language (2)
+Its main job is to organize code while also controlling visibility. 
 
 ---
 
@@ -203,7 +203,7 @@ The root is the implicit module:
 crate
 ```
 
-`src/main.rs` and `src/lib.rs` are the root modules of their respective crates. The Rust Programming Language (2)
+`src/main.rs` and `src/lib.rs` are the root modules of their respective crates. 
 
 Relationships between modules:
 
@@ -255,7 +255,7 @@ hosting
 add_to_waitlist
 ```
 
-For an item in an external crate, an absolute path starts with that crate's name. The Rust Programming Language (2)
+For an item in an external crate, an absolute path starts with that crate's name. 
 
 ---
 
@@ -276,7 +276,7 @@ self
 super
 ```
 
-The book notes that the choice between absolute and relative paths depends on how code might move during reorganization. In the example, the authors prefer absolute paths because definitions and the code that uses them can be moved more independently. The Rust Programming Language (2)
+The book notes that the choice between absolute and relative paths depends on how code might move during reorganization. In the example, the authors prefer absolute paths because definitions and the code that uses them can be moved more independently. 
 
 ---
 
@@ -312,7 +312,7 @@ Conceptually, `super` resembles:
 ..
 ```
 
-in a filesystem path. The Rust Programming Language (2)
+in a filesystem path. 
 
 ---
 
@@ -355,7 +355,7 @@ implementation details are hidden
 only the required API is exposed
 ```
 
-Child modules can still access items in their ancestor modules. The Rust Programming Language (2)
+Child modules can still access items in their ancestor modules. 
 
 ---
 
@@ -395,7 +395,7 @@ add_to_waitlist
 → still private
 ```
 
-`pub` on a container does not automatically make its contents public. The Rust Programming Language (2)
+`pub` on a container does not automatically make its contents public. 
 
 ---
 
@@ -420,7 +420,7 @@ toast           public
 seasonal_fruit  private
 ```
 
-If a structure contains private fields, external code cannot fill them directly when constructing an instance. In the book's example, the structure provides a public associated function for this purpose. The Rust Programming Language (2)
+If a structure contains private fields, external code cannot fill them directly when constructing an instance. In the book's example, the structure provides a public associated function for this purpose. 
 
 This makes it possible to hide internal state behind a public API.
 
@@ -454,7 +454,7 @@ pub enum
 → variants are accessible
 ```
 
-The Rust Programming Language (2)
+
 
 ---
 
@@ -474,7 +474,7 @@ use crate::front_of_house::hosting;
 hosting::add_to_waitlist();
 ```
 
-`use` does not change where the item lives in the module tree — it creates a convenient name in the current scope. The Rust Programming Language (2)
+`use` does not change where the item lives in the module tree — it creates a convenient name in the current scope. 
 
 ---
 
@@ -486,7 +486,7 @@ use crate::front_of_house::hosting;
 
 The name `hosting` is available only in the scope containing this `use`.
 
-Entering a child module does not automatically make that imported name available there. The Rust Programming Language (2)
+Entering a child module does not automatically make that imported name available there. 
 
 So:
 
@@ -530,7 +530,7 @@ use std::collections::HashMap;
 let map = HashMap::new();
 ```
 
-This is a Rust code convention, not a technical restriction of the language. The Rust Programming Language (2)
+This is a Rust code convention, not a technical restriction of the language. 
 
 ---
 
@@ -567,7 +567,7 @@ Result
 IoResult
 ```
 
-do not conflict. The Rust Programming Language (2)
+do not conflict. 
 
 ---
 
@@ -627,7 +627,7 @@ internal library organization
 its external public API
 ```
 
-The Rust Programming Language (2)
+
 
 ---
 
@@ -650,7 +650,7 @@ The standard library:
 std
 ```
 
-is also a crate, but it does not need to be added to `Cargo.toml` because it ships with Rust. The Rust Programming Language (2)
+is also a crate, but it does not need to be added to `Cargo.toml` because it ships with Rust. 
 
 ---
 
@@ -682,7 +682,7 @@ you can write:
 use std::io::{self, Write};
 ```
 
-Here `self` means `std::io` itself, while `Write` is an item inside it. The Rust Programming Language (2)
+Here `self` means `std::io` itself, while `Write` is an item inside it. 
 
 ---
 
@@ -696,7 +696,7 @@ use std::collections::*;
 
 But the book recommends caution: after a glob import, it is harder to tell which names are in scope and where they came from.
 
-The book notes `*` as common in tests and sometimes in prelude-style patterns. The Rust Programming Language (2)
+The book notes `*` as common in tests and sometimes in prelude-style patterns. 
 
 ---
 
@@ -730,7 +730,7 @@ The book also lists the older supported form:
 src/front_of_house/mod.rs
 ```
 
-The Rust Programming Language (2)
+
 
 ---
 
@@ -771,7 +771,7 @@ pub mod hosting;
 pub fn add_to_waitlist() {}
 ```
 
-`hosting` is a child of `front_of_house`, so its file is placed in a directory corresponding to the parent module. The Rust Programming Language (2)
+`hosting` is a child of `front_of_house`, so its file is placed in a directory corresponding to the parent module. 
 
 ---
 
@@ -799,7 +799,7 @@ modules
 → logical structure of code
 ```
 
-The Rust Programming Language (2)
+
 
 ---
 
@@ -824,7 +824,7 @@ main.rs
 → application startup
 ```
 
-The binary crate uses the public API of the library crate similarly to an external user. This helps keep functionality reusable while also testing the quality of the public API. The Rust Programming Language (2)
+The binary crate uses the public API of the library crate similarly to an external user. This helps keep functionality reusable while also testing the quality of the public API. 
 
 ---
 
