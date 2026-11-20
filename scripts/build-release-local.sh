@@ -8,7 +8,8 @@ KEY_ALIAS="${DBA_TRAINER_KEY_ALIAS:-dba-trainer}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
-RELEASE_DIR="$ROOT/releases/v${VERSION}"
+RELEASE_ROOT="${DBA_TRAINER_RELEASE_ROOT:-$(dirname "$ROOT")/_releases/dba-trainer}"
+RELEASE_DIR="$RELEASE_ROOT/v${VERSION}"
 mkdir -p "$RELEASE_DIR"
 
 echo "== DBA Trainer v${VERSION}: checks =="

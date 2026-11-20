@@ -10,10 +10,10 @@ DBA Trainer — полностью офлайн-приложение для об
 
 Текущая версия приложения: **0.7.0**.
 
-Готовые сборки при публикации хранятся непосредственно в репозитории в `releases/<version>/`:
+Готовые сборки хранятся вне Git-репозитория и публикуются как файлы GitHub Releases. По умолчанию локальный каталог сборок — `../_releases/dba-trainer/`:
 
 ```text
-releases/
+_releases/dba-trainer/
 └── v0.7.0/
     ├── dba-trainer-android-v0.7.0.apk
     ├── dba-trainer-tui-linux-x86_64-v0.7.0.tar.gz
@@ -110,7 +110,6 @@ UI не выполняет SQL самостоятельно. Бизнес-пра
 │   ├── domain/             доменные модели
 │   ├── mobile-ffi/         UniFFI-мост для Android
 │   └── storage-sqlite/     реализация SQLite
-├── releases/               готовые сборки, хранящиеся в Git
 └── tools/
     └── uniffi-bindgen/     генератор Kotlin bindings
 ```
@@ -171,7 +170,11 @@ cd apps/android
 
 ## Выпуск версии
 
-GitHub Actions и repository secrets для релизов не требуются. Готовые файлы собираются локально, проверяются и копируются в `releases/<version>/`, после чего создаются release commit и Git tag.
+GitHub Actions и repository secrets для релизов не требуются. Готовые файлы собираются локально и сохраняются вне Git-репозитория в `../_releases/dba-trainer/<version>/`. Путь можно изменить через `DBA_TRAINER_RELEASE_ROOT`. После проверки файлы публикуются как assets GitHub Release для соответствующего тега версии; бинарники не коммитятся в Git.
+
+```bash
+./scripts/build-release-local.sh 0.7.0
+```
 
 Перед релизом:
 

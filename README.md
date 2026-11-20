@@ -10,10 +10,10 @@ The current course focus is PostgreSQL DBA training. The repository is structure
 
 Current application version: **0.7.0**.
 
-Prebuilt packages are kept in the repository under `releases/<version>/` when they are published. The intended release set is:
+Prebuilt packages are built outside the source repository and published as GitHub Release assets. By default, the local release set is stored under `/data/OpenSourceProjects/_releases/dba-trainer/` when the repository is at `/data/OpenSourceProjects/dba-trainer/`:
 
 ```text
-releases/
+_releases/dba-trainer/
 └── v0.7.0/
     ├── dba-trainer-android-v0.7.0.apk
     ├── dba-trainer-tui-linux-x86_64-v0.7.0.tar.gz
@@ -110,7 +110,6 @@ The UI layers do not issue SQL directly. Business rules live in Rust and are reu
 │   ├── domain/             domain models
 │   ├── mobile-ffi/         UniFFI Android bridge
 │   └── storage-sqlite/     SQLite implementation
-├── releases/               prebuilt packages committed to the repository
 └── tools/
     └── uniffi-bindgen/     Kotlin binding generator wrapper
 ```
@@ -171,7 +170,11 @@ For a public APK, build and sign a release package locally with the long-lived p
 
 ## Release model
 
-This project does not require GitHub Actions or repository secrets for releases. Release artifacts are built locally, verified, and then copied into `releases/<version>/` before the release commit/tag is created.
+This project does not require GitHub Actions or repository secrets for releases. Release artifacts are built locally and stored outside the Git repository at `../_releases/dba-trainer/<version>/` by default. Set `DBA_TRAINER_RELEASE_ROOT` to override the output directory. Publish the verified files as assets of a GitHub Release associated with the version tag; do not commit binaries to the source repository.
+
+```bash
+./scripts/build-release-local.sh 0.7.0
+```
 
 Before committing a release:
 
